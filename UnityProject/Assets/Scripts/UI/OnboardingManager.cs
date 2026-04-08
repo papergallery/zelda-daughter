@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using ZeldaDaughter.Input;
+using ZeldaDaughter.Inventory;
 
 namespace ZeldaDaughter.UI
 {
@@ -21,8 +22,10 @@ namespace ZeldaDaughter.UI
         private void OnDestroy()
         {
             // Safety unsubscribe in case the object is destroyed before gestures fire
-            TouchInputManager.OnMoveInput -= OnFirstSwipe;
-            TouchInputManager.OnTap -= OnFirstTap;
+            GestureDispatcher.OnMoveInput -= OnFirstSwipe;
+            GestureDispatcher.OnTap -= OnFirstTap;
+            GestureDispatcher.OnLongPressStart -= OnFirstLongPress;
+            PlayerInventory.OnItemAdded -= OnFirstItemPickup;
         }
 
         private IEnumerator ShowSwipeHintAfterDelay()
@@ -32,13 +35,13 @@ namespace ZeldaDaughter.UI
             if (_swipeHint != null)
             {
                 _swipeHint.Show();
-                TouchInputManager.OnMoveInput += OnFirstSwipe;
+                GestureDispatcher.OnMoveInput += OnFirstSwipe;
             }
         }
 
         private void OnFirstSwipe(Vector2 direction, float intensity)
         {
-            TouchInputManager.OnMoveInput -= OnFirstSwipe;
+            GestureDispatcher.OnMoveInput -= OnFirstSwipe;
 
             if (_swipeHint != null)
                 _swipeHint.Hide();
@@ -53,16 +56,37 @@ namespace ZeldaDaughter.UI
             if (_tapHint != null)
             {
                 _tapHint.Show();
-                TouchInputManager.OnTap += OnFirstTap;
+                GestureDispatcher.OnTap += OnFirstTap;
             }
         }
 
         private void OnFirstTap(Vector2 screenPos)
         {
-            TouchInputManager.OnTap -= OnFirstTap;
+            GestureDispatcher.OnTap -= OnFirstTap;
 
             if (_tapHint != null)
                 _tapHint.Hide();
+
+            PlayerInventory.OnItemAdded += OnFirstItemPickup;
+        }
+
+        private void OnFirstItemPickup(ItemData item, int amount)
+        {
+            PlayerInventory.OnItemAdded -= OnFirstItemPickup;
+
+            if (_longPressHint != null)
+            {
+                _longPressHint.Show();
+                GestureDispatcher.OnLongPressStart += OnFirstLongPress;
+            }
+        }
+
+        private void OnFirstLongPress()
+        {
+            GestureDispatcher.OnLongPressStart -= OnFirstLongPress;
+
+            if (_longPressHint != null)
+                _longPressHint.Hide();
         }
     }
 }

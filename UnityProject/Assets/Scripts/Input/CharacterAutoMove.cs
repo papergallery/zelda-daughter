@@ -27,12 +27,12 @@ namespace ZeldaDaughter.Input
 
         private void OnEnable()
         {
-            TouchInputManager.OnMoveInput += HandleMoveInput;
+            GestureDispatcher.OnMoveInput += HandleMoveInput;
         }
 
         private void OnDisable()
         {
-            TouchInputManager.OnMoveInput -= HandleMoveInput;
+            GestureDispatcher.OnMoveInput -= HandleMoveInput;
         }
 
         private void Update()
