@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ZeldaDaughter.Inventory;
 using ZeldaDaughter.Progression;
+using ZeldaDaughter.Quest;
 using ZeldaDaughter.UI;
 
 namespace ZeldaDaughter.NPC
@@ -13,6 +14,7 @@ namespace ZeldaDaughter.NPC
         [SerializeField] private DialoguePanelUI _dialoguePanel;
         [SerializeField] private PlayerInventory _playerInventory;
         [SerializeField] private PlayerStats _playerStats;
+        [SerializeField] private QuestManager _questManager;
 
         private NPCProfile _currentNPC;
         private NPCSpeechBubble _currentBubble;
@@ -36,7 +38,8 @@ namespace ZeldaDaughter.NPC
 
         private void Awake()
         {
-            _conditionResolver = new DialogueConditionResolver(_playerInventory, _languageSystem, _playerStats);
+            _conditionResolver = new DialogueConditionResolver(
+                _playerInventory, _languageSystem, _playerStats, _questManager);
             _effectExecutor = new DialogueEffectExecutor(_playerInventory, _languageSystem);
         }
 
