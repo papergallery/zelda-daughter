@@ -378,6 +378,407 @@ namespace ZeldaDaughter.Editor
             AddSceneToBuildSettings(scenePath);
         }
 
+        [MenuItem("ZeldaDaughter/Scenes/Build Stage 4")]
+        public static void CreateStage4Scene()
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
+                AssetDatabase.CreateFolder("Assets", "Scenes");
+
+            // Загружаем Stage3 как базу — если нет, берём Stage1
+            const string stage3Path = "Assets/Scenes/Stage3.unity";
+            const string stage1Path = "Assets/Scenes/Stage1.unity";
+
+            string projectRoot = Path.GetDirectoryName(Application.dataPath);
+
+            if (File.Exists(Path.GetFullPath(Path.Combine(projectRoot, stage3Path))))
+            {
+                EditorSceneManager.OpenScene(stage3Path, OpenSceneMode.Single);
+            }
+            else if (File.Exists(Path.GetFullPath(Path.Combine(projectRoot, stage1Path))))
+            {
+                EditorSceneManager.OpenScene(stage1Path, OpenSceneMode.Single);
+                Debug.LogWarning("[SceneBuilder] Stage3.unity не найдена, используем Stage1 как базу для Stage4.");
+            }
+            else
+            {
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                Debug.LogWarning("[SceneBuilder] Ни Stage3, ни Stage1 не найдены. Создаём пустую сцену для Stage4.");
+            }
+
+            // --- Компоненты на Player ---
+            var player = GameObject.Find("Player");
+            if (player != null)
+            {
+                AddComponentIfMissing<ZeldaDaughter.Combat.PlayerHealthState>(player);
+                AddComponentIfMissing<ZeldaDaughter.Combat.CombatController>(player);
+                AddComponentIfMissing<ZeldaDaughter.Combat.WeaponEquipSystem>(player);
+                AddComponentIfMissing<ZeldaDaughter.Combat.RestZoneDetector>(player);
+                AddComponentIfMissing<ZeldaDaughter.Combat.HungerSystem>(player);
+                AddComponentIfMissing<ZeldaDaughter.Combat.WoundEffectApplier>(player);
+                AddComponentIfMissing<ZeldaDaughter.Combat.FoodConsumption>(player);
+                AddComponentIfMissing<ZeldaDaughter.Combat.KnockoutSystem>(player);
+
+                // Hitbox на дочернем объекте (удар игрока)
+                var existingHitbox = player.transform.Find("PlayerHitbox");
+                if (existingHitbox == null)
+                {
+                    var hitboxGo = new GameObject("PlayerHitbox");
+                    hitboxGo.transform.SetParent(player.transform);
+                    hitboxGo.transform.localPosition = new Vector3(0f, 0.8f, 0.7f);
+                    var hitboxCol = hitboxGo.AddComponent<BoxCollider>();
+                    hitboxCol.isTrigger = true;
+                    hitboxCol.size = new Vector3(0.6f, 0.6f, 0.6f);
+                    hitboxGo.AddComponent<ZeldaDaughter.Combat.HitboxTrigger>();
+                    hitboxGo.SetActive(false); // активируется только во время удара
+                }
+
+                // Привязываем CombatConfig
+                var combatConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.CombatConfig>("Assets/Data/Combat/CombatConfig.asset");
+                if (combatConfig != null)
+                {
+                    var cfgHealthState = player.GetComponent<ZeldaDaughter.Combat.PlayerHealthState>();
+                    if (cfgHealthState != null)
+                    {
+                        var soH = new SerializedObject(cfgHealthState);
+                        var configProp = soH.FindProperty("_config");
+                        if (configProp != null)
+                        {
+                            configProp.objectReferenceValue = combatConfig;
+                            soH.ApplyModifiedProperties();
+                        }
+                    }
+
+                    var cfgCombatCtrl = player.GetComponent<ZeldaDaughter.Combat.CombatController>();
+                    if (cfgCombatCtrl != null)
+                    {
+                        var soC = new SerializedObject(cfgCombatCtrl);
+                        var configProp = soC.FindProperty("_config");
+                        if (configProp != null)
+                        {
+                            configProp.objectReferenceValue = combatConfig;
+                            soC.ApplyModifiedProperties();
+                        }
+                    }
+
+                    var cfgHungerSys = player.GetComponent<ZeldaDaughter.Combat.HungerSystem>();
+                    if (cfgHungerSys != null)
+                    {
+                        var soHu = new SerializedObject(cfgHungerSys);
+                        var configProp = soHu.FindProperty("_config");
+                        if (configProp != null)
+                        {
+                            configProp.objectReferenceValue = combatConfig;
+                            soHu.ApplyModifiedProperties();
+                        }
+                    }
+
+                    var cfgKnockoutSys = player.GetComponent<ZeldaDaughter.Combat.KnockoutSystem>();
+                    if (cfgKnockoutSys != null)
+                    {
+                        var soK = new SerializedObject(cfgKnockoutSys);
+                        var configProp = soK.FindProperty("_config");
+                        if (configProp != null)
+                        {
+                            configProp.objectReferenceValue = combatConfig;
+                            soK.ApplyModifiedProperties();
+                        }
+                    }
+                }
+
+                // --- Привязка SerializedField ссылок ---
+
+                // Загружаем WoundConfig SO
+                var woundPuncture  = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Puncture.asset");
+                var woundFracture  = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Fracture.asset");
+                var woundBurn      = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Burn.asset");
+                var woundPoison    = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Poison.asset");
+
+                var charMovement = player.GetComponent<ZeldaDaughter.Input.CharacterMovement>();
+                var charAutoMove = player.GetComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+
+                // Найти GestureDispatcher — на InputSystem GO или на Player
+                ZeldaDaughter.Input.GestureDispatcher gestureDispatcher = null;
+                var inputSystemGO = GameObject.Find("InputSystem");
+                if (inputSystemGO != null)
+                    inputSystemGO.TryGetComponent(out gestureDispatcher);
+                if (gestureDispatcher == null)
+                    gestureDispatcher = player.GetComponentInChildren<ZeldaDaughter.Input.GestureDispatcher>();
+                if (gestureDispatcher == null)
+                    gestureDispatcher = Object.FindObjectOfType<ZeldaDaughter.Input.GestureDispatcher>();
+
+                // Hitbox дочерний объект
+                var hitboxTransform = player.transform.Find("PlayerHitbox");
+                var hitboxTrigger = hitboxTransform != null
+                    ? hitboxTransform.GetComponent<ZeldaDaughter.Combat.HitboxTrigger>()
+                    : null;
+
+                var weaponEquip  = player.GetComponent<ZeldaDaughter.Combat.WeaponEquipSystem>();
+                var combatCtrl   = player.GetComponent<ZeldaDaughter.Combat.CombatController>();
+                var healthState  = player.GetComponent<ZeldaDaughter.Combat.PlayerHealthState>();
+                var woundApplier = player.GetComponent<ZeldaDaughter.Combat.WoundEffectApplier>();
+                var hungerSys2   = player.GetComponent<ZeldaDaughter.Combat.HungerSystem>();
+                var knockoutSys2 = player.GetComponent<ZeldaDaughter.Combat.KnockoutSystem>();
+
+                // 1. CombatController._hitbox, _weaponEquip, _autoMove
+                if (combatCtrl != null)
+                {
+                    var so = new SerializedObject(combatCtrl);
+                    if (hitboxTrigger != null)
+                        so.FindProperty("_hitbox").objectReferenceValue = hitboxTrigger;
+                    else
+                        Debug.LogWarning("[SceneBuilder] HitboxTrigger не найден на PlayerHitbox.");
+                    if (weaponEquip != null)
+                        so.FindProperty("_weaponEquip").objectReferenceValue = weaponEquip;
+                    if (charAutoMove != null)
+                        so.FindProperty("_autoMove").objectReferenceValue = charAutoMove;
+                    so.ApplyModifiedProperties();
+                }
+
+                // 2. PlayerHealthState._woundConfigs
+                if (healthState != null)
+                {
+                    var so = new SerializedObject(healthState);
+                    var woundsProp = so.FindProperty("_woundConfigs");
+                    woundsProp.arraySize = 4;
+                    woundsProp.GetArrayElementAtIndex(0).objectReferenceValue = woundPuncture;
+                    woundsProp.GetArrayElementAtIndex(1).objectReferenceValue = woundFracture;
+                    woundsProp.GetArrayElementAtIndex(2).objectReferenceValue = woundBurn;
+                    woundsProp.GetArrayElementAtIndex(3).objectReferenceValue = woundPoison;
+                    so.ApplyModifiedProperties();
+
+                    if (woundPuncture == null || woundFracture == null || woundBurn == null || woundPoison == null)
+                        Debug.LogWarning("[SceneBuilder] Часть WoundConfig SO не найдена. Запустите ZeldaDaughter/Data/Build Combat Data.");
+                }
+
+                // 3. WoundEffectApplier._woundConfigs, _movement
+                if (woundApplier != null)
+                {
+                    var so = new SerializedObject(woundApplier);
+                    var woundsProp = so.FindProperty("_woundConfigs");
+                    woundsProp.arraySize = 4;
+                    woundsProp.GetArrayElementAtIndex(0).objectReferenceValue = woundPuncture;
+                    woundsProp.GetArrayElementAtIndex(1).objectReferenceValue = woundFracture;
+                    woundsProp.GetArrayElementAtIndex(2).objectReferenceValue = woundBurn;
+                    woundsProp.GetArrayElementAtIndex(3).objectReferenceValue = woundPoison;
+                    if (charMovement != null)
+                        so.FindProperty("_movement").objectReferenceValue = charMovement;
+                    so.ApplyModifiedProperties();
+                }
+
+                // 4. HungerSystem._movement
+                if (hungerSys2 != null && charMovement != null)
+                {
+                    var so = new SerializedObject(hungerSys2);
+                    so.FindProperty("_movement").objectReferenceValue = charMovement;
+                    so.ApplyModifiedProperties();
+                }
+
+                // 5. KnockoutSystem._gestureDispatcher
+                if (knockoutSys2 != null && gestureDispatcher != null)
+                {
+                    var so = new SerializedObject(knockoutSys2);
+                    so.FindProperty("_gestureDispatcher").objectReferenceValue = gestureDispatcher;
+                    so.ApplyModifiedProperties();
+                }
+                else if (knockoutSys2 != null)
+                {
+                    Debug.LogWarning("[SceneBuilder] GestureDispatcher не найден. KnockoutSystem._gestureDispatcher не привязан.");
+                }
+
+                // 6. TapInteractionManager._combatController
+                var tapManager = Object.FindObjectOfType<ZeldaDaughter.World.TapInteractionManager>();
+                if (tapManager != null && combatCtrl != null)
+                {
+                    var so = new SerializedObject(tapManager);
+                    so.FindProperty("_combatController").objectReferenceValue = combatCtrl;
+                    so.ApplyModifiedProperties();
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[SceneBuilder] Player GameObject не найден. Пропускаем Combat-компоненты.");
+            }
+
+            // --- FadeOverlay Canvas (для сна и нокаута) ---
+            if (GameObject.Find("FadeOverlayCanvas") == null)
+            {
+                var fadeCanvas = CreateCanvas("FadeOverlayCanvas", 200);
+                var fadeCanvasGroup = fadeCanvas.gameObject.AddComponent<CanvasGroup>();
+
+                // Полноэкранный чёрный Image
+                var fadeImageGo = new GameObject("FadeImage");
+                fadeImageGo.transform.SetParent(fadeCanvas.transform, false);
+                var fadeRect = fadeImageGo.AddComponent<RectTransform>();
+                fadeRect.anchorMin = Vector2.zero;
+                fadeRect.anchorMax = Vector2.one;
+                fadeRect.offsetMin = Vector2.zero;
+                fadeRect.offsetMax = Vector2.zero;
+                var fadeImage = fadeImageGo.AddComponent<Image>();
+                fadeImage.color = Color.black;
+                fadeImage.raycastTarget = false;
+
+                // Начальное состояние — скрыт
+                fadeCanvasGroup.alpha = 0f;
+                fadeCanvasGroup.blocksRaycasts = false;
+
+                // FadeOverlay компонент + привязка _canvasGroup
+                var fadeOverlay = fadeCanvas.gameObject.AddComponent<ZeldaDaughter.UI.FadeOverlay>();
+                {
+                    var so = new SerializedObject(fadeOverlay);
+                    so.FindProperty("_canvasGroup").objectReferenceValue = fadeCanvasGroup;
+                    so.ApplyModifiedProperties();
+                }
+            }
+
+            // EventSystem — добавляем если нет
+            if (Object.FindObjectOfType<EventSystem>() == null)
+            {
+                var eventSystemGO = new GameObject("EventSystem");
+                eventSystemGO.AddComponent<EventSystem>();
+                eventSystemGO.AddComponent<StandaloneInputModule>();
+            }
+
+            // --- Зоны спавна врагов ---
+            PlaceEnemySpawnZone(
+                "SpawnZone_Wolves",
+                new Vector3(-20f, 0f, 15f),
+                "Assets/Prefabs/Enemies/Wolf.prefab",
+                "Assets/Data/Combat/EnemyData_Wolf.asset",
+                maxEnemies: 3,
+                spawnRadius: 12f
+            );
+
+            PlaceEnemySpawnZone(
+                "SpawnZone_Boars",
+                new Vector3(25f, 0f, 20f),
+                "Assets/Prefabs/Enemies/Boar.prefab",
+                "Assets/Data/Combat/EnemyData_Boar.asset",
+                maxEnemies: 2,
+                spawnRadius: 10f
+            );
+
+            // --- Кровать в таверне ---
+            PlaceBed();
+
+            // Сохраняем
+            const string scenePath = "Assets/Scenes/Stage4.unity";
+            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene(), scenePath);
+            Debug.Log($"[SceneBuilder] Stage4 scene saved at '{scenePath}'.");
+            AddSceneToBuildSettings(scenePath);
+        }
+
+        private static void PlaceEnemySpawnZone(
+            string goName,
+            Vector3 position,
+            string enemyPrefabPath,
+            string enemyDataPath,
+            int maxEnemies,
+            float spawnRadius)
+        {
+            // Не дублируем если уже есть
+            if (GameObject.Find(goName) != null)
+            {
+                Debug.Log($"[SceneBuilder] {goName} уже присутствует, пропускаем.");
+                return;
+            }
+
+            var zoneGo = new GameObject(goName);
+            zoneGo.transform.position = position;
+
+            var spawnZone = zoneGo.AddComponent<ZeldaDaughter.Combat.EnemySpawnZone>();
+
+            var enemyPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(enemyPrefabPath);
+            var enemyData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.EnemyData>(enemyDataPath);
+
+            var so = new SerializedObject(spawnZone);
+            if (enemyPrefab != null)
+                so.FindProperty("_enemyPrefab").objectReferenceValue = enemyPrefab;
+            else
+                Debug.LogWarning($"[SceneBuilder] Enemy prefab не найден: {enemyPrefabPath}. Запустите ZeldaDaughter/Prefabs/Build Enemy Prefabs.");
+
+            if (enemyData != null)
+                so.FindProperty("_enemyData").objectReferenceValue = enemyData;
+            else
+                Debug.LogWarning($"[SceneBuilder] Enemy data не найдена: {enemyDataPath}. Запустите ZeldaDaughter/Data/Build Combat Data.");
+
+            so.FindProperty("_maxEnemies").intValue = maxEnemies;
+            so.FindProperty("_spawnRadius").floatValue = spawnRadius;
+            so.ApplyModifiedProperties();
+
+            Debug.Log($"[SceneBuilder] SpawnZone '{goName}' размещена в позиции {position}.");
+        }
+
+        private static void PlaceBed()
+        {
+            const string bedName = "Bed";
+            if (GameObject.Find(bedName) != null)
+            {
+                Debug.Log("[SceneBuilder] Bed уже присутствует, пропускаем.");
+                return;
+            }
+
+            // Ищем таверну по имени или берём позицию по умолчанию
+            Vector3 bedPosition = GetBedPosition();
+
+            // Пробуем загрузить prefab кровати
+            const string bedPrefabPath = "Assets/Prefabs/World/Bed.prefab";
+            var bedPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(bedPrefabPath);
+
+            GameObject bedGo;
+            if (bedPrefab != null)
+            {
+                bedGo = (GameObject)PrefabUtility.InstantiatePrefab(bedPrefab);
+                bedGo.transform.position = bedPosition;
+            }
+            else
+            {
+                // Placeholder: плоский куб
+                bedGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                bedGo.name = bedName;
+                bedGo.transform.position = bedPosition;
+                bedGo.transform.localScale = new Vector3(1f, 0.4f, 2f);
+                var mat = CreateMaterial("Bed", new Color(0.6f, 0.3f, 0.1f));
+                bedGo.GetComponent<Renderer>().sharedMaterial = mat;
+            }
+
+            // Точка взаимодействия
+            var interPoint = new GameObject("InteractionPoint");
+            interPoint.transform.SetParent(bedGo.transform);
+            interPoint.transform.localPosition = new Vector3(0f, 0.5f, 0f);
+
+            // SleepInteraction
+            var sleepInteraction = bedGo.AddComponent<ZeldaDaughter.Combat.SleepInteraction>();
+            {
+                var so = new SerializedObject(sleepInteraction);
+                var interPointProp = so.FindProperty("_interactionPoint");
+                if (interPointProp != null)
+                {
+                    interPointProp.objectReferenceValue = interPoint.transform;
+                    so.ApplyModifiedProperties();
+                }
+            }
+
+            // Highlight для интерактивности
+            AddComponentIfMissing<ZeldaDaughter.World.InteractableHighlight>(bedGo);
+
+            Debug.Log($"[SceneBuilder] Кровать размещена в позиции {bedPosition}.");
+        }
+
+        private static Vector3 GetBedPosition()
+        {
+            // Ищем таверну по возможным именам
+            string[] tavernNames = { "Tavern", "NPC_Barman", "Building_Tavern", "Inn" };
+            foreach (var name in tavernNames)
+            {
+                var found = GameObject.Find(name);
+                if (found != null)
+                    return found.transform.position + new Vector3(2f, 0f, 1f);
+            }
+
+            // Дефолтная позиция рядом с городом
+            return new Vector3(22f, 0f, 8f);
+        }
+
         // Создаёт Canvas в режиме Screen Space Overlay
         private static Canvas CreateCanvas(string goName, int sortOrder)
         {

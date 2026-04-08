@@ -35,7 +35,9 @@ namespace ZeldaDaughter.Input
         private Vector3 _externalDirection;
         private float _externalIntensity;
         private bool _hasExternalMovement;
-        private float _speedMultiplier = 1f;
+        private float _woundSpeedMul = 1f;
+        private float _hungerSpeedMul = 1f;
+        private float _weightSpeedMul = 1f;
 
         private float _previousSpeed;
         private bool _wasMoving;
@@ -93,7 +95,7 @@ namespace ZeldaDaughter.Input
                 if (_inWater)
                     targetSpeed *= _waterSpeedMultiplier;
 
-                targetSpeed *= _speedMultiplier;
+                targetSpeed *= _woundSpeedMul * _hungerSpeedMul * _weightSpeedMul;
 
                 var move = worldDir * targetSpeed + Vector3.up * _verticalVelocity;
                 _controller.Move(move * Time.deltaTime);
@@ -227,9 +229,19 @@ namespace ZeldaDaughter.Input
             _inWater = inWater;
         }
 
-        public void SetSpeedMultiplier(float multiplier)
+        public void SetWoundSpeedMultiplier(float multiplier)
         {
-            _speedMultiplier = Mathf.Clamp(multiplier, 0.1f, 2f);
+            _woundSpeedMul = Mathf.Clamp(multiplier, 0.1f, 2f);
+        }
+
+        public void SetHungerSpeedMultiplier(float multiplier)
+        {
+            _hungerSpeedMul = Mathf.Clamp(multiplier, 0.1f, 2f);
+        }
+
+        public void SetWeightSpeedMultiplier(float multiplier)
+        {
+            _weightSpeedMul = Mathf.Clamp(multiplier, 0.1f, 2f);
         }
     }
 }

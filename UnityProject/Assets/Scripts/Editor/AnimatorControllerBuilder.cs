@@ -14,6 +14,9 @@ namespace ZeldaDaughter.Editor
         private const string PickUpFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/PickUp.fbx";
         private const string InteractFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Interact.fbx";
         private const string Attack1hFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Attack(1h).fbx";
+        private const string DefeatFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Defeat.fbx";
+        private const string BlockFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Block.fbx";
+        private const string RollFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Roll.fbx";
 
         private const float TransitionDuration = 0.15f;
 
@@ -28,6 +31,9 @@ namespace ZeldaDaughter.Editor
             var pickUpClip = LoadAndConfigureClip(PickUpFbxPath, loop: false);
             var interactClip = LoadAndConfigureClip(InteractFbxPath, loop: false);
             var attack1hClip = LoadAndConfigureClip(Attack1hFbxPath, loop: false);
+            var defeatClip = LoadAndConfigureClip(DefeatFbxPath, loop: false);
+            var blockClip = LoadAndConfigureClip(BlockFbxPath, loop: false);
+            var rollClip = LoadAndConfigureClip(RollFbxPath, loop: false);
 
             var controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerOutputPath);
 
@@ -36,6 +42,9 @@ namespace ZeldaDaughter.Editor
             controller.AddParameter("PickUp", AnimatorControllerParameterType.Trigger);
             controller.AddParameter("Interact", AnimatorControllerParameterType.Trigger);
             controller.AddParameter("Attack", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("Hit", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("Defeat", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("Eat", AnimatorControllerParameterType.Trigger);
 
             var rootStateMachine = controller.layers[0].stateMachine;
 
@@ -45,6 +54,9 @@ namespace ZeldaDaughter.Editor
             var pickUpState = rootStateMachine.AddState("PickUp");
             var interactState = rootStateMachine.AddState("Interact");
             var attack1hState = rootStateMachine.AddState("Attack1h");
+            var hitState = rootStateMachine.AddState("Hit");
+            var defeatState = rootStateMachine.AddState("Defeat");
+            var eatState = rootStateMachine.AddState("Eat");
 
             idleState.motion = idleClip;
             walkState.motion = walkClip;
@@ -52,6 +64,9 @@ namespace ZeldaDaughter.Editor
             pickUpState.motion = pickUpClip;
             interactState.motion = interactClip;
             attack1hState.motion = attack1hClip;
+            if (blockClip != null) hitState.motion = blockClip;
+            if (defeatClip != null) defeatState.motion = defeatClip;
+            if (interactClip != null) eatState.motion = interactClip;
 
             rootStateMachine.defaultState = idleState;
 
@@ -81,10 +96,13 @@ namespace ZeldaDaughter.Editor
             ConfigureTransition(runToIdle);
             runToIdle.AddCondition(AnimatorConditionMode.IfNot, 0f, "IsMoving");
 
-            // AnyState → PickUp, Interact, Attack1h
+            // AnyState → PickUp, Interact, Attack1h, Hit, Defeat, Eat
             AddActionState(rootStateMachine, idleState, pickUpState, "PickUp");
             AddActionState(rootStateMachine, idleState, interactState, "Interact");
             AddActionState(rootStateMachine, idleState, attack1hState, "Attack");
+            AddActionState(rootStateMachine, idleState, hitState, "Hit");
+            AddActionState(rootStateMachine, idleState, defeatState, "Defeat");
+            AddActionState(rootStateMachine, idleState, eatState, "Eat");
 
             EditorUtility.SetDirty(controller);
             AssetDatabase.SaveAssets();

@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZeldaDaughter.Combat;
 using ZeldaDaughter.Input;
 
 namespace ZeldaDaughter.World
@@ -7,6 +8,7 @@ namespace ZeldaDaughter.World
     {
         [SerializeField] private CharacterAutoMove _autoMove;
         [SerializeField] private GameObject _player;
+        [SerializeField] private CombatController _combatController;
 
         private IInteractable _currentTarget;
 
@@ -39,6 +41,14 @@ namespace ZeldaDaughter.World
 
             if (interactable == null || !interactable.CanInteract())
                 return;
+
+            // Враг — передаём управление CombatController, он сам подходит и бьёт
+            if (interactable.Type == InteractionType.Enemy)
+            {
+                if (_combatController != null)
+                    _combatController.AttackTarget(hit.collider.gameObject);
+                return;
+            }
 
             // Отменить текущее движение к предыдущей цели
             if (_currentTarget != null)

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using ZeldaDaughter.Combat;
 using ZeldaDaughter.Inventory;
 
 namespace ZeldaDaughter.UI
@@ -11,13 +12,18 @@ namespace ZeldaDaughter.UI
         [SerializeField] private InventoryPanel _inventoryPanel;
         [SerializeField] private RectTransform _panelRect;
         [SerializeField] private CraftRecipeDatabase _recipeDatabase;
+        [SerializeField] private WeaponEquipSystem _weaponEquipSystem;
 
         public static event System.Action<int> OnDragStarted;
         public static event System.Action OnDragCancelled;
         public static event System.Action<int, int> OnDropOnSlot;
         public static event System.Action<ItemData> OnDropOutsidePanel;
+        public static event System.Action<ItemData> OnFoodConsumed;
+        public static event System.Action<ItemData> OnMedicineUsed;
 
         private PlayerInventory _inventory;
+        private FoodConsumption _foodConsumption;
+        private WoundTreatment _woundTreatment;
         private bool _isDragging;
         private int _sourceSlot = -1;
         private int _hoveredSlot = -1;
@@ -25,6 +31,8 @@ namespace ZeldaDaughter.UI
         private void Awake()
         {
             _inventory = FindObjectOfType<PlayerInventory>();
+            _foodConsumption = FindObjectOfType<FoodConsumption>();
+            _woundTreatment = FindObjectOfType<WoundTreatment>();
             if (_dragIconGroup != null)
                 _dragIconGroup.alpha = 0f;
         }
@@ -174,10 +182,86 @@ namespace ZeldaDaughter.UI
             if (_inventory == null || _sourceSlot < 0) return;
 
             var stack = _inventory.GetSlot(_sourceSlot);
-            if (stack.Item != null && stack.Item.IsPlaceable)
+            if (stack.Item == null)
+            {
+                OnDragCancelled?.Invoke();
+                return;
+            }
+
+            if (stack.Item.IsMedicine)
+            {
+                TryUseMedicine(stack.Item, _sourceSlot);
+                return;
+            }
+
+            if (stack.Item.ItemType == ItemType.Consumable)
+            {
+                TryConsumeFood(stack.Item, _sourceSlot);
+                return;
+            }
+
+            if (stack.Item.IsWeapon)
+            {
+                TryEquipWeapon(stack.Item);
+                return;
+            }
+
+            if (stack.Item.IsPlaceable)
                 OnDropOutsidePanel?.Invoke(stack.Item);
             else
                 OnDragCancelled?.Invoke();
+        }
+
+        private void TryUseMedicine(ItemData medicine, int slotIndex)
+        {
+            if (_woundTreatment == null)
+            {
+                Debug.LogWarning("[InventoryDragHandler] WoundTreatment не найден на сцене — лекарство не применено.");
+                OnDragCancelled?.Invoke();
+                return;
+            }
+
+            bool treated = _woundTreatment.TreatWithItem(medicine);
+            if (treated)
+            {
+                _inventory.RemoveFromSlot(slotIndex, 1);
+                OnMedicineUsed?.Invoke(medicine);
+                Debug.Log($"[InventoryDragHandler] Применено: {medicine.DisplayName}");
+            }
+            else
+            {
+                // Рана не найдена — лекарство не расходуется
+                Debug.Log($"[InventoryDragHandler] Рана для {medicine.DisplayName} не найдена — предмет не использован.");
+                OnDragCancelled?.Invoke();
+            }
+        }
+
+        private void TryEquipWeapon(ItemData weapon)
+        {
+            if (_weaponEquipSystem == null)
+            {
+                Debug.LogWarning("[InventoryDragHandler] WeaponEquipSystem не назначен — оружие не экипировано.");
+                OnDragCancelled?.Invoke();
+                return;
+            }
+
+            _weaponEquipSystem.EquipFromItem(weapon);
+            Debug.Log($"[InventoryDragHandler] Экипировано: {weapon.DisplayName}");
+        }
+
+        private void TryConsumeFood(ItemData food, int slotIndex)
+        {
+            if (_foodConsumption == null)
+            {
+                Debug.LogWarning("[InventoryDragHandler] FoodConsumption не найден на сцене — еда не употреблена.");
+                OnDragCancelled?.Invoke();
+                return;
+            }
+
+            _foodConsumption.ConsumeFood(food);
+            _inventory.RemoveFromSlot(slotIndex, 1);
+            OnFoodConsumed?.Invoke(food);
+            Debug.Log($"[InventoryDragHandler] Съедено: {food.DisplayName}");
         }
 
         private void UpdateHoveredSlot(Vector2 pointerPos)
