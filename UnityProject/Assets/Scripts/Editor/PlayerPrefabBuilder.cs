@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using ZeldaDaughter.Progression;
 
 namespace ZeldaDaughter.Editor
 {
@@ -76,7 +77,43 @@ namespace ZeldaDaughter.Editor
             root.AddComponent<ZeldaDaughter.Input.CharacterMovement>();
             root.AddComponent<ZeldaDaughter.Input.CharacterAutoMove>();
             root.AddComponent<ZeldaDaughter.World.SurfaceDetector>();
-            root.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            var inventory = root.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+
+            // --- Progression ---
+            var progressionConfig = AssetDatabase.LoadAssetAtPath<ProgressionConfig>("Assets/Data/Progression/ProgressionConfig.asset");
+            var effectConfig = AssetDatabase.LoadAssetAtPath<StatEffectConfig>("Assets/Data/Progression/StatEffectConfig.asset");
+
+            if (progressionConfig == null)
+                Debug.LogWarning("[PlayerPrefabBuilder] ProgressionConfig не найден: Assets/Data/Progression/ProgressionConfig.asset");
+            if (effectConfig == null)
+                Debug.LogWarning("[PlayerPrefabBuilder] StatEffectConfig не найден: Assets/Data/Progression/StatEffectConfig.asset");
+
+            var playerStats = root.AddComponent<PlayerStats>();
+            var psSO = new SerializedObject(playerStats);
+            psSO.FindProperty("_config").objectReferenceValue = progressionConfig;
+            psSO.ApplyModifiedPropertiesWithoutUndo();
+
+            var actionTracker = root.AddComponent<ActionTracker>();
+            var atSO = new SerializedObject(actionTracker);
+            atSO.FindProperty("_playerStats").objectReferenceValue = playerStats;
+            atSO.FindProperty("_playerInventory").objectReferenceValue = inventory;
+            atSO.ApplyModifiedPropertiesWithoutUndo();
+
+            var effectApplier = root.AddComponent<StatEffectApplier>();
+            var eaSO = new SerializedObject(effectApplier);
+            eaSO.FindProperty("_playerStats").objectReferenceValue = playerStats;
+            var combat = root.GetComponent<ZeldaDaughter.Combat.CombatController>();
+            var healthState = root.GetComponent<ZeldaDaughter.Combat.PlayerHealthState>();
+            if (combat != null)      eaSO.FindProperty("_combatController").objectReferenceValue = combat;
+            if (healthState != null) eaSO.FindProperty("_healthState").objectReferenceValue = healthState;
+            eaSO.FindProperty("_inventory").objectReferenceValue = inventory;
+            eaSO.ApplyModifiedPropertiesWithoutUndo();
+
+            var feedback = root.AddComponent<ProgressionFeedback>();
+            var fbSO = new SerializedObject(feedback);
+            fbSO.FindProperty("_effectConfig").objectReferenceValue = effectConfig;
+            fbSO.FindProperty("_animator").objectReferenceValue = animator;
+            fbSO.ApplyModifiedPropertiesWithoutUndo();
 
             // Тег
             root.tag = "Player";

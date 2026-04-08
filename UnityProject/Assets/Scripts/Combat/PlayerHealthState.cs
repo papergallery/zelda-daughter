@@ -14,7 +14,11 @@ namespace ZeldaDaughter.Combat
         private List<Wound> _activeWounds = new();
         private bool _isResting;
 
+        private float _damageReduction = 0f;
+        private float _healRateMultiplier = 1f;
+
         public static event Action<float> OnHealthChanged;
+        public static event Action<float> OnDamageTaken; // финальный урон после редукции
         public static event Action<Wound> OnWoundAdded;
         public static event Action<WoundType> OnWoundRemoved;
         public static event Action OnKnockout;
@@ -88,7 +92,7 @@ namespace ZeldaDaughter.Combat
         {
             if (_currentHP >= _config.MaxHP) return;
 
-            float rate = _config.NaturalHealRate;
+            float rate = _config.NaturalHealRate * _healRateMultiplier;
             if (_isResting) rate *= _config.RestHealMultiplier;
 
             _currentHP = Mathf.Min(_currentHP + rate * Time.deltaTime, _config.MaxHP);
@@ -99,8 +103,11 @@ namespace ZeldaDaughter.Combat
         {
             if (!IsAlive) return;
 
-            _currentHP -= info.Amount;
+            float finalDamage = info.Amount * (1f - _damageReduction);
+            _currentHP -= finalDamage;
             _currentHP = Mathf.Max(_currentHP, 0f);
+
+            OnDamageTaken?.Invoke(finalDamage);
 
             if (info.WoundSeverity > 0f)
                 AddWound(info.WoundType, info.WoundSeverity);
@@ -165,6 +172,9 @@ namespace ZeldaDaughter.Combat
                 }
             }
         }
+
+        public void SetDamageReduction(float value) => _damageReduction = Mathf.Clamp01(value);
+        public void SetHealRateMultiplier(float value) => _healRateMultiplier = value;
 
         public void SetResting(bool resting)
         {

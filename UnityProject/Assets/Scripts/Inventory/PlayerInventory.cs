@@ -10,6 +10,7 @@ namespace ZeldaDaughter.Inventory
         [SerializeField] private InventoryConfig _config;
 
         private readonly List<ItemStack> _items = new();
+        private float _capacityMultiplier = 1f;
 
         public static event System.Action<ItemData, int> OnItemAdded;
         public static event System.Action<ItemData, int> OnItemRemoved;
@@ -32,13 +33,17 @@ namespace ZeldaDaughter.Inventory
             }
         }
 
+        public float EffectiveWeightCapacity => _config != null ? _config.BaseWeightCapacity * _capacityMultiplier : 0f;
+
         public float WeightRatio => _config != null && _config.BaseWeightCapacity > 0
-            ? TotalWeight / _config.BaseWeightCapacity
+            ? TotalWeight / EffectiveWeightCapacity
             : 0f;
 
         public bool IsOverloaded => _config != null && WeightRatio > _config.OverloadThreshold;
 
         public string SaveId => "player_inventory";
+
+        public void SetCapacityMultiplier(float value) => _capacityMultiplier = Mathf.Max(0.1f, value);
 
         /// <summary>
         /// Добавляет предмет. Если stackable — докладывает в существующий стак до maxStack,
