@@ -129,7 +129,11 @@
       "Bash(wget -q -O animals-pack.zip \"https://opengameart.org/sites/default/files/Animals%20Pack%20by%20Quaternius.zip\")",
       "Bash(mkdir -p '/var/www/html/Zelda'\\\\''s daughter/UnityProject/Assets/Models/KayKit/Adventurers')",
       "Bash(unzip -qo kaykit-adventurers.zip -d '/var/www/html/Zelda'\\\\''s daughter/UnityProject/Assets/Models/KayKit/Adventurers/')",
-      "Bash(xvfb-run --auto-servernum '--server-args=-screen 0 1024x768x24' /opt/unity/Editor/Unity -batchmode -projectPath '/var/www/html/Zelda'\\\\''s daughter/UnityProject' -quit -logFile /tmp/unity-import.log)"
+      "Bash(xvfb-run --auto-servernum '--server-args=-screen 0 1024x768x24' /opt/unity/Editor/Unity -batchmode -projectPath '/var/www/html/Zelda'\\\\''s daughter/UnityProject' -quit -logFile /tmp/unity-import.log)",
+      "Read(//home/papermax/.claude/**)",
+      "Bash(xvfb-run --auto-servernum '--server-args=-screen 0 1024x768x24' /opt/unity/Editor/Unity -batchmode -projectPath '/var/www/html/Zelda'\\\\''s daughter/UnityProject' -executeMethod ZeldaDaughter.Editor.MapGen.RegionPlacer.PlaceFromCommandLine -regionConfig '/var/www/html/Zelda'\\\\''s daughter/UnityProject/Assets/Content/Configs/region_test.json' -quit -logFile /tmp/unity-mapgen-test.log)",
+      "Bash(xvfb-run --auto-servernum '--server-args=-screen 0 1024x768x24' /opt/unity/Editor/Unity -batchmode -projectPath '/var/www/html/Zelda'\\\\''s daughter/UnityProject' -executeMethod ZeldaDaughter.Editor.MapGen.RegionPlacer.PlaceFromCommandLine -regionConfig '/var/www/html/Zelda'\\\\''s daughter/UnityProject/Assets/Content/Configs/region_test.json' -quit -logFile /tmp/unity-mapgen3.log)",
+      "Bash(xvfb-run --auto-servernum '--server-args=-screen 0 1024x768x24' /opt/unity/Editor/Unity -batchmode -projectPath '/var/www/html/Zelda'\\\\''s daughter/UnityProject' -executeMethod ZeldaDaughter.Editor.MapGen.RegionPlacer.PlaceFromCommandLine -regionConfig '/var/www/html/Zelda'\\\\''s daughter/UnityProject/Assets/Content/Configs/region_test.json' -quit -logFile /tmp/unity-mapgen4.log)"
     ],
     "defaultMode": "bypassPermissions"
   },
