@@ -8,6 +8,8 @@ namespace ZeldaDaughter.World
     /// Костёр — размещаемый объект с двумя состояниями: Unlit (дрова) и Lit (горит).
     /// Поджигается кремнём из инвентаря игрока. После поджига создаёт trigger-зону RestZone
     /// для будущей системы отдыха (Этап 5+).
+    /// Интегрирован с ElementState: дождь тушит костёр через RemoveElement(Fire),
+    /// а Ignite применяет ApplyElement(Fire) для синхронизации с системой стихий.
     /// </summary>
     public class CampfireObject : MonoBehaviour, IInteractable
     {
@@ -25,6 +27,7 @@ namespace ZeldaDaughter.World
 
         private bool _isLit;
         private SphereCollider _restZoneTrigger;
+        private ElementState _elementState;
 
         public bool IsLit => _isLit;
 
@@ -36,7 +39,36 @@ namespace ZeldaDaughter.World
 
         private void Awake()
         {
+            TryGetComponent(out _elementState);
             ApplyState(false);
+        }
+
+        private void OnEnable()
+        {
+            if (_elementState == null) return;
+            _elementState.OnElementApplied += HandleElementApplied;
+            _elementState.OnElementRemoved += HandleElementRemoved;
+        }
+
+        private void OnDisable()
+        {
+            if (_elementState == null) return;
+            _elementState.OnElementApplied -= HandleElementApplied;
+            _elementState.OnElementRemoved -= HandleElementRemoved;
+        }
+
+        private void HandleElementApplied(ElementTag tag)
+        {
+            if (tag != ElementTag.Fire) return;
+            if (!_isLit)
+                ApplyState(true);
+        }
+
+        private void HandleElementRemoved(ElementTag tag)
+        {
+            if (tag != ElementTag.Fire) return;
+            if (_isLit)
+                ApplyState(false);
         }
 
         public bool CanInteract()
@@ -69,7 +101,12 @@ namespace ZeldaDaughter.World
         public void Ignite()
         {
             if (_isLit) return;
-            ApplyState(true);
+
+            // Синхронизируем с системой стихий — HandleElementApplied вызовет ApplyState(true)
+            if (_elementState != null)
+                _elementState.ApplyElement(ElementTag.Fire);
+            else
+                ApplyState(true);
         }
 
         private static bool HasFlint(PlayerInventory inventory)

@@ -19,6 +19,9 @@ namespace ZeldaDaughter.Input
         [Header("Water")]
         [SerializeField] private float _waterSpeedMultiplier = 0.4f;
 
+        [Header("Mud")]
+        [SerializeField] private float _mudSpeedMultiplier = 0.6f;
+
         [Header("Feel")]
         [SerializeField] private float _decelerationTime = 0.15f;
 
@@ -30,6 +33,7 @@ namespace ZeldaDaughter.Input
         private bool _isMoving;
         private bool _isStopping;
         private bool _inWater;
+        private bool _inMud;
         private Camera _mainCamera;
 
         private Vector3 _externalDirection;
@@ -48,6 +52,7 @@ namespace ZeldaDaughter.Input
         public float CurrentSpeed { get; private set; }
         public bool IsRunning => _inputIntensity >= _runThreshold && _isMoving;
         public bool InWater => _inWater;
+        public bool InMud => _inMud;
 
         public static event System.Action<float> OnSpeedChanged;
         public static event System.Action<bool> OnMovingStateChanged;
@@ -94,6 +99,9 @@ namespace ZeldaDaughter.Input
 
                 if (_inWater)
                     targetSpeed *= _waterSpeedMultiplier;
+
+                if (_inMud)
+                    targetSpeed *= _mudSpeedMultiplier;
 
                 targetSpeed *= _woundSpeedMul * _hungerSpeedMul * _weightSpeedMul;
 
@@ -227,6 +235,11 @@ namespace ZeldaDaughter.Input
         public void SetInWater(bool inWater)
         {
             _inWater = inWater;
+        }
+
+        public void SetInMud(bool inMud)
+        {
+            _inMud = inMud;
         }
 
         public void SetWoundSpeedMultiplier(float multiplier)

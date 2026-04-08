@@ -51,6 +51,7 @@ namespace ZeldaDaughter.Editor
             go.AddComponent<EnemyHealth>();
             go.AddComponent<EnemyFSM>();
             go.AddComponent<EnemyAttackSignal>();
+            go.AddComponent<StunEffect>();
             if (behaviorType != null)
                 go.AddComponent(behaviorType);
 

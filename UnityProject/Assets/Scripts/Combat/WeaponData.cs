@@ -14,6 +14,13 @@ namespace ZeldaDaughter.Combat
         [SerializeField] private GameObject _weaponModelPrefab;
         [SerializeField] private string _attachBoneName = "RightHand";
 
+        [Header("Weapon Type")]
+        [SerializeField] private WeaponType _weaponType = WeaponType.Sword;
+        [SerializeField] private bool _isRanged;
+        [SerializeField] private float _projectileSpeed;
+        [SerializeField] private float _stunDuration;
+        [SerializeField] private int _rapidHitCount = 1;
+
         public float Damage => _damage;
         public float AttackSpeed => _attackSpeed;
         public float AttackRange => _attackRange;
@@ -22,5 +29,10 @@ namespace ZeldaDaughter.Combat
         public string AnimationTrigger => _animationTrigger;
         public GameObject WeaponModelPrefab => _weaponModelPrefab;
         public string AttachBoneName => _attachBoneName;
+        public WeaponType Type => _weaponType;
+        public bool IsRanged => _isRanged;
+        public float ProjectileSpeed => _projectileSpeed;
+        public float StunDuration => _stunDuration;
+        public int RapidHitCount => _rapidHitCount;
     }
 }
