@@ -29,6 +29,17 @@ namespace ZeldaDaughter.World
         [Header("Ambient")]
         [SerializeField] private Gradient _ambientColorGradient;
 
+        [Header("Fog")]
+        [SerializeField] private Gradient _fogColorGradient;
+        [SerializeField] private AnimationCurve _fogDensityCurve = AnimationCurve.Linear(0f, 0f, 1f, 0.05f);
+        [SerializeField] private bool _useFog = true;
+
+        [Header("Sky")]
+        [SerializeField] private Gradient _skyColorGradient;
+
+        [Header("Shadows")]
+        [SerializeField] private float _shadowDistance = 30f;
+
         [Header("Debug")]
         [SerializeField] [Range(0f, 1f)] private float _timeOfDayNormalized;
 
@@ -50,6 +61,7 @@ namespace ZeldaDaughter.World
         {
             _cycleDurationSeconds = _fullCycleMinutes * 60f;
             _timeOfDayNormalized = 0.35f; // Start at morning
+            QualitySettings.shadowDistance = _shadowDistance;
         }
 
         private void Update()
@@ -77,6 +89,21 @@ namespace ZeldaDaughter.World
 
             if (_ambientColorGradient != null)
                 RenderSettings.ambientLight = _ambientColorGradient.Evaluate(_timeOfDayNormalized);
+
+            if (_useFog)
+            {
+                RenderSettings.fog = true;
+                RenderSettings.fogMode = FogMode.ExponentialSquared;
+                RenderSettings.fogDensity = _fogDensityCurve.Evaluate(_timeOfDayNormalized);
+                if (_fogColorGradient != null)
+                    RenderSettings.fogColor = _fogColorGradient.Evaluate(_timeOfDayNormalized);
+            }
+
+            if (_skyColorGradient != null && Camera.main != null)
+            {
+                Camera.main.clearFlags = CameraClearFlags.SolidColor;
+                Camera.main.backgroundColor = _skyColorGradient.Evaluate(_timeOfDayNormalized);
+            }
         }
 
         private void UpdateTimeOfDay()

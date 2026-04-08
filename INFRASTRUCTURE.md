@@ -4,7 +4,7 @@
 - **OS:** Ubuntu 24.04 LTS, x86_64
 - **CPU:** 2x Intel Xeon Silver 4416+
 - **RAM:** 3.9 GB + 4 GB swap
-- **Disk:** ~39 GB total, ~8.7 GB free
+- **Disk:** ~59 GB total (LVM расширен: sda2 39GB + sda3 20GB), ~28 GB free
 - **GPU:** QXL виртуальный (нет аппаратного ускорения)
 - **Display:** нет физического дисплея, используется Xvfb
 
@@ -14,7 +14,11 @@
 - **Версия:** Unity 2022.3.30f1
 - **Путь:** `/opt/unity/Editor/Unity`
 - **Установлен из:** https://download.unity3d.com/download_unity/70558241b701/LinuxEditorInstaller/Unity.tar.xz
-- **Модули:** только Editor (Android/iOS Build Support НЕ установлены — ставить на другой машине)
+- **Модули:** Linux Standalone + Android Build Support (из Mac .pkg, распакован через 7z+cpio)
+- **Android SDK:** `/opt/android-sdk` (platform-tools, build-tools;33.0.1, platforms;android-33)
+- **Android NDK:** `/opt/android-sdk/ndk/23.1.7779620` (r23b)
+- **JDK:** OpenJDK 11 + 17 (cmdline-tools 8.0 используют JDK 11, sdkmanager новый — JDK 17)
+- **Важно:** cmdline-tools/latest = версия 8.0 (совместима с JDK 11, которую использует Unity)
 
 ### Лицензия
 - **Тип:** Personal (бесплатная)
@@ -134,6 +138,12 @@ UnityProject/
 | Python | 3.12.3 | /usr/bin/python3 |
 | uv | 0.11.4 | ~/.local/bin/uv |
 | Xvfb | 21.1.12 | /usr/bin/xvfb-run |
+| Blender | 4.0.2 | /usr/bin/blender |
+| Android SDK | cmdline-tools 8.0 | /opt/android-sdk |
+| Android NDK | r23b | /opt/android-sdk/ndk/23.1.7779620 |
+| OpenJDK 11 | 11.0.30 | /usr/lib/jvm/java-11-openjdk-amd64 |
+| OpenJDK 17 | 17.x | /usr/lib/jvm/java-17-openjdk-amd64 |
+| 7z | - | /usr/bin/7z |
 
 ## Агенты Claude Code
 
@@ -154,7 +164,8 @@ UnityProject/
 ├── Unity batch mode (Xvfb)          Unity Editor с GUI
 │   ├── Компиляция                   Визуальная проверка сцен
 │   ├── EditMode тесты               PlayMode тесты
-│   └── Выполнение Editor-скриптов   Билды Android/iOS
+│   ├── Выполнение Editor-скриптов   Тестирование на устройстве
+│   └── Android APK билд (headless)
 ├── Git push                         Git push
 └── Конфиги, контент, документация
 ```
@@ -162,7 +173,7 @@ UnityProject/
 ## Известные ограничения
 
 1. **RAM:** 3.9 GB + 4 GB swap — Unity работает медленно, возможны OOM при больших операциях
-2. **Диск:** ~8.7 GB свободно — не хватит для Android/iOS модулей
+2. **Диск:** ~28 GB свободно (после расширения LVM на sda3)
 3. **GPU:** виртуальный QXL — нет рендеринга, только логика и компиляция
 4. **Personal лицензия:** не поддерживает `-nographics`, обязательно использовать Xvfb
 5. **Swap не постоянный:** после перезагрузки нужно пересоздать или добавить в fstab

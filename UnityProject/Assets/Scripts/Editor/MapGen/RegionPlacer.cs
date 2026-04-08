@@ -108,6 +108,28 @@ namespace ZeldaDaughter.Editor.MapGen
             foreach (var water in config.waterAreas)
                 PlaceWaterArea(water, waterGroup.transform);
 
+            // Ground plane
+            var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            ground.name = "Ground";
+            ground.transform.SetParent(root.transform);
+            float sizeX = (config.bounds.maxX - config.bounds.minX) / 10f; // Plane default = 10 units
+            float sizeZ = (config.bounds.maxZ - config.bounds.minZ) / 10f;
+            ground.transform.localScale = new Vector3(sizeX, 1f, sizeZ);
+            ground.transform.position = new Vector3(
+                (config.bounds.minX + config.bounds.maxX) / 2f, 0f,
+                (config.bounds.minZ + config.bounds.maxZ) / 2f);
+            EnsureTagExists("Grass");
+            ground.tag = "Grass";
+            var groundRenderer = ground.GetComponent<Renderer>();
+            var groundMat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            groundMat.color = new Color(0.35f, 0.55f, 0.25f);
+            groundRenderer.material = groundMat;
+            Undo.RegisterCreatedObjectUndo(ground, "MapGen Ground");
+
+            // Colliders и вода
+            ZeldaDaughter.Editor.ColliderSetup.SetupCollidersOnRegion(root);
+            ZeldaDaughter.Editor.WaterSetup.SetupWaterInRegion(root);
+
             Debug.Log($"[MapGen] Region '{config.regionId}' placed successfully. " +
                       $"Objects: {config.objects.Count}, " +
                       $"DecorZones: {config.decorationZones.Count}, " +
@@ -279,6 +301,20 @@ namespace ZeldaDaughter.Editor.MapGen
             var child = new GameObject(name);
             child.transform.SetParent(parent.transform);
             return child;
+        }
+
+        private static void EnsureTagExists(string tag)
+        {
+            var tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
+            var tagsProperty = tagManager.FindProperty("tags");
+            for (int i = 0; i < tagsProperty.arraySize; i++)
+            {
+                if (tagsProperty.GetArrayElementAtIndex(i).stringValue == tag)
+                    return;
+            }
+            tagsProperty.InsertArrayElementAtIndex(tagsProperty.arraySize);
+            tagsProperty.GetArrayElementAtIndex(tagsProperty.arraySize - 1).stringValue = tag;
+            tagManager.ApplyModifiedProperties();
         }
     }
 }
