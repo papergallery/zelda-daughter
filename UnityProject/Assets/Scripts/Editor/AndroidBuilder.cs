@@ -18,7 +18,7 @@ namespace ZeldaDaughter.Editor
             EditorPrefs.SetBool("NdkUseEmbedded", false);
 
             string[] scenes = { "Assets/Scenes/TestScene.unity" };
-            string outputPath = "Builds/Android/ZeldaDaughter.apk";
+            string outputPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../../ZeldaDaughter.apk"));
 
             // Ensure output directory exists
             System.IO.Directory.CreateDirectory("Builds/Android");
@@ -32,6 +32,9 @@ namespace ZeldaDaughter.Editor
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel28;
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel33;
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
+
+            // Disable Burst AOT (bcl.exe not available on this server)
+            EditorPrefs.SetBool("BurstCompilation", false);
 
             var options = new BuildPlayerOptions
             {

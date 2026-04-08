@@ -65,3 +65,6 @@ Thumbs.db
 
 # Swap file
 /swapfile
+
+# Неиспользуемые ассеты (перемещены из Assets/~Disabled)
+DisabledAssets/
