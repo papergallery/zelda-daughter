@@ -15,7 +15,12 @@ namespace ZeldaDaughter.Combat
         private GameObject _currentTarget;
         private bool _isAttacking;
 
+        private float _damageMultiplier = 1f;
+        private float _attackSpeedMultiplier = 1f;
+        private float _hitChance = 1f;
+
         public static event System.Action<WeaponData> OnAttackPerformed;
+        public static event System.Action<bool> OnAttackResult; // true = hit, false = glancing blow
         public bool IsAttacking => _isAttacking;
 
         private static readonly int AttackTrigger = Animator.StringToHash("Attack");
@@ -84,11 +89,23 @@ namespace ZeldaDaughter.Combat
                 damage = _config != null ? _config.UnarmedDamage : 5f;
             }
 
-            var info = new DamageInfo(damage, woundType, woundSeverity, gameObject);
+            float finalDamage;
+            if (Random.value < _hitChance)
+            {
+                finalDamage = damage * _damageMultiplier;
+                OnAttackResult?.Invoke(true);
+            }
+            else
+            {
+                finalDamage = damage * _damageMultiplier * 0.1f;
+                OnAttackResult?.Invoke(false);
+            }
+
+            var info = new DamageInfo(finalDamage, woundType, woundSeverity, gameObject);
 
             if (_animator != null)
             {
-                _animator.speed = attackAnimSpeed;
+                _animator.speed = attackAnimSpeed * _attackSpeedMultiplier;
                 _animator.SetTrigger(AttackTrigger);
             }
 
@@ -100,6 +117,10 @@ namespace ZeldaDaughter.Combat
 
             OnAttackPerformed?.Invoke(_weaponEquip?.CurrentWeapon);
         }
+
+        public void SetDamageMultiplier(float value) => _damageMultiplier = value;
+        public void SetAttackSpeedMultiplier(float value) => _attackSpeedMultiplier = value;
+        public void SetHitChance(float value) => _hitChance = Mathf.Clamp01(value);
 
         private void EndAttack()
         {
