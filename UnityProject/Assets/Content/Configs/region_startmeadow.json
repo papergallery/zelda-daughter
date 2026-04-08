@@ -1,88 +1,351 @@
 {
   "regionId": "start_meadow",
-  "displayName": "Стартовая поляна",
-  "bounds": { "min": { "x": -50, "z": -50 }, "max": { "x": 50, "z": 50 } },
+  "regionName": "Стартовая поляна",
+  "bounds": { "minX": -50, "minZ": -50, "maxX": 50, "maxZ": 50 },
   "seed": 42,
 
   "objects": [
-    {
-      "id": "tavern_01",
-      "prefab": "Prefabs/Buildings/Tavern",
-      "position": { "x": 12.0, "y": 0.0, "z": 8.0 },
+
+    { "id": "spawn_player",
+      "prefab": "",
+      "position": { "x": -40.0, "y": 0.0, "z": 0.0 },
+      "rotation": { "x": 0, "y": 90, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["spawn_player"] },
+
+    { "id": "tavern_01",
+      "prefab": "Assets/Prefabs/Buildings/Tavern.prefab",
+      "position": { "x": 18.0, "y": 0.0, "z": 12.0 },
+      "rotation": { "x": 0, "y": 180, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["building", "enterable", "city"] },
+
+    { "id": "shop_01",
+      "prefab": "Assets/Prefabs/Buildings/Shop.prefab",
+      "position": { "x": 24.0, "y": 0.0, "z": 10.0 },
+      "rotation": { "x": 0, "y": 180, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["building", "enterable", "city", "merchant"] },
+
+    { "id": "blacksmith_01",
+      "prefab": "Assets/Prefabs/Buildings/Blacksmith.prefab",
+      "position": { "x": 26.0, "y": 0.0, "z": 4.0 },
+      "rotation": { "x": 0, "y": 270, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["building", "enterable", "city", "blacksmith"] },
+
+    { "id": "house_01",
+      "prefab": "Assets/Prefabs/Buildings/Hut.prefab",
+      "position": { "x": 20.0, "y": 0.0, "z": 3.0 },
+      "rotation": { "x": 0, "y": 180, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["building", "enterable", "city", "residential"] },
+
+    { "id": "house_02",
+      "prefab": "Assets/Prefabs/Buildings/Hut.prefab",
+      "position": { "x": 14.0, "y": 0.0, "z": 10.0 },
+      "rotation": { "x": 0, "y": 90, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["building", "enterable", "city", "residential"] },
+
+    { "id": "fountain_01",
+      "prefab": "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/fountain-round.fbx",
+      "position": { "x": 21.0, "y": 0.0, "z": 7.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city", "interactable"] },
+
+    { "id": "stall_merchant_01",
+      "prefab": "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/stall-green.fbx",
+      "position": { "x": 17.0, "y": 0.0, "z": 6.0 },
       "rotation": { "x": 0, "y": 45, "z": 0 },
       "scale": { "x": 1, "y": 1, "z": 1 },
-      "tags": ["building", "enterable"]
-    },
-    {
-      "id": "well_01",
-      "prefab": "Prefabs/Props/Well",
-      "position": { "x": 15.0, "y": 0.0, "z": 5.0 },
+      "tags": ["decor", "city", "merchant"] },
+
+    { "id": "lantern_city_01",
+      "prefab": "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/lantern.fbx",
+      "position": { "x": 16.0, "y": 0.0, "z": 5.0 },
       "rotation": { "x": 0, "y": 0, "z": 0 },
       "scale": { "x": 1, "y": 1, "z": 1 },
-      "tags": ["interactable"]
-    },
-    {
-      "id": "spawn_player",
-      "prefab": "",
-      "position": { "x": 0.0, "y": 0.0, "z": 0.0 },
+      "tags": ["decor", "city", "light"] },
+
+    { "id": "lantern_city_02",
+      "prefab": "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/lantern.fbx",
+      "position": { "x": 20.0, "y": 0.0, "z": 13.0 },
       "rotation": { "x": 0, "y": 0, "z": 0 },
       "scale": { "x": 1, "y": 1, "z": 1 },
-      "tags": ["spawn_player"]
-    }
+      "tags": ["decor", "city", "light"] },
+
+    { "id": "lantern_city_03",
+      "prefab": "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/lantern.fbx",
+      "position": { "x": 27.0, "y": 0.0, "z": 8.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city", "light"] },
+
+    { "id": "lantern_city_04",
+      "prefab": "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/lantern.fbx",
+      "position": { "x": 25.0, "y": 0.0, "z": 3.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city", "light"] },
+
+    { "id": "bench_city_01",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/Bench.fbx",
+      "position": { "x": 22.0, "y": 0.0, "z": 9.0 },
+      "rotation": { "x": 0, "y": 90, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city", "interactable"] },
+
+    { "id": "bench_city_02",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/Bench.fbx",
+      "position": { "x": 19.0, "y": 0.0, "z": 5.5 },
+      "rotation": { "x": 0, "y": 270, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city", "interactable"] },
+
+    { "id": "barrel_city_01",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/Barrel.fbx",
+      "position": { "x": 24.5, "y": 0.0, "z": 11.5 },
+      "rotation": { "x": 0, "y": 30, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city"] },
+
+    { "id": "barrel_city_02",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/Barrel.fbx",
+      "position": { "x": 25.2, "y": 0.0, "z": 11.0 },
+      "rotation": { "x": 0, "y": 75, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city"] },
+
+    { "id": "crate_city_01",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/Crate_Wooden.fbx",
+      "position": { "x": 27.5, "y": 0.0, "z": 5.5 },
+      "rotation": { "x": 0, "y": 15, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city"] },
+
+    { "id": "cart_city_01",
+      "prefab": "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/cart.fbx",
+      "position": { "x": 16.5, "y": 0.0, "z": 8.0 },
+      "rotation": { "x": 0, "y": 135, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "city"] },
+
+    { "id": "farm_hut_01",
+      "prefab": "Assets/Prefabs/Buildings/Hut.prefab",
+      "position": { "x": -10.0, "y": 0.0, "z": 15.0 },
+      "rotation": { "x": 0, "y": 135, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["building", "enterable", "farm", "npc_peasant"] },
+
+    { "id": "farm_fence_n",
+      "prefab": "Assets/Models/Kenney/NatureKit/Models/FBX format/fence_simple.fbx",
+      "position": { "x": -10.0, "y": 0.0, "z": 21.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 5, "y": 1, "z": 1 },
+      "tags": ["decor", "farm", "collision"] },
+
+    { "id": "farm_fence_s",
+      "prefab": "Assets/Models/Kenney/NatureKit/Models/FBX format/fence_simple.fbx",
+      "position": { "x": -10.0, "y": 0.0, "z": 9.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 5, "y": 1, "z": 1 },
+      "tags": ["decor", "farm", "collision"] },
+
+    { "id": "farm_fence_w",
+      "prefab": "Assets/Models/Kenney/NatureKit/Models/FBX format/fence_simple.fbx",
+      "position": { "x": -17.0, "y": 0.0, "z": 15.0 },
+      "rotation": { "x": 0, "y": 90, "z": 0 },
+      "scale": { "x": 5, "y": 1, "z": 1 },
+      "tags": ["decor", "farm", "collision"] },
+
+    { "id": "farm_fence_e_gate",
+      "prefab": "Assets/Models/Kenney/NatureKit/Models/FBX format/fence_gate.fbx",
+      "position": { "x": -3.0, "y": 0.0, "z": 15.0 },
+      "rotation": { "x": 0, "y": 90, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "farm", "interactable"] },
+
+    { "id": "farm_plot_01",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/FarmCrate_Carrot.fbx",
+      "position": { "x": -9.0, "y": 0.0, "z": 18.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "farm", "resource"] },
+
+    { "id": "farm_plot_02",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/FarmCrate_Carrot.fbx",
+      "position": { "x": -7.0, "y": 0.0, "z": 18.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "farm", "resource"] },
+
+    { "id": "farm_plot_03",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/FarmCrate_Apple.fbx",
+      "position": { "x": -12.0, "y": 0.0, "z": 18.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "farm", "resource"] },
+
+    { "id": "farm_plot_04",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/FarmCrate_Apple.fbx",
+      "position": { "x": -14.0, "y": 0.0, "z": 18.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "farm", "resource"] },
+
+    { "id": "farm_plot_05",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/FarmCrate_Empty.fbx",
+      "position": { "x": -9.0, "y": 0.0, "z": 12.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "farm"] },
+
+    { "id": "farm_plot_06",
+      "prefab": "Assets/Models/FantasyProps/Exports/FBX/FarmCrate_Empty.fbx",
+      "position": { "x": -12.0, "y": 0.0, "z": 12.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "farm"] },
+
+    { "id": "bridge_01",
+      "prefab": "Assets/Models/Kenney/NatureKit/Models/FBX format/bridge_wood.fbx",
+      "position": { "x": 42.0, "y": 0.0, "z": 0.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1.5, "y": 1, "z": 2.5 },
+      "tags": ["decor", "navigation", "collision"] },
+
+    { "id": "awakening_log_01",
+      "prefab": "Assets/Models/Kenney/NatureKit/Models/FBX format/log_large.fbx",
+      "position": { "x": -41.0, "y": 0.0, "z": 2.0 },
+      "rotation": { "x": 0, "y": 35, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor"] },
+
+    { "id": "awakening_rock_01",
+      "prefab": "Assets/Models/Kenney/NatureKit/Models/FBX format/rock_largeA.fbx",
+      "position": { "x": -39.0, "y": 0.0, "z": -2.5 },
+      "rotation": { "x": 0, "y": 60, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor"] },
+
+    { "id": "campfire_awakening",
+      "prefab": "Assets/Models/Kenney/NatureKit/Models/FBX format/campfire_logs.fbx",
+      "position": { "x": -40.5, "y": 0.0, "z": 0.5 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["decor", "interactable", "rest_point"] }
   ],
 
   "decorationZones": [
     {
-      "id": "forest_east",
       "zoneType": "forest",
-      "center": { "x": 30.0, "z": 20.0 },
-      "radius": 15.0,
-      "density": 0.4,
+      "center": { "x": -35.0, "z": -20.0 },
+      "radius": 18.0,
+      "density": 0.75,
       "prefabs": [
-        "Prefabs/Nature/Tree_Oak",
-        "Prefabs/Nature/Tree_Pine",
-        "Prefabs/Nature/Bush_01",
-        "Prefabs/Nature/Rock_Small"
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/tree_oak.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/tree_oak_dark.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/tree_tall.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/plant_bushLarge.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/plant_bush.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/rock_largeB.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/rock_tallA.fbx"
       ],
-      "prefabWeights": [0.3, 0.3, 0.25, 0.15],
-      "minScale": 0.8,
-      "maxScale": 1.3,
+      "prefabWeights": [0.28, 0.18, 0.16, 0.14, 0.10, 0.08, 0.06],
+      "minScale": 0.85,
+      "maxScale": 1.35,
       "randomRotationY": true
     },
     {
-      "id": "meadow_center",
-      "zoneType": "meadow",
-      "center": { "x": 0.0, "z": 0.0 },
-      "radius": 20.0,
-      "density": 0.1,
+      "zoneType": "forest",
+      "center": { "x": 35.0, "z": -15.0 },
+      "radius": 14.0,
+      "density": 0.55,
       "prefabs": [
-        "Prefabs/Nature/Grass_Patch",
-        "Prefabs/Nature/Flower_01",
-        "Prefabs/Nature/Rock_Small"
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/tree_oak.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/tree_default.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/tree_fat.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/plant_bushDetailed.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/mushroom_redGroup.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/mushroom_tanGroup.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/rock_smallA.fbx"
       ],
-      "prefabWeights": [0.5, 0.35, 0.15],
+      "prefabWeights": [0.30, 0.20, 0.15, 0.15, 0.08, 0.07, 0.05],
+      "minScale": 0.8,
+      "maxScale": 1.25,
+      "randomRotationY": true
+    },
+    {
+      "zoneType": "meadow",
+      "center": { "x": 0.0, "z": -20.0 },
+      "radius": 20.0,
+      "density": 0.25,
+      "prefabs": [
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/flower_yellowA.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/flower_purpleA.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/flower_redA.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/grass_large.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/grass_leafsLarge.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/mushroom_tan.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/rock_smallFlatA.fbx"
+      ],
+      "prefabWeights": [0.20, 0.18, 0.15, 0.20, 0.15, 0.07, 0.05],
       "minScale": 0.7,
+      "maxScale": 1.15,
+      "randomRotationY": true
+    },
+    {
+      "zoneType": "roadside",
+      "center": { "x": -15.0, "z": 2.0 },
+      "radius": 30.0,
+      "density": 0.12,
+      "prefabs": [
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/grass.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/grass_leafs.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/plant_bushSmall.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/flower_yellowB.fbx"
+      ],
+      "prefabWeights": [0.40, 0.30, 0.20, 0.10],
+      "minScale": 0.75,
       "maxScale": 1.1,
+      "randomRotationY": true
+    },
+    {
+      "zoneType": "riverbank",
+      "center": { "x": 40.0, "z": 0.0 },
+      "radius": 8.0,
+      "density": 0.35,
+      "prefabs": [
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/rock_smallD.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/rock_smallFlatB.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/grass_large.fbx",
+        "Assets/Models/Kenney/NatureKit/Models/FBX format/grass_leafs.fbx"
+      ],
+      "prefabWeights": [0.30, 0.25, 0.25, 0.20],
+      "minScale": 0.7,
+      "maxScale": 1.2,
       "randomRotationY": true
     }
   ],
 
   "spawnZones": [
     {
-      "id": "boar_zone_01",
+      "id": "boar_zone_east_forest",
       "enemyType": "boar",
-      "center": { "x": -20.0, "z": 15.0 },
+      "center": { "x": 33.0, "z": -14.0 },
       "radius": 10.0,
       "maxCount": 3,
-      "respawnTimeSec": 120
+      "respawnTimeSec": 120.0
     },
     {
-      "id": "wolf_zone_01",
+      "id": "wolf_zone_deep_west",
       "enemyType": "wolf",
-      "center": { "x": -30.0, "z": -20.0 },
+      "center": { "x": -40.0, "z": -30.0 },
       "radius": 12.0,
       "maxCount": 2,
-      "respawnTimeSec": 180
+      "respawnTimeSec": 180.0
     }
   ],
 
@@ -92,44 +355,50 @@
       "pathType": "road",
       "width": 2.5,
       "waypoints": [
-        { "x": -40.0, "y": 0.0, "z": 0.0 },
-        { "x": -10.0, "y": 0.0, "z": 0.0 },
-        { "x": 5.0, "y": 0.0, "z": 5.0 },
-        { "x": 15.0, "y": 0.0, "z": 5.0 },
-        { "x": 40.0, "y": 0.0, "z": 5.0 }
+        { "x": -45.0, "y": 0.0, "z": 0.0 },
+        { "x": -28.0, "y": 0.0, "z": 0.5 },
+        { "x": -10.0, "y": 0.0, "z": 1.0 },
+        { "x": 0.0,   "y": 0.0, "z": 2.0 },
+        { "x": 10.0,  "y": 0.0, "z": 3.5 },
+        { "x": 16.0,  "y": 0.0, "z": 5.0 },
+        { "x": 22.0,  "y": 0.0, "z": 6.0 },
+        { "x": 38.0,  "y": 0.0, "z": 5.5 },
+        { "x": 45.0,  "y": 0.0, "z": 5.0 }
       ]
     },
     {
-      "id": "path_forest",
+      "id": "path_to_farm",
       "pathType": "trail",
-      "width": 1.0,
+      "width": 1.2,
       "waypoints": [
-        { "x": 5.0, "y": 0.0, "z": 5.0 },
-        { "x": 15.0, "y": 0.0, "z": 15.0 },
-        { "x": 25.0, "y": 0.0, "z": 25.0 }
+        { "x": -10.0, "y": 0.0, "z": 1.0 },
+        { "x": -10.0, "y": 0.0, "z": 8.0 },
+        { "x": -10.0, "y": 0.0, "z": 14.0 }
       ]
     }
   ],
 
   "waterAreas": [
     {
-      "id": "pond_01",
-      "waterType": "pond",
-      "center": { "x": -15.0, "y": -0.1, "z": -10.0 },
-      "radius": 5.0,
-      "polygon": []
+      "id": "river_east",
+      "waterType": "river",
+      "center": { "x": 42.0, "z": 0.0 },
+      "radius": 0.0,
+      "polygon": [
+        { "x": 40.0, "z": -50.0 },
+        { "x": 44.0, "z": -50.0 },
+        { "x": 45.0, "z":  50.0 },
+        { "x": 41.0, "z":  50.0 }
+      ],
+      "depth": 1.5
     },
     {
-      "id": "river_01",
-      "waterType": "river",
-      "center": { "x": 0, "y": -0.1, "z": 0 },
-      "radius": 0,
-      "polygon": [
-        { "x": 40.0, "z": -30.0 },
-        { "x": 42.0, "z": -30.0 },
-        { "x": 42.0, "z": 40.0 },
-        { "x": 40.0, "z": 40.0 }
-      ]
+      "id": "pond_west",
+      "waterType": "pond",
+      "center": { "x": -20.0, "z": -10.0 },
+      "radius": 5.0,
+      "polygon": [],
+      "depth": 0.8
     }
   ]
 }
