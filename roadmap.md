@@ -9,14 +9,18 @@
 
 > Цель: настроенный Unity-проект с импортированными ассетами и работающей камерой.
 
-- [ ] 🟢 Создать Unity-проект (URP, мобильный шаблон, вертикальная ориентация)
-- [ ] 🟢 Настроить структуру папок (`Assets/Models`, `Assets/Animations`, `Assets/Audio`, `Assets/UI`, `Assets/Scripts`, `Assets/Prefabs`, `Assets/Scenes`, `Assets/Materials`)
-- [ ] 🟢 Настроить Git (`.gitignore` для Unity, Git LFS для ассетов)
-- [ ] 🟡 Скачать и импортировать ассеты Kenney (Nature Kit, Fantasy Town Kit, Furniture Kit, UI Pack, Fantasy UI Borders)
-- [ ] 🟡 Скачать и импортировать ассеты Quaternius (Character Pack, Animal Pack, Medieval Village, Weapons Pack, Fantasy Props, Stylized Nature)
-- [ ] 🟢 Скачать стартовый набор анимаций с Mixamo (idle, walk, run, attack, hit, death — для humanoid)
-- [ ] 🟡 Настроить изометрическую камеру (угол ~30-45°, ортографическая проекция, следование за персонажем)
-- [ ] 🟢 Создать тестовую сцену с плоскостью и несколькими ассетами для проверки масштабов
+- [x] 🟢 Создать Unity-проект (URP, мобильный шаблон, вертикальная ориентация) — ГОТОВО
+- [x] 🟢 Настроить структуру папок (`Assets/Models`, `Assets/Animations`, `Assets/Audio`, `Assets/UI`, `Assets/Scripts`, `Assets/Prefabs`, `Assets/Scenes`, `Assets/Materials`) — ГОТОВО
+- [x] 🟢 Настроить Git (`.gitignore` для Unity, Git LFS для ассетов) — ГОТОВО (GitHub: papergallery/zelda-daughter)
+- [x] 🟡 Скачать и импортировать ассеты Kenney (Nature Kit, Fantasy Town Kit, Furniture Kit, UI Pack, Fantasy UI Borders) — ГОТОВО
+- [x] 🟡 Скачать замену Quaternius: KayKit (Adventurers, Skeletons, Medieval Hexagon, Dungeon), OpenGameArt (Animals, RPGItems, FantasyProps) — ГОТОВО
+- [ ] 🟡 Докачать недостающие ассеты:
+  - [ ] Кабан (boar) с анимациями — найти на OpenGameArt/Sketchfab или заменить свиньёй
+  - [ ] NPC-модели для города (торговец, кузнец, бармен, травница, стражник, крестьяне) — Mixamo + базовые модели или KayKit
+  - [ ] Стилизованная природа (Ghibli-стиль) — скачать Quaternius Stylized Nature вручную с quaternius.com
+- [ ] 🟡 Скачать анимации с Mixamo (idle, walk, run, attack, hit, death, pickup, eat — для humanoid) — требует ручной загрузки (Adobe ID)
+- [x] 🟡 Настроить изометрическую камеру (угол ~30-45°, ортографическая проекция, следование за персонажем) — ГОТОВО (IsometricCamera.cs)
+- [x] 🟢 Создать тестовую сцену с плоскостью и несколькими ассетами для проверки масштабов — ГОТОВО (TestScene.unity через SceneBuilder)
 - [ ] 🟢 Настроить Build Settings под Android/iOS
 - [ ] 🟢 Первый тестовый билд на устройство
 - [ ] 🟡 Инструмент AI-расстановки карты: Editor-скрипт, принимающий конфиг (JSON/ScriptableObject) с координатами и типами объектов → спавн prefab-ов в сцене; скрипт процедурной подсыпки декора (трава, камни, цветы) по зонам с контролем плотности
