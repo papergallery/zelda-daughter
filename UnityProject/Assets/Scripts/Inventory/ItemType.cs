@@ -7,6 +7,7 @@ namespace ZeldaDaughter.Inventory
         Material,
         Consumable,
         Placeable,
-        Weapon
+        Weapon,
+        Medicine
     }
 }

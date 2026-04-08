@@ -44,14 +44,14 @@ namespace ZeldaDaughter.Inventory
             if (ratio <= _config.OverloadThreshold)
             {
                 // Не перегружен — полная скорость
-                _characterMovement.SetSpeedMultiplier(1f);
+                _characterMovement.SetWeightSpeedMultiplier(1f);
                 return;
             }
 
             // Перегружен: линейная интерполяция от порога до 100%
             float overloadProgress = Mathf.InverseLerp(_config.OverloadThreshold, 1f, ratio);
             float speedMul = Mathf.Lerp(1f, _config.OverloadSpeedMultiplier, overloadProgress);
-            _characterMovement.SetSpeedMultiplier(speedMul);
+            _characterMovement.SetWeightSpeedMultiplier(speedMul);
 
             // Реплика о перегрузе (не чаще чем раз в _replyInterval секунд)
             if (Time.time - _lastReplyTime >= _replyInterval && _config.OverloadReplies.Length > 0)
