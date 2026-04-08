@@ -74,7 +74,9 @@ namespace ZeldaDaughter.Editor
 
             // Игровые компоненты
             root.AddComponent<ZeldaDaughter.Input.CharacterMovement>();
+            root.AddComponent<ZeldaDaughter.Input.CharacterAutoMove>();
             root.AddComponent<ZeldaDaughter.World.SurfaceDetector>();
+            root.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
 
             // Тег
             root.tag = "Player";

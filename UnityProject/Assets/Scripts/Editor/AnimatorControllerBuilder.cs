@@ -11,6 +11,9 @@ namespace ZeldaDaughter.Editor
         private const string IdleFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Idle.fbx";
         private const string WalkFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Walk.fbx";
         private const string RunFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Run.fbx";
+        private const string PickUpFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/PickUp.fbx";
+        private const string InteractFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Interact.fbx";
+        private const string Attack1hFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Attack(1h).fbx";
 
         private const float TransitionDuration = 0.15f;
 
@@ -22,21 +25,33 @@ namespace ZeldaDaughter.Editor
             var idleClip = LoadAndConfigureClip(IdleFbxPath, loop: true);
             var walkClip = LoadAndConfigureClip(WalkFbxPath, loop: true);
             var runClip = LoadAndConfigureClip(RunFbxPath, loop: true);
+            var pickUpClip = LoadAndConfigureClip(PickUpFbxPath, loop: false);
+            var interactClip = LoadAndConfigureClip(InteractFbxPath, loop: false);
+            var attack1hClip = LoadAndConfigureClip(Attack1hFbxPath, loop: false);
 
             var controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerOutputPath);
 
             controller.AddParameter("Speed", AnimatorControllerParameterType.Float);
             controller.AddParameter("IsMoving", AnimatorControllerParameterType.Bool);
+            controller.AddParameter("PickUp", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("Interact", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("Attack", AnimatorControllerParameterType.Trigger);
 
             var rootStateMachine = controller.layers[0].stateMachine;
 
             var idleState = rootStateMachine.AddState("Idle");
             var walkState = rootStateMachine.AddState("Walk");
             var runState = rootStateMachine.AddState("Run");
+            var pickUpState = rootStateMachine.AddState("PickUp");
+            var interactState = rootStateMachine.AddState("Interact");
+            var attack1hState = rootStateMachine.AddState("Attack1h");
 
             idleState.motion = idleClip;
             walkState.motion = walkClip;
             runState.motion = runClip;
+            pickUpState.motion = pickUpClip;
+            interactState.motion = interactClip;
+            attack1hState.motion = attack1hClip;
 
             rootStateMachine.defaultState = idleState;
 
@@ -66,11 +81,34 @@ namespace ZeldaDaughter.Editor
             ConfigureTransition(runToIdle);
             runToIdle.AddCondition(AnimatorConditionMode.IfNot, 0f, "IsMoving");
 
+            // AnyState → PickUp, Interact, Attack1h
+            AddActionState(rootStateMachine, idleState, pickUpState, "PickUp");
+            AddActionState(rootStateMachine, idleState, interactState, "Interact");
+            AddActionState(rootStateMachine, idleState, attack1hState, "Attack");
+
             EditorUtility.SetDirty(controller);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
             Debug.Log($"[AnimatorControllerBuilder] PlayerAnimator создан: {ControllerOutputPath}");
+        }
+
+        // AnyState → actionState (trigger), actionState → idle (exitTime=0.9)
+        private static void AddActionState(
+            AnimatorStateMachine sm,
+            AnimatorState idleState,
+            AnimatorState actionState,
+            string triggerName)
+        {
+            var anyToAction = sm.AddAnyStateTransition(actionState);
+            anyToAction.hasExitTime = false;
+            anyToAction.duration = 0.1f;
+            anyToAction.AddCondition(AnimatorConditionMode.If, 0f, triggerName);
+
+            var actionToIdle = actionState.AddTransition(idleState);
+            actionToIdle.hasExitTime = true;
+            actionToIdle.exitTime = 0.9f;
+            actionToIdle.duration = 0.15f;
         }
 
         private static void ConfigureTransition(AnimatorStateTransition transition)
