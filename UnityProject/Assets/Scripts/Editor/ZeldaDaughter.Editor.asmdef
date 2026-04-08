@@ -3,7 +3,8 @@
     "rootNamespace": "ZeldaDaughter.Editor",
     "references": [
         "ZeldaDaughter",
-        "Unity.RenderPipelines.Universal.Runtime"
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"

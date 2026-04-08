@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace ZeldaDaughter.NPC
 {
+    [System.Obsolete("Use NPCProfile instead")]
     [CreateAssetMenu(menuName = "ZeldaDaughter/NPC Data", fileName = "NewNPCData")]
     public class NPCData : ScriptableObject
     {
