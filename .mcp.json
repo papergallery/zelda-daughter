@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "unity-mcp": {
+      "command": "/home/papermax/.local/bin/uv",
+      "args": ["run", "--directory", "/tmp/unity-mcp/Server", "python", "src/main.py"],
+      "env": {}
+    }
+  }
+}
