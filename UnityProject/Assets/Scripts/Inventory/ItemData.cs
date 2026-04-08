@@ -26,6 +26,9 @@ namespace ZeldaDaughter.Inventory
         [SerializeField] private bool _isMedicine;
         [SerializeField] private WoundType _treatsWoundType = WoundType.None;
 
+        [Header("Trade")]
+        [SerializeField] private int _baseValue = 1;
+
         [Header("Weapon")]
         [SerializeField] private WeaponData _weaponData;
 
@@ -42,6 +45,8 @@ namespace ZeldaDaughter.Inventory
         public GameObject WorldPrefab => _worldPrefab;
         public float HealAmount => _healAmount;
         public float HungerRestore => _hungerRestore;
+
+        public int BaseValue => _baseValue;
 
         public bool IsMedicine => _isMedicine;
         public WoundType TreatsWoundType => _treatsWoundType;

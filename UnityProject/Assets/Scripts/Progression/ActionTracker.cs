@@ -1,6 +1,7 @@
 using UnityEngine;
 using ZeldaDaughter.Combat;
 using ZeldaDaughter.Inventory;
+using ZeldaDaughter.NPC;
 
 namespace ZeldaDaughter.Progression
 {
@@ -28,6 +29,7 @@ namespace ZeldaDaughter.Progression
             CombatController.OnAttackResult += HandleAttackResult;
             PlayerHealthState.OnDamageTaken += HandleDamageTaken;
             EnemyHealth.OnDeath += HandleEnemyKilled;
+            DialogueManager.OnDialogueLine += HandleDialogueLine;
         }
 
         private void OnDisable()
@@ -35,6 +37,7 @@ namespace ZeldaDaughter.Progression
             CombatController.OnAttackResult -= HandleAttackResult;
             PlayerHealthState.OnDamageTaken -= HandleDamageTaken;
             EnemyHealth.OnDeath -= HandleEnemyKilled;
+            DialogueManager.OnDialogueLine -= HandleDialogueLine;
         }
 
         private void Update()
@@ -85,6 +88,11 @@ namespace ZeldaDaughter.Progression
 
             _playerStats.AddExperience(StatType.Strength, bonus);
             _playerStats.AddExperience(StatType.Accuracy, bonus);
+        }
+
+        private void HandleDialogueLine()
+        {
+            _playerStats.AddExperience(StatType.Language, 1f);
         }
     }
 }
