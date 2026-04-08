@@ -1,6 +1,7 @@
 using UnityEngine;
 using ZeldaDaughter.Inventory;
 using ZeldaDaughter.Progression;
+using ZeldaDaughter.Quest;
 
 namespace ZeldaDaughter.NPC
 {
@@ -9,12 +10,15 @@ namespace ZeldaDaughter.NPC
         private readonly PlayerInventory _inventory;
         private readonly LanguageSystem _language;
         private readonly PlayerStats _stats;
+        private readonly QuestManager _questManager;
 
-        public DialogueConditionResolver(PlayerInventory inventory, LanguageSystem language, PlayerStats stats)
+        public DialogueConditionResolver(PlayerInventory inventory, LanguageSystem language, PlayerStats stats,
+            QuestManager questManager = null)
         {
             _inventory = inventory;
             _language = language;
             _stats = stats;
+            _questManager = questManager;
         }
 
         /// <summary>
@@ -23,8 +27,10 @@ namespace ZeldaDaughter.NPC
         ///   "has_item:itemId"            — наличие предмета в инвентаре
         ///   "language_level:0.5"         — уровень понимания языка >= значения
         ///   "stat:Strength:50"           — значение навыка >= порога
+        ///   "quest_active:questId"       — квест принят и не завершён
+        ///   "quest_complete:questId"     — квест завершён
         /// Пустая строка или null → всегда true.
-        /// Неизвестный ключ → true (заглушка для будущих квестов).
+        /// Неизвестный ключ → true (заглушка для будущих условий).
         /// </summary>
         public bool Check(string conditionKey)
         {
@@ -45,8 +51,14 @@ namespace ZeldaDaughter.NPC
                 case "stat":
                     return CheckStat(parts);
 
+                case "quest_active":
+                    return CheckQuestActive(parts);
+
+                case "quest_complete":
+                    return CheckQuestComplete(parts);
+
                 default:
-                    // Заглушка для квестовых флагов и будущих условий
+                    // Заглушка для будущих условий
                     return true;
             }
         }
@@ -100,6 +112,34 @@ namespace ZeldaDaughter.NPC
 
             Debug.LogWarning($"[DialogueConditionResolver] Невалидный порог стата: '{parts[2]}'");
             return true;
+        }
+
+        private bool CheckQuestActive(string[] parts)
+        {
+            if (parts.Length < 2 || string.IsNullOrEmpty(parts[1]))
+                return false;
+
+            if (_questManager == null)
+            {
+                Debug.LogWarning("[DialogueConditionResolver] QuestManager не задан, quest_active вернёт false.");
+                return false;
+            }
+
+            return _questManager.IsQuestActive(parts[1]);
+        }
+
+        private bool CheckQuestComplete(string[] parts)
+        {
+            if (parts.Length < 2 || string.IsNullOrEmpty(parts[1]))
+                return false;
+
+            if (_questManager == null)
+            {
+                Debug.LogWarning("[DialogueConditionResolver] QuestManager не задан, quest_complete вернёт false.");
+                return false;
+            }
+
+            return _questManager.IsQuestComplete(parts[1]);
         }
     }
 }
