@@ -1,0 +1,135 @@
+{
+  "regionId": "start_meadow",
+  "displayName": "Стартовая поляна",
+  "bounds": { "min": { "x": -50, "z": -50 }, "max": { "x": 50, "z": 50 } },
+  "seed": 42,
+
+  "objects": [
+    {
+      "id": "tavern_01",
+      "prefab": "Prefabs/Buildings/Tavern",
+      "position": { "x": 12.0, "y": 0.0, "z": 8.0 },
+      "rotation": { "x": 0, "y": 45, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["building", "enterable"]
+    },
+    {
+      "id": "well_01",
+      "prefab": "Prefabs/Props/Well",
+      "position": { "x": 15.0, "y": 0.0, "z": 5.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["interactable"]
+    },
+    {
+      "id": "spawn_player",
+      "prefab": "",
+      "position": { "x": 0.0, "y": 0.0, "z": 0.0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["spawn_player"]
+    }
+  ],
+
+  "decorationZones": [
+    {
+      "id": "forest_east",
+      "zoneType": "forest",
+      "center": { "x": 30.0, "z": 20.0 },
+      "radius": 15.0,
+      "density": 0.4,
+      "prefabs": [
+        "Prefabs/Nature/Tree_Oak",
+        "Prefabs/Nature/Tree_Pine",
+        "Prefabs/Nature/Bush_01",
+        "Prefabs/Nature/Rock_Small"
+      ],
+      "prefabWeights": [0.3, 0.3, 0.25, 0.15],
+      "minScale": 0.8,
+      "maxScale": 1.3,
+      "randomRotationY": true
+    },
+    {
+      "id": "meadow_center",
+      "zoneType": "meadow",
+      "center": { "x": 0.0, "z": 0.0 },
+      "radius": 20.0,
+      "density": 0.1,
+      "prefabs": [
+        "Prefabs/Nature/Grass_Patch",
+        "Prefabs/Nature/Flower_01",
+        "Prefabs/Nature/Rock_Small"
+      ],
+      "prefabWeights": [0.5, 0.35, 0.15],
+      "minScale": 0.7,
+      "maxScale": 1.1,
+      "randomRotationY": true
+    }
+  ],
+
+  "spawnZones": [
+    {
+      "id": "boar_zone_01",
+      "enemyType": "boar",
+      "center": { "x": -20.0, "z": 15.0 },
+      "radius": 10.0,
+      "maxCount": 3,
+      "respawnTimeSec": 120
+    },
+    {
+      "id": "wolf_zone_01",
+      "enemyType": "wolf",
+      "center": { "x": -30.0, "z": -20.0 },
+      "radius": 12.0,
+      "maxCount": 2,
+      "respawnTimeSec": 180
+    }
+  ],
+
+  "paths": [
+    {
+      "id": "road_main",
+      "pathType": "road",
+      "width": 2.5,
+      "waypoints": [
+        { "x": -40.0, "y": 0.0, "z": 0.0 },
+        { "x": -10.0, "y": 0.0, "z": 0.0 },
+        { "x": 5.0, "y": 0.0, "z": 5.0 },
+        { "x": 15.0, "y": 0.0, "z": 5.0 },
+        { "x": 40.0, "y": 0.0, "z": 5.0 }
+      ]
+    },
+    {
+      "id": "path_forest",
+      "pathType": "trail",
+      "width": 1.0,
+      "waypoints": [
+        { "x": 5.0, "y": 0.0, "z": 5.0 },
+        { "x": 15.0, "y": 0.0, "z": 15.0 },
+        { "x": 25.0, "y": 0.0, "z": 25.0 }
+      ]
+    }
+  ],
+
+  "waterAreas": [
+    {
+      "id": "pond_01",
+      "waterType": "pond",
+      "center": { "x": -15.0, "y": -0.1, "z": -10.0 },
+      "radius": 5.0,
+      "polygon": []
+    },
+    {
+      "id": "river_01",
+      "waterType": "river",
+      "center": { "x": 0, "y": -0.1, "z": 0 },
+      "radius": 0,
+      "polygon": [
+        { "x": 40.0, "z": -30.0 },
+        { "x": 42.0, "z": -30.0 },
+        { "x": 42.0, "z": 40.0 },
+        { "x": 40.0, "z": 40.0 }
+      ]
+    }
+  ]
+}

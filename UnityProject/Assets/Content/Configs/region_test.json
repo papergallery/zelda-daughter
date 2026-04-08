@@ -1,0 +1,79 @@
+{
+  "regionId": "test_region",
+  "regionName": "Test Region",
+  "bounds": { "minX": -50, "minZ": -50, "maxX": 50, "maxZ": 50 },
+  "seed": 42,
+  "objects": [
+    {
+      "id": "spawn_player",
+      "prefab": "",
+      "position": { "x": 0, "y": 0, "z": 0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["spawn_player"]
+    },
+    {
+      "id": "farmer_hut",
+      "prefab": "",
+      "position": { "x": 15, "y": 0, "z": 10 },
+      "rotation": { "x": 0, "y": 45, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "tags": ["building", "hut"]
+    }
+  ],
+  "decorationZones": [
+    {
+      "zoneType": "forest",
+      "center": { "x": -20, "z": -20 },
+      "radius": 15,
+      "density": 0.05,
+      "prefabs": [],
+      "prefabWeights": [],
+      "minScale": 0.8,
+      "maxScale": 1.3,
+      "randomRotationY": true
+    }
+  ],
+  "spawnZones": [
+    {
+      "id": "boar_zone_1",
+      "enemyType": "Boar",
+      "center": { "x": -25, "z": 15 },
+      "radius": 10,
+      "maxCount": 3,
+      "respawnTimeSec": 120
+    },
+    {
+      "id": "wolf_zone_1",
+      "enemyType": "Wolf",
+      "center": { "x": 35, "z": -30 },
+      "radius": 12,
+      "maxCount": 2,
+      "respawnTimeSec": 180
+    }
+  ],
+  "paths": [
+    {
+      "id": "main_road",
+      "pathType": "road",
+      "width": 3,
+      "waypoints": [
+        { "x": -40, "y": 0, "z": 0 },
+        { "x": -10, "y": 0, "z": 0 },
+        { "x": 0, "y": 0, "z": 5 },
+        { "x": 15, "y": 0, "z": 10 },
+        { "x": 30, "y": 0, "z": 10 }
+      ]
+    }
+  ],
+  "waterAreas": [
+    {
+      "id": "river_1",
+      "waterType": "river",
+      "center": { "x": 0, "z": -35 },
+      "radius": 8,
+      "polygon": [],
+      "depth": 1.5
+    }
+  ]
+}
