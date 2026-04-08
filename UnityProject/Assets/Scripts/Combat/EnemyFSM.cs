@@ -18,6 +18,7 @@ namespace ZeldaDaughter.Combat
         private Animator _animator;
         private bool _isAggro;
         private bool _inWindup;
+        private float _stunOverrideDuration;
 
         private static readonly int AnimSpeed = Animator.StringToHash("Speed");
         private static readonly int AnimAttack = Animator.StringToHash("Attack");
@@ -196,8 +197,16 @@ namespace ZeldaDaughter.Combat
         private void UpdateStagger()
         {
             SetAnimSpeed(0f);
-            if (_stateTimer >= _data.StaggerDuration)
+
+            float duration = _stunOverrideDuration > 0f
+                ? _stunOverrideDuration
+                : (_data != null ? _data.StaggerDuration : 1f);
+
+            if (_stateTimer >= duration)
+            {
+                _stunOverrideDuration = 0f;
                 SetState(EnemyState.Chase);
+            }
         }
 
         private void UpdateFlee(float distToPlayer)
@@ -296,6 +305,14 @@ namespace ZeldaDaughter.Combat
                 if (_state == EnemyState.Idle || _state == EnemyState.Wander)
                     SetState(EnemyState.Alert);
             }
+        }
+
+        /// <summary>Принудительно перевести врага в Stagger на заданное время (для оглушения молотом).</summary>
+        public void ForceStun(float duration)
+        {
+            _stunOverrideDuration = duration;
+            SetState(EnemyState.Stagger);
+            if (_animator != null) _animator.SetTrigger(AnimHit);
         }
 
         public void Initialize(EnemyData data, Vector3 spawnPoint)

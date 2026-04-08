@@ -7,6 +7,7 @@ namespace ZeldaDaughter.NPC
         Bartender,
         Herbalist,
         Guard,
-        Villager
+        Villager,
+        Bard
     }
 }

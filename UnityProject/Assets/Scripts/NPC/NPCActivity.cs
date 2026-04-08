@@ -6,6 +6,7 @@ namespace ZeldaDaughter.NPC
         Working,
         Sleeping,
         Walking,
-        Patrolling
+        Patrolling,
+        Performing
     }
 }

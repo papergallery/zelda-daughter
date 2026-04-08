@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using ZeldaDaughter.Input;
 
@@ -15,9 +16,15 @@ namespace ZeldaDaughter.Combat
         private GameObject _currentTarget;
         private bool _isAttacking;
 
+        // Слой статов (от PlayerStats / StatEffectApplier)
         private float _damageMultiplier = 1f;
         private float _attackSpeedMultiplier = 1f;
         private float _hitChance = 1f;
+
+        // Слой мастерства оружия (от WeaponProficiencyApplier)
+        private float _profDamageMultiplier = 1f;
+        private float _profSpeedMultiplier = 1f;
+        private float _profHitBonus = 0f;
 
         public static event System.Action<WeaponData> OnAttackPerformed;
         public static event System.Action<bool> OnAttackResult; // true = hit, false = glancing blow
@@ -75,10 +82,12 @@ namespace ZeldaDaughter.Combat
             float attackAnimSpeed = 1f;
             WoundType woundType = WoundType.Puncture;
             float woundSeverity = 0.2f;
+            WeaponData weapon = _weaponEquip != null && _weaponEquip.HasWeapon
+                ? _weaponEquip.CurrentWeapon
+                : null;
 
-            if (_weaponEquip != null && _weaponEquip.HasWeapon)
+            if (weapon != null)
             {
-                var weapon = _weaponEquip.CurrentWeapon;
                 damage = weapon.Damage;
                 attackAnimSpeed = weapon.AttackSpeed;
                 woundType = weapon.InflictedWoundType;
@@ -89,38 +98,88 @@ namespace ZeldaDaughter.Combat
                 damage = _config != null ? _config.UnarmedDamage : 5f;
             }
 
-            float finalDamage;
-            if (Random.value < _hitChance)
-            {
-                finalDamage = damage * _damageMultiplier;
-                OnAttackResult?.Invoke(true);
-            }
-            else
-            {
-                finalDamage = damage * _damageMultiplier * 0.1f;
-                OnAttackResult?.Invoke(false);
-            }
+            // Итоговые множители с учётом обоих слоёв
+            float finalDamageMul = _damageMultiplier * _profDamageMultiplier;
+            float finalSpeedMul = _attackSpeedMultiplier * _profSpeedMultiplier;
+            float finalHitChance = Mathf.Clamp01(_hitChance + _profHitBonus);
 
-            var info = new DamageInfo(finalDamage, woundType, woundSeverity, gameObject);
+            bool isHit = Random.value < finalHitChance;
+            float finalDamage = isHit
+                ? damage * finalDamageMul
+                : damage * finalDamageMul * 0.1f;
+
+            RaiseAttackResult(isHit);
 
             if (_animator != null)
             {
-                _animator.speed = attackAnimSpeed * _attackSpeedMultiplier;
+                _animator.speed = attackAnimSpeed * finalSpeedMul;
                 _animator.SetTrigger(AttackTrigger);
             }
 
-            if (_hitbox != null)
-                _hitbox.Activate(info);
+            // Серия быстрых ударов (дага, коготь и т.п.)
+            if (weapon != null && weapon.RapidHitCount > 1)
+            {
+                StartCoroutine(RapidHitCoroutine(finalDamage, woundType, woundSeverity, weapon.RapidHitCount));
+            }
+            else
+            {
+                var info = new DamageInfo(finalDamage, woundType, woundSeverity, gameObject);
+                if (_hitbox != null) _hitbox.Activate(info);
+                ApplyStun(weapon, isHit);
+            }
 
             // В финале заменить на Animation Event; для прототипа — достаточно
             Invoke(nameof(EndAttack), 0.4f);
 
-            OnAttackPerformed?.Invoke(_weaponEquip?.CurrentWeapon);
+            RaiseAttackPerformed(weapon);
         }
+
+        private IEnumerator RapidHitCoroutine(float totalDamage, WoundType woundType, float woundSeverity, int hitCount)
+        {
+            float damagePerHit = totalDamage / hitCount;
+            var info = new DamageInfo(damagePerHit, woundType, woundSeverity, gameObject);
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                if (_hitbox != null) _hitbox.Activate(info);
+                yield return new WaitForSeconds(0.15f);
+            }
+        }
+
+        private void ApplyStun(WeaponData weapon, bool isHit)
+        {
+            if (weapon == null || !isHit || weapon.StunDuration <= 0f) return;
+            if (_currentTarget == null) return;
+
+            if (_currentTarget.TryGetComponent<StunEffect>(out var stunEffect))
+            {
+                stunEffect.Apply(weapon.StunDuration);
+            }
+        }
+
+        // --- Static методы для внешних классов (RangedAttackHandler, Projectile, etc.) ---
+
+        public static void RaiseAttackPerformed(WeaponData weapon)
+        {
+            OnAttackPerformed?.Invoke(weapon);
+        }
+
+        public static void RaiseAttackResult(bool isHit)
+        {
+            OnAttackResult?.Invoke(isHit);
+        }
+
+        // --- Set-методы слоя статов (используются StatEffectApplier) ---
 
         public void SetDamageMultiplier(float value) => _damageMultiplier = value;
         public void SetAttackSpeedMultiplier(float value) => _attackSpeedMultiplier = value;
         public void SetHitChance(float value) => _hitChance = Mathf.Clamp01(value);
+
+        // --- Set-методы слоя мастерства оружия (используются WeaponProficiencyApplier) ---
+
+        public void SetProficiencyDamageMultiplier(float value) => _profDamageMultiplier = value;
+        public void SetProficiencySpeedMultiplier(float value) => _profSpeedMultiplier = value;
+        public void SetProficiencyHitBonus(float value) => _profHitBonus = value;
 
         private void EndAttack()
         {

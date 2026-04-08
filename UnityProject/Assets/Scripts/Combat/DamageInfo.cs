@@ -8,13 +8,16 @@ namespace ZeldaDaughter.Combat
         public WoundType WoundType;
         public float WoundSeverity;
         public GameObject Source;
+        /// <summary>Длительность оглушения в секундах. 0 = без оглушения.</summary>
+        public float StunDuration;
 
-        public DamageInfo(float amount, WoundType woundType, float severity, GameObject source = null)
+        public DamageInfo(float amount, WoundType woundType, float severity, GameObject source = null, float stunDuration = 0f)
         {
             Amount = amount;
             WoundType = woundType;
             WoundSeverity = severity;
             Source = source;
+            StunDuration = stunDuration;
         }
     }
 }
