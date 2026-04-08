@@ -12,6 +12,10 @@ namespace ZeldaDaughter.Inventory
         [SerializeField] private bool _stackable = true;
         [SerializeField] private int _maxStack = 10;
         [SerializeField] private string _pickupLine = "";
+        [SerializeField] private ItemType _itemType = ItemType.Generic;
+        [SerializeField] private string _description = "";
+        [SerializeField] private bool _isPlaceable;
+        [SerializeField] private GameObject _worldPrefab;
 
         public string Id => _id;
         public string DisplayName => _displayName;
@@ -20,5 +24,9 @@ namespace ZeldaDaughter.Inventory
         public bool Stackable => _stackable;
         public int MaxStack => _maxStack;
         public string PickupLine => _pickupLine;
+        public ItemType ItemType => _itemType;
+        public string Description => _description;
+        public bool IsPlaceable => _isPlaceable;
+        public GameObject WorldPrefab => _worldPrefab;
     }
 }

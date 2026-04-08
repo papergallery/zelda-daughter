@@ -7,17 +7,36 @@ namespace ZeldaDaughter.Inventory
     public class PlayerInventory : MonoBehaviour, ISaveable
     {
         [SerializeField] private int _maxSlots = 20;
+        [SerializeField] private InventoryConfig _config;
 
         private readonly List<ItemStack> _items = new();
 
         public static event System.Action<ItemData, int> OnItemAdded;
         public static event System.Action<ItemData, int> OnItemRemoved;
         public static event System.Action OnInventoryChanged;
+        public static event System.Action<float> OnWeightChanged;
 
         public IReadOnlyList<ItemStack> Items => _items;
         public int SlotCount => _items.Count;
-        public int MaxSlots => _maxSlots;
-        public bool IsFull => _items.Count >= _maxSlots;
+        public int MaxSlots => _config != null ? _config.MaxSlots : _maxSlots;
+        public bool IsFull => _items.Count >= MaxSlots;
+
+        public float TotalWeight
+        {
+            get
+            {
+                float total = 0f;
+                for (int i = 0; i < _items.Count; i++)
+                    total += _items[i].Item.Weight * _items[i].Amount;
+                return total;
+            }
+        }
+
+        public float WeightRatio => _config != null && _config.BaseWeightCapacity > 0
+            ? TotalWeight / _config.BaseWeightCapacity
+            : 0f;
+
+        public bool IsOverloaded => _config != null && WeightRatio > _config.OverloadThreshold;
 
         public string SaveId => "player_inventory";
 
@@ -66,6 +85,7 @@ namespace ZeldaDaughter.Inventory
             {
                 OnItemAdded?.Invoke(item, amount - remaining);
                 OnInventoryChanged?.Invoke();
+                NotifyWeightChanged();
             }
 
             // Если remaining > 0 — часть предметов не поместилась
@@ -100,6 +120,7 @@ namespace ZeldaDaughter.Inventory
 
             OnItemRemoved?.Invoke(item, amount);
             OnInventoryChanged?.Invoke();
+            NotifyWeightChanged();
             return true;
         }
 
@@ -119,10 +140,47 @@ namespace ZeldaDaughter.Inventory
             return total;
         }
 
+        public ItemStack GetSlot(int index)
+        {
+            if (index < 0 || index >= _items.Count)
+                return default;
+            return _items[index];
+        }
+
+        public void SwapSlots(int from, int to)
+        {
+            if (from < 0 || from >= _items.Count || to < 0 || to >= _items.Count || from == to)
+                return;
+            (_items[from], _items[to]) = (_items[to], _items[from]);
+            OnInventoryChanged?.Invoke();
+        }
+
+        public bool RemoveFromSlot(int slotIndex, int amount = 1)
+        {
+            if (slotIndex < 0 || slotIndex >= _items.Count)
+                return false;
+
+            var stack = _items[slotIndex];
+            if (stack.Amount < amount)
+                return false;
+
+            int newAmount = stack.Amount - amount;
+            if (newAmount == 0)
+                _items.RemoveAt(slotIndex);
+            else
+                _items[slotIndex] = stack.WithAmount(newAmount);
+
+            OnItemRemoved?.Invoke(stack.Item, amount);
+            OnInventoryChanged?.Invoke();
+            NotifyWeightChanged();
+            return true;
+        }
+
         public void Clear()
         {
             _items.Clear();
             OnInventoryChanged?.Invoke();
+            NotifyWeightChanged();
         }
 
         // ISaveable
@@ -164,6 +222,12 @@ namespace ZeldaDaughter.Inventory
             }
 
             OnInventoryChanged?.Invoke();
+            NotifyWeightChanged();
+        }
+
+        private void NotifyWeightChanged()
+        {
+            OnWeightChanged?.Invoke(TotalWeight);
         }
 
         [System.Serializable]

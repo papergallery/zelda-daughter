@@ -3,7 +3,7 @@ using UnityEngine;
 namespace ZeldaDaughter.Input
 {
     /// <summary>
-    /// Moves the character using CharacterController based on input from TouchInputManager.
+    /// Moves the character using CharacterController based on input from GestureDispatcher.
     /// Walk/run determined by swipe intensity. Smooth rotation toward movement direction.
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
@@ -35,6 +35,7 @@ namespace ZeldaDaughter.Input
         private Vector3 _externalDirection;
         private float _externalIntensity;
         private bool _hasExternalMovement;
+        private float _speedMultiplier = 1f;
 
         private float _previousSpeed;
         private bool _wasMoving;
@@ -58,14 +59,14 @@ namespace ZeldaDaughter.Input
 
         private void OnEnable()
         {
-            TouchInputManager.OnMoveInput += HandleMoveInput;
-            TouchInputManager.OnMoveStop += HandleMoveStop;
+            GestureDispatcher.OnMoveInput += HandleMoveInput;
+            GestureDispatcher.OnMoveStop += HandleMoveStop;
         }
 
         private void OnDisable()
         {
-            TouchInputManager.OnMoveInput -= HandleMoveInput;
-            TouchInputManager.OnMoveStop -= HandleMoveStop;
+            GestureDispatcher.OnMoveInput -= HandleMoveInput;
+            GestureDispatcher.OnMoveStop -= HandleMoveStop;
         }
 
         private void Update()
@@ -91,6 +92,8 @@ namespace ZeldaDaughter.Input
 
                 if (_inWater)
                     targetSpeed *= _waterSpeedMultiplier;
+
+                targetSpeed *= _speedMultiplier;
 
                 var move = worldDir * targetSpeed + Vector3.up * _verticalVelocity;
                 _controller.Move(move * Time.deltaTime);
@@ -222,6 +225,11 @@ namespace ZeldaDaughter.Input
         public void SetInWater(bool inWater)
         {
             _inWater = inWater;
+        }
+
+        public void SetSpeedMultiplier(float multiplier)
+        {
+            _speedMultiplier = Mathf.Clamp(multiplier, 0.1f, 2f);
         }
     }
 }

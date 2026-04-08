@@ -18,13 +18,13 @@ namespace ZeldaDaughter.World
 
         private void OnEnable()
         {
-            TouchInputManager.OnTap += HandleTap;
+            GestureDispatcher.OnTap += HandleTap;
             CharacterAutoMove.OnAutoMoveCancelled += HandleAutoMoveCancelled;
         }
 
         private void OnDisable()
         {
-            TouchInputManager.OnTap -= HandleTap;
+            GestureDispatcher.OnTap -= HandleTap;
             CharacterAutoMove.OnAutoMoveCancelled -= HandleAutoMoveCancelled;
         }
 
