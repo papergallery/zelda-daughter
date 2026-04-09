@@ -17,10 +17,15 @@ namespace ZeldaDaughter.Editor
             EditorPrefs.SetString("AndroidNdkRootR23B", "/opt/android-sdk/ndk/23.1.7779620");
             EditorPrefs.SetBool("NdkUseEmbedded", false);
 
-            string[] scenes = { "Assets/Scenes/TestScene.unity" };
+            // Приоритет: DemoScene → TestScene
+            string scenePath = "Assets/Scenes/DemoScene.unity";
+            if (!System.IO.File.Exists(scenePath))
+                scenePath = "Assets/Scenes/TestScene.unity";
+
+            string[] scenes = { scenePath };
             if (!System.IO.File.Exists(scenes[0]))
             {
-                Debug.LogError("[AndroidBuilder] Scene not found! Run 'ZeldaDaughter/Create Test Scene' first.");
+                Debug.LogError("[AndroidBuilder] Scene not found! Run 'ZeldaDaughter/Scenes/Build Demo Scene' first.");
                 EditorApplication.Exit(1);
                 return;
             }
