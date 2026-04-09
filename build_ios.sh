@@ -7,7 +7,8 @@
 set -e
 
 # --- Настройки ---
-UNITY_VERSION="2022.3.30f1"
+# Любая 2022.3.x подойдёт — проект совместим внутри LTS
+UNITY_VERSION="2022.3"
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 UNITY_PROJECT="$PROJECT_DIR/UnityProject"
 IOS_BUILD_DIR="$PROJECT_DIR/ios-build"
@@ -31,27 +32,30 @@ echo ""
 echo "=== Zelda's Daughter — iOS Build ==="
 echo ""
 
-UNITY_APP="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app"
-UNITY_BIN="$UNITY_APP/Contents/MacOS/Unity"
+# Ищем любую Unity 2022.3.x
+UNITY_APP=$(ls -d /Applications/Unity/Hub/Editor/2022.3.*/Unity.app 2>/dev/null | sort -V | tail -1)
 
-if [ ! -f "$UNITY_BIN" ]; then
-    # Попробовать другой путь
-    UNITY_BIN=$(find /Applications/Unity -name "Unity" -path "*$UNITY_VERSION*MacOS*" 2>/dev/null | head -1)
+if [ -z "$UNITY_APP" ]; then
+    # Поиск в нестандартных путях
+    UNITY_APP=$(find /Applications -name "Unity.app" -path "*2022.3*" 2>/dev/null | head -1)
 fi
 
-if [ -z "$UNITY_BIN" ] || [ ! -f "$UNITY_BIN" ]; then
-    error "Unity $UNITY_VERSION не найден. Установи через Unity Hub:
+if [ -z "$UNITY_APP" ] || [ ! -d "$UNITY_APP" ]; then
+    error "Unity 2022.3.x не найден. Установи через Unity Hub:
     1. Открой Unity Hub
-    2. Installs → Install Editor → Archive → $UNITY_VERSION
+    2. Installs → Install Editor → 2022.3 (любая LTS)
     3. Отметь iOS Build Support
     4. Запусти скрипт заново"
 fi
-info "Unity: $UNITY_BIN"
+
+UNITY_BIN="$UNITY_APP/Contents/MacOS/Unity"
+FOUND_VERSION=$(basename "$(dirname "$UNITY_APP")")
+info "Unity: $FOUND_VERSION ($UNITY_BIN)"
 
 # Проверить iOS Build Support
 if [ ! -d "$UNITY_APP/Contents/PlaybackEngines/iOSSupport" ]; then
     error "iOS Build Support не установлен. В Unity Hub:
-    Installs → $UNITY_VERSION → Add Modules → iOS Build Support"
+    Installs → $FOUND_VERSION → Add Modules → iOS Build Support"
 fi
 info "iOS Build Support: установлен"
 
