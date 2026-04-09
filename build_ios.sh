@@ -52,8 +52,9 @@ UNITY_BIN="$UNITY_APP/Contents/MacOS/Unity"
 FOUND_VERSION=$(basename "$(dirname "$UNITY_APP")")
 info "Unity: $FOUND_VERSION ($UNITY_BIN)"
 
-# Проверить iOS Build Support
-if [ ! -d "$UNITY_APP/Contents/PlaybackEngines/iOSSupport" ]; then
+# Проверить iOS Build Support (может быть внутри Unity.app или рядом)
+EDITOR_DIR=$(dirname "$UNITY_APP")
+if [ ! -d "$UNITY_APP/Contents/PlaybackEngines/iOSSupport" ] && [ ! -d "$EDITOR_DIR/PlaybackEngines/iOSSupport" ]; then
     error "iOS Build Support не установлен. В Unity Hub:
     Installs → $FOUND_VERSION → Add Modules → iOS Build Support"
 fi
