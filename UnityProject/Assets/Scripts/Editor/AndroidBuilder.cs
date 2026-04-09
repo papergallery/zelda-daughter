@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ZeldaDaughter.Editor
 {
@@ -17,10 +18,16 @@ namespace ZeldaDaughter.Editor
             EditorPrefs.SetString("AndroidNdkRootR23B", "/opt/android-sdk/ndk/23.1.7779620");
             EditorPrefs.SetBool("NdkUseEmbedded", false);
 
-            // Приоритет: DemoScene → TestScene
-            string scenePath = "Assets/Scenes/DemoScene.unity";
+            // EmuMin2 — лёгкая сцена для эмулятора (Player + Input + деревья)
+            // EmulatorScene крашит SwiftShader (слишком сложная)
+            // DemoScene — для реального устройства
+            string scenePath = "Assets/Scenes/EmuStage2.unity";
             if (!System.IO.File.Exists(scenePath))
-                scenePath = "Assets/Scenes/TestScene.unity";
+            {
+                scenePath = "Assets/Scenes/DemoScene.unity";
+                if (!System.IO.File.Exists(scenePath))
+                    scenePath = "Assets/Scenes/TestScene.unity";
+            }
 
             string[] scenes = { scenePath };
             if (!System.IO.File.Exists(scenes[0]))
@@ -47,6 +54,34 @@ namespace ZeldaDaughter.Editor
 
             // Disable Burst AOT (bcl.exe not available on this server)
             EditorPrefs.SetBool("BurstCompilation", false);
+
+            // Force GLES3 (Vulkan crashes on SwiftShader with complex scenes)
+            PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, false);
+            PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new[] {
+                GraphicsDeviceType.OpenGLES3
+            });
+
+            // Disable URP entirely for emulator — URP crashes SwiftShader regardless of shaders
+            // EmulatorScene uses Unlit/Color materials that work fine with Built-in RP
+            GraphicsSettings.defaultRenderPipeline = null;
+            for (int i = 0; i < QualitySettings.names.Length; i++)
+            {
+                QualitySettings.SetQualityLevel(i, false);
+                QualitySettings.renderPipeline = null;
+            }
+            Debug.Log("[AndroidBuilder] URP disabled — using Built-in RP for emulator");
+
+            // Add ZD_DEBUG for debug logging
+            var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android);
+            if (!defines.Contains("ZD_DEBUG"))
+            {
+                defines = string.IsNullOrEmpty(defines) ? "ZD_DEBUG" : defines + ";ZD_DEBUG";
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, defines);
+            }
+
+            // Convert URP/Lit → URP/Simple Lit for SwiftShader emulator compatibility
+            // Simple Lit uses Blinn-Phong instead of PBR — avoids SIGSEGV on swiftshader
+            MaterialSimplifier.ConvertLitToSimpleLit();
 
             var options = new BuildPlayerOptions
             {

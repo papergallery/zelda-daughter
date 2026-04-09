@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZeldaDaughter.Debugging;
 
 namespace ZeldaDaughter.World
 {
@@ -16,6 +17,7 @@ namespace ZeldaDaughter.World
             Screen.orientation = ScreenOrientation.Portrait;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             QualitySettings.vSyncCount = 0;
+            ZDLog.Log("Boot", $"GameBootstrap initialized targetFPS={_targetFrameRate}");
         }
     }
 }

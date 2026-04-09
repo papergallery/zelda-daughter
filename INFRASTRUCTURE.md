@@ -2,10 +2,11 @@
 
 ## Сервер
 - **OS:** Ubuntu 24.04 LTS, x86_64
-- **CPU:** 2x Intel Xeon Silver 4416+
-- **RAM:** 3.9 GB + 4 GB swap
-- **Disk:** ~59 GB total (LVM расширен: sda2 39GB + sda3 20GB), ~28 GB free
-- **GPU:** QXL виртуальный (нет аппаратного ускорения)
+- **CPU:** 4x AMD EPYC 9354 32-Core (KVM)
+- **RAM:** 7.8 GB (без swap)
+- **Disk:** 58 GB total (LVM), ~18 GB free
+- **GPU:** нет аппаратного ускорения
+- **KVM:** доступен (/dev/kvm) — поддержка Android-эмулятора
 - **Display:** нет физического дисплея, используется Xvfb
 
 ## Unity
@@ -68,15 +69,10 @@ xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" \
 ```
 
 ### Swap
+Swap отключён — 7.8 GB RAM достаточно для Unity и Android-эмулятора.
+При необходимости можно создать:
 ```bash
-# Создан вручную (не переживёт перезагрузку, если не добавить в fstab)
-sudo fallocate -l 4G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-
-# Для постоянного swap — добавить в /etc/fstab:
-# /swapfile none swap sw 0 0
+sudo fallocate -l 4G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
 ```
 
 ## Unity-проект
@@ -145,6 +141,14 @@ UnityProject/
 | OpenJDK 17 | 17.x | /usr/lib/jvm/java-17-openjdk-amd64 |
 | 7z | - | /usr/bin/7z |
 
+## MCP-серверы
+
+Определены в `.mcp.json`:
+| Сервер | Назначение | Статус |
+|---|---|---|
+| unity-mcp | Управление Unity Editor (268 tools) | Только с GUI |
+| android-mcp | Управление Android-эмулятором (25 tools) | Работает на VPS |
+
 ## Агенты Claude Code
 
 Определены в `.claude/agents/`:
@@ -166,14 +170,44 @@ UnityProject/
 │   ├── EditMode тесты               PlayMode тесты
 │   ├── Выполнение Editor-скриптов   Тестирование на устройстве
 │   └── Android APK билд (headless)
+├── Android-эмулятор (zelda_test)
+│   ├── Установка APK (adb install)
+│   ├── Smoke-тест (скриншоты + logcat)
+│   ├── Полный прогон TESTING_GUIDE
+│   └── Debug-логи [ZD:*] для верификации
 ├── Git push                         Git push
 └── Конфиги, контент, документация
 ```
 
+## Android-эмулятор
+
+- **KVM:** доступен, hardware acceleration работает
+- **SDK:** emulator + system-images;android-30;google_apis;x86_64
+- **AVD:** zelda_test (Pixel 4)
+- **RAM:** 7.8 GB — достаточно для Unity + Android-эмулятора одновременно
+- **MCP:** `npx -y android-mcp-server` (martingeidobler) — 25 tools для Claude Code
+
+### Команды
+```bash
+export PATH=$PATH:/opt/android-sdk/platform-tools:/opt/android-sdk/emulator
+./start_android_emulator.sh  # запуск эмулятора
+./test_on_emulator.sh        # установка APK + скриншот
+./smoke_test.sh              # автоматический smoke-тест
+adb emu kill                 # остановка
+```
+
+### Debug-логи [ZD:*]
+Система структурированных логов для автоматической верификации (только в Development-билдах):
+```bash
+adb logcat -s Unity | grep "\[ZD:"           # все debug-логи
+adb logcat -s Unity | grep "\[ZD:Combat\]"   # только бой
+adb logcat -s Unity | grep "\[ZD:Perf\]"     # FPS и память
+```
+Категории: `Input`, `Move`, `Interact`, `Inventory`, `Combat`, `Progression`, `Save`, `Scene`, `Perf`.
+Код: `Assets/Scripts/Debug/` (namespace `ZeldaDaughter.Debugging`).
+
 ## Известные ограничения
 
-1. **RAM:** 3.9 GB + 4 GB swap — Unity работает медленно, возможны OOM при больших операциях
-2. **Диск:** ~28 GB свободно (после расширения LVM на sda3)
-3. **GPU:** виртуальный QXL — нет рендеринга, только логика и компиляция
-4. **Personal лицензия:** не поддерживает `-nographics`, обязательно использовать Xvfb
-5. **Swap не постоянный:** после перезагрузки нужно пересоздать или добавить в fstab
+1. **Диск:** ~18 GB свободно — следить за местом при билдах
+2. **GPU:** нет аппаратного ускорения — только логика и компиляция, рендеринг через software
+3. **Personal лицензия:** не поддерживает `-nographics`, обязательно использовать Xvfb

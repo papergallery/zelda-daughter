@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZeldaDaughter.Debugging;
 
 namespace ZeldaDaughter.Combat
 {
@@ -93,6 +94,7 @@ namespace ZeldaDaughter.Combat
 
         private void SetState(EnemyState newState)
         {
+            ZDLog.Log("Combat", $"EnemyState enemy={gameObject.name} state={newState}");
             _state = newState;
             _stateTimer = 0f;
 

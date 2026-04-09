@@ -1,4 +1,5 @@
 using UnityEngine;
+using ZeldaDaughter.Debugging;
 using ZeldaDaughter.Inventory;
 using ZeldaDaughter.Save;
 using ZeldaDaughter.UI;
@@ -31,6 +32,7 @@ namespace ZeldaDaughter.World
             // Speech handled by SpeechBubbleManager via PlayerInventory.OnItemAdded
 
             _pickedUp = true;
+            ZDLog.Log("Interact", $"Pickup item={_itemData?.name} amount={_amount}");
             gameObject.SetActive(false);
         }
 

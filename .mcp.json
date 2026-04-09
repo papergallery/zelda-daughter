@@ -4,6 +4,14 @@
       "command": "/home/papermax/.local/bin/uv",
       "args": ["run", "--directory", "/tmp/unity-mcp/Server", "python", "src/main.py"],
       "env": {}
+    },
+    "android-mcp": {
+      "command": "npx",
+      "args": ["-y", "android-mcp-server"],
+      "env": {
+        "ANDROID_HOME": "/opt/android-sdk",
+        "PATH": "/opt/android-sdk/platform-tools:/opt/android-sdk/emulator:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      }
     }
   }
 }

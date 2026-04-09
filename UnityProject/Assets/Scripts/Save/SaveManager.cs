@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using ZeldaDaughter.Debugging;
 using ZeldaDaughter.Inventory;
 using ZeldaDaughter.World;
 
@@ -15,7 +16,8 @@ namespace ZeldaDaughter.Save
 
         public static SaveManager Instance { get; private set; }
 
-        private static readonly string SavePath = Application.persistentDataPath + "/save.json";
+        private static string _savePath;
+        private static string SavePath => _savePath ??= Application.persistentDataPath + "/save.json";
 
         public static void Register(ISaveable saveable)
         {
@@ -104,6 +106,7 @@ namespace ZeldaDaughter.Save
             string saveJson = JsonUtility.ToJson(data, prettyPrint: true);
             File.WriteAllText(SavePath, saveJson);
             Debug.Log("[Save] Saved successfully");
+            ZDLog.Log("Save", "AutoSave success");
         }
 
         public void Load()
@@ -156,6 +159,7 @@ namespace ZeldaDaughter.Save
             }
 
             Debug.Log("[Save] Loaded successfully");
+            ZDLog.Log("Save", "Loaded success");
         }
 
         /// <summary>
