@@ -71,6 +71,11 @@ info "Xcode: $(xcode-select -p)"
 if [ -d "$PROJECT_DIR/.git" ]; then
     warn "Обновляю из git..."
     cd "$PROJECT_DIR"
+    # Сбросить локальные изменения Unity (ProjectSettings, .meta файлы)
+    git checkout -- UnityProject/ProjectSettings/ 2>/dev/null
+    git checkout -- "*.meta" 2>/dev/null
+    # Удалить untracked .meta которые мешают merge
+    git clean -f -- "*.meta" 2>/dev/null
     git pull origin master 2>/dev/null && info "Git: обновлено" || warn "Git pull не удался (возможно offline)"
 fi
 
