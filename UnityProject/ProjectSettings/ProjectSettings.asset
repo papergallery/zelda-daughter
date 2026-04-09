@@ -59,9 +59,9 @@ PlayerSettings:
   androidShowActivityIndicatorOnLoading: -1
   iosUseCustomAppBackgroundBehavior: 0
   allowedAutorotateToPortrait: 1
-  allowedAutorotateToPortraitUpsideDown: 1
-  allowedAutorotateToLandscapeRight: 1
-  allowedAutorotateToLandscapeLeft: 1
+  allowedAutorotateToPortraitUpsideDown: 0
+  allowedAutorotateToLandscapeRight: 0
+  allowedAutorotateToLandscapeLeft: 0
   useOSAutorotation: 1
   use32BitDisplayBuffer: 1
   preserveFramebufferAlpha: 0
@@ -162,6 +162,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.papergallery.zeldasdaughter
+    iPhone: com.papergallery.zeldasdaughter
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -185,7 +186,7 @@ PlayerSettings:
   strictShaderVariantMatching: 0
   VertexChannelCompressionMask: 4054
   iPhoneSdkVersion: 988
-  iOSTargetOSVersionString: 12.0
+  iOSTargetOSVersionString: 15.0
   tvOSSdkVersion: 0
   tvOSRequireExtendedGameController: 0
   tvOSTargetOSVersionString: 12.0
@@ -659,8 +660,10 @@ PlayerSettings:
   webGLPowerPreference: 2
   scriptingDefineSymbols: {}
   additionalCompilerArguments: {}
-  platformArchitecture: {}
-  scriptingBackend: {}
+  platformArchitecture:
+    iPhone: 1
+  scriptingBackend:
+    iPhone: 1
   il2cppCompilerConfiguration: {}
   il2cppCodeGeneration: {}
   managedStrippingLevel: {}
