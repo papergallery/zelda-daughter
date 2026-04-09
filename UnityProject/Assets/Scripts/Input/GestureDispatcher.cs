@@ -27,13 +27,25 @@ namespace ZeldaDaughter.Input
         private Camera _mainCamera;
         private Camera MainCamera => _mainCamera != null ? _mainCamera : (_mainCamera = Camera.main);
 
+        private int _diagCount = 0;
         private void Update()
         {
-#if UNITY_EDITOR
-            HandleMouseInput();
-#else
-            HandleTouchInput();
-#endif
+            // Diagnostic: raw Debug.Log to verify GestureDispatcher runs
+            _diagCount++;
+            if (_diagCount == 120) // every 2 sec at 60fps
+            {
+                int tc = UnityEngine.Input.touchCount;
+                var mp = UnityEngine.Input.mousePosition;
+                bool mb = UnityEngine.Input.GetMouseButton(0);
+                UnityEngine.Debug.Log($"[GD:Diag] tc={tc} mb={mb} mpos=({mp.x:F0},{mp.y:F0})");
+                _diagCount = 0;
+            }
+
+            // Touch first (real device), fallback to mouse (editor + emulator)
+            if (UnityEngine.Input.touchCount > 0)
+                HandleTouchInput();
+            else
+                HandleMouseInput();
         }
 
         private void HandleTouchInput()
@@ -73,7 +85,9 @@ namespace ZeldaDaughter.Input
 
         private void OnPointerDown(Vector2 screenPos)
         {
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+            UnityEngine.Debug.Log($"[GD:Down] pos=({screenPos.x:F0},{screenPos.y:F0}) overUI={overUI}");
+            if (overUI)
                 return;
 
             _touchStart = screenPos;
@@ -122,6 +136,19 @@ namespace ZeldaDaughter.Input
                         _state = GestureState.Swiping;
                         EmitSwipe(screenPos);
                     }
+                    // Emulator fallback: если держим палец (любое время),
+                    // свайпим в направлении от центра экрана к точке касания
+                    else if (elapsed > 0.01f && drift < 5f)
+                    {
+                        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+                        Vector2 dirFromCenter = (screenPos - screenCenter).normalized;
+                        float distFromCenter = Vector2.Distance(screenPos, screenCenter);
+                        if (distFromCenter > 50f) // достаточно далеко от центра
+                        {
+                            float intensity = Mathf.Clamp01(distFromCenter / (Screen.width * 0.3f));
+                            OnMoveInput?.Invoke(dirFromCenter, intensity);
+                        }
+                    }
                     break;
             }
         }
@@ -165,6 +192,7 @@ namespace ZeldaDaughter.Input
             Vector2 delta = screenPos - _touchStart;
             Vector2 direction = delta.normalized;
             float intensity = Mathf.Clamp01(delta.magnitude / _maxSwipeDistance);
+            UnityEngine.Debug.Log($"[GD:Swipe] dir=({direction.x:F2},{direction.y:F2}) intensity={intensity:F2} drift={delta.magnitude:F0}");
             OnMoveInput?.Invoke(direction, intensity);
         }
 

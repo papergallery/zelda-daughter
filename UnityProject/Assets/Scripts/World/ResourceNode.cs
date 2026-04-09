@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using ZeldaDaughter.Debugging;
 using ZeldaDaughter.Inventory;
 using ZeldaDaughter.Save;
 using ZeldaDaughter.UI;
@@ -52,6 +53,7 @@ namespace ZeldaDaughter.World
                 animator.SetTrigger("Attack");
 
             _currentHP--;
+            ZDLog.Log("Interact", $"ResourceHit node={_data?.name} hp={_currentHP}/{_data?.MaxHitPoints}");
             OnHit?.Invoke(this, _currentHP);
 
             // Визуальная реакция — покачивание

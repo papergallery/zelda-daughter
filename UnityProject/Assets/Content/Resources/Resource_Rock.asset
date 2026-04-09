@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b164bb5428b8b33299f10b2f82578cad, type: 3}
+  m_Name: Resource_Rock
+  m_EditorClassIdentifier: 
+  _maxHitPoints: 8
+  _respawnTime: 600
+  _drops:
+  - item: {fileID: 11400000, guid: 20a8792e3fd4e4e989334ff064b9dbf5, type: 2}
+    minAmount: 1
+    maxAmount: 2
