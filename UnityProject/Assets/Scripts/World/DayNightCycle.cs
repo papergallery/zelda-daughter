@@ -62,6 +62,9 @@ namespace ZeldaDaughter.World
             _cycleDurationSeconds = _fullCycleMinutes * 60f;
             _timeOfDayNormalized = 0.35f; // Start at morning
             QualitySettings.shadowDistance = _shadowDistance;
+
+            if (_directionalLight == null)
+                _directionalLight = FindObjectOfType<Light>();
         }
 
         private void Update()
