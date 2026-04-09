@@ -18,6 +18,13 @@ namespace ZeldaDaughter.Editor
             EditorPrefs.SetBool("NdkUseEmbedded", false);
 
             string[] scenes = { "Assets/Scenes/TestScene.unity" };
+            if (!System.IO.File.Exists(scenes[0]))
+            {
+                Debug.LogError("[AndroidBuilder] Scene not found! Run 'ZeldaDaughter/Create Test Scene' first.");
+                EditorApplication.Exit(1);
+                return;
+            }
+
             string outputPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "../../ZeldaDaughter.apk"));
 
             // Ensure output directory exists
