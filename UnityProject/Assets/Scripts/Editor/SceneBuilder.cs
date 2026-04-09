@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using ZeldaDaughter.Audio;
 using ZeldaDaughter.Editor.MapGen;
 using ZeldaDaughter.Inventory;
+using ZeldaDaughter.Progression;
 
 namespace ZeldaDaughter.Editor
 {
@@ -18,9 +19,18 @@ namespace ZeldaDaughter.Editor
     /// </summary>
     public static class SceneBuilder
     {
+        // FBX paths for world objects
+        private const string FbxBasePath = "Assets/Models/Kenney/NatureKit/Models/FBX format/";
+        private const string FbxTownPath = "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/";
+        private const string FbxCharacterPath = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
+        private const string PlayerPrefabPath = "Assets/Prefabs/Player/Player.prefab";
+
         [MenuItem("ZeldaDaughter/Create Test Scene")]
         public static void CreateTestScene()
         {
+            if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
+                AssetDatabase.CreateFolder("Assets", "Scenes");
+
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
             // Ground plane
@@ -31,17 +41,19 @@ namespace ZeldaDaughter.Editor
 
             // Directional Light (Sun)
             var lightGO = new GameObject("Directional Light");
-            var light = lightGO.AddComponent<Light>();
-            light.type = LightType.Directional;
-            light.color = new Color(1f, 0.95f, 0.85f);
-            light.intensity = 1.2f;
-            light.shadows = LightShadows.Soft;
+            var sun = lightGO.AddComponent<Light>();
+            sun.type = LightType.Directional;
+            sun.color = new Color(1f, 0.95f, 0.85f);
+            sun.intensity = 1.2f;
+            sun.shadows = LightShadows.Soft;
             lightGO.transform.rotation = Quaternion.Euler(35f, 170f, 0f);
-            // Add UniversalAdditionalLightData for URP
             if (lightGO.GetComponent<UniversalAdditionalLightData>() == null)
                 lightGO.AddComponent<UniversalAdditionalLightData>();
 
-            // Camera with isometric setup
+            // Player — prefab → FBX → capsule fallback
+            var player = CreatePlayer();
+
+            // Isometric Camera
             var cameraGO = new GameObject("Main Camera");
             cameraGO.tag = "MainCamera";
             var cam = cameraGO.AddComponent<Camera>();
@@ -49,37 +61,311 @@ namespace ZeldaDaughter.Editor
             cam.orthographicSize = 8f;
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = new Color(0.6f, 0.75f, 0.9f);
-            cameraGO.transform.rotation = Quaternion.Euler(35f, 45f, 0f);
-            cameraGO.transform.position = Quaternion.Euler(35f, 45f, 0f) * new Vector3(0f, 0f, -20f);
-            // Add UniversalAdditionalCameraData for URP
             if (cameraGO.GetComponent<UniversalAdditionalCameraData>() == null)
                 cameraGO.AddComponent<UniversalAdditionalCameraData>();
-            // Add IsometricCamera component
-            cameraGO.AddComponent<World.IsometricCamera>();
+            var isoCam = cameraGO.AddComponent<World.IsometricCamera>();
+            isoCam.SetTarget(player.transform);
 
-            // Player placeholder (capsule)
-            var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            player.name = "Player";
-            player.transform.position = new Vector3(0f, 1f, 0f);
-            player.GetComponent<Renderer>().sharedMaterial = CreateMaterial("Player", Color.blue);
+            // EventSystem (обязательно для GestureDispatcher)
+            var eventSystemGO = new GameObject("EventSystem");
+            eventSystemGO.AddComponent<EventSystem>();
+            eventSystemGO.AddComponent<StandaloneInputModule>();
+
+            // InputSystem
+            var inputGO = new GameObject("InputSystem");
+            inputGO.AddComponent<ZeldaDaughter.Input.GestureDispatcher>();
 
             // GameBootstrap
-            var bootstrap = new GameObject("GameBootstrap");
-            bootstrap.AddComponent<World.GameBootstrap>();
+            var bootstrapGO = new GameObject("GameBootstrap");
+            bootstrapGO.AddComponent<World.GameBootstrap>();
 
             // DayNightCycle
-            var dayNight = new GameObject("DayNightCycle");
-            var cycle = dayNight.AddComponent<World.DayNightCycle>();
+            var dayNightGO = new GameObject("DayNightCycle");
+            var cycle = dayNightGO.AddComponent<World.DayNightCycle>();
+            var cycleSO = new SerializedObject(cycle);
+            cycleSO.FindProperty("_directionalLight").objectReferenceValue = sun;
+            cycleSO.ApplyModifiedProperties();
 
-            // Some test objects to verify scale
-            PlaceTestObject("Tree_Test", new Vector3(5f, 1.5f, 3f), new Color(0.2f, 0.6f, 0.1f), PrimitiveType.Cylinder);
-            PlaceTestObject("Rock_Test", new Vector3(-3f, 0.5f, 7f), Color.gray, PrimitiveType.Sphere);
-            PlaceTestObject("Building_Test", new Vector3(10f, 2f, -5f), new Color(0.6f, 0.4f, 0.2f), PrimitiveType.Cube);
+            // World objects: trees, stones, buildings from real FBX
+            PlaceWorldObjects();
 
             // Save scene
-            string scenePath = "Assets/Scenes/TestScene.unity";
+            const string scenePath = "Assets/Scenes/TestScene.unity";
             EditorSceneManager.SaveScene(scene, scenePath);
+            AddSceneToBuildSettings(scenePath);
             Debug.Log($"[SceneBuilder] Test scene created at {scenePath}");
+        }
+
+        /// <summary>Создаёт Player: prefab → FBX персонажа → capsule fallback. Все компоненты гарантированы.</summary>
+        private static GameObject CreatePlayer()
+        {
+            EnsurePlayerTag();
+
+            GameObject player = null;
+
+            // Попытка 1: готовый prefab
+            var playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabPath);
+            if (playerPrefab != null)
+            {
+                player = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab);
+                player.transform.position = new Vector3(0f, 0f, 0f);
+                Debug.Log("[SceneBuilder] Player prefab загружен из Assets/Prefabs/Player/Player.prefab");
+            }
+
+            // Попытка 2: FBX персонажа
+            if (player == null)
+            {
+                var characterFbx = AssetDatabase.LoadAssetAtPath<GameObject>(FbxCharacterPath);
+                if (characterFbx != null)
+                {
+                    player = new GameObject("Player");
+                    var model = (GameObject)PrefabUtility.InstantiatePrefab(characterFbx);
+                    model.name = "Model";
+                    model.transform.SetParent(player.transform);
+                    model.transform.localPosition = Vector3.zero;
+                    model.transform.localRotation = Quaternion.identity;
+                    model.transform.localScale = Vector3.one;
+                    player.transform.position = new Vector3(0f, 0f, 0f);
+                    Debug.Log($"[SceneBuilder] Player создан из FBX: {FbxCharacterPath}");
+                }
+            }
+
+            // Fallback: капсула
+            if (player == null)
+            {
+                player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                player.name = "Player";
+                player.transform.position = new Vector3(0f, 1f, 0f);
+                player.GetComponent<Renderer>().sharedMaterial = CreateMaterial("Player", Color.blue);
+                Debug.LogWarning("[SceneBuilder] Player FBX не найден, используется capsule fallback.");
+            }
+
+            player.tag = "Player";
+
+            // CharacterController (требуется CharacterMovement)
+            if (player.GetComponent<CharacterController>() == null)
+            {
+                var cc = player.AddComponent<CharacterController>();
+                cc.radius = 0.3f;
+                cc.height = 1.8f;
+                cc.center = new Vector3(0f, 0.9f, 0f);
+                cc.slopeLimit = 45f;
+                cc.stepOffset = 0.3f;
+            }
+
+            // Gameplay-компоненты (только если prefab не принёс их)
+            AddComponentIfMissing<ZeldaDaughter.Input.CharacterMovement>(player);
+            AddComponentIfMissing<ZeldaDaughter.Input.CharacterAutoMove>(player);
+            AddComponentIfMissing<ZeldaDaughter.World.SurfaceDetector>(player);
+            AddComponentIfMissing<ZeldaDaughter.Inventory.PlayerInventory>(player);
+
+            // Progression — только если ScriptableObject'ы существуют
+            var progressionConfig = AssetDatabase.LoadAssetAtPath<ProgressionConfig>("Assets/Data/Progression/ProgressionConfig.asset");
+            var playerStats = player.GetComponent<PlayerStats>() ?? player.AddComponent<PlayerStats>();
+            if (progressionConfig != null)
+            {
+                var so = new SerializedObject(playerStats);
+                so.FindProperty("_config").objectReferenceValue = progressionConfig;
+                so.ApplyModifiedProperties();
+            }
+
+            var inventory = player.GetComponent<PlayerInventory>();
+            var actionTracker = player.GetComponent<ActionTracker>() ?? player.AddComponent<ActionTracker>();
+            {
+                var so = new SerializedObject(actionTracker);
+                so.FindProperty("_playerStats").objectReferenceValue = playerStats;
+                so.FindProperty("_playerInventory").objectReferenceValue = inventory;
+                so.ApplyModifiedProperties();
+            }
+
+            var effectConfig = AssetDatabase.LoadAssetAtPath<StatEffectConfig>("Assets/Data/Progression/StatEffectConfig.asset");
+            var effectApplier = player.GetComponent<StatEffectApplier>() ?? player.AddComponent<StatEffectApplier>();
+            {
+                var so = new SerializedObject(effectApplier);
+                so.FindProperty("_playerStats").objectReferenceValue = playerStats;
+                so.FindProperty("_inventory").objectReferenceValue = inventory;
+                if (effectConfig != null)
+                    so.FindProperty("_effectConfig").objectReferenceValue = effectConfig;
+                so.ApplyModifiedProperties();
+            }
+
+            var feedback = player.GetComponent<ProgressionFeedback>() ?? player.AddComponent<ProgressionFeedback>();
+            {
+                var so = new SerializedObject(feedback);
+                if (effectConfig != null)
+                    so.FindProperty("_effectConfig").objectReferenceValue = effectConfig;
+                var anim = player.GetComponent<Animator>() ?? player.GetComponentInChildren<Animator>();
+                if (anim != null)
+                    so.FindProperty("_animator").objectReferenceValue = anim;
+                so.ApplyModifiedProperties();
+            }
+
+            return player;
+        }
+
+        /// <summary>Размещает объекты мира из реальных FBX. Fallback на примитивы если FBX недоступен.</summary>
+        private static void PlaceWorldObjects()
+        {
+            // Деревья — варианты в порядке приоритета
+            string[] treeModels = {
+                FbxBasePath + "tree_simple_fall.fbx",
+                FbxBasePath + "tree_fat.fbx",
+                FbxBasePath + "tree_pineTallC.fbx",
+                FbxBasePath + "tree_pineTallA_detailed.fbx",
+                FbxBasePath + "tree_cone_fall.fbx",
+            };
+
+            // Камни
+            string[] stoneModels = {
+                FbxBasePath + "stone_largeC.fbx",
+                FbxBasePath + "stone_largeE.fbx",
+                FbxBasePath + "stone_tallA.fbx",
+                FbxBasePath + "stone_smallB.fbx",
+                FbxBasePath + "stone_smallF.fbx",
+            };
+
+            // Здания из FantasyTownKit
+            string[] buildingModels = {
+                FbxTownPath + "wall.fbx",
+                FbxTownPath + "roof-high.fbx",
+                FbxTownPath + "roof-point.fbx",
+            };
+
+            // Группа деревьев
+            var treePositions = new Vector3[] {
+                new Vector3(5f, 0f, 3f),
+                new Vector3(-6f, 0f, 4f),
+                new Vector3(8f, 0f, -2f),
+                new Vector3(-4f, 0f, -7f),
+                new Vector3(12f, 0f, 5f),
+                new Vector3(-10f, 0f, 2f),
+                new Vector3(3f, 0f, 10f),
+                new Vector3(-7f, 0f, 9f),
+                new Vector3(15f, 0f, -3f),
+                new Vector3(-13f, 0f, -5f),
+                new Vector3(6f, 0f, -9f),
+                new Vector3(-2f, 0f, -12f),
+            };
+
+            var treeParent = new GameObject("Trees");
+            for (int i = 0; i < treePositions.Length; i++)
+            {
+                string modelPath = treeModels[i % treeModels.Length];
+                var go = SpawnFbxOrPrimitive(modelPath, $"Tree_{i}", treePositions[i],
+                    PrimitiveType.Cylinder, new Color(0.2f, 0.6f, 0.1f));
+                go.transform.SetParent(treeParent.transform);
+                EnsureCollider(go);
+            }
+
+            // Группа камней
+            var stonePositions = new Vector3[] {
+                new Vector3(-3f, 0f, 7f),
+                new Vector3(9f, 0f, -6f),
+                new Vector3(-8f, 0f, -3f),
+                new Vector3(4f, 0f, -5f),
+                new Vector3(-11f, 0f, 7f),
+                new Vector3(13f, 0f, 8f),
+            };
+
+            var stoneParent = new GameObject("Stones");
+            for (int i = 0; i < stonePositions.Length; i++)
+            {
+                string modelPath = stoneModels[i % stoneModels.Length];
+                var go = SpawnFbxOrPrimitive(modelPath, $"Stone_{i}", stonePositions[i],
+                    PrimitiveType.Sphere, Color.gray);
+                go.transform.SetParent(stoneParent.transform);
+                EnsureCollider(go);
+            }
+
+            // Строения
+            var buildingParent = new GameObject("Buildings");
+            SpawnFbxOrPrimitive(buildingModels[0], "Building_Wall", new Vector3(18f, 0f, 0f),
+                PrimitiveType.Cube, new Color(0.6f, 0.4f, 0.2f))
+                .transform.SetParent(buildingParent.transform);
+            SpawnFbxOrPrimitive(buildingModels[1 % buildingModels.Length], "Building_Roof", new Vector3(18f, 2f, 0f),
+                PrimitiveType.Cube, new Color(0.5f, 0.3f, 0.15f))
+                .transform.SetParent(buildingParent.transform);
+        }
+
+        /// <summary>
+        /// Пытается загрузить FBX по пути. Если не найден — создаёт примитив с материалом.
+        /// Добавляет MeshCollider (или BoxCollider) если у объекта нет коллайдера.
+        /// </summary>
+        private static GameObject SpawnFbxOrPrimitive(
+            string fbxPath, string goName, Vector3 position,
+            PrimitiveType fallbackPrimitive, Color fallbackColor)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<GameObject>(fbxPath);
+            if (asset != null)
+            {
+                var go = Object.Instantiate(asset, position, Quaternion.identity);
+                go.name = goName;
+                AssignUrpMaterials(go);
+                return go;
+            }
+
+            // Fallback: примитив
+            var primitive = GameObject.CreatePrimitive(fallbackPrimitive);
+            primitive.name = goName;
+            primitive.transform.position = position;
+            primitive.GetComponent<Renderer>().sharedMaterial = CreateMaterial(goName, fallbackColor);
+            return primitive;
+        }
+
+        /// <summary>Назначает URP/Lit материал всем Renderer в иерархии (FBX-ы часто приходят с Built-in шейдерами).</summary>
+        private static void AssignUrpMaterials(GameObject root)
+        {
+            var urpShader = Shader.Find("Universal Render Pipeline/Lit");
+            if (urpShader == null) return;
+
+            foreach (var rend in root.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats = rend.sharedMaterials;
+                bool changed = false;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    if (mats[i] == null || mats[i].shader == urpShader) continue;
+                    var newMat = new Material(urpShader);
+                    newMat.color = mats[i].HasProperty("_Color") ? mats[i].color : Color.white;
+                    mats[i] = newMat;
+                    changed = true;
+                }
+                if (changed) rend.sharedMaterials = mats;
+            }
+        }
+
+        /// <summary>Добавляет BoxCollider если у объекта нет ни одного коллайдера.</summary>
+        private static void EnsureCollider(GameObject go)
+        {
+            if (go.GetComponentInChildren<Collider>() == null)
+                go.AddComponent<BoxCollider>();
+        }
+
+        /// <summary>Добавляет тег "Player" если отсутствует (дублирует логику PlayerPrefabBuilder).</summary>
+        private static void EnsurePlayerTag()
+        {
+            const string playerTag = "Player";
+            foreach (string tag in UnityEditorInternal.InternalEditorUtility.tags)
+                if (tag == playerTag) return;
+
+            var tagManager = new SerializedObject(
+                AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
+            var tagsProp = tagManager.FindProperty("tags");
+            for (int i = 0; i < tagsProp.arraySize; i++)
+            {
+                var el = tagsProp.GetArrayElementAtIndex(i);
+                if (string.IsNullOrEmpty(el.stringValue))
+                {
+                    el.stringValue = playerTag;
+                    tagManager.ApplyModifiedProperties();
+                    Debug.Log("[SceneBuilder] Тег 'Player' добавлен в TagManager.");
+                    return;
+                }
+            }
+            tagsProp.arraySize++;
+            tagsProp.GetArrayElementAtIndex(tagsProp.arraySize - 1).stringValue = playerTag;
+            tagManager.ApplyModifiedProperties();
+            Debug.Log("[SceneBuilder] Тег 'Player' добавлен в TagManager.");
         }
 
         [MenuItem("ZeldaDaughter/Scenes/Build Stage1 Scene")]

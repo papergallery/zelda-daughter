@@ -9,6 +9,13 @@ namespace ZeldaDaughter.Editor
         public static void BuildXcodeProject()
         {
             string[] scenes = { "Assets/Scenes/TestScene.unity" };
+            if (!System.IO.File.Exists(scenes[0]))
+            {
+                Debug.LogError("[IOSBuilder] Scene not found! Run 'ZeldaDaughter/Create Test Scene' first.");
+                EditorApplication.Exit(1);
+                return;
+            }
+
             string outputPath = System.IO.Path.GetFullPath(
                 System.IO.Path.Combine(Application.dataPath, "../../ios-build"));
 
