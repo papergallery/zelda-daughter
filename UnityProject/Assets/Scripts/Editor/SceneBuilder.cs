@@ -115,17 +115,40 @@ namespace ZeldaDaughter.Editor
             // Попытка 2: FBX персонажа
             if (player == null)
             {
+                // Убедиться что FBX импортирует материалы
+                var importer = AssetImporter.GetAtPath(FbxCharacterPath) as ModelImporter;
+                if (importer != null && importer.materialImportMode != ModelImporterMaterialImportMode.ImportViaMaterialDescription)
+                {
+                    importer.materialImportMode = ModelImporterMaterialImportMode.ImportViaMaterialDescription;
+                    importer.materialLocation = ModelImporterMaterialLocation.InPrefab;
+                    importer.SaveAndReimport();
+                }
+
                 var characterFbx = AssetDatabase.LoadAssetAtPath<GameObject>(FbxCharacterPath);
                 if (characterFbx != null)
                 {
                     player = new GameObject("Player");
+                    player.transform.position = new Vector3(0f, 0.05f, 0f);
                     var model = (GameObject)PrefabUtility.InstantiatePrefab(characterFbx);
                     model.name = "Model";
                     model.transform.SetParent(player.transform);
                     model.transform.localPosition = Vector3.zero;
                     model.transform.localRotation = Quaternion.identity;
                     model.transform.localScale = Vector3.one;
-                    player.transform.position = new Vector3(0f, 0f, 0f);
+
+                    // Проверить размер модели и масштабировать если слишком маленькая
+                    var bounds = CalculateBounds(model);
+                    if (bounds.size.y < 0.5f && bounds.size.y > 0.001f)
+                    {
+                        float targetHeight = 1.8f;
+                        float scale = targetHeight / bounds.size.y;
+                        model.transform.localScale = Vector3.one * scale;
+                        Debug.Log($"[SceneBuilder] Model масштабирован: {scale:F1}x (высота была {bounds.size.y:F3})");
+                    }
+
+                    // Назначить URP материал если модель пришла без материалов
+                    AssignUrpMaterialIfMissing(model);
+
                     Debug.Log($"[SceneBuilder] Player создан из FBX: {FbxCharacterPath}");
                 }
             }
@@ -313,6 +336,44 @@ namespace ZeldaDaughter.Editor
         }
 
         /// <summary>Назначает URP/Lit материал всем Renderer в иерархии (FBX-ы часто приходят с Built-in шейдерами).</summary>
+        private static Bounds CalculateBounds(GameObject go)
+        {
+            var renderers = go.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0) return new Bounds(go.transform.position, Vector3.zero);
+            var bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+                bounds.Encapsulate(renderers[i].bounds);
+            return bounds;
+        }
+
+        private static void AssignUrpMaterialIfMissing(GameObject root)
+        {
+            var urpShader = Shader.Find("Universal Render Pipeline/Lit");
+            if (urpShader == null) urpShader = Shader.Find("Universal Render Pipeline/Simple Lit");
+            if (urpShader == null) return;
+
+            foreach (var rend in root.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats = rend.sharedMaterials;
+                bool needsFix = false;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    if (mats[i] == null)
+                    {
+                        mats[i] = new Material(urpShader) { color = Color.gray };
+                        needsFix = true;
+                    }
+                    else if (mats[i].shader.name.Contains("Standard") || mats[i].shader.name.Contains("Hidden"))
+                    {
+                        var oldColor = mats[i].HasProperty("_Color") ? mats[i].color : Color.gray;
+                        mats[i] = new Material(urpShader) { color = oldColor };
+                        needsFix = true;
+                    }
+                }
+                if (needsFix) rend.sharedMaterials = mats;
+            }
+        }
+
         private static void AssignUrpMaterials(GameObject root)
         {
             var urpShader = Shader.Find("Universal Render Pipeline/Lit");
