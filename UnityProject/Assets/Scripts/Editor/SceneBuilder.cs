@@ -1267,5 +1267,1453 @@ namespace ZeldaDaughter.Editor
             AssetDatabase.CreateAsset(mat, matPath);
             return mat;
         }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // DEMO SCENE — полная демо-сцена со всеми механиками
+        // ─────────────────────────────────────────────────────────────────────
+
+        [MenuItem("ZeldaDaughter/Scenes/Build Demo Scene")]
+        public static void CreateDemoScene()
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/Scenes"))
+                AssetDatabase.CreateFolder("Assets", "Scenes");
+
+            if (!AssetDatabase.IsValidFolder("Assets/Materials"))
+                AssetDatabase.CreateFolder("Assets", "Materials");
+
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+            var sun = SetupDemoScene();
+            var player = SetupDemoPlayer();
+            SetupDemoCamera(player);
+            SetupDemoCoreSystems(sun);
+            SetupDemoNPCSystems(player);
+            SetupDemoQuestSystems(player);
+            SetupDemoUI(player);
+
+            var meadowParent = PlaceDemoMeadow();
+            PlaceDemoRoad();
+            PlaceDemoCity();
+
+            WireDemoReferences();
+
+            const string scenePath = "Assets/Scenes/DemoScene.unity";
+            EditorSceneManager.SaveScene(scene, scenePath);
+            AddSceneToBuildSettings(scenePath);
+            Debug.Log($"[SceneBuilder] DemoScene создана: {scenePath}");
+        }
+
+        // 1. SetupDemoScene — земля + свет
+        private static Light SetupDemoScene()
+        {
+            // Поляна (зелёная)
+            var meadowGround = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            meadowGround.name = "Ground_Meadow";
+            meadowGround.transform.position = new Vector3(-25f, 0f, 0f);
+            meadowGround.transform.localScale = new Vector3(8f, 1f, 8f);
+            meadowGround.GetComponent<Renderer>().sharedMaterial =
+                CreateMaterial("Ground_Meadow", new Color(0.25f, 0.52f, 0.18f));
+
+            // Город (серый)
+            var cityGround = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            cityGround.name = "Ground_City";
+            cityGround.transform.position = new Vector3(21f, 0f, 7f);
+            cityGround.transform.localScale = new Vector3(8f, 1f, 8f);
+            cityGround.GetComponent<Renderer>().sharedMaterial =
+                CreateMaterial("Ground_City", new Color(0.48f, 0.46f, 0.42f));
+
+            // Directional Light (Sun)
+            var lightGO = new GameObject("Directional Light");
+            var sun = lightGO.AddComponent<Light>();
+            sun.type = LightType.Directional;
+            sun.color = new Color(1f, 0.95f, 0.85f);
+            sun.intensity = 1.2f;
+            sun.shadows = LightShadows.Soft;
+            lightGO.transform.rotation = Quaternion.Euler(50f, 170f, 0f);
+            if (lightGO.GetComponent<UniversalAdditionalLightData>() == null)
+                lightGO.AddComponent<UniversalAdditionalLightData>();
+
+            return sun;
+        }
+
+        // 2. SetupDemoPlayer — Player со всеми компонентами
+        private static GameObject SetupDemoPlayer()
+        {
+            EnsurePlayerTag();
+
+            var spawnPos = new Vector3(-40f, 0f, 0f);
+            GameObject player = null;
+
+            var playerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabPath);
+            if (playerPrefab != null)
+            {
+                player = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab);
+                player.transform.position = spawnPos;
+                Debug.Log("[SceneBuilder] DemoScene: Player загружен из prefab.");
+            }
+
+            if (player == null)
+            {
+                var fbx = AssetDatabase.LoadAssetAtPath<GameObject>(FbxCharacterPath);
+                if (fbx != null)
+                {
+                    player = new GameObject("Player");
+                    player.transform.position = spawnPos;
+                    var model = (GameObject)PrefabUtility.InstantiatePrefab(fbx);
+                    model.name = "Model";
+                    model.transform.SetParent(player.transform);
+                    model.transform.localPosition = Vector3.zero;
+                    model.transform.localRotation = Quaternion.identity;
+                    model.transform.localScale = Vector3.one;
+                    AssignUrpMaterialIfMissing(model);
+                }
+            }
+
+            if (player == null)
+            {
+                player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                player.name = "Player";
+                player.transform.position = spawnPos;
+                player.GetComponent<Renderer>().sharedMaterial =
+                    CreateMaterial("Player", new Color(0.2f, 0.4f, 0.8f));
+                Debug.LogWarning("[SceneBuilder] DemoScene: Player FBX не найден, используется capsule.");
+            }
+
+            player.tag = "Player";
+
+            // CharacterController
+            if (player.GetComponent<CharacterController>() == null)
+            {
+                var cc = player.AddComponent<CharacterController>();
+                cc.radius = 0.3f;
+                cc.height = 1.8f;
+                cc.center = new Vector3(0f, 0.9f, 0f);
+                cc.slopeLimit = 45f;
+                cc.stepOffset = 0.3f;
+            }
+
+            // Animator
+            if (player.GetComponent<Animator>() == null)
+            {
+                var anim = player.AddComponent<Animator>();
+                var controller = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                    "Assets/Animations/Controllers/PlayerAnimator.controller");
+                if (controller != null)
+                    anim.runtimeAnimatorController = controller;
+            }
+
+            // Core movement
+            AddComponentIfMissing<ZeldaDaughter.Input.CharacterMovement>(player);
+            AddComponentIfMissing<ZeldaDaughter.Input.CharacterAutoMove>(player);
+            AddComponentIfMissing<ZeldaDaughter.World.SurfaceDetector>(player);
+
+            // Inventory
+            AddComponentIfMissing<ZeldaDaughter.Inventory.PlayerInventory>(player);
+            AddComponentIfMissing<ZeldaDaughter.Inventory.WeightSystem>(player);
+
+            var inventory = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            var charMovement = player.GetComponent<ZeldaDaughter.Input.CharacterMovement>();
+
+            var invConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.InventoryConfig>(
+                "Assets/Data/InventoryConfig.asset");
+            var weightSys = player.GetComponent<ZeldaDaughter.Inventory.WeightSystem>();
+            if (weightSys != null && (invConfig != null || charMovement != null))
+            {
+                var so = new SerializedObject(weightSys);
+                if (invConfig != null)
+                    so.FindProperty("_config").objectReferenceValue = invConfig;
+                if (charMovement != null)
+                    so.FindProperty("_characterMovement").objectReferenceValue = charMovement;
+                so.ApplyModifiedProperties();
+            }
+
+            // Crafting
+            AddComponentIfMissing<ZeldaDaughter.UI.CraftFeedback>(player);
+            AddComponentIfMissing<ZeldaDaughter.World.WorldInteractionSystem>(player);
+            AddComponentIfMissing<ZeldaDaughter.World.WorldPlacement>(player);
+
+            var worldPlacement = player.GetComponent<ZeldaDaughter.World.WorldPlacement>();
+            if (worldPlacement != null)
+            {
+                var db = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.CraftRecipeDatabase>(
+                    "Assets/Data/Recipes/CraftRecipeDatabase.asset");
+                if (db != null)
+                {
+                    var so = new SerializedObject(worldPlacement);
+                    var prop = so.FindProperty("_recipeDatabase");
+                    if (prop != null) { prop.objectReferenceValue = db; so.ApplyModifiedProperties(); }
+                }
+            }
+
+            // Progression
+            var progressionConfig = AssetDatabase.LoadAssetAtPath<ProgressionConfig>(
+                "Assets/Data/Progression/ProgressionConfig.asset");
+            var effectConfig = AssetDatabase.LoadAssetAtPath<StatEffectConfig>(
+                "Assets/Data/Progression/StatEffectConfig.asset");
+
+            var playerStats = player.GetComponent<PlayerStats>() ?? player.AddComponent<PlayerStats>();
+            if (progressionConfig != null)
+            {
+                var so = new SerializedObject(playerStats);
+                so.FindProperty("_config").objectReferenceValue = progressionConfig;
+                so.ApplyModifiedProperties();
+            }
+
+            var actionTracker = player.GetComponent<ActionTracker>() ?? player.AddComponent<ActionTracker>();
+            {
+                var so = new SerializedObject(actionTracker);
+                so.FindProperty("_playerStats").objectReferenceValue = playerStats;
+                so.FindProperty("_playerInventory").objectReferenceValue = inventory;
+                so.ApplyModifiedProperties();
+            }
+
+            var effectApplier = player.GetComponent<StatEffectApplier>() ?? player.AddComponent<StatEffectApplier>();
+            {
+                var so = new SerializedObject(effectApplier);
+                so.FindProperty("_playerStats").objectReferenceValue = playerStats;
+                so.FindProperty("_inventory").objectReferenceValue = inventory;
+                if (effectConfig != null)
+                    so.FindProperty("_effectConfig").objectReferenceValue = effectConfig;
+                so.ApplyModifiedProperties();
+            }
+
+            var feedback = player.GetComponent<ProgressionFeedback>() ?? player.AddComponent<ProgressionFeedback>();
+            {
+                var so = new SerializedObject(feedback);
+                if (effectConfig != null)
+                    so.FindProperty("_effectConfig").objectReferenceValue = effectConfig;
+                var anim = player.GetComponent<Animator>() ?? player.GetComponentInChildren<Animator>();
+                if (anim != null)
+                    so.FindProperty("_animator").objectReferenceValue = anim;
+                so.ApplyModifiedProperties();
+            }
+
+            // Combat
+            AddComponentIfMissing<ZeldaDaughter.Combat.PlayerHealthState>(player);
+            AddComponentIfMissing<ZeldaDaughter.Combat.CombatController>(player);
+            AddComponentIfMissing<ZeldaDaughter.Combat.WeaponEquipSystem>(player);
+            AddComponentIfMissing<ZeldaDaughter.Combat.RestZoneDetector>(player);
+            AddComponentIfMissing<ZeldaDaughter.Combat.HungerSystem>(player);
+            AddComponentIfMissing<ZeldaDaughter.Combat.WoundEffectApplier>(player);
+            AddComponentIfMissing<ZeldaDaughter.Combat.FoodConsumption>(player);
+            AddComponentIfMissing<ZeldaDaughter.Combat.KnockoutSystem>(player);
+
+            // PlayerHitbox
+            if (player.transform.Find("PlayerHitbox") == null)
+            {
+                var hitboxGo = new GameObject("PlayerHitbox");
+                hitboxGo.transform.SetParent(player.transform);
+                hitboxGo.transform.localPosition = new Vector3(0f, 0.8f, 0.7f);
+                var hCol = hitboxGo.AddComponent<BoxCollider>();
+                hCol.isTrigger = true;
+                hCol.size = new Vector3(0.6f, 0.6f, 0.6f);
+                hitboxGo.AddComponent<ZeldaDaughter.Combat.HitboxTrigger>();
+                hitboxGo.SetActive(false);
+            }
+
+            var combatConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.CombatConfig>(
+                "Assets/Data/Combat/CombatConfig.asset");
+
+            // Привязываем CombatConfig к Combat-компонентам
+            DemoWireCombatConfig(player, combatConfig);
+
+            // Weapon Proficiency
+            AddComponentIfMissing<ZeldaDaughter.Progression.WeaponProficiency>(player);
+            AddComponentIfMissing<ZeldaDaughter.Progression.WeaponProficiencyTracker>(player);
+            AddComponentIfMissing<ZeldaDaughter.Progression.WeaponProficiencyApplier>(player);
+
+            var proficiency = player.GetComponent<ZeldaDaughter.Progression.WeaponProficiency>();
+            var profData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Progression.WeaponProficiencyData>(
+                "Assets/Data/Progression/WeaponProficiencyData.asset");
+            if (proficiency != null && profData != null)
+            {
+                var so = new SerializedObject(proficiency);
+                so.FindProperty("_data").objectReferenceValue = profData;
+                so.ApplyModifiedProperties();
+            }
+
+            var profTracker = player.GetComponent<ZeldaDaughter.Progression.WeaponProficiencyTracker>();
+            if (profTracker != null)
+            {
+                var weaponEquip = player.GetComponent<ZeldaDaughter.Combat.WeaponEquipSystem>();
+                var so = new SerializedObject(profTracker);
+                so.FindProperty("_proficiency").objectReferenceValue = proficiency;
+                if (weaponEquip != null)
+                    so.FindProperty("_weaponEquip").objectReferenceValue = weaponEquip;
+                so.ApplyModifiedProperties();
+            }
+
+            var profApplier = player.GetComponent<ZeldaDaughter.Progression.WeaponProficiencyApplier>();
+            if (profApplier != null)
+            {
+                var combatCtrl = player.GetComponent<ZeldaDaughter.Combat.CombatController>();
+                var weaponEquip = player.GetComponent<ZeldaDaughter.Combat.WeaponEquipSystem>();
+                var so = new SerializedObject(profApplier);
+                so.FindProperty("_proficiency").objectReferenceValue = proficiency;
+                if (combatCtrl != null)
+                    so.FindProperty("_combatController").objectReferenceValue = combatCtrl;
+                if (weaponEquip != null)
+                    so.FindProperty("_weaponEquip").objectReferenceValue = weaponEquip;
+                so.ApplyModifiedProperties();
+            }
+
+            Debug.Log("[SceneBuilder] DemoScene: Player настроен.");
+            return player;
+        }
+
+        // Привязывает CombatConfig и WoundConfig к Combat-компонентам Player
+        private static void DemoWireCombatConfig(GameObject player, ZeldaDaughter.Combat.CombatConfig combatConfig)
+        {
+            var charMovement = player.GetComponent<ZeldaDaughter.Input.CharacterMovement>();
+            var charAutoMove = player.GetComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+            var weaponEquip  = player.GetComponent<ZeldaDaughter.Combat.WeaponEquipSystem>();
+            var combatCtrl   = player.GetComponent<ZeldaDaughter.Combat.CombatController>();
+            var healthState  = player.GetComponent<ZeldaDaughter.Combat.PlayerHealthState>();
+            var woundApplier = player.GetComponent<ZeldaDaughter.Combat.WoundEffectApplier>();
+            var hungerSys    = player.GetComponent<ZeldaDaughter.Combat.HungerSystem>();
+            var knockoutSys  = player.GetComponent<ZeldaDaughter.Combat.KnockoutSystem>();
+
+            var hitboxTransform = player.transform.Find("PlayerHitbox");
+            var hitboxTrigger = hitboxTransform != null
+                ? hitboxTransform.GetComponent<ZeldaDaughter.Combat.HitboxTrigger>() : null;
+
+            var woundPuncture = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>(
+                "Assets/Data/Combat/WoundConfig_Puncture.asset");
+            var woundFracture = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>(
+                "Assets/Data/Combat/WoundConfig_Fracture.asset");
+            var woundBurn = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>(
+                "Assets/Data/Combat/WoundConfig_Burn.asset");
+            var woundPoison = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>(
+                "Assets/Data/Combat/WoundConfig_Poison.asset");
+
+            if (combatCtrl != null)
+            {
+                var so = new SerializedObject(combatCtrl);
+                if (combatConfig != null) so.FindProperty("_config").objectReferenceValue = combatConfig;
+                if (hitboxTrigger != null) so.FindProperty("_hitbox").objectReferenceValue = hitboxTrigger;
+                if (weaponEquip != null) so.FindProperty("_weaponEquip").objectReferenceValue = weaponEquip;
+                if (charAutoMove != null) so.FindProperty("_autoMove").objectReferenceValue = charAutoMove;
+                so.ApplyModifiedProperties();
+            }
+
+            if (healthState != null)
+            {
+                var so = new SerializedObject(healthState);
+                if (combatConfig != null) so.FindProperty("_config").objectReferenceValue = combatConfig;
+                var woundsProp = so.FindProperty("_woundConfigs");
+                if (woundsProp != null)
+                {
+                    woundsProp.arraySize = 4;
+                    woundsProp.GetArrayElementAtIndex(0).objectReferenceValue = woundPuncture;
+                    woundsProp.GetArrayElementAtIndex(1).objectReferenceValue = woundFracture;
+                    woundsProp.GetArrayElementAtIndex(2).objectReferenceValue = woundBurn;
+                    woundsProp.GetArrayElementAtIndex(3).objectReferenceValue = woundPoison;
+                }
+                so.ApplyModifiedProperties();
+            }
+
+            if (woundApplier != null)
+            {
+                var so = new SerializedObject(woundApplier);
+                var woundsProp = so.FindProperty("_woundConfigs");
+                if (woundsProp != null)
+                {
+                    woundsProp.arraySize = 4;
+                    woundsProp.GetArrayElementAtIndex(0).objectReferenceValue = woundPuncture;
+                    woundsProp.GetArrayElementAtIndex(1).objectReferenceValue = woundFracture;
+                    woundsProp.GetArrayElementAtIndex(2).objectReferenceValue = woundBurn;
+                    woundsProp.GetArrayElementAtIndex(3).objectReferenceValue = woundPoison;
+                }
+                if (charMovement != null) so.FindProperty("_movement").objectReferenceValue = charMovement;
+                so.ApplyModifiedProperties();
+            }
+
+            if (hungerSys != null)
+            {
+                var so = new SerializedObject(hungerSys);
+                if (combatConfig != null) so.FindProperty("_config").objectReferenceValue = combatConfig;
+                if (charMovement != null) so.FindProperty("_movement").objectReferenceValue = charMovement;
+                so.ApplyModifiedProperties();
+            }
+
+            if (knockoutSys != null && combatConfig != null)
+            {
+                var so = new SerializedObject(knockoutSys);
+                so.FindProperty("_config").objectReferenceValue = combatConfig;
+                so.ApplyModifiedProperties();
+            }
+        }
+
+        // 3. SetupDemoCamera — изометрическая камера на Player
+        private static void SetupDemoCamera(GameObject player)
+        {
+            var cameraGO = new GameObject("Main Camera");
+            cameraGO.tag = "MainCamera";
+            var cam = cameraGO.AddComponent<Camera>();
+            cam.orthographic = true;
+            cam.orthographicSize = 8f;
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            cam.backgroundColor = new Color(0.6f, 0.75f, 0.9f);
+            if (cameraGO.GetComponent<UniversalAdditionalCameraData>() == null)
+                cameraGO.AddComponent<UniversalAdditionalCameraData>();
+            var isoCam = cameraGO.AddComponent<ZeldaDaughter.World.IsometricCamera>();
+            isoCam.SetTarget(player.transform);
+        }
+
+        // 4. SetupDemoCoreSystems — EventSystem, GestureDispatcher, DayNightCycle, WeatherSystem, SaveManager
+        private static void SetupDemoCoreSystems(Light sun)
+        {
+            var systemsParent = new GameObject("Systems");
+
+            // EventSystem
+            if (Object.FindObjectOfType<EventSystem>() == null)
+            {
+                var evGO = new GameObject("EventSystem");
+                evGO.transform.SetParent(systemsParent.transform);
+                evGO.AddComponent<EventSystem>();
+                evGO.AddComponent<StandaloneInputModule>();
+            }
+
+            // GestureDispatcher
+            var inputGO = new GameObject("InputSystem");
+            inputGO.transform.SetParent(systemsParent.transform);
+            inputGO.AddComponent<ZeldaDaughter.Input.GestureDispatcher>();
+
+            // GameBootstrap
+            var bootstrapGO = new GameObject("GameBootstrap");
+            bootstrapGO.transform.SetParent(systemsParent.transform);
+            bootstrapGO.AddComponent<ZeldaDaughter.World.GameBootstrap>();
+
+            // DayNightCycle
+            var dayNightGO = new GameObject("DayNightCycle");
+            dayNightGO.transform.SetParent(systemsParent.transform);
+            var dayNight = dayNightGO.AddComponent<ZeldaDaughter.World.DayNightCycle>();
+            {
+                var so = new SerializedObject(dayNight);
+                so.FindProperty("_directionalLight").objectReferenceValue = sun;
+                so.ApplyModifiedProperties();
+            }
+
+            // WeatherSystem
+            var weatherGO = new GameObject("WeatherSystem");
+            weatherGO.transform.SetParent(systemsParent.transform);
+            weatherGO.AddComponent<ZeldaDaughter.World.WeatherSystem>();
+
+            // SaveManager
+            var saveGO = new GameObject("SaveManager");
+            saveGO.transform.SetParent(systemsParent.transform);
+            saveGO.AddComponent<ZeldaDaughter.Save.SaveManager>();
+
+            // Ambient zones
+            CreateAmbientZone("AmbientZone_Meadow",  new Vector3(-35f, 0f, 0f),   25f);
+            CreateAmbientZone("AmbientZone_City",    new Vector3(21f,  0f, 7f),   20f);
+            CreateAmbientZone("AmbientZone_Road",    new Vector3(-5f,  0f, 3f),   18f);
+
+            Debug.Log("[SceneBuilder] DemoScene: CoreSystems настроены.");
+        }
+
+        // 5. SetupDemoNPCSystems — LanguageSystem, DialogueManager, TradeManager
+        private static void SetupDemoNPCSystems(GameObject player)
+        {
+            var npcSystemsGO = new GameObject("NPCSystems");
+
+            var playerInventory = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            var playerStats     = player.GetComponent<PlayerStats>();
+
+            // LanguageSystem
+            var langGO = new GameObject("LanguageSystem");
+            langGO.transform.SetParent(npcSystemsGO.transform);
+            var langSys = langGO.AddComponent<ZeldaDaughter.NPC.LanguageSystem>();
+            {
+                var langConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.NPC.LanguageConfig>(
+                    "Assets/Data/NPC/LanguageConfig.asset");
+                var so = new SerializedObject(langSys);
+                if (langConfig != null) so.FindProperty("_config").objectReferenceValue = langConfig;
+                if (playerStats != null) so.FindProperty("_playerStats").objectReferenceValue = playerStats;
+                so.ApplyModifiedProperties();
+            }
+
+            // DialogueManager
+            var dialogueGO = new GameObject("DialogueManager");
+            dialogueGO.transform.SetParent(npcSystemsGO.transform);
+            var dialogueMgr = dialogueGO.AddComponent<ZeldaDaughter.NPC.DialogueManager>();
+            {
+                var questMgr = Object.FindObjectOfType<ZeldaDaughter.Quest.QuestManager>();
+                var so = new SerializedObject(dialogueMgr);
+                so.FindProperty("_languageSystem").objectReferenceValue = langSys;
+                if (playerInventory != null) so.FindProperty("_playerInventory").objectReferenceValue = playerInventory;
+                if (playerStats != null)     so.FindProperty("_playerStats").objectReferenceValue = playerStats;
+                if (questMgr != null)        so.FindProperty("_questManager").objectReferenceValue = questMgr;
+                so.ApplyModifiedProperties();
+            }
+
+            // TradeManager
+            var tradeGO = new GameObject("TradeManager");
+            tradeGO.transform.SetParent(npcSystemsGO.transform);
+            var tradeMgr = tradeGO.AddComponent<ZeldaDaughter.NPC.TradeManager>();
+            {
+                var so = new SerializedObject(tradeMgr);
+                so.FindProperty("_languageSystem").objectReferenceValue = langSys;
+                if (playerInventory != null) so.FindProperty("_playerInventory").objectReferenceValue = playerInventory;
+                so.ApplyModifiedProperties();
+            }
+
+            Debug.Log("[SceneBuilder] DemoScene: NPCSystems настроены.");
+        }
+
+        // 6. SetupDemoQuestSystems — QuestManager, MapManager, NotebookManager
+        private static void SetupDemoQuestSystems(GameObject player)
+        {
+            var questSystemsGO = new GameObject("QuestSystems");
+
+            var playerInventory = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+
+            // QuestManager
+            var questGO = new GameObject("QuestManager");
+            questGO.transform.SetParent(questSystemsGO.transform);
+            var questMgr = questGO.AddComponent<ZeldaDaughter.Quest.QuestManager>();
+            {
+                var questDb = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Quest.QuestDatabase>(
+                    "Assets/Data/Quests/QuestDatabase.asset");
+                var so = new SerializedObject(questMgr);
+                if (questDb != null)         so.FindProperty("_database").objectReferenceValue = questDb;
+                if (playerInventory != null) so.FindProperty("_playerInventory").objectReferenceValue = playerInventory;
+                so.ApplyModifiedProperties();
+            }
+
+            // MapManager
+            var mapGO = new GameObject("MapManager");
+            mapGO.transform.SetParent(questSystemsGO.transform);
+            var mapMgr = mapGO.AddComponent<ZeldaDaughter.World.MapManager>();
+            {
+                var so = new SerializedObject(mapMgr);
+                so.FindProperty("_playerTransform").objectReferenceValue = player.transform;
+                if (playerInventory != null) so.FindProperty("_playerInventory").objectReferenceValue = playerInventory;
+                so.ApplyModifiedProperties();
+            }
+
+            // NotebookManager
+            var notebookGO = new GameObject("NotebookManager");
+            notebookGO.transform.SetParent(questSystemsGO.transform);
+            var notebookMgr = notebookGO.AddComponent<ZeldaDaughter.UI.NotebookManager>();
+            {
+                var notebookConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.UI.NotebookConfig>(
+                    "Assets/Data/NotebookConfig.asset");
+                var so = new SerializedObject(notebookMgr);
+                if (notebookConfig != null) so.FindProperty("_config").objectReferenceValue = notebookConfig;
+                so.ApplyModifiedProperties();
+            }
+
+            Debug.Log("[SceneBuilder] DemoScene: QuestSystems настроены.");
+        }
+
+        // 7. SetupDemoUI — все Canvas'ы
+        private static void SetupDemoUI(GameObject player)
+        {
+            var uiParent = new GameObject("UI");
+
+            var recipeDb = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.CraftRecipeDatabase>(
+                "Assets/Data/Recipes/CraftRecipeDatabase.asset");
+
+            // --- RadialMenuCanvas (99) ---
+            var radialCanvas = CreateCanvas("RadialMenuCanvas", 99);
+            radialCanvas.transform.SetParent(uiParent.transform);
+            var radialMenu = radialCanvas.gameObject.AddComponent<ZeldaDaughter.UI.RadialMenuController>();
+            var radialCG = radialCanvas.gameObject.AddComponent<CanvasGroup>();
+
+            var menuRoot = new GameObject("MenuRoot").AddComponent<RectTransform>();
+            menuRoot.SetParent(radialCanvas.transform, false);
+            menuRoot.anchoredPosition = Vector2.zero;
+
+            {
+                var radialMenuConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.UI.RadialMenuConfig>(
+                    "Assets/Data/RadialMenuConfig.asset");
+                var so = new SerializedObject(radialMenu);
+                so.FindProperty("_menuRoot").objectReferenceValue = menuRoot;
+                so.FindProperty("_canvasGroup").objectReferenceValue = radialCG;
+                so.FindProperty("_playerTransform").objectReferenceValue = player.transform;
+                if (radialMenuConfig != null)
+                    so.FindProperty("_config").objectReferenceValue = radialMenuConfig;
+                var sectorsProp = so.FindProperty("_sectors");
+                sectorsProp.arraySize = 3;
+                for (int i = 0; i < 3; i++)
+                {
+                    var sGO = new GameObject($"RadialMenuSector_{i}").AddComponent<RectTransform>();
+                    sGO.SetParent(menuRoot, false);
+                    sGO.gameObject.AddComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 0.7f);
+                    var sector = sGO.gameObject.AddComponent<ZeldaDaughter.UI.RadialMenuSector>();
+                    sectorsProp.GetArrayElementAtIndex(i).objectReferenceValue = sector;
+                }
+                so.ApplyModifiedProperties();
+            }
+
+            // --- InventoryCanvas (100) ---
+            var inventoryCanvas = CreateCanvas("InventoryCanvas", 100);
+            inventoryCanvas.transform.SetParent(uiParent.transform);
+
+            var inventoryPanelGO = new GameObject("InventoryPanel");
+            inventoryPanelGO.transform.SetParent(inventoryCanvas.transform, false);
+            var inventoryPanel = inventoryPanelGO.AddComponent<ZeldaDaughter.UI.InventoryPanel>();
+            var inventoryPanelCG = inventoryPanelGO.AddComponent<CanvasGroup>();
+            {
+                var so = new SerializedObject(inventoryPanel);
+                so.FindProperty("_canvasGroup").objectReferenceValue = inventoryPanelCG;
+                so.ApplyModifiedProperties();
+            }
+
+            var itemInfoGO = new GameObject("ItemInfoPopup");
+            itemInfoGO.transform.SetParent(inventoryCanvas.transform, false);
+            var itemInfoPopup = itemInfoGO.AddComponent<ZeldaDaughter.UI.ItemInfoPopup>();
+            var itemInfoCG = itemInfoGO.AddComponent<CanvasGroup>();
+            {
+                var so = new SerializedObject(itemInfoPopup);
+                so.FindProperty("_canvasGroup").objectReferenceValue = itemInfoCG;
+                so.ApplyModifiedProperties();
+            }
+
+            var dragHandlerGO = new GameObject("InventoryDragHandler");
+            dragHandlerGO.transform.SetParent(inventoryCanvas.transform, false);
+            var dragHandler = dragHandlerGO.AddComponent<ZeldaDaughter.UI.InventoryDragHandler>();
+            {
+                var dragIconGO = new GameObject("DragIcon");
+                dragIconGO.transform.SetParent(dragHandlerGO.transform, false);
+                var dragImg = dragIconGO.AddComponent<Image>();
+                dragImg.raycastTarget = false;
+                var dragIconCG = dragIconGO.AddComponent<CanvasGroup>();
+                dragIconCG.blocksRaycasts = false;
+
+                var so = new SerializedObject(dragHandler);
+                so.FindProperty("_dragIcon").objectReferenceValue = dragImg;
+                so.FindProperty("_dragIconGroup").objectReferenceValue = dragIconCG;
+                so.FindProperty("_inventoryPanel").objectReferenceValue = inventoryPanel;
+                so.FindProperty("_panelRect").objectReferenceValue =
+                    inventoryPanelGO.GetComponent<RectTransform>();
+                if (recipeDb != null)
+                    so.FindProperty("_recipeDatabase").objectReferenceValue = recipeDb;
+                so.ApplyModifiedProperties();
+            }
+
+            // --- StationCanvas (101) ---
+            var stationCanvas = CreateCanvas("StationCanvas", 101);
+            stationCanvas.transform.SetParent(uiParent.transform);
+            var stationUI = stationCanvas.gameObject.AddComponent<ZeldaDaughter.UI.StationUI>();
+            var stationCG = stationCanvas.gameObject.AddComponent<CanvasGroup>();
+            {
+                var so = new SerializedObject(stationUI);
+                so.FindProperty("_canvasGroup").objectReferenceValue = stationCG;
+                if (recipeDb != null)
+                    so.FindProperty("_recipeDatabase").objectReferenceValue = recipeDb;
+                so.ApplyModifiedProperties();
+            }
+
+            // --- DialogueCanvas (102) ---
+            var dialogueCanvas = CreateCanvas("DialogueCanvas", 102);
+            dialogueCanvas.transform.SetParent(uiParent.transform);
+
+            var dialoguePanelGO = new GameObject("DialoguePanel");
+            dialoguePanelGO.transform.SetParent(dialogueCanvas.transform, false);
+            var dialoguePanelUI = dialoguePanelGO.AddComponent<ZeldaDaughter.UI.DialoguePanelUI>();
+            var dialogueCG = dialoguePanelGO.AddComponent<CanvasGroup>();
+            {
+                var containerGO = new GameObject("Container");
+                containerGO.transform.SetParent(dialoguePanelGO.transform, false);
+                var containerRect = containerGO.AddComponent<RectTransform>();
+                containerRect.anchorMin = new Vector2(0f, 0f);
+                containerRect.anchorMax = new Vector2(1f, 0.3f);
+                containerRect.offsetMin = Vector2.zero;
+                containerRect.offsetMax = Vector2.zero;
+                containerGO.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.7f);
+
+                var so = new SerializedObject(dialoguePanelUI);
+                so.FindProperty("_container").objectReferenceValue = containerRect;
+                so.FindProperty("_canvasGroup").objectReferenceValue = dialogueCG;
+                so.ApplyModifiedProperties();
+            }
+
+            // --- TradeCanvas (103) ---
+            var tradeCanvas = CreateCanvas("TradeCanvas", 103);
+            tradeCanvas.transform.SetParent(uiParent.transform);
+            var tradeUI = tradeCanvas.gameObject.AddComponent<ZeldaDaughter.UI.TradeUI>();
+            var tradeCG = tradeCanvas.gameObject.AddComponent<CanvasGroup>();
+            {
+                // Merchant panel
+                var merchantPanelGO = new GameObject("MerchantPanel");
+                merchantPanelGO.transform.SetParent(tradeCanvas.transform, false);
+                var merchantRect = merchantPanelGO.AddComponent<RectTransform>();
+                merchantRect.anchorMin = new Vector2(0f, 0.1f);
+                merchantRect.anchorMax = new Vector2(0.45f, 0.9f);
+                merchantRect.offsetMin = Vector2.zero;
+                merchantRect.offsetMax = Vector2.zero;
+                merchantPanelGO.AddComponent<Image>().color = new Color(0.15f, 0.1f, 0.05f, 0.85f);
+
+                // Player panel
+                var playerPanelGO = new GameObject("PlayerPanel");
+                playerPanelGO.transform.SetParent(tradeCanvas.transform, false);
+                var playerRect = playerPanelGO.AddComponent<RectTransform>();
+                playerRect.anchorMin = new Vector2(0.55f, 0.1f);
+                playerRect.anchorMax = new Vector2(1f, 0.9f);
+                playerRect.offsetMin = Vector2.zero;
+                playerRect.offsetMax = Vector2.zero;
+                playerPanelGO.AddComponent<Image>().color = new Color(0.05f, 0.1f, 0.15f, 0.85f);
+
+                // Trade zone
+                var tradeZoneGO = new GameObject("TradeZone");
+                tradeZoneGO.transform.SetParent(tradeCanvas.transform, false);
+                var tradeZoneRect = tradeZoneGO.AddComponent<RectTransform>();
+                tradeZoneRect.anchorMin = new Vector2(0.35f, 0.1f);
+                tradeZoneRect.anchorMax = new Vector2(0.65f, 0.9f);
+                tradeZoneRect.offsetMin = Vector2.zero;
+                tradeZoneRect.offsetMax = Vector2.zero;
+                tradeZoneGO.AddComponent<Image>().color = new Color(0.1f, 0.1f, 0.1f, 0.6f);
+
+                // Balance indicator
+                var balanceGO = new GameObject("BalanceIndicator");
+                balanceGO.transform.SetParent(tradeCanvas.transform, false);
+                var balanceRect = balanceGO.AddComponent<RectTransform>();
+                balanceRect.anchorMin = new Vector2(0.3f, 0.02f);
+                balanceRect.anchorMax = new Vector2(0.7f, 0.08f);
+                balanceRect.offsetMin = Vector2.zero;
+                balanceRect.offsetMax = Vector2.zero;
+                var balanceImage = balanceGO.AddComponent<Image>();
+                balanceImage.color = new Color(0.6f, 0.8f, 0.2f, 0.9f);
+
+                // Confirm / Cancel buttons
+                var confirmGO = new GameObject("ConfirmButton");
+                confirmGO.transform.SetParent(tradeCanvas.transform, false);
+                var confirmRect = confirmGO.AddComponent<RectTransform>();
+                confirmRect.anchorMin = new Vector2(0.35f, 0.02f);
+                confirmRect.anchorMax = new Vector2(0.5f, 0.09f);
+                confirmRect.offsetMin = Vector2.zero;
+                confirmRect.offsetMax = Vector2.zero;
+                confirmGO.AddComponent<Image>().color = new Color(0.2f, 0.7f, 0.2f, 1f);
+                var confirmBtn = confirmGO.AddComponent<Button>();
+
+                var cancelGO = new GameObject("CancelButton");
+                cancelGO.transform.SetParent(tradeCanvas.transform, false);
+                var cancelRect = cancelGO.AddComponent<RectTransform>();
+                cancelRect.anchorMin = new Vector2(0.5f, 0.02f);
+                cancelRect.anchorMax = new Vector2(0.65f, 0.09f);
+                cancelRect.offsetMin = Vector2.zero;
+                cancelRect.offsetMax = Vector2.zero;
+                cancelGO.AddComponent<Image>().color = new Color(0.7f, 0.2f, 0.2f, 1f);
+                var cancelBtn = cancelGO.AddComponent<Button>();
+
+                var so = new SerializedObject(tradeUI);
+                so.FindProperty("_merchantPanel").objectReferenceValue = merchantRect;
+                so.FindProperty("_playerPanel").objectReferenceValue = playerRect;
+                so.FindProperty("_tradeZone").objectReferenceValue = tradeZoneRect;
+                so.FindProperty("_balanceIndicator").objectReferenceValue = balanceImage;
+                so.FindProperty("_confirmButton").objectReferenceValue = confirmBtn;
+                so.FindProperty("_cancelButton").objectReferenceValue = cancelBtn;
+                so.FindProperty("_canvasGroup").objectReferenceValue = tradeCG;
+                so.ApplyModifiedProperties();
+            }
+
+            // --- MapCanvas (104) ---
+            var mapCanvas = CreateCanvas("MapCanvas", 104);
+            mapCanvas.transform.SetParent(uiParent.transform);
+            var mapPanelGO = new GameObject("MapPanel");
+            mapPanelGO.transform.SetParent(mapCanvas.transform, false);
+            var mapRect = mapPanelGO.AddComponent<RectTransform>();
+            mapRect.anchorMin = new Vector2(0.05f, 0.05f);
+            mapRect.anchorMax = new Vector2(0.95f, 0.95f);
+            mapRect.offsetMin = Vector2.zero;
+            mapRect.offsetMax = Vector2.zero;
+            mapPanelGO.AddComponent<Image>().color = new Color(0.18f, 0.14f, 0.08f, 0.95f);
+            var mapPanelUI = mapPanelGO.AddComponent<ZeldaDaughter.UI.MapPanelUI>();
+            {
+                var so = new SerializedObject(mapPanelUI);
+                so.FindProperty("_panel").objectReferenceValue = mapPanelGO;
+                so.ApplyModifiedProperties();
+            }
+
+            // --- NotebookCanvas (105) ---
+            var notebookCanvas = CreateCanvas("NotebookCanvas", 105);
+            notebookCanvas.transform.SetParent(uiParent.transform);
+            var notebookPanelGO = new GameObject("NotebookPanel");
+            notebookPanelGO.transform.SetParent(notebookCanvas.transform, false);
+            var notebookRect = notebookPanelGO.AddComponent<RectTransform>();
+            notebookRect.anchorMin = new Vector2(0.05f, 0.05f);
+            notebookRect.anchorMax = new Vector2(0.95f, 0.95f);
+            notebookRect.offsetMin = Vector2.zero;
+            notebookRect.offsetMax = Vector2.zero;
+            notebookPanelGO.AddComponent<Image>().color = new Color(0.94f, 0.90f, 0.78f, 0.97f);
+            var notebookPanelUI = notebookPanelGO.AddComponent<ZeldaDaughter.UI.NotebookPanelUI>();
+            {
+                var so = new SerializedObject(notebookPanelUI);
+                so.FindProperty("_panel").objectReferenceValue = notebookPanelGO;
+                so.ApplyModifiedProperties();
+            }
+
+            // --- LongPressCanvas (98) ---
+            var longPressCanvas = CreateCanvas("LongPressCanvas", 98);
+            longPressCanvas.transform.SetParent(uiParent.transform);
+            var longPressIndicator = longPressCanvas.gameObject.AddComponent<ZeldaDaughter.UI.LongPressIndicator>();
+            var longPressCG = longPressCanvas.gameObject.AddComponent<CanvasGroup>();
+            {
+                var so = new SerializedObject(longPressIndicator);
+                so.FindProperty("_canvasGroup").objectReferenceValue = longPressCG;
+                so.FindProperty("_followTarget").objectReferenceValue = player.transform;
+                so.ApplyModifiedProperties();
+            }
+
+            // --- FadeOverlayCanvas (200) ---
+            var fadeCanvas = CreateCanvas("FadeOverlayCanvas", 200);
+            fadeCanvas.transform.SetParent(uiParent.transform);
+            var fadeCG = fadeCanvas.gameObject.AddComponent<CanvasGroup>();
+            fadeCG.alpha = 0f;
+            fadeCG.blocksRaycasts = false;
+
+            var fadeImageGO = new GameObject("FadeImage");
+            fadeImageGO.transform.SetParent(fadeCanvas.transform, false);
+            var fadeRect = fadeImageGO.AddComponent<RectTransform>();
+            fadeRect.anchorMin = Vector2.zero;
+            fadeRect.anchorMax = Vector2.one;
+            fadeRect.offsetMin = Vector2.zero;
+            fadeRect.offsetMax = Vector2.zero;
+            var fadeImage = fadeImageGO.AddComponent<Image>();
+            fadeImage.color = Color.black;
+            fadeImage.raycastTarget = false;
+
+            var fadeOverlay = fadeCanvas.gameObject.AddComponent<ZeldaDaughter.UI.FadeOverlay>();
+            {
+                var so = new SerializedObject(fadeOverlay);
+                so.FindProperty("_canvasGroup").objectReferenceValue = fadeCG;
+                so.ApplyModifiedProperties();
+            }
+
+            Debug.Log("[SceneBuilder] DemoScene: UI настроен.");
+        }
+
+        // 8. PlaceDemoMeadow — поляна
+        private static GameObject PlaceDemoMeadow()
+        {
+            UnityEngine.Random.InitState(42);
+
+            var meadowParent = new GameObject("Meadow");
+            meadowParent.transform.position = new Vector3(-40f, 0f, 0f);
+
+            // 12+ деревьев
+            string[] treeModels = {
+                FbxBasePath + "tree_oak.fbx",
+                FbxBasePath + "tree_fat.fbx",
+                FbxBasePath + "tree_simple.fbx",
+                FbxBasePath + "tree_pineTallA.fbx",
+                FbxBasePath + "tree_pineTallC.fbx",
+                FbxBasePath + "tree_default.fbx",
+                FbxBasePath + "tree_detailed.fbx",
+                FbxBasePath + "tree_cone.fbx",
+                FbxBasePath + "tree_small.fbx",
+                FbxBasePath + "tree_tall.fbx",
+                FbxBasePath + "tree_thin.fbx",
+                FbxBasePath + "tree_blocks.fbx",
+            };
+
+            var treeParent = new GameObject("Trees");
+            treeParent.transform.SetParent(meadowParent.transform);
+            for (int i = 0; i < 14; i++)
+            {
+                float angle = UnityEngine.Random.Range(0f, 360f);
+                float dist  = UnityEngine.Random.Range(6f, 18f);
+                var pos = new Vector3(
+                    -40f + Mathf.Cos(angle * Mathf.Deg2Rad) * dist,
+                    0f,
+                    Mathf.Sin(angle * Mathf.Deg2Rad) * dist);
+                string modelPath = treeModels[i % treeModels.Length];
+                var go = SpawnFbxOrPrimitive(modelPath, $"Tree_{i}", pos,
+                    PrimitiveType.Cylinder, new Color(0.2f, 0.55f, 0.1f));
+                go.transform.SetParent(treeParent.transform);
+                go.transform.rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+                EnsureCollider(go);
+            }
+
+            // 6+ камней
+            string[] stoneModels = {
+                FbxBasePath + "stone_largeA.fbx",
+                FbxBasePath + "stone_largeC.fbx",
+                FbxBasePath + "stone_largeE.fbx",
+                FbxBasePath + "stone_smallB.fbx",
+                FbxBasePath + "stone_smallF.fbx",
+                FbxBasePath + "stone_tallA.fbx",
+            };
+
+            var stoneParent = new GameObject("Stones");
+            stoneParent.transform.SetParent(meadowParent.transform);
+            for (int i = 0; i < 8; i++)
+            {
+                float angle = UnityEngine.Random.Range(0f, 360f);
+                float dist  = UnityEngine.Random.Range(4f, 16f);
+                var pos = new Vector3(
+                    -40f + Mathf.Cos(angle * Mathf.Deg2Rad) * dist,
+                    0f,
+                    Mathf.Sin(angle * Mathf.Deg2Rad) * dist);
+                string modelPath = stoneModels[i % stoneModels.Length];
+                var go = SpawnFbxOrPrimitive(modelPath, $"Stone_{i}", pos,
+                    PrimitiveType.Sphere, Color.gray);
+                go.transform.SetParent(stoneParent.transform);
+                EnsureCollider(go);
+            }
+
+            // 8 кустов с EnvironmentReactor
+            string[] bushModels = {
+                FbxBasePath + "plant_bush.fbx",
+                FbxBasePath + "plant_bushSmall.fbx",
+                FbxBasePath + "plant_bushDetailed.fbx",
+                FbxBasePath + "plant_bushLarge.fbx",
+            };
+
+            var bushParent = new GameObject("Bushes");
+            bushParent.transform.SetParent(meadowParent.transform);
+            for (int i = 0; i < 8; i++)
+            {
+                float angle = UnityEngine.Random.Range(0f, 360f);
+                float dist  = UnityEngine.Random.Range(3f, 14f);
+                var pos = new Vector3(
+                    -40f + Mathf.Cos(angle * Mathf.Deg2Rad) * dist,
+                    0f,
+                    Mathf.Sin(angle * Mathf.Deg2Rad) * dist);
+                string modelPath = bushModels[i % bushModels.Length];
+                var go = SpawnFbxOrPrimitive(modelPath, $"Bush_{i}", pos,
+                    PrimitiveType.Sphere, new Color(0.2f, 0.5f, 0.15f));
+                go.transform.localScale = Vector3.one * 0.8f;
+                go.transform.SetParent(bushParent.transform);
+                go.AddComponent<ZeldaDaughter.World.EnvironmentReactor>();
+            }
+
+            // 5 ResourceNode
+            var resourceParent = new GameObject("ResourceNodes");
+            resourceParent.transform.SetParent(meadowParent.transform);
+            PlaceDemoResourceNode(resourceParent, "ResourceNode_Tree0",
+                new Vector3(-35f, 0f, 8f), "Assets/Data/World/ResourceNode_Tree.asset", "tree_oak.fbx",
+                PrimitiveType.Cylinder, new Color(0.35f, 0.65f, 0.2f));
+            PlaceDemoResourceNode(resourceParent, "ResourceNode_Tree1",
+                new Vector3(-45f, 0f, -6f), "Assets/Data/World/ResourceNode_Tree.asset", "tree_fat.fbx",
+                PrimitiveType.Cylinder, new Color(0.3f, 0.6f, 0.15f));
+            PlaceDemoResourceNode(resourceParent, "ResourceNode_Stone0",
+                new Vector3(-32f, 0f, -10f), "Assets/Data/World/ResourceNode_Stone.asset", "stone_largeB.fbx",
+                PrimitiveType.Sphere, new Color(0.5f, 0.5f, 0.5f));
+            PlaceDemoResourceNode(resourceParent, "ResourceNode_Stone1",
+                new Vector3(-50f, 0f, 5f), "Assets/Data/World/ResourceNode_Stone.asset", "stone_largeD.fbx",
+                PrimitiveType.Sphere, new Color(0.55f, 0.52f, 0.48f));
+            PlaceDemoResourceNode(resourceParent, "ResourceNode_Ore",
+                new Vector3(-48f, 0f, -8f), "Assets/Data/World/ResourceNode_Ore.asset", "stone_tallB.fbx",
+                PrimitiveType.Sphere, new Color(0.7f, 0.55f, 0.3f));
+
+            // 8 Pickupable
+            var pickupParent = new GameObject("Pickupables");
+            pickupParent.transform.SetParent(meadowParent.transform);
+            string[] pickupDataPaths = {
+                "Assets/Data/Items/Item_Stick.asset",
+                "Assets/Data/Items/Item_Stone.asset",
+                "Assets/Data/Items/Item_Berries.asset",
+                "Assets/Data/Items/Item_Flint.asset",
+                "Assets/Data/Items/Item_Stick.asset",
+                "Assets/Data/Items/Item_Stone.asset",
+                "Assets/Data/Items/Item_Berries.asset",
+                "Assets/Data/Items/Item_Flint.asset",
+            };
+            Vector3[] pickupPositions = {
+                new Vector3(-38f, 0f, 4f),
+                new Vector3(-42f, 0f, -3f),
+                new Vector3(-36f, 0f, -7f),
+                new Vector3(-44f, 0f, 9f),
+                new Vector3(-33f, 0f, 2f),
+                new Vector3(-47f, 0f, -5f),
+                new Vector3(-41f, 0f, 11f),
+                new Vector3(-37f, 0f, -12f),
+            };
+            for (int i = 0; i < 8; i++)
+            {
+                var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                go.name = $"Pickup_{i}";
+                go.transform.position = pickupPositions[i];
+                go.transform.localScale = Vector3.one * 0.25f;
+                go.transform.SetParent(pickupParent.transform);
+                go.GetComponent<Renderer>().sharedMaterial =
+                    CreateMaterial($"Pickup_{i}", new Color(0.8f, 0.7f, 0.2f));
+                var pickupable = go.AddComponent<ZeldaDaughter.World.Pickupable>();
+                var itemData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.ItemData>(
+                    pickupDataPaths[i]);
+                var so = new SerializedObject(pickupable);
+                if (itemData != null) so.FindProperty("_itemData").objectReferenceValue = itemData;
+                so.FindProperty("_amount").intValue = 1;
+                so.FindProperty("_saveId").stringValue = $"pickup_meadow_{i}";
+                so.ApplyModifiedProperties();
+            }
+
+            // Костёр
+            var campfireParent = new GameObject("Campfire");
+            campfireParent.transform.SetParent(meadowParent.transform);
+            campfireParent.transform.position = new Vector3(-40f, 0f, -3f);
+
+            var campfireFbxPath = FbxBasePath + "campfire_logs.fbx";
+            var campfireVisual = SpawnFbxOrPrimitive(campfireFbxPath, "CampfireVisual",
+                campfireParent.transform.position, PrimitiveType.Sphere,
+                new Color(0.8f, 0.35f, 0.05f));
+            campfireVisual.transform.SetParent(campfireParent.transform);
+            campfireVisual.transform.localScale = Vector3.one * 0.5f;
+
+            var campfireObj = campfireParent.AddComponent<ZeldaDaughter.World.CampfireObject>();
+            {
+                var campfireConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.World.CampfireConfig>(
+                    "Assets/Data/World/CampfireConfig.asset");
+                var so = new SerializedObject(campfireObj);
+                if (campfireConfig != null) so.FindProperty("_config").objectReferenceValue = campfireConfig;
+                so.FindProperty("_unlitVisual").objectReferenceValue = campfireVisual;
+                so.FindProperty("_litVisual").objectReferenceValue = campfireVisual;
+
+                // Точка взаимодействия
+                var interPointGO = new GameObject("InteractionPoint");
+                interPointGO.transform.SetParent(campfireParent.transform);
+                interPointGO.transform.localPosition = new Vector3(0f, 0.5f, 0.8f);
+                so.FindProperty("_interactionPoint").objectReferenceValue = interPointGO.transform;
+                so.ApplyModifiedProperties();
+
+                AddComponentIfMissing<ZeldaDaughter.Combat.RestZoneDetector>(campfireParent);
+            }
+
+            // Свет от костра
+            var fireLightGO = new GameObject("FireLight");
+            fireLightGO.transform.SetParent(campfireParent.transform);
+            fireLightGO.transform.localPosition = new Vector3(0f, 0.6f, 0f);
+            var fireLight = fireLightGO.AddComponent<Light>();
+            fireLight.type = LightType.Point;
+            fireLight.color = new Color(1f, 0.6f, 0.1f);
+            fireLight.intensity = 2f;
+            fireLight.range = 5f;
+            {
+                var so = new SerializedObject(campfireObj);
+                so.FindProperty("_fireLight").objectReferenceValue = fireLight;
+                so.ApplyModifiedProperties();
+            }
+
+            // 2 EnemySpawnZone
+            PlaceEnemySpawnZone("SpawnZone_Boars_Meadow",
+                new Vector3(-52f, 0f, 8f),
+                "Assets/Prefabs/Enemies/Boar.prefab",
+                "Assets/Data/Combat/EnemyData_Boar.asset",
+                maxEnemies: 2, spawnRadius: 10f);
+
+            PlaceEnemySpawnZone("SpawnZone_Wolves_Meadow",
+                new Vector3(-30f, 0f, -15f),
+                "Assets/Prefabs/Enemies/Wolf.prefab",
+                "Assets/Data/Combat/EnemyData_Wolf.asset",
+                maxEnemies: 2, spawnRadius: 12f);
+
+            Debug.Log("[SceneBuilder] DemoScene: Поляна размещена.");
+            return meadowParent;
+        }
+
+        // Вспомогательный метод: ResourceNode
+        private static void PlaceDemoResourceNode(
+            GameObject parent, string goName, Vector3 pos,
+            string dataPath, string fbxName,
+            PrimitiveType fallback, Color color)
+        {
+            string fbxPath = FbxBasePath + fbxName;
+            var go = SpawnFbxOrPrimitive(fbxPath, goName, pos, fallback, color);
+            go.transform.SetParent(parent.transform);
+            EnsureCollider(go);
+            AddComponentIfMissing<ZeldaDaughter.World.InteractableHighlight>(go);
+
+            var node = go.AddComponent<ZeldaDaughter.World.ResourceNode>();
+            var data = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.World.ResourceNodeData>(dataPath);
+            var so = new SerializedObject(node);
+            if (data != null) so.FindProperty("_data").objectReferenceValue = data;
+            so.FindProperty("_saveId").stringValue = $"resourcenode_{goName.ToLower()}";
+            so.ApplyModifiedProperties();
+        }
+
+        // 9. PlaceDemoRoad — дорога от поляны к городу
+        private static void PlaceDemoRoad()
+        {
+            var roadParent = new GameObject("Road");
+            roadParent.transform.position = new Vector3(-12f, 0f, 3f);
+
+            string[] roadModels = {
+                FbxTownPath + "road.fbx",
+                FbxTownPath + "road-bend.fbx",
+                FbxTownPath + "road-corner.fbx",
+            };
+            // Прямые тайлы от X=-30 до X=14, Z≈4
+            string straightPath = FbxTownPath + "road.fbx";
+            for (int i = 0; i < 11; i++)
+            {
+                float x = -30f + i * 4f;
+                float z = 3f + (i < 5 ? 0f : (i - 5) * 0.4f);
+                string modelPath = (i % 4 == 3) ? FbxTownPath + "road-bend.fbx" : straightPath;
+                var tile = SpawnFbxOrPrimitive(modelPath, $"Road_{i}",
+                    new Vector3(x, 0f, z), PrimitiveType.Cube,
+                    new Color(0.55f, 0.52f, 0.45f));
+                tile.transform.SetParent(roadParent.transform);
+                tile.transform.localScale = new Vector3(1f, 0.05f, 1f);
+            }
+
+            // EnemySpawnZone на дороге
+            PlaceEnemySpawnZone("SpawnZone_Wolves_Road",
+                new Vector3(-10f, 0f, 5f),
+                "Assets/Prefabs/Enemies/Wolf.prefab",
+                "Assets/Data/Combat/EnemyData_Wolf.asset",
+                maxEnemies: 1, spawnRadius: 6f);
+
+            Debug.Log("[SceneBuilder] DemoScene: Дорога размещена.");
+        }
+
+        // 10. PlaceDemoCity — город
+        private static void PlaceDemoCity()
+        {
+            var cityCenter = new Vector3(21f, 0f, 7f);
+            var cityParent = new GameObject("City");
+            cityParent.transform.position = cityCenter;
+
+            // Здания (5 штук, модульная сборка стен + крыши)
+            var buildingsParent = new GameObject("Buildings");
+            buildingsParent.transform.SetParent(cityParent.transform);
+            PlaceDemoBuilding(buildingsParent, "Building_Tavern",
+                new Vector3(21f, 0f, 14f), 3, 3, false);
+            PlaceDemoBuilding(buildingsParent, "Building_Smithy",
+                new Vector3(14f, 0f, 5f), 2, 2, false);
+            PlaceDemoBuilding(buildingsParent, "Building_Shop",
+                new Vector3(28f, 0f, 8f), 2, 2, false);
+            PlaceDemoBuilding(buildingsParent, "Building_Herbalist",
+                new Vector3(24f, 0f, 0f), 2, 2, false);
+            PlaceDemoBuilding(buildingsParent, "Building_House1",
+                new Vector3(16f, 0f, 15f), 2, 2, false);
+
+            // Фонтан в центре
+            var fountainGO = SpawnFbxOrPrimitive(FbxTownPath + "fountain-round.fbx",
+                "Fountain", new Vector3(21f, 0f, 7f),
+                PrimitiveType.Cylinder, new Color(0.6f, 0.65f, 0.7f));
+            fountainGO.transform.SetParent(cityParent.transform);
+            EnsureCollider(fountainGO);
+
+            // Фонари
+            var lanternPath = FbxTownPath + "lantern.fbx";
+            var lanternPositions = new Vector3[] {
+                new Vector3(18f, 0f, 7f), new Vector3(24f, 0f, 7f),
+                new Vector3(21f, 0f, 4f), new Vector3(21f, 0f, 10f),
+            };
+            var lanternParent = new GameObject("Lanterns");
+            lanternParent.transform.SetParent(cityParent.transform);
+            for (int i = 0; i < lanternPositions.Length; i++)
+            {
+                var lanternGO = SpawnFbxOrPrimitive(lanternPath, $"Lantern_{i}",
+                    lanternPositions[i], PrimitiveType.Cylinder,
+                    new Color(0.9f, 0.8f, 0.1f));
+                lanternGO.transform.SetParent(lanternParent.transform);
+                lanternGO.transform.localScale = new Vector3(0.3f, 1f, 0.3f);
+                // Точечный свет от фонаря
+                var pLight = new GameObject("LanternLight");
+                pLight.transform.SetParent(lanternGO.transform);
+                pLight.transform.localPosition = new Vector3(0f, 1f, 0f);
+                var pl = pLight.AddComponent<Light>();
+                pl.type = LightType.Point;
+                pl.color = new Color(1f, 0.85f, 0.5f);
+                pl.intensity = 1.5f;
+                pl.range = 6f;
+            }
+
+            // Торговые стойки
+            var stallPath = FbxTownPath + "stall.fbx";
+            var stallParent = new GameObject("Stalls");
+            stallParent.transform.SetParent(cityParent.transform);
+            SpawnFbxOrPrimitive(stallPath, "Stall_Merchant",
+                new Vector3(28f, 0f, 6f), PrimitiveType.Cube,
+                new Color(0.7f, 0.4f, 0.15f)).transform.SetParent(stallParent.transform);
+            SpawnFbxOrPrimitive(FbxTownPath + "stall-green.fbx", "Stall_Herbalist",
+                new Vector3(25f, 0f, 1f), PrimitiveType.Cube,
+                new Color(0.3f, 0.6f, 0.3f)).transform.SetParent(stallParent.transform);
+
+            // Заборы
+            var fencePath = FbxTownPath + "fence.fbx";
+            var fenceParent = new GameObject("Fences");
+            fenceParent.transform.SetParent(cityParent.transform);
+            for (int i = 0; i < 6; i++)
+            {
+                var fGO = SpawnFbxOrPrimitive(fencePath, $"Fence_{i}",
+                    new Vector3(12f + i * 2f, 0f, 0f), PrimitiveType.Cube,
+                    new Color(0.5f, 0.35f, 0.2f));
+                fGO.transform.SetParent(fenceParent.transform);
+                fGO.transform.localScale = new Vector3(0.15f, 0.8f, 2f);
+                EnsureCollider(fGO);
+            }
+
+            // Тренировочный манекен
+            var dummyGO = new GameObject("TrainingDummy");
+            dummyGO.transform.SetParent(cityParent.transform);
+            dummyGO.transform.position = new Vector3(15f, 0f, 8f);
+            var dummyVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            dummyVisual.name = "DummyVisual";
+            dummyVisual.transform.SetParent(dummyGO.transform);
+            dummyVisual.transform.localPosition = Vector3.zero;
+            dummyVisual.GetComponent<Renderer>().sharedMaterial =
+                CreateMaterial("TrainingDummy", new Color(0.6f, 0.45f, 0.2f));
+            var dummyComp = dummyGO.AddComponent<ZeldaDaughter.Combat.TrainingDummy>();
+            {
+                var dummyConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.TrainingDummyConfig>(
+                    "Assets/Data/Combat/TrainingDummyConfig.asset");
+                var so = new SerializedObject(dummyComp);
+                if (dummyConfig != null) so.FindProperty("_config").objectReferenceValue = dummyConfig;
+                var anim = dummyVisual.GetComponent<Animator>();
+                if (anim != null) so.FindProperty("_animator").objectReferenceValue = anim;
+                so.ApplyModifiedProperties();
+            }
+            AddComponentIfMissing<ZeldaDaughter.World.InteractableHighlight>(dummyGO);
+
+            // Станки (плавильня, наковальня)
+            PlaceStation(StationType.Smelter, new Vector3(13f, 0f, 4f));
+            PlaceStation(StationType.Anvil,   new Vector3(15f, 0f, 4f));
+
+            // Кровать в таверне
+            PlaceBed();
+
+            // 7 NPC
+            var npcPositions = new Vector3[] {
+                new Vector3(28f, 0f, 9f),   // Merchant
+                new Vector3(14f, 0f, 6f),   // Blacksmith
+                new Vector3(21f, 0f, 13f),  // Bartender
+                new Vector3(24f, 0f, 2f),   // Herbalist
+                new Vector3(19f, 0f, 3f),   // Guard
+                new Vector3(25f, 0f, 12f),  // Villager1
+                new Vector3(17f, 0f, 11f),  // Villager2
+            };
+            string[] npcNames = {
+                "Merchant", "Blacksmith", "Bartender", "Herbalist",
+                "Guard", "Villager1", "Villager2"
+            };
+            var npcParent = new GameObject("NPCs");
+            npcParent.transform.SetParent(cityParent.transform);
+            for (int i = 0; i < npcNames.Length; i++)
+            {
+                PlaceDemoNPC(npcParent, npcNames[i], npcPositions[i]);
+            }
+
+            // Также крестьянин на дороге к городу
+            PlaceDemoNPC(cityParent, "Peasant", new Vector3(0f, 0f, 3f));
+
+            // Waypoints для NPC
+            var waypointsParent = new GameObject("Waypoints");
+            waypointsParent.transform.SetParent(cityParent.transform);
+            PlaceDemoWaypoint(waypointsParent, "WP_Fountain",    new Vector3(21f, 0f, 7f),   "fountain");
+            PlaceDemoWaypoint(waypointsParent, "WP_Market",      new Vector3(28f, 0f, 8f),   "market");
+            PlaceDemoWaypoint(waypointsParent, "WP_Smithy",      new Vector3(14f, 0f, 5f),   "smithy");
+            PlaceDemoWaypoint(waypointsParent, "WP_Gate",        new Vector3(12f, 0f, 7f),   "gate");
+            PlaceDemoWaypoint(waypointsParent, "WP_TavernDoor",  new Vector3(21f, 0f, 11f),  "tavern");
+            PlaceDemoWaypoint(waypointsParent, "WP_Patrol1",     new Vector3(16f, 0f, 3f),   "patrol");
+            PlaceDemoWaypoint(waypointsParent, "WP_Patrol2",     new Vector3(26f, 0f, 12f),  "patrol");
+
+            Debug.Log("[SceneBuilder] DemoScene: Город размещён.");
+        }
+
+        // Создаёт модульное здание из wall.fbx + roof.fbx
+        private static void PlaceDemoBuilding(
+            GameObject parent, string buildingName,
+            Vector3 origin, int widthTiles, int depthTiles,
+            bool hasChimney)
+        {
+            var buildingGO = new GameObject(buildingName);
+            buildingGO.transform.SetParent(parent.transform);
+            buildingGO.transform.position = origin;
+
+            float tileSize = 2f;
+
+            // Стены — по периметру
+            for (int x = 0; x < widthTiles; x++)
+            {
+                // Передняя стена
+                var wallF = SpawnFbxOrPrimitive(FbxTownPath + "wall-wood.fbx",
+                    $"WallFront_{x}", origin + new Vector3(x * tileSize, 0f, 0f),
+                    PrimitiveType.Cube, new Color(0.55f, 0.38f, 0.22f));
+                wallF.transform.SetParent(buildingGO.transform);
+                wallF.transform.localScale = new Vector3(tileSize, tileSize, 0.2f);
+                EnsureCollider(wallF);
+
+                // Задняя стена
+                var wallB = SpawnFbxOrPrimitive(FbxTownPath + "wall-wood.fbx",
+                    $"WallBack_{x}", origin + new Vector3(x * tileSize, 0f, depthTiles * tileSize),
+                    PrimitiveType.Cube, new Color(0.5f, 0.35f, 0.2f));
+                wallB.transform.SetParent(buildingGO.transform);
+                wallB.transform.localScale = new Vector3(tileSize, tileSize, 0.2f);
+                EnsureCollider(wallB);
+            }
+            for (int z = 0; z < depthTiles; z++)
+            {
+                // Левая стена
+                var wallL = SpawnFbxOrPrimitive(FbxTownPath + "wall-wood-corner.fbx",
+                    $"WallLeft_{z}", origin + new Vector3(-0.1f, 0f, z * tileSize),
+                    PrimitiveType.Cube, new Color(0.5f, 0.35f, 0.2f));
+                wallL.transform.SetParent(buildingGO.transform);
+                wallL.transform.localScale = new Vector3(0.2f, tileSize, tileSize);
+                EnsureCollider(wallL);
+
+                // Правая стена
+                var wallR = SpawnFbxOrPrimitive(FbxTownPath + "wall-wood-corner.fbx",
+                    $"WallRight_{z}", origin + new Vector3(widthTiles * tileSize + 0.1f, 0f, z * tileSize),
+                    PrimitiveType.Cube, new Color(0.5f, 0.35f, 0.2f));
+                wallR.transform.SetParent(buildingGO.transform);
+                wallR.transform.localScale = new Vector3(0.2f, tileSize, tileSize);
+                EnsureCollider(wallR);
+            }
+
+            // Крыша
+            for (int x = 0; x < widthTiles; x++)
+            {
+                var roofTile = SpawnFbxOrPrimitive(FbxTownPath + "roof-high.fbx",
+                    $"Roof_{x}", origin + new Vector3(x * tileSize, tileSize * 1.5f, depthTiles * tileSize * 0.5f),
+                    PrimitiveType.Cube, new Color(0.55f, 0.18f, 0.12f));
+                roofTile.transform.SetParent(buildingGO.transform);
+                roofTile.transform.localScale = new Vector3(tileSize, tileSize * 0.8f, depthTiles * tileSize);
+            }
+
+            // Дымоход (опционально)
+            if (hasChimney)
+            {
+                var chimney = SpawnFbxOrPrimitive(FbxTownPath + "chimney.fbx",
+                    $"{buildingName}_Chimney",
+                    origin + new Vector3(widthTiles * tileSize * 0.5f, tileSize * 2f, depthTiles * tileSize * 0.5f),
+                    PrimitiveType.Cylinder, new Color(0.4f, 0.38f, 0.35f));
+                chimney.transform.SetParent(buildingGO.transform);
+            }
+        }
+
+        // Размещает NPC: prefab → capsule fallback
+        private static void PlaceDemoNPC(GameObject parent, string npcName, Vector3 position)
+        {
+            string prefabPath = $"Assets/Prefabs/NPCs/{npcName}.prefab";
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+
+            GameObject npcGO;
+            if (prefab != null)
+            {
+                npcGO = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                npcGO.transform.position = position;
+                Debug.Log($"[SceneBuilder] DemoScene: NPC {npcName} из prefab.");
+            }
+            else
+            {
+                // Fallback: capsule с компонентами
+                npcGO = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                npcGO.name = npcName;
+                npcGO.transform.position = position;
+                npcGO.GetComponent<Renderer>().sharedMaterial =
+                    CreateMaterial($"NPC_{npcName}", new Color(0.7f, 0.5f, 0.3f));
+                npcGO.AddComponent<ZeldaDaughter.NPC.NPCInteractable>();
+                Debug.LogWarning($"[SceneBuilder] DemoScene: NPC prefab не найден ({prefabPath}), используется capsule.");
+            }
+
+            npcGO.transform.SetParent(parent.transform);
+        }
+
+        // Waypoint для NPCScheduler
+        private static void PlaceDemoWaypoint(GameObject parent, string goName, Vector3 position, string waypointId)
+        {
+            var wpGO = new GameObject(goName);
+            wpGO.transform.SetParent(parent.transform);
+            wpGO.transform.position = position;
+            var wp = wpGO.AddComponent<ZeldaDaughter.NPC.NPCWaypoint>();
+            var so = new SerializedObject(wp);
+            so.FindProperty("_waypointId").stringValue = waypointId;
+            so.ApplyModifiedProperties();
+        }
+
+        // 11. WireDemoReferences — финальная перелинковка
+        private static void WireDemoReferences()
+        {
+            var player       = GameObject.Find("Player");
+            var dialogueMgr  = Object.FindObjectOfType<ZeldaDaughter.NPC.DialogueManager>();
+            var tradeMgr     = Object.FindObjectOfType<ZeldaDaughter.NPC.TradeManager>();
+            var questMgr     = Object.FindObjectOfType<ZeldaDaughter.Quest.QuestManager>();
+            var gestureDisp  = Object.FindObjectOfType<ZeldaDaughter.Input.GestureDispatcher>();
+            var tapManager   = Object.FindObjectOfType<ZeldaDaughter.World.TapInteractionManager>();
+            var dialogueUI   = Object.FindObjectOfType<ZeldaDaughter.UI.DialoguePanelUI>();
+            var tradeUI      = Object.FindObjectOfType<ZeldaDaughter.UI.TradeUI>();
+            var mapPanelUI   = Object.FindObjectOfType<ZeldaDaughter.UI.MapPanelUI>();
+            var notebookUI   = Object.FindObjectOfType<ZeldaDaughter.UI.NotebookPanelUI>();
+            var mapMgr       = Object.FindObjectOfType<ZeldaDaughter.World.MapManager>();
+            var notebookMgr  = Object.FindObjectOfType<ZeldaDaughter.UI.NotebookManager>();
+
+            // DialogueManager ↔ DialoguePanelUI
+            if (dialogueMgr != null && dialogueUI != null)
+            {
+                var so = new SerializedObject(dialogueMgr);
+                var panelProp = so.FindProperty("_dialoguePanel");
+                if (panelProp != null)
+                {
+                    panelProp.objectReferenceValue = dialogueUI;
+                    so.ApplyModifiedProperties();
+                }
+            }
+
+            // TradeManager ↔ TradeUI
+            if (tradeMgr != null && tradeUI != null)
+            {
+                var so = new SerializedObject(tradeMgr);
+                var uiProp = so.FindProperty("_tradeUI");
+                if (uiProp != null)
+                {
+                    uiProp.objectReferenceValue = tradeUI;
+                    so.ApplyModifiedProperties();
+                }
+            }
+
+            // QuestManager ↔ DialogueManager (уже задан в SetupDemoNPCSystems, но уточняем)
+            if (dialogueMgr != null && questMgr != null)
+            {
+                var so = new SerializedObject(dialogueMgr);
+                var qProp = so.FindProperty("_questManager");
+                if (qProp != null)
+                {
+                    qProp.objectReferenceValue = questMgr;
+                    so.ApplyModifiedProperties();
+                }
+            }
+
+            // KnockoutSystem ↔ GestureDispatcher
+            if (player != null && gestureDisp != null)
+            {
+                var knockout = player.GetComponent<ZeldaDaughter.Combat.KnockoutSystem>();
+                if (knockout != null)
+                {
+                    var so = new SerializedObject(knockout);
+                    var gProp = so.FindProperty("_gestureDispatcher");
+                    if (gProp != null)
+                    {
+                        gProp.objectReferenceValue = gestureDisp;
+                        so.ApplyModifiedProperties();
+                    }
+                }
+            }
+
+            // TapInteractionManager ↔ CombatController
+            if (tapManager != null && player != null)
+            {
+                var combatCtrl = player.GetComponent<ZeldaDaughter.Combat.CombatController>();
+                if (combatCtrl != null)
+                {
+                    var so = new SerializedObject(tapManager);
+                    var ccProp = so.FindProperty("_combatController");
+                    if (ccProp != null)
+                    {
+                        ccProp.objectReferenceValue = combatCtrl;
+                        so.ApplyModifiedProperties();
+                    }
+                }
+            }
+
+            // NPCInteractable на всех NPC → DialogueManager
+            var allNPCs = Object.FindObjectsOfType<ZeldaDaughter.NPC.NPCInteractable>();
+            foreach (var npc in allNPCs)
+            {
+                var so = new SerializedObject(npc);
+                var dmProp = so.FindProperty("_dialogueManager");
+                if (dmProp != null && dialogueMgr != null)
+                {
+                    dmProp.objectReferenceValue = dialogueMgr;
+                    so.ApplyModifiedProperties();
+                }
+            }
+
+            Debug.Log("[SceneBuilder] DemoScene: WireReferences завершён.");
+        }
     }
 }

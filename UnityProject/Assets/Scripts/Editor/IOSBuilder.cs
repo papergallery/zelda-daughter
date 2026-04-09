@@ -8,10 +8,15 @@ namespace ZeldaDaughter.Editor
         [MenuItem("ZeldaDaughter/Build iOS Xcode Project")]
         public static void BuildXcodeProject()
         {
-            string[] scenes = { "Assets/Scenes/TestScene.unity" };
+            // Приоритет: DemoScene → TestScene
+            string scenePath = "Assets/Scenes/DemoScene.unity";
+            if (!System.IO.File.Exists(scenePath))
+                scenePath = "Assets/Scenes/TestScene.unity";
+
+            string[] scenes = { scenePath };
             if (!System.IO.File.Exists(scenes[0]))
             {
-                Debug.LogError("[IOSBuilder] Scene not found! Run 'ZeldaDaughter/Create Test Scene' first.");
+                Debug.LogError("[IOSBuilder] Scene not found! Run 'ZeldaDaughter/Scenes/Build Demo Scene' first.");
                 EditorApplication.Exit(1);
                 return;
             }
