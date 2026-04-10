@@ -8,13 +8,14 @@ namespace ZeldaDaughter.Editor
     /// Назначает KayKit модель и PlayerAnimator.controller на Player в DemoScene.
     /// Запуск через batch mode:
     ///   -executeMethod ZeldaDaughter.Editor.PlayerModelSetup.SetupPlayerModel
+    ///   -executeMethod ZeldaDaughter.Editor.PlayerModelSetup.FixPlayerAnimator
     ///
     /// Не удаляет существующие компоненты — только добавляет/обновляет Animator и модель.
     /// </summary>
     public static class PlayerModelSetup
     {
-        private const string ScenePath            = "Assets/Scenes/DemoScene.unity";
-        private const string KayKitFbxPath        = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
+        private const string ScenePath              = "Assets/Scenes/DemoScene.unity";
+        private const string KayKitFbxPath          = "Assets/Models/KayKit/Adventurers/Rogue_Hooded.fbx";
         private const string AnimatorControllerPath = "Assets/Animations/Controllers/PlayerAnimator.controller";
 
         [MenuItem("ZeldaDaughter/Player/Setup Player Model")]
@@ -113,6 +114,110 @@ namespace ZeldaDaughter.Editor
 
             EditorUtility.SetDirty(player);
             Debug.Log($"[PlayerModelSetup] KayKit модель добавлена как child 'Model': {KayKitFbxPath}");
+        }
+
+        /// <summary>
+        /// Исправляет Animator на Player в DemoScene: назначает AnimatorController и Avatar.
+        /// Запуск: -executeMethod ZeldaDaughter.Editor.PlayerModelSetup.FixPlayerAnimator
+        /// </summary>
+        [MenuItem("ZeldaDaughter/Player/Fix Player Animator")]
+        public static void FixPlayerAnimator()
+        {
+            var activeScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (activeScene.name != "DemoScene")
+            {
+                if (!System.IO.File.Exists(ScenePath))
+                {
+                    Debug.LogError($"[PlayerModelSetup] DemoScene не найдена: {ScenePath}");
+                    return;
+                }
+                EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+                Debug.Log("[PlayerModelSetup] DemoScene загружена.");
+            }
+
+            var player = GameObject.FindWithTag("Player");
+            if (player == null)
+            {
+                Debug.LogError("[PlayerModelSetup] Объект с тегом 'Player' не найден в сцене.");
+                return;
+            }
+
+            // Загружаем controller
+            var animController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(AnimatorControllerPath);
+            if (animController == null)
+            {
+                Debug.LogError($"[PlayerModelSetup] PlayerAnimator.controller не найден: {AnimatorControllerPath}");
+                return;
+            }
+
+            // Загружаем avatar из KayKit FBX
+            Avatar sourceAvatar = null;
+            var allAssets = AssetDatabase.LoadAllAssetsAtPath(KayKitFbxPath);
+            foreach (var asset in allAssets)
+            {
+                if (asset is Avatar av)
+                {
+                    sourceAvatar = av;
+                    break;
+                }
+            }
+
+            if (sourceAvatar == null)
+            {
+                Debug.LogError($"[PlayerModelSetup] Avatar не найден в {KayKitFbxPath}. " +
+                               "Запустите Fix KayKit Import Settings сначала.");
+                return;
+            }
+
+            Debug.Log($"[PlayerModelSetup] Avatar найден: {sourceAvatar.name}");
+
+            // Ищем Animator — сначала на root, потом в детях
+            var animator = player.GetComponent<Animator>();
+            if (animator == null)
+                animator = player.GetComponentInChildren<Animator>();
+
+            if (animator == null)
+            {
+                animator = player.AddComponent<Animator>();
+                Debug.Log("[PlayerModelSetup] Animator добавлен на Player root.");
+            }
+
+            bool changed = false;
+
+            if (animator.runtimeAnimatorController != animController)
+            {
+                animator.runtimeAnimatorController = animController;
+                changed = true;
+                Debug.Log($"[PlayerModelSetup] AnimatorController назначен: {AnimatorControllerPath}");
+            }
+            else
+            {
+                Debug.Log("[PlayerModelSetup] AnimatorController уже назначен.");
+            }
+
+            if (animator.avatar != sourceAvatar)
+            {
+                animator.avatar = sourceAvatar;
+                changed = true;
+                Debug.Log($"[PlayerModelSetup] Avatar назначен: {sourceAvatar.name}");
+            }
+            else
+            {
+                Debug.Log("[PlayerModelSetup] Avatar уже назначен.");
+            }
+
+            if (changed)
+            {
+                EditorUtility.SetDirty(animator);
+                var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+                Debug.Log("[PlayerModelSetup] FixPlayerAnimator: Animator обновлён, сцена сохранена.");
+            }
+            else
+            {
+                Debug.Log("[PlayerModelSetup] FixPlayerAnimator: всё уже настроено корректно.");
+            }
         }
 
         private static Transform FindChildWithSkinned(Transform parent)
