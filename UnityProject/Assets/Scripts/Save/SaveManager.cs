@@ -19,6 +19,9 @@ namespace ZeldaDaughter.Save
         private static string _savePath;
         private static string SavePath => _savePath ??= Application.persistentDataPath + "/save.json";
 
+        // Cache of all known ItemData, built at Load time from scene Pickupables + inventory
+        private static readonly Dictionary<string, ItemData> _itemCache = new();
+
         public static void Register(ISaveable saveable)
         {
             if (!_registry.Contains(saveable))
@@ -75,33 +78,37 @@ namespace ZeldaDaughter.Save
 
             if (playerObj != null && playerObj.TryGetComponent<PlayerInventory>(out var inventory))
             {
+                var invList = new List<InventorySaveEntry>();
                 foreach (var stack in inventory.Items)
                 {
                     if (stack.Item == null) continue;
-                    data.inventoryItems.Add(new InventorySaveEntry
+                    invList.Add(new InventorySaveEntry
                     {
                         itemId = stack.Item.Id,
                         amount = stack.Amount
                     });
                 }
+                data.inventoryItems = invList.ToArray();
             }
 
             var dayNight = Object.FindFirstObjectByType<DayNightCycle>();
             if (dayNight != null)
                 data.timeOfDay = dayNight.TimeNormalized;
 
+            var statesList = new List<SaveableEntry>();
             foreach (var saveable in _registry)
             {
                 var state = saveable.CaptureState();
                 if (state == null) continue;
 
                 string json = JsonUtility.ToJson(state);
-                data.saveableStates.Add(new SaveableEntry
+                statesList.Add(new SaveableEntry
                 {
                     saveId = saveable.SaveId,
                     jsonState = json
                 });
             }
+            data.saveableStates = statesList.ToArray();
 
             string saveJson = JsonUtility.ToJson(data, prettyPrint: true);
             File.WriteAllText(SavePath, saveJson);
@@ -131,16 +138,21 @@ namespace ZeldaDaughter.Save
 
             if (playerObj != null && playerObj.TryGetComponent<PlayerInventory>(out var inventory))
             {
+                // Build item cache from scene Pickupables before restoring
+                if (_itemCache.Count == 0)
+                    BuildItemCache();
+
                 inventory.Clear();
                 foreach (var entry in data.inventoryItems)
                 {
-                    var item = Resources.Load<ItemData>(entry.itemId);
-                    if (item == null)
+                    if (_itemCache.TryGetValue(entry.itemId, out var item))
                     {
-                        Debug.LogWarning($"[Save] ItemData '{entry.itemId}' not found in Resources.");
-                        continue;
+                        inventory.AddItem(item, entry.amount);
                     }
-                    inventory.AddItem(item, entry.amount);
+                    else
+                    {
+                        Debug.LogWarning($"[Save] ItemData '{entry.itemId}' not found in item cache.");
+                    }
                 }
             }
 
@@ -150,7 +162,7 @@ namespace ZeldaDaughter.Save
 
             foreach (var saveable in _registry)
             {
-                var entry = data.saveableStates.Find(e => e.saveId == saveable.SaveId);
+                var entry = System.Array.Find(data.saveableStates, e => e.saveId == saveable.SaveId);
                 if (entry == null) continue;
 
                 var state = JsonUtility.FromJson(entry.jsonState, saveable.CaptureState()?.GetType() ?? typeof(object));
@@ -169,6 +181,29 @@ namespace ZeldaDaughter.Save
         {
             if (File.Exists(SavePath))
                 File.Delete(SavePath);
+        }
+
+        private static void BuildItemCache()
+        {
+            _itemCache.Clear();
+            // Scan all Pickupables in scene for their ItemData
+            foreach (var pickup in Object.FindObjectsOfType<Pickupable>())
+            {
+                var itemData = pickup.GetItemData();
+                if (itemData != null && !_itemCache.ContainsKey(itemData.Id))
+                    _itemCache[itemData.Id] = itemData;
+            }
+            // Also check existing inventory items
+            var player = GameObject.FindWithTag("Player");
+            if (player != null && player.TryGetComponent<PlayerInventory>(out var inv))
+            {
+                foreach (var stack in inv.Items)
+                {
+                    if (stack.Item != null && !_itemCache.ContainsKey(stack.Item.Id))
+                        _itemCache[stack.Item.Id] = stack.Item;
+                }
+            }
+            ZDLog.Log("Save", $"ItemCache built: {_itemCache.Count} items");
         }
 
         private IEnumerator AutoSaveRoutine()

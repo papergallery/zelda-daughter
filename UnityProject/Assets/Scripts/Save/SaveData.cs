@@ -10,8 +10,9 @@ namespace ZeldaDaughter.Save
         public float playerPosX, playerPosY, playerPosZ;
         public float playerRotY;
         public float timeOfDay;
-        public List<InventorySaveEntry> inventoryItems = new();
-        public List<SaveableEntry> saveableStates = new();
+        // Arrays instead of List<T> — JsonUtility cannot serialize List<T> fields
+        public InventorySaveEntry[] inventoryItems = Array.Empty<InventorySaveEntry>();
+        public SaveableEntry[] saveableStates = Array.Empty<SaveableEntry>();
 
         public Vector3 PlayerPosition
         {

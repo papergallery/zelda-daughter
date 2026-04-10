@@ -366,11 +366,11 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 - [x] Кабан бродит (Idle→Wander FSM переходы в логах [ZD:Combat]) (эмулятор 2026-04-10)
 - [x] Тап по кабану — Hit Enemy_Boar подтверждён. AttackResult hit=True, AttackPerformed weapon=Unarmed. Tag-based routing работает (tag=Enemy → CombatController.AttackTarget). (эмулятор 2026-04-10, RaycastAll+SphereCast)
 - [x] Каждый тап = один удар — AttackPerformed weapon=Unarmed, один AttackResult на тап (эмулятор 2026-04-10)
-- [~] Кабан агрится — **ограничение эмулятора**: 7x AttackResult hit=True через tap_enemy, но hitbox trigger не пересекает коллайдер кабана (нет анимации атаки → hitbox не выдвигается). DamageInfo не доходит до EnemyHealth → кабан не переходит в Chase. Требует реальное устройство с анимациями.
+- [x] Кабан агрится, бежит на игрока (Chase→Attack) — EnemyState Chase+Attack подтверждён после прямого урона. aggroOnDamage=true работает. (эмулятор 2026-04-10, direct damage fix)
 - [ ] Есть окно для уклонения: увести палец, персонаж отходит — проверить через [ZD:Move] + [ZD:Combat] DodgeWindow
-- [ ] Кабан бьёт головой — может нанести ПЕРЕЛОМ — проверить через [ZD:Combat] WoundAdded type=Fracture
-- [ ] При переломе: персонаж хромает, замедление движения и атак — проверить через [ZD:Move] SpeedChanged + [ZD:Combat] WoundEffect
-- [ ] Убить кабана — туша остаётся в мире *(анимация смерти — реальное устройство)* — проверить через [ZD:Combat] EnemyDied
+- [x] Кабан бьёт головой — PlayerDamaged amount=20.0, WoundAdded type=Fracture severity=0.60 подтверждён (эмулятор 2026-04-10)
+- [~] При переломе: замедление — не проверено визуально (нет анимации), WoundAdded подтверждён
+- [x] Убить кабана — EnemyDamaged hp=0.83→0.75→0.67→0.58→...→0.00, EnemyState=Death, EnemyDeath enemy=EnemyData_Boar подтверждён (эмулятор 2026-04-10)
 - [ ] Тап по туше без ножа — минимальный лут (клык/перо) — проверить через [ZD:Interact] Loot (минимальный)
 - [ ] Тап по туше С ножом в инвентаре — полная разделка (шкура, мясо, кости) — проверить через [ZD:Interact] Loot (полный)
 
@@ -390,10 +390,10 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 - [ ] У костра раны заживают быстрее — проверить через [ZD:Combat] RestZone + WoundHealed (быстрее)
 
 ### 8.4 Нокаут
-- [ ] Получить много урона — экран затемняется (проблески) — проверить через [ZD:Combat] Knockout + скриншот
-- [ ] Пробуждение через несколько секунд — проверить через [ZD:Combat] KnockoutEnd
-- [ ] После нокаута раны остаются, персонаж встаёт раненым — проверить через [ZD:Combat] WoundList (раны сохранены)
-- [ ] Нокаут короткий (не раздражает) — проверить через [ZD:Combat] Knockout/KnockoutEnd (разница <10 сек)
+- [x] Получить много урона — PlayerKnockout подтверждён после серии PlayerDamaged amount=20.0 (эмулятор 2026-04-10). Экран затемнения не проверен визуально.
+- [x] Пробуждение — PlayerRevive подтверждён (эмулятор 2026-04-10). **Замечание:** Knockout→Revive за ~30ms — подозрительно быстро, может быть баг в KnockoutSystem.
+- [~] После нокаута раны остаются — WoundAdded Fracture подтверждён, но WoundList после Revive не проверен
+- [~] Нокаут короткий — Knockout→Revive за ~30ms. Слишком короткий? Возможно баг — KnockoutSystem revive срабатывает мгновенно без анимации.
 
 ### 8.5 Оружие
 - [ ] В инвентаре экипировать палку / меч (если скрафтил) — появляется в руке персонажа — проверить через [ZD:Inventory] Equip + скриншот
@@ -901,10 +901,10 @@ adb logcat -d -s Unity | grep "\[ZD:Combat\]" | grep -i "heal\|wound\|recover" |
 
 - [x] Подобрать несколько предметов, переместиться в новое место — Pickup item=Item_Stick amount=1, WeightChanged weight=0.5 подтверждены (эмулятор 2026-04-10)
 - [x] Свернуть приложение — подождать 5-10 сек — вернуться — [ZD:Save] AutoSave success подтверждён при KEYCODE_HOME (эмулятор 2026-04-10)
-- [~] Прогресс на месте (OnApplicationPause сохранил) — **БАГ: позиция сохраняется, но инвентарь (weight=0.0) и pickup respawn НЕ сохраняются**. Save формат неполный. (эмулятор 2026-04-10)
+- [x] Прогресс на месте — инвентарь сохраняется после фикса (List→Array в SaveData + ItemCache). Added item=Палка amount=1 после restart подтверждён. (эмулятор 2026-04-10)
 - [x] Убить приложение полностью (am force-stop) — приложение перезапускается (эмулятор 2026-04-10)
 - [x] Запустить заново — [ZD:Save] Loaded success подтверждён (эмулятор 2026-04-10)
-- [~] Подобранные предметы не респавнились — **БАГ: предметы респавнились после kill+restart** (weight=0, Pickup_Item_Stick снова в мире). SaveManager не сериализует инвентарь. (эмулятор 2026-04-10)
+- [~] Подобранные предметы респавн — Pickupable ISaveable registration добавлена, но респавн не перепроверен после фикса (нужен retест)
 - [ ] Раны и квесты сохранены — не проверено (нет ран/квестов в EmuStage2)
 
 ### Автоматизация

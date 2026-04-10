@@ -20,7 +20,11 @@ namespace ZeldaDaughter.World
         public float InteractionRange => _interactionRange;
         public InteractionType Type => InteractionType.Pickup;
 
+        public ItemData GetItemData() => _itemData;
         public bool CanInteract() => !_pickedUp;
+
+        private void OnEnable() => SaveManager.Register(this);
+        private void OnDisable() => SaveManager.Unregister(this);
 
         public void Interact(GameObject actor)
         {
