@@ -57,6 +57,25 @@ namespace ZeldaDaughter.Editor
             WireRadialMenu();
             PlayerModelSetup.FixPlayerAnimator();
 
+            // Дополнительная страховка: если controller всё ещё null — назначаем напрямую
+            var playerCheck = GameObject.FindWithTag("Player");
+            var animCheck   = playerCheck != null ? playerCheck.GetComponentInChildren<Animator>() : null;
+            if (animCheck != null && animCheck.runtimeAnimatorController == null)
+            {
+                var ctrl = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                    "Assets/Animations/Controllers/PlayerAnimator.controller");
+                if (ctrl != null)
+                {
+                    animCheck.runtimeAnimatorController = ctrl;
+                    EditorUtility.SetDirty(animCheck);
+                    Debug.Log("[DemoSceneWirer] Animator controller назначен напрямую (страховка).");
+                }
+                else
+                {
+                    Debug.LogError("[DemoSceneWirer] PlayerAnimator.controller не найден — Animator останется без controller!");
+                }
+            }
+
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
