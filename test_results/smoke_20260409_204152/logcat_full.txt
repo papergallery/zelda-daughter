@@ -1,0 +1,233 @@
+--------- beginning of main
+04-09 20:42:04.017   627   627 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+04-09 20:42:04.650  6341  6341 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+04-09 20:42:04.652  6341  6341 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.profilebootclasspath"
+04-09 20:42:04.652  6341  6341 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_apex_image"
+04-09 20:42:04.652  6341  6341 I AndroidRuntime: Using default boot image
+04-09 20:42:04.652  6341  6341 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.disable_lock_profiling"
+04-09 20:42:04.652  6341  6341 I AndroidRuntime: Leaving lock profiling enabled
+04-09 20:42:04.652  6341  6341 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_generational_cc"
+04-09 20:42:04.670  6341  6341 I app_process: Core platform API reporting enabled, enforcing=false
+04-09 20:42:04.648  6341  6341 W app_process: type=1400 audit(0.0:137): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=229 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 20:42:04.648  6341  6341 I chatty  : uid=2000(shell) app_process identical 2 lines
+04-09 20:42:04.648  6341  6341 W app_process: type=1400 audit(0.0:140): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=229 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 20:42:04.748  6341  6341 D app_process: Time zone APEX ICU file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+04-09 20:42:04.748  6341  6341 D app_process: I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt66l.dat
+04-09 20:42:04.752  6341  6341 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+04-09 20:42:04.754  6341  6341 I app_process: The ClassLoaderContext is a special shared library.
+04-09 20:42:04.763  6341  6341 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+04-09 20:42:04.766  6341  6341 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+04-09 20:42:04.768   485   561 I InputDispatcher: Dropping event because there is no touchable window or gesture monitor at (540, 1400) in display 0.
+--------- beginning of system
+04-09 20:42:04.769   485   499 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.769   485   561 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 20:42:04.791   485   499 I chatty  : uid=1000(system) Binder:485_1 identical 145 lines
+04-09 20:42:04.791   485   499 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.791   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.798   485  2130 I chatty  : uid=1000(system) Binder:485_16 identical 66 lines
+04-09 20:42:04.798   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.798   485   499 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.810   485   499 I chatty  : uid=1000(system) Binder:485_1 identical 43 lines
+04-09 20:42:04.810   485   499 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.810   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.816   485  2130 I chatty  : uid=1000(system) Binder:485_16 identical 42 lines
+04-09 20:42:04.816   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.817   485   499 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.842   485   499 I chatty  : uid=1000(system) Binder:485_1 identical 119 lines
+04-09 20:42:04.846   485   499 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.846   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.860   485  2130 I chatty  : uid=1000(system) Binder:485_16 identical 102 lines
+04-09 20:42:04.860   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.862   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.897   485  5591 I chatty  : uid=1000(system) Binder:485_21 identical 90 lines
+04-09 20:42:04.897   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.897   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.902   485  2130 I chatty  : uid=1000(system) Binder:485_16 identical 16 lines
+04-09 20:42:04.903   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.903   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.993   485  5591 I chatty  : uid=1000(system) Binder:485_21 identical 265 lines
+04-09 20:42:04.993   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:04.994   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.008   485  2130 I chatty  : uid=1000(system) Binder:485_16 identical 34 lines
+04-09 20:42:05.008   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.008   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.008   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.013   485  2130 I chatty  : uid=1000(system) Binder:485_16 identical 28 lines
+04-09 20:42:05.014   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.014   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.014   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.058   485  2130 I chatty  : uid=1000(system) Binder:485_16 identical 128 lines
+04-09 20:42:05.060   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.060   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.061   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.061   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.065   485  2130 I chatty  : uid=1000(system) Binder:485_16 identical 13 lines
+04-09 20:42:05.065   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.065   485  5591 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.066   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:05.066   485   561 I chatty  : uid=1000(system) InputDispatcher identical 1124 lines
+04-09 20:42:05.066   485   561 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 20:42:05.066  6341  6341 D AndroidRuntime: Shutting down VM
+04-09 20:42:05.253   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 17291559286609568 seems implausible relative to expectedPresent 790292071544
+04-09 20:42:05.270   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 89197923231078048 seems implausible relative to expectedPresent 790308738210
+04-09 20:42:05.287   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 161293549204412064 seems implausible relative to expectedPresent 790325404876
+04-09 20:42:05.304   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 233607917862131360 seems implausible relative to expectedPresent 790342071542
+04-09 20:42:05.320   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 305188710400661152 seems implausible relative to expectedPresent 790358738208
+04-09 20:42:05.337   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 377192419778893472 seems implausible relative to expectedPresent 790375404874
+04-09 20:42:05.353   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 448215532288874144 seems implausible relative to expectedPresent 790392071540
+04-09 20:42:05.370   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 519857918953395872 seems implausible relative to expectedPresent 790408738206
+04-09 20:42:05.387   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 593382630869964448 seems implausible relative to expectedPresent 790425404872
+04-09 20:42:05.404   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 661896275593270944 seems implausible relative to expectedPresent 790442071538
+04-09 20:42:05.420   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 732873466312922784 seems implausible relative to expectedPresent 790458738204
+04-09 20:42:05.437   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 804932481985025696 seems implausible relative to expectedPresent 790475404870
+04-09 20:42:05.454   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 876341574615963296 seems implausible relative to expectedPresent 790492071536
+04-09 20:42:05.470   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 948087319668463264 seems implausible relative to expectedPresent 790508738202
+04-09 20:42:05.504   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1019951760437155488 seems implausible relative to expectedPresent 790542071534
+04-09 20:42:05.520   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1166187403931817632 seems implausible relative to expectedPresent 790558738200
+04-09 20:42:05.537   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1240492064729470624 seems implausible relative to expectedPresent 790575404866
+04-09 20:42:05.554   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1312820641139005088 seems implausible relative to expectedPresent 790592071532
+04-09 20:42:05.571   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1388434635601745568 seems implausible relative to expectedPresent 790608738198
+04-09 20:42:05.587   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1453754581298452128 seems implausible relative to expectedPresent 790625404864
+04-09 20:42:05.604   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1527980669964392096 seems implausible relative to expectedPresent 790642071530
+04-09 20:42:05.620   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1596788773350545056 seems implausible relative to expectedPresent 790658738196
+04-09 20:42:05.637   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1666563003860129440 seems implausible relative to expectedPresent 790675404862
+04-09 20:42:05.654   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1739155875377190560 seems implausible relative to expectedPresent 790692071528
+04-09 20:42:05.670   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1812172548497217184 seems implausible relative to expectedPresent 790708738194
+04-09 20:42:05.687   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1881460550054188704 seems implausible relative to expectedPresent 790725404860
+04-09 20:42:05.703   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1954978652016088736 seems implausible relative to expectedPresent 790742071526
+04-09 20:42:05.720   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2025782313172080288 seems implausible relative to expectedPresent 790758738192
+04-09 20:42:05.737   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2096302691170129568 seems implausible relative to expectedPresent 790775404858
+04-09 20:42:05.754   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2164270999600895648 seems implausible relative to expectedPresent 790792071524
+04-09 20:42:05.770   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2235228742708631200 seems implausible relative to expectedPresent 790808738190
+04-09 20:42:05.787   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2305761816630007456 seems implausible relative to expectedPresent 790825404856
+04-09 20:42:05.804   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2376620728245294752 seems implausible relative to expectedPresent 790842071522
+04-09 20:42:05.820   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2447342239561815712 seems implausible relative to expectedPresent 790858738188
+04-09 20:42:05.837   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2518910791443551904 seems implausible relative to expectedPresent 790875404854
+04-09 20:42:05.854   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2589572564059952800 seems implausible relative to expectedPresent 790892071520
+04-09 20:42:05.870   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2661204475299239584 seems implausible relative to expectedPresent 790908738186
+04-09 20:42:05.887   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2732673272270558880 seems implausible relative to expectedPresent 790925404852
+04-09 20:42:05.904   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2803666169685612192 seems implausible relative to expectedPresent 790942071518
+04-09 20:42:05.920   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2875735570588636832 seems implausible relative to expectedPresent 790958738184
+04-09 20:42:05.937   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2947408331261875872 seems implausible relative to expectedPresent 790975404850
+04-09 20:42:05.954   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3019707298166871712 seems implausible relative to expectedPresent 790992071516
+04-09 20:42:05.970   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3091701335278753440 seems implausible relative to expectedPresent 791008738182
+04-09 20:42:05.987   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3163691038768633504 seems implausible relative to expectedPresent 791025404848
+04-09 20:42:06.004   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3235981561767925408 seems implausible relative to expectedPresent 791042071514
+04-09 20:42:06.021   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3308847880967820960 seems implausible relative to expectedPresent 791058738180
+04-09 20:42:06.037   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3383577176592094880 seems implausible relative to expectedPresent 791075404846
+04-09 20:42:06.054   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3452924856719644320 seems implausible relative to expectedPresent 791092071512
+04-09 20:42:06.070   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3524876876166469280 seems implausible relative to expectedPresent 791108738178
+04-09 20:42:06.087   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3597972769958270624 seems implausible relative to expectedPresent 791125404844
+04-09 20:42:06.104   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3673395659851175584 seems implausible relative to expectedPresent 791142071510
+04-09 20:42:06.120   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3741795015494735520 seems implausible relative to expectedPresent 791158738176
+04-09 20:42:06.137   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3813551695533971104 seems implausible relative to expectedPresent 791175404842
+04-09 20:42:06.154   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3894192721583412896 seems implausible relative to expectedPresent 791192071508
+04-09 20:42:06.170   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3956240877158143648 seems implausible relative to expectedPresent 791208738174
+04-09 20:42:06.187   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4027500771215152800 seems implausible relative to expectedPresent 791225404840
+04-09 20:42:06.204   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4099387301000648352 seems implausible relative to expectedPresent 791242071506
+04-09 20:42:06.220   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4174244994672236192 seems implausible relative to expectedPresent 791258738172
+04-09 20:42:06.238   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4241105055511746208 seems implausible relative to expectedPresent 791275404838
+04-09 20:42:06.254   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4312456174674122400 seems implausible relative to expectedPresent 791292071504
+04-09 20:42:06.270   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4383878096372373152 seems implausible relative to expectedPresent 791308738170
+04-09 20:42:06.288   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4456464641402607264 seems implausible relative to expectedPresent 791325404836
+04-09 20:42:06.304   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4529365569448973984 seems implausible relative to expectedPresent 791342071502
+04-09 20:42:06.320   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4599461072102233760 seems implausible relative to expectedPresent 791358738168
+04-09 20:42:06.337   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4671065620104877728 seems implausible relative to expectedPresent 791375404834
+04-09 20:42:06.373   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4782222775339456160 seems implausible relative to expectedPresent 791408738166
+04-09 20:42:06.387   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4889452728442689184 seems implausible relative to expectedPresent 791425404832
+04-09 20:42:06.404   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4960041679888586400 seems implausible relative to expectedPresent 791442071498
+04-09 20:42:06.421   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5037934562523748000 seems implausible relative to expectedPresent 791458738164
+04-09 20:42:06.437   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5106698522236032672 seems implausible relative to expectedPresent 791475404830
+04-09 20:42:06.471   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5178555837653980832 seems implausible relative to expectedPresent 791508738162
+04-09 20:42:06.487   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5252279814578247328 seems implausible relative to expectedPresent 791525404828
+04-09 20:42:06.503   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5394127242741946016 seems implausible relative to expectedPresent 791542071494
+04-09 20:42:06.522   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5464974746924095136 seems implausible relative to expectedPresent 791558738160
+04-09 20:42:06.537   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5532707725506778784 seems implausible relative to expectedPresent 791575404826
+04-09 20:42:06.554   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5604155253800048288 seems implausible relative to expectedPresent 791592071492
+04-09 20:42:06.570   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5678913403014616736 seems implausible relative to expectedPresent 791608738158
+04-09 20:42:06.587   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5746038334487271072 seems implausible relative to expectedPresent 791625404824
+04-09 20:42:06.594   162   162 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device manifest.
+04-09 20:42:06.594  6356  6356 I Gralloc4: mapper 4.x is not supported
+04-09 20:42:06.598  6356  6356 D HostConnection: createUnique: call
+04-09 20:42:06.599  6356  6356 D HostConnection: HostConnection::get() New Host Connection established 0x7a7cc8594310, tid 6356
+04-09 20:42:06.606   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5816913158956390048 seems implausible relative to expectedPresent 791642071490
+04-09 20:42:06.620   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5886771983141836448 seems implausible relative to expectedPresent 791658738156
+04-09 20:42:06.635  6356  6356 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+04-09 20:42:06.637   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5991469919880091296 seems implausible relative to expectedPresent 791675404822
+04-09 20:42:06.654   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6029782604413408928 seems implausible relative to expectedPresent 791692071488
+04-09 20:42:06.670   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6170119161866622624 seems implausible relative to expectedPresent 791708738154
+04-09 20:42:06.687   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6239184327635375776 seems implausible relative to expectedPresent 791725404820
+04-09 20:42:06.703   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6310277332148164256 seems implausible relative to expectedPresent 791742071486
+--------- beginning of kernel
+04-09 20:42:07.130     0     0 D logd    : logdr: UID=2000 GID=2000 PID=6358 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+04-09 20:42:06.720   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6382323269644850848 seems implausible relative to expectedPresent 791758738152
+04-09 20:42:06.737   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6458320065952749216 seems implausible relative to expectedPresent 791775404818
+04-09 20:42:06.753   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6524403957482395296 seems implausible relative to expectedPresent 791792071484
+04-09 20:42:06.770   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6596288984029337248 seems implausible relative to expectedPresent 791808738150
+04-09 20:42:06.787   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6667991375681951392 seems implausible relative to expectedPresent 791825404816
+04-09 20:42:06.805   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6740417877345834656 seems implausible relative to expectedPresent 791842071482
+04-09 20:42:06.820   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6816246126252136096 seems implausible relative to expectedPresent 791858738148
+04-09 20:42:06.837   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6884681512376342176 seems implausible relative to expectedPresent 791875404814
+04-09 20:42:06.854   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6958093017544922784 seems implausible relative to expectedPresent 791892071480
+04-09 20:42:06.887   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7031074532062664352 seems implausible relative to expectedPresent 791925404812
+04-09 20:42:06.904   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7105727463168415392 seems implausible relative to expectedPresent 791942071478
+04-09 20:42:06.920   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7176844815850804896 seems implausible relative to expectedPresent 791958738144
+04-09 20:42:06.937   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7250543817540245152 seems implausible relative to expectedPresent 791975404810
+04-09 20:42:06.954   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7323160234068022944 seems implausible relative to expectedPresent 791992071476
+04-09 20:42:06.970   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7396356432526055072 seems implausible relative to expectedPresent 792008738142
+04-09 20:42:06.987   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7468964435212900000 seems implausible relative to expectedPresent 792025404808
+04-09 20:42:07.004   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7544162767035700896 seems implausible relative to expectedPresent 792042071474
+04-09 20:42:07.020   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7611891046924162720 seems implausible relative to expectedPresent 792058738140
+04-09 20:42:07.037   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7683093865160775328 seems implausible relative to expectedPresent 792075404806
+04-09 20:42:07.053   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7753943233358730912 seems implausible relative to expectedPresent 792092071472
+04-09 20:42:07.070   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7824991458542491296 seems implausible relative to expectedPresent 792108738138
+04-09 20:42:07.087   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7895711303411701408 seems implausible relative to expectedPresent 792125404804
+04-09 20:42:07.104   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7968935590955849376 seems implausible relative to expectedPresent 792142071470
+04-09 20:42:07.120   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8040362292952700576 seems implausible relative to expectedPresent 792158738136
+04-09 20:42:07.137   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8110771341103470240 seems implausible relative to expectedPresent 792175404802
+04-09 20:42:07.154   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8178050212793947808 seems implausible relative to expectedPresent 792192071468
+04-09 20:42:07.170   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8248065635781973664 seems implausible relative to expectedPresent 792208738134
+04-09 20:42:07.187   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8318782620202964640 seems implausible relative to expectedPresent 792225404800
+04-09 20:42:07.204   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8389289512003704480 seems implausible relative to expectedPresent 792242071466
+04-09 20:42:07.220   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8460073394835297952 seems implausible relative to expectedPresent 792258738132
+04-09 20:42:07.237   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8531480580500756128 seems implausible relative to expectedPresent 792275404798
+04-09 20:42:07.254   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8602220663255864992 seems implausible relative to expectedPresent 792292071464
+04-09 20:42:07.270   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8673657329576842912 seems implausible relative to expectedPresent 792308738130
+04-09 20:42:07.287   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8744915342438176416 seems implausible relative to expectedPresent 792325404796
+04-09 20:42:07.304   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8816272006403331744 seems implausible relative to expectedPresent 792342071462
+04-09 20:42:07.320   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8888076914630334112 seems implausible relative to expectedPresent 792358738128
+04-09 20:42:07.337   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8959752784859895456 seems implausible relative to expectedPresent 792375404794
+04-09 20:42:07.354   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 9031914256976844448 seems implausible relative to expectedPresent 792392071460
+04-09 20:42:07.370   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 9104119971551909536 seems implausible relative to expectedPresent 792408738126
+04-09 20:42:07.387   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 9176296759522236064 seems implausible relative to expectedPresent 792425404792
+04-09 20:42:07.806  6363  6363 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+04-09 20:42:07.816  6363  6363 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.profilebootclasspath"
+04-09 20:42:07.816  6363  6363 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_apex_image"
+04-09 20:42:07.816  6363  6363 I AndroidRuntime: Using default boot image
+04-09 20:42:07.816  6363  6363 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.disable_lock_profiling"
+04-09 20:42:07.816  6363  6363 I AndroidRuntime: Leaving lock profiling enabled
+04-09 20:42:07.816  6363  6363 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_generational_cc"
+04-09 20:42:07.818  6363  6363 I app_process: Core platform API reporting enabled, enforcing=false
+04-09 20:42:07.812  6363  6363 W app_process: type=1400 audit(0.0:141): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=229 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 20:42:07.812  6363  6363 I chatty  : uid=2000(shell) app_process identical 2 lines
+04-09 20:42:07.812  6363  6363 W app_process: type=1400 audit(0.0:144): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=229 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 20:42:07.882  6363  6363 D app_process: Time zone APEX ICU file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+04-09 20:42:07.883  6363  6363 D app_process: I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt66l.dat
+04-09 20:42:07.886  6363  6363 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+04-09 20:42:07.887  6363  6363 I app_process: The ClassLoaderContext is a special shared library.
+04-09 20:42:07.899  6363  6363 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+04-09 20:42:07.902  6363  6363 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+04-09 20:42:07.911   485   561 I InputDispatcher: Dropping event because there is no touchable window or gesture monitor at (540, 1000) in display 0.
+04-09 20:42:05.066   485  2130 W InputManager: Input event injection from pid 6341 failed.
+04-09 20:42:07.911   485  5591 W InputManager: Input event injection from pid 6363 failed.
+04-09 20:42:07.911   485   561 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 20:42:07.912  6363  6363 D AndroidRuntime: Shutting down VM
+04-09 20:42:09.397   162   162 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device manifest.
+04-09 20:42:09.399  6378  6378 I Gralloc4: mapper 4.x is not supported
+04-09 20:42:09.408  6378  6378 D HostConnection: createUnique: call
+04-09 20:42:09.410  6378  6378 D HostConnection: HostConnection::get() New Host Connection established 0x7ab17f92d590, tid 6378
+04-09 20:42:09.433  6378  6378 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+04-09 20:42:09.944     0     0 D logd    : logdr: UID=2000 GID=2000 PID=6380 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+04-09 20:42:09.968     0     0 D logd    : logdr: UID=2000 GID=2000 PID=6383 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+04-09 20:42:09.553   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 45283476062344864 seems implausible relative to expectedPresent 794592071372
+04-09 20:42:09.984     0     0 D logd    : logdr: UID=2000 GID=2000 PID=6386 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns

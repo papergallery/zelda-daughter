@@ -1,0 +1,8 @@
+--------- beginning of main
+--------- beginning of system
+04-09 22:29:18.676  4885  4911 I Unity   : [ZD:Diag] Frame 2 rendered OK. FPS=0
+04-09 22:29:18.834  4885  4911 I Unity   : [ZD:Diag] Frame 3 rendered OK. FPS=7
+04-09 22:29:19.013  4885  4911 I Unity   : [ZD:Diag] Frame 4 rendered OK. FPS=7
+04-09 22:29:19.103  4885  4911 I Unity   : [ZD:Diag] Frame 5 rendered OK. FPS=7
+--------- beginning of kernel
+04-09 22:29:22.440  4885  4911 I Unity   : [ZD:Perf] FPS=30 mem=18MB

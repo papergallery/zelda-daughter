@@ -1,0 +1,37 @@
+--------- beginning of main
+04-09 22:29:15.094  4885  4911 I Unity   : [ZD:Diag] === BeforeSceneLoad ===
+04-09 22:29:15.158  4885  4911 I Unity   : [ZD:Diag] GraphicsAPI=Vulkan
+04-09 22:29:15.159  4885  4911 I Unity   : [ZD:Diag] GraphicsDevice=SwiftShader Device (Subzero)
+04-09 22:29:15.160  4885  4911 I Unity   : [ZD:Diag] GraphicsVersion=Vulkan 1.1.0 [0x01400000]
+04-09 22:29:15.171  4885  4911 I Unity   : [ZD:Diag] MaxTexSize=16384
+04-09 22:29:15.174  4885  4911 I Unity   : [ZD:Diag] SupportsInstancing=True
+04-09 22:29:15.181  4885  4911 I Unity   : [ZD:Diag] SupportsComputeShaders=True
+04-09 22:29:15.184  4885  4911 I Unity   : [ZD:Diag] RenderPipeline=URP_PipelineAsset
+04-09 22:29:15.185  4885  4911 I Unity   : [ZD:Diag] DeviceModel=Google sdk_gphone_x86_64
+04-09 22:29:15.193  4885  4911 I Unity   : [ZD:Scene] GameStarted version=0.1.0 platform=Android
+04-09 22:29:15.301  4885  4911 I Unity   : [ZD:Boot] GameBootstrap initialized targetFPS=60
+04-09 22:29:15.348  4885  4911 I Unity   : [ZD:Scene] Loaded scene=Bisect3_AllSystems
+04-09 22:29:15.399  4885  4911 I Unity   : [ZD:Diag] === AfterSceneLoad ===
+04-09 22:29:15.402  4885  4911 I Unity   : [ZD:Diag] Scene=Bisect3_AllSystems rootCount=11
+04-09 22:29:15.417  4885  4911 I Unity   : [ZD:Diag] GO=Main Camera children=0 mesh=0 light=0 cam=2 other=1
+04-09 22:29:15.420  4885  4911 I Unity   : [ZD:Diag] GO=ProgressionSystem children=0 mesh=0 light=0 cam=0 other=2
+04-09 22:29:15.421  4885  4911 I Unity   : [ZD:Diag] GO=Directional Light children=0 mesh=0 light=2 cam=0 other=0
+04-09 22:29:15.422  4885  4911 I Unity   : [ZD:Diag] GO=GameBootstrap children=0 mesh=0 light=0 cam=0 other=1
+04-09 22:29:15.424  4885  4911 I Unity   : [ZD:Diag] GO=DirectionalLight children=0 mesh=0 light=2 cam=0 other=1
+04-09 22:29:15.425  4885  4911 I Unity   : [ZD:Diag] GO=InputSystem children=0 mesh=0 light=0 cam=0 other=1
+04-09 22:29:15.425  4885  4911 I Unity   : [ZD:Diag] GO=InventorySystem children=0 mesh=0 light=0 cam=0 other=1
+04-09 22:29:15.426  4885  4911 I Unity   : [ZD:Diag] GO=Plane children=0 mesh=2 light=0 cam=0 other=1
+04-09 22:29:15.428  4885  4911 I Unity   : [ZD:Diag] GO=Player children=2 mesh=1 light=0 cam=0 other=4
+04-09 22:29:15.429  4885  4911 I Unity   : [ZD:Diag] GO=stone_tallA children=0 mesh=2 light=0 cam=0 other=0
+04-09 22:29:15.433  4885  4911 I Unity   : [ZD:Diag] GO=tree_pineTallC children=0 mesh=2 light=0 cam=0 other=0
+04-09 22:29:15.450  4885  4911 I Unity   : [ZD:Diag] === Diagnostics attached, waiting for first frame ===
+04-09 22:29:15.472  4885  4911 I Unity   : [ZD:Debug] DebugLoggers initialized
+04-09 22:29:15.480  4885  4911 I Unity   : [ZD:Debug] DebugPositionLogger attached to Player
+04-09 22:29:15.483  4885  4911 I Unity   : [ZD:Diag] OnApplicationPause=False
+04-09 22:29:15.680  4885  4911 I Unity   : [ZD:Diag] Frame 1 rendered OK. FPS=0
+--------- beginning of system
+04-09 22:29:18.676  4885  4911 I Unity   : [ZD:Diag] Frame 2 rendered OK. FPS=0
+04-09 22:29:18.834  4885  4911 I Unity   : [ZD:Diag] Frame 3 rendered OK. FPS=7
+04-09 22:29:19.013  4885  4911 I Unity   : [ZD:Diag] Frame 4 rendered OK. FPS=7
+04-09 22:29:19.103  4885  4911 I Unity   : [ZD:Diag] Frame 5 rendered OK. FPS=7
+--------- beginning of kernel

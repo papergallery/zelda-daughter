@@ -648,14 +648,17 @@ namespace ZeldaDaughter.Editor
             var so = new SerializedObject(isoCam);
             var targetProp = so.FindProperty("_target");
             if (targetProp != null)
-            {
                 targetProp.objectReferenceValue = player;
-                so.ApplyModifiedPropertiesWithoutUndo();
-            }
-            else
-            {
-                Debug.LogWarning("[EmuStageBuilder] IsometricCamera._target not found, camera won't follow player");
-            }
+            // Reduce distance for emulator (480x800 screen)
+            var distProp = so.FindProperty("_cameraDistance");
+            if (distProp != null) distProp.floatValue = 12f;
+            var angleProp = so.FindProperty("_cameraAngle");
+            if (angleProp != null) angleProp.floatValue = 45f;
+            var yRotProp = so.FindProperty("_cameraYRotation");
+            if (yRotProp != null) yRotProp.floatValue = 0f;
+            var sizeProp = so.FindProperty("_orthographicSize");
+            if (sizeProp != null) sizeProp.floatValue = 8f;
+            so.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void AddToBuildSettings(string scenePath)

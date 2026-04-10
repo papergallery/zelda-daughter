@@ -1,0 +1,10 @@
+--------- beginning of main
+--------- beginning of system
+--------- beginning of kernel
+04-09 20:38:19.214  5977  6000 I Unity   : MemoryManager: Using 'Dynamic Heap' Allocator.
+04-09 20:38:19.331  5977  6000 I Unity   : SystemInfo CPU = x86-64 SSE3 SSE4.1 SSE4.2 AVX AVX2, Cores = 1, Memory = 1981mb
+04-09 20:38:19.332  5977  6000 I Unity   : SystemInfo ARM big.LITTLE configuration: 1 big (mask: 0x2), 0 little (mask: 0x0)
+04-09 20:38:19.333  5977  6000 I Unity   : ApplicationInfo com.papergallery.zeldasdaughter version 0.1.0
+04-09 20:38:19.333  5977  6000 I Unity   : Built from '2022.3/staging' branch, Version '2022.3.30f1 (70558241b701)', Build type 'Release', Scripting Backend 'mono', CPU 'armeabi-v7a', Stripping 'Disabled'
+04-09 20:38:20.749  5977  6000 I Unity   : Company Name: PaperGallery
+04-09 20:38:20.750  5977  6000 I Unity   : Product Name: Zelda's Daughter

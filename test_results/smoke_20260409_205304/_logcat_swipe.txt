@@ -1,0 +1,100 @@
+--------- beginning of kernel
+--------- beginning of main
+04-09 20:53:12.348  6592  6659 E Unity   : UnityException: get_persistentDataPath is not allowed to be called from a MonoBehaviour constructor (or instance field initializer), call it in Awake or Start instead. Called from MonoBehaviour 'SaveManager'.
+04-09 20:53:12.348  6592  6659 E Unity   : See "Script Serialization" page in the Unity Manual for further details.
+04-09 20:53:12.348  6592  6659 E Unity   :   at (wrapper managed-to-native) UnityEngine.Application.get_persistentDataPath()
+04-09 20:53:12.348  6592  6659 E Unity   :   at ZeldaDaughter.Save.SaveManager..cctor () [0x0000a] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs:19 
+04-09 20:53:12.348  6592  6659 E Unity   : Rethrow as TypeInitializationException: The type initializer for 'ZeldaDaughter.Save.SaveManager' threw an exception.
+04-09 20:53:12.348  6592  6659 E Unity   : 
+04-09 20:53:12.348  6592  6659 E Unity   : 
+04-09 20:53:12.348  6592  6659 E Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs Line: 19)
+04-09 20:53:12.348  6592  6659 E Unity   : 
+04-09 20:53:13.962  6592  6615 D Unity   : UnloadTime: 23.913419 ms
+04-09 20:53:14.095  6592  6615 I Unity   : [ZD:Scene] GameStarted version=0.1.0 platform=Android
+04-09 20:53:14.095  6592  6615 I Unity   : UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:37)
+04-09 20:53:14.095  6592  6615 I Unity   : UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+04-09 20:53:14.095  6592  6615 I Unity   : UnityEngine.Logger:Log (UnityEngine.LogType,object)
+04-09 20:53:14.095  6592  6615 I Unity   : UnityEngine.Debug:Log (object)
+04-09 20:53:14.095  6592  6615 I Unity   : ZeldaDaughter.Debugging.ZDLog:Log (string,string) (at /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Debug/ZDLog.cs:12)
+04-09 20:53:14.095  6592  6615 I Unity   : ZeldaDaughter.Debugging.DebugSceneLogger:Initialize () (at /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Debug/DebugSceneLogger.cs:16)
+04-09 20:53:14.095  6592  6615 I Unity   : 
+04-09 20:53:14.095  6592  6615 I Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Debug/ZDLog.cs Line: 12)
+04-09 20:53:14.095  6592  6615 I Unity   : 
+04-09 20:53:14.499  6592  6615 E Unity   : UnityException: get_persistentDataPath is not allowed to be called from a MonoBehaviour constructor (or instance field initializer), call it in Awake or Start instead. Called from MonoBehaviour 'SaveManager'.
+04-09 20:53:14.499  6592  6615 E Unity   : See "Script Serialization" page in the Unity Manual for further details.
+04-09 20:53:14.499  6592  6615 E Unity   :   at (wrapper managed-to-native) UnityEngine.Application.get_persistentDataPath()
+04-09 20:53:14.499  6592  6615 E Unity   :   at ZeldaDaughter.Save.SaveManager..cctor () [0x0000a] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs:19 
+04-09 20:53:14.499  6592  6615 E Unity   : Rethrow as TypeInitializationException: The type initializer for 'ZeldaDaughter.Save.SaveManager' threw an exception.
+04-09 20:53:14.499  6592  6615 E Unity   :   at ZeldaDaughter.UI.NotebookManager.OnEnable () [0x00001] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/UI/NotebookManager.cs:42 
+04-09 20:53:14.499  6592  6615 E Unity   : 
+04-09 20:53:14.499  6592  6615 E Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs Line: 19)
+04-09 20:53:14.499  6592  6615 E Unity   : 
+04-09 20:53:15.305  6592  6615 W Unity   : Attempting to draw with missing UAV bindings
+04-09 20:53:15.305  6592  6615 W Unity   : UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:37)
+04-09 20:53:15.305  6592  6615 W Unity   : ZeldaDaughter.World.ShaderWarmer:Awake () (at /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/World/ShaderWarmer.cs:13)
+04-09 20:53:15.305  6592  6615 W Unity   : UnityEngine.GameObject:AddComponent (System.Type) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/GameObject.bindings.cs:240)
+04-09 20:53:15.305  6592  6615 W Unity   : UnityEngine.GameObject:AddComponent<ZeldaDaughter.World.ShaderWarmer> () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/GameObject.bindings.cs:245)
+04-09 20:53:15.305  6592  6615 W Unity   : ZeldaDaughter.World.GameBootstrap:Awake () (at /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/World/GameBootstrap.cs:22)
+04-09 20:53:15.305  6592  6615 W Unity   : 
+04-09 20:53:15.305  6592  6615 W Unity   : [/var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/World/GameBootstrap.cs line 22]
+04-09 20:53:15.305  6592  6615 W Unity   : 
+04-09 20:53:15.375  6592  6615 D Unity   : Shader warmup: 24 shaders 226 combinations 0.826s
+04-09 20:53:15.378  6592  6615 I Unity   : [ZD:ShaderWarmer] Shaders warmed up.
+04-09 20:53:15.378  6592  6615 I Unity   : UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:37)
+04-09 20:53:15.378  6592  6615 I Unity   : UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+04-09 20:53:15.378  6592  6615 I Unity   : UnityEngine.Logger:Log (UnityEngine.LogType,object)
+04-09 20:53:15.378  6592  6615 I Unity   : UnityEngine.Debug:Log (object)
+04-09 20:53:15.378  6592  6615 I Unity   : ZeldaDaughter.World.ShaderWarmer:Awake () (at /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/World/ShaderWarmer.cs:14)
+04-09 20:53:15.378  6592  6615 I Unity   : UnityEngine.GameObject:AddComponent (System.Type) (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/GameObject.bindings.cs:240)
+04-09 20:53:15.378  6592  6615 I Unity   : UnityEngine.GameObject:AddComponent<ZeldaDaughter.World.ShaderWarmer> () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/GameObject.bindings.cs:245)
+04-09 20:53:15.378  6592  6615 I Unity   : ZeldaDaughter.World.GameBootstrap:Awake () (at /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/World/GameBootstrap.cs:22)
+04-09 20:53:15.378  6592  6615 I Unity   : 
+04-09 20:53:15.378  6592  6615 I Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/World/ShaderWarmer.cs Li
+04-09 20:53:15.383  6592  6615 I Unity   : [ZD:Boot] GameBootstrap initialized targetFPS=60
+04-09 20:53:15.383  6592  6615 I Unity   : UnityEngine.StackTraceUtility:ExtractStackTrace () (at /home/bokken/build/output/unity/unity/Runtime/Export/Scripting/StackTrace.cs:37)
+04-09 20:53:15.383  6592  6615 I Unity   : UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+04-09 20:53:15.383  6592  6615 I Unity   : UnityEngine.Logger:Log (UnityEngine.LogType,object)
+04-09 20:53:15.383  6592  6615 I Unity   : UnityEngine.Debug:Log (object)
+04-09 20:53:15.383  6592  6615 I Unity   : ZeldaDaughter.Debugging.ZDLog:Log (string,string) (at /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Debug/ZDLog.cs:12)
+04-09 20:53:15.383  6592  6615 I Unity   : ZeldaDaughter.World.GameBootstrap:Awake () (at /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/World/GameBootstrap.cs:24)
+04-09 20:53:15.383  6592  6615 I Unity   : 
+04-09 20:53:15.383  6592  6615 I Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Debug/ZDLog.cs Line: 12)
+04-09 20:53:15.383  6592  6615 I Unity   : 
+04-09 20:53:15.417  6592  6615 E Unity   : UnityException: get_persistentDataPath is not allowed to be called from a MonoBehaviour constructor (or instance field initializer), call it in Awake or Start instead. Called from MonoBehaviour 'SaveManager'.
+04-09 20:53:15.417  6592  6615 E Unity   : See "Script Serialization" page in the Unity Manual for further details.
+04-09 20:53:15.417  6592  6615 E Unity   :   at (wrapper managed-to-native) UnityEngine.Application.get_persistentDataPath()
+04-09 20:53:15.417  6592  6615 E Unity   :   at ZeldaDaughter.Save.SaveManager..cctor () [0x0000a] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs:19 
+04-09 20:53:15.417  6592  6615 E Unity   : Rethrow as TypeInitializationException: The type initializer for 'ZeldaDaughter.Save.SaveManager' threw an exception.
+04-09 20:53:15.417  6592  6615 E Unity   :   at ZeldaDaughter.Quest.QuestManager.OnEnable () [0x00001] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Quest/QuestManager.cs:37 
+04-09 20:53:15.417  6592  6615 E Unity   : 
+04-09 20:53:15.417  6592  6615 E Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs Line: 19)
+04-09 20:53:15.417  6592  6615 E Unity   : 
+04-09 20:53:15.506  6592  6615 E Unity   : UnityException: get_persistentDataPath is not allowed to be called from a MonoBehaviour constructor (or instance field initializer), call it in Awake or Start instead. Called from MonoBehaviour 'SaveManager'.
+04-09 20:53:15.506  6592  6615 E Unity   : See "Script Serialization" page in the Unity Manual for further details.
+04-09 20:53:15.506  6592  6615 E Unity   :   at (wrapper managed-to-native) UnityEngine.Application.get_persistentDataPath()
+04-09 20:53:15.506  6592  6615 E Unity   :   at ZeldaDaughter.Save.SaveManager..cctor () [0x0000a] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs:19 
+04-09 20:53:15.506  6592  6615 E Unity   : Rethrow as TypeInitializationException: The type initializer for 'ZeldaDaughter.Save.SaveManager' threw an exception.
+04-09 20:53:15.506  6592  6615 E Unity   :   at ZeldaDaughter.World.MapManager.OnEnable () [0x00001] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/World/MapManager.cs:28 
+04-09 20:53:15.506  6592  6615 E Unity   : 
+04-09 20:53:15.506  6592  6615 E Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs Line: 19)
+04-09 20:53:15.506  6592  6615 E Unity   : 
+04-09 20:53:15.508  6592  6615 E Unity   : UnityException: get_persistentDataPath is not allowed to be called from a MonoBehaviour constructor (or instance field initializer), call it in Awake or Start instead. Called from MonoBehaviour 'SaveManager'.
+04-09 20:53:15.508  6592  6615 E Unity   : See "Script Serialization" page in the Unity Manual for further details.
+04-09 20:53:15.508  6592  6615 E Unity   :   at (wrapper managed-to-native) UnityEngine.Application.get_persistentDataPath()
+04-09 20:53:15.508  6592  6615 E Unity   :   at ZeldaDaughter.Save.SaveManager..cctor () [0x0000a] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs:19 
+04-09 20:53:15.508  6592  6615 E Unity   : Rethrow as TypeInitializationException: The type initializer for 'ZeldaDaughter.Save.SaveManager' threw an exception.
+04-09 20:53:15.508  6592  6615 E Unity   : 
+04-09 20:53:15.508  6592  6615 E Unity   : 
+04-09 20:53:15.508  6592  6615 E Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs Line: 19)
+04-09 20:53:15.508  6592  6615 E Unity   : 
+--------- beginning of crash
+04-09 20:53:15.511  6592  6615 E Unity   : UnityException: get_persistentDataPath is not allowed to be called from a MonoBehaviour constructor (or instance field initializer), call it in Awake or Start instead. Called from MonoBehaviour 'SaveManager'.
+04-09 20:53:15.511  6592  6615 E Unity   : See "Script Serialization" page in the Unity Manual for further details.
+04-09 20:53:15.511  6592  6615 E Unity   :   at (wrapper managed-to-native) UnityEngine.Application.get_persistentDataPath()
+04-09 20:53:15.511  6592  6615 E Unity   :   at ZeldaDaughter.Save.SaveManager..cctor () [0x0000a] in /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs:19 
+04-09 20:53:15.511  6592  6615 E Unity   : Rethrow as TypeInitializationException: The type initializer for 'ZeldaDaughter.Save.SaveManager' threw an exception.
+04-09 20:53:15.511  6592  6615 E Unity   : 
+04-09 20:53:15.511  6592  6615 E Unity   : 
+04-09 20:53:15.511  6592  6615 E Unity   : (Filename: /var/www/html/Zelda's daughter/UnityProject/Assets/Scripts/Save/SaveManager.cs Line: 19)
+04-09 20:53:15.511  6592  6615 E Unity   : 
+--------- beginning of system
