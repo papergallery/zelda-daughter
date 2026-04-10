@@ -522,14 +522,15 @@ namespace ZeldaDaughter.Editor
         // KayKit GLB characters for NPC visuals (role → model path)
         private static readonly (string role, string modelPath)[] NpcModelMap = new[]
         {
-            ("Guard",      "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Knight.glb"),
-            ("Mage",       "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Mage.glb"),
-            ("Rogue",      "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Rogue.glb"),
-            ("Herbalist",  "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Mage.glb"),
-            ("default",    "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Barbarian.glb"),
+            ("Guard",      "Assets/Models/KayKit/Adventurers/Knight.fbx"),
+            ("Blacksmith", "Assets/Models/KayKit/Adventurers/Barbarian.fbx"),
+            ("Merchant",   "Assets/Models/KayKit/Adventurers/Rogue.fbx"),
+            ("Herbalist",  "Assets/Models/KayKit/Adventurers/Mage.fbx"),
+            ("Bartender",  "Assets/Models/KayKit/Adventurers/Rogue_Hooded.fbx"),
+            ("default",    "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx"),
         };
 
-        // FBX fallback if GLB is not importable
+        // FBX fallback
         private const string NpcFbxFallback = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
 
         private static void WireNPCs()
@@ -684,8 +685,19 @@ namespace ZeldaDaughter.Editor
                     }
                 }
 
-                if (!hasVisual)
+                // Always replace NPC model (remove old visual, add new FBX)
                 {
+                    // Remove existing visual children (old capsules/cylinders)
+                    if (hasVisual)
+                    {
+                        for (int c = npc.transform.childCount - 1; c >= 0; c--)
+                        {
+                            var child = npc.transform.GetChild(c);
+                            if (child.name == "SpeechBubble" || child.name == "Waypoints") continue;
+                            if (child.GetComponent<Renderer>() != null || child.name == "Model")
+                                Object.DestroyImmediate(child.gameObject);
+                        }
+                    }
                     string modelPath = ResolveNpcModelPath(npcName);
                     if (modelPath != null)
                     {
