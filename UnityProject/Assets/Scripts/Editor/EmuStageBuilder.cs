@@ -1153,8 +1153,8 @@ namespace ZeldaDaughter.Editor
             // === WaterZone (blue plane with trigger) ===
             var waterGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
             waterGo.name = "WaterZone";
-            waterGo.transform.position = new Vector3(-5, -0.2f, 0);
-            waterGo.transform.localScale = new Vector3(4, 0.5f, 6);
+            waterGo.transform.position = new Vector3(-5, 0f, 0);
+            waterGo.transform.localScale = new Vector3(4, 2f, 6);
             waterGo.GetComponent<Renderer>().sharedMaterial = Mat("Water", new Color(0.1f, 0.3f, 0.7f, 0.5f));
             Object.DestroyImmediate(waterGo.GetComponent<BoxCollider>());
             var waterTrigger = waterGo.AddComponent<BoxCollider>();

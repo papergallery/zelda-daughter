@@ -193,6 +193,17 @@ namespace ZeldaDaughter.Save
                 if (itemData != null && !_itemCache.ContainsKey(itemData.Id))
                     _itemCache[itemData.Id] = itemData;
             }
+            // Scan ResourceNodes for drop items (e.g. Wood from trees)
+            foreach (var resNode in Object.FindObjectsOfType<ResourceNode>())
+            {
+                var nodeData = resNode.Data;
+                if (nodeData?.Drops == null) continue;
+                foreach (var drop in nodeData.Drops)
+                {
+                    if (drop.item != null && !_itemCache.ContainsKey(drop.item.Id))
+                        _itemCache[drop.item.Id] = drop.item;
+                }
+            }
             // Also check existing inventory items
             var player = GameObject.FindWithTag("Player");
             if (player != null && player.TryGetComponent<PlayerInventory>(out var inv))
