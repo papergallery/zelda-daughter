@@ -1,0 +1,242 @@
+--------- beginning of main
+04-09 20:34:51.767  1949  1949 I abb     : StartCommandInProcess(73657474696e67730067657400676c6f settings.get.glo [truncated])
+04-09 20:34:51.779  1949  1953 I abb     : oneway function results will be dropped but finished with status OK and parcel size 4
+04-09 20:34:51.780  1949  1949 I abb     : StartCommandInProcess(7061636b61676500696e7374616c6c00 package.install. [truncated])
+04-09 20:34:51.776   485   485 W Binder:485_14: type=1400 audit(0.0:43): avc: denied { getopt } for scontext=u:r:system_server:s0 tcontext=u:r:shell:s0 tclass=unix_stream_socket permissive=0
+04-09 20:34:51.776   485   485 I chatty  : uid=1000(system) Binder:485_3 identical 1 line
+04-09 20:34:51.776   485   485 W Binder:485_14: type=1400 audit(0.0:45): avc: denied { getopt } for scontext=u:r:system_server:s0 tcontext=u:r:shell:s0 tclass=unix_stream_socket permissive=0
+04-09 20:34:51.890   627   627 I wpa_supplicant: wlan0: CTRL-EVENT-BEACON-LOSS 
+04-09 20:34:51.868   485   485 W Binder:485_14: type=1400 audit(0.0:46): avc: denied { getopt } for scontext=u:r:system_server:s0 tcontext=u:r:shell:s0 tclass=unix_stream_socket permissive=0
+--------- beginning of system
+04-09 20:34:52.060   485   571 W RuleEvaluation: Integrity rule files are not available.
+04-09 20:34:52.060   485   530 I PackageManager: Integrity check passed for file:///data/app/vmdl968273466.tmp
+04-09 20:34:52.089   485   514 I ActivityManager: Force stopping com.papergallery.zeldasdaughter appid=10167 user=-1: installPackageLI
+04-09 20:34:52.089   485   530 I PackageManager: Update package com.papergallery.zeldasdaughter code path from /data/app/~~Ju989k8nR9lL8m_2NOmccw==/com.papergallery.zeldasdaughter-QDMz3d-uaRQ6S-2c1t7OUQ== to /data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==; Retain data and using new
+04-09 20:34:52.089   485   530 I PackageManager: Update package com.papergallery.zeldasdaughter resource path from /data/app/~~Ju989k8nR9lL8m_2NOmccw==/com.papergallery.zeldasdaughter-QDMz3d-uaRQ6S-2c1t7OUQ== to /data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==; Retain data and using new
+04-09 20:34:52.105   485   530 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+04-09 20:34:52.105   485   530 D PackageManager: Clear ephemeral installer activity
+04-09 20:34:52.108   485   530 I PackageDexOptimizer: Running dexopt (dexoptNeeded=1) on: /data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==/base.apk pkg=com.papergallery.zeldasdaughter isa=x86 dexoptFlags=boot_complete,profile_guided,public,enable_hidden_api_checks targetFilter=speed-profile oatDir=/data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==/oat classLoaderContext=PCL[]{}
+04-09 20:34:52.108   411  1354 V installd: DexInv: --- BEGIN '/data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==/base.apk' ---
+04-09 20:34:52.118  4953  4953 W dex2oat32: Unexpected CPU variant for X86 using defaults: x86_64
+04-09 20:34:52.118  4953  4953 W dex2oat32: Mismatch between dex2oat instruction set features to use (ISA: X86 Feature string: -ssse3,-sse4.1,-sse4.2,-avx,-avx2,-popcnt) and those from CPP defines (ISA: X86 Feature string: ssse3,sse4.1,sse4.2,-avx,-avx2,popcnt) for the command line:
+04-09 20:34:52.118  4953  4953 W dex2oat32: /apex/com.android.art/bin/dex2oat32 --zip-fd=7 --zip-location=base.apk --input-vdex-fd=-1 --output-vdex-fd=9 --oat-fd=8 --oat-location=/data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==/oat/x86/base.odex --instruction-set=x86 --instruction-set-variant=x86_64 --instruction-set-features=default --runtime-arg -Xbootclasspath:/apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/core-icu4j.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/framework-atb-backward-compatibility.jar --runtime-arg -Xms64m --runtime-arg -Xmx512m --updatable-bcp-packages-file=/system/etc/updatable-bcp-packages.txt --resolve-startup-const-strings=true --max-image-block-size=524288 --compiler-filter=speed-profile --swap-fd=10 --classpath-dir=/data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q== --class-loader-context=PCL[]{} --generate-mini-debug-info --compact-dex-level=none --runtime-arg -Xtarget-sdk-version:33 --runtime-arg -Xhidden-api-policy:enabled --compilation-reason=install
+04-09 20:34:52.118  4953  4953 I dex2oat32: /apex/com.android.art/bin/dex2oat32 --input-vdex-fd=-1 --output-vdex-fd=9 --updatable-bcp-packages-file=/system/etc/updatable-bcp-packages.txt --resolve-startup-const-strings=true --max-image-block-size=524288 --compiler-filter=speed-profile --classpath-dir=/data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q== --class-loader-context=PCL[]{} --generate-mini-debug-info --compact-dex-level=none --compilation-reason=install
+04-09 20:34:52.119  4953  4953 I dex2oat32: setting boot class path to /apex/com.android.art/javalib/core-oj.jar:/apex/com.android.art/javalib/core-libart.jar:/apex/com.android.art/javalib/core-icu4j.jar:/apex/com.android.art/javalib/okhttp.jar:/apex/com.android.art/javalib/bouncycastle.jar:/apex/com.android.art/javalib/apache-xml.jar:/system/framework/framework.jar:/system/framework/ext.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/framework-atb-backward-compatibility.jar
+04-09 20:34:52.155  4953  4953 I dex2oat32: dex2oat took 37.236ms (39.994ms cpu) (threads: 2) arena alloc=1912B (1912B) java alloc=196KB (201128B) native alloc=935KB (957552B) free=1230KB (1260224B)
+04-09 20:34:52.157   411  1354 V installd: DexInv: --- END '/data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==/base.apk' (success) ---
+04-09 20:34:52.162   411  1354 E installd: Couldn't opendir /data/app/vmdl968273466.tmp: No such file or directory
+04-09 20:34:52.162   411  1354 E installd: Failed to delete /data/app/vmdl968273466.tmp: No such file or directory
+04-09 20:34:52.163  1949  1953 I abb     : oneway function results will be dropped but finished with status OK and parcel size 4
+04-09 20:34:52.169   485   530 I ActivityManager: Force stopping com.papergallery.zeldasdaughter appid=10167 user=0: pkg removed
+04-09 20:34:52.172   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+04-09 20:34:52.172   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+04-09 20:34:52.172   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REMOVED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+04-09 20:34:52.174  1454  1454 I MediaProvider: Invalidating LocalCallingIdentity cache for package com.papergallery.zeldasdaughter. Reason: package android.intent.action.PACKAGE_REMOVED
+04-09 20:34:52.175  1472  1472 I GsaVoiceInteractionSrv: O received Intent { act=android.intent.action.PACKAGE_REMOVED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) }
+04-09 20:34:52.177   629   629 V AvrcpMediaPlayerList: mPackageChangedBroadcastReceiver: action: android.intent.action.PACKAGE_REMOVED
+04-09 20:34:52.180   485   562 I InputReader: Reconfiguring input devices, changes=KEYBOARD_LAYOUTS | 
+04-09 20:34:52.200   485   562 I InputReader: Reconfiguring input devices, changes=KEYBOARD_LAYOUTS | 
+04-09 20:34:52.201  1454  1454 I MediaProvider: Invalidating LocalCallingIdentity cache for package com.papergallery.zeldasdaughter. Reason: package android.intent.action.PACKAGE_ADDED
+04-09 20:34:52.204   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.packageinstaller/com.android.packageinstaller.PackageInstalledReceiver
+04-09 20:34:52.204   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+04-09 20:34:52.204   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+04-09 20:34:52.204   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+04-09 20:34:52.204   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+04-09 20:34:52.204   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.ims/.receivers.RcsAutoStartReceiver
+04-09 20:34:52.205  1472  1472 I GsaVoiceInteractionSrv: O received Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) }
+04-09 20:34:52.207   629   629 V AvrcpMediaPlayerList: mPackageChangedBroadcastReceiver: action: android.intent.action.PACKAGE_ADDED
+04-09 20:34:52.207   629   629 D AvrcpMediaPlayerList: Name of package changed: com.papergallery.zeldasdaughter
+04-09 20:34:52.212   485   485 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AI4
+04-09 20:34:52.235   919   919 D CarrierSvcBindHelper: No carrier app for: 0
+04-09 20:34:52.238   485   485 V BackupManagerConstants: getFullBackupIntervalMilliseconds(...) returns 86400000
+04-09 20:34:52.238   485   485 V BackupManagerConstants: getFullBackupRequiredNetworkType(...) returns 2
+04-09 20:34:52.238   485   485 V BackupManagerConstants: getFullBackupRequireCharging(...) returns true
+04-09 20:34:52.247   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+04-09 20:34:52.247   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+04-09 20:34:52.247   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+04-09 20:34:52.247   485   514 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_REPLACED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) } to com.google.android.ims/.receivers.RcsAutoStartReceiver
+04-09 20:34:52.237   919   919 D CarrierSvcBindHelper: No carrier app for: 0
+04-09 20:34:52.248   485   562 I InputReader: Reconfiguring input devices, changes=KEYBOARD_LAYOUTS | 
+04-09 20:34:52.249  1472  1472 I GsaVoiceInteractionSrv: O received Intent { act=android.intent.action.PACKAGE_REPLACED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 (has extras) }
+04-09 20:34:52.254   919   919 D CarrierConfigLoader: mHandler: 9 phoneId: 0
+04-09 20:34:52.279  1139  4968 I Fitness : FitCleanupIntentOperation received Intent android.intent.action.PACKAGE_REMOVED [CONTEXT service_id=17 ]
+04-09 20:34:52.281  1306  4961 W SQLiteLog: (28) double-quoted string literal: "com.papergallery.zeldasdaughter"
+04-09 20:34:52.282  1306  4983 I Auth    : [SupervisedAccountIntentOperation] onHandleIntent(): android.intent.action.PACKAGE_ADDED
+04-09 20:34:52.284  1285  1299 I .apps.wellbein: Background concurrent copying GC freed 3684(256KB) AllocSpace objects, 0(0B) LOS objects, 49% free, 4276KB/8553KB, paused 14us total 108.580ms
+04-09 20:34:52.291  1306  4965 I ChromeSync: [Sync,SyncIntentOperation] Handling the intent: Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.papergallery.zeldasdaughter flg=0x4000010 cmp=com.google.android.gms/.chimera.GmsIntentOperationService (has extras) }.
+04-09 20:34:52.296   792   815 I PermissionControllerServiceImpl: Updating user sensitive for uid 10167
+04-09 20:34:52.310  1306  4965 I ChromeSync: [Persistence,AffiliationManager] One of affiliation or grouping data for android://RFpuFd37xDjPjYs76yySE7ZqDlT4fGeTnCW_W0RVfRGzdgR0TBBZV6AdNyOLxmKSpIoxq-jL1nsKR1vG5bplLA==@com.papergallery.zeldasdaughter/ was not found. Marking affiliation data as stale...
+04-09 20:34:52.160   485   485 W Binder:485_14: type=1400 audit(0.0:47): avc: denied { getopt } for scontext=u:r:system_server:s0 tcontext=u:r:shell:s0 tclass=unix_stream_socket permissive=0
+04-09 20:34:52.160   485   485 I chatty  : uid=1000(system) Binder:485_3 identical 1 line
+04-09 20:34:52.160   485   485 W Binder:485_14: type=1400 audit(0.0:49): avc: denied { getopt } for scontext=u:r:system_server:s0 tcontext=u:r:shell:s0 tclass=unix_stream_socket permissive=0
+04-09 20:34:52.389  1306  2045 I Icing   : IndexChimeraService.getServiceInterface callingPackage=com.google.android.gms componentName=AppsCorpus serviceId=36 [CONTEXT service_id=21 ]
+04-09 20:34:52.414  1306  2138 I Icing   : Indexing com.google.android.gms-internal.3p:MobileApplication from com.google.android.gms [CONTEXT service_id=21 ]
+04-09 20:34:52.447  1306  2956 E ProtoLiteUtils: Corrupt protobuf data, expected CRC: 76 computed CRC: 0
+04-09 20:34:52.471  5011  5011 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+04-09 20:34:52.474  5011  5011 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.profilebootclasspath"
+04-09 20:34:52.474  5011  5011 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_apex_image"
+04-09 20:34:52.474  5011  5011 I AndroidRuntime: Using default boot image
+--------- beginning of kernel
+04-09 20:34:52.893     0     0 W audit   : audit_lost=1 audit_rate_limit=5 audit_backlog_limit=64
+04-09 20:34:52.910     0     0 E audit   : rate limit exceeded
+04-09 20:34:52.493  5011  5011 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.disable_lock_profiling"
+04-09 20:34:52.493  5011  5011 I AndroidRuntime: Leaving lock profiling enabled
+04-09 20:34:52.493  5011  5011 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_generational_cc"
+04-09 20:34:52.495  5011  5011 I app_process: Core platform API reporting enabled, enforcing=false
+04-09 20:34:52.522  1306  2512 I Icing   : IndexChimeraService.getServiceInterface callingPackage=com.google.android.gms componentName=null serviceId=30 [CONTEXT service_id=21 ]
+04-09 20:34:52.538  1306  2138 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0 [CONTEXT service_id=21 ]
+04-09 20:34:52.542  1306  2138 I Icing   : Indexing done com.google.android.gms-internal.3p:MobileApplication [CONTEXT service_id=21 ]
+04-09 20:34:52.547  5011  5011 D app_process: Time zone APEX ICU file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+04-09 20:34:52.547  5011  5011 D app_process: I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt66l.dat
+04-09 20:34:52.550  5011  5011 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+04-09 20:34:52.551  5011  5011 I app_process: The ClassLoaderContext is a special shared library.
+04-09 20:34:52.556  5011  5011 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+04-09 20:34:52.559  5011  5011 D AndroidRuntime: Calling main entry com.android.commands.monkey.Monkey
+04-09 20:34:52.559  5011  5011 W Monkey  : args: [-p, com.papergallery.zeldasdaughter, -c, android.intent.category.LAUNCHER, 1]
+04-09 20:34:52.560  5011  5011 W Monkey  :  arg: "-p"
+04-09 20:34:52.560  5011  5011 W Monkey  :  arg: "com.papergallery.zeldasdaughter"
+04-09 20:34:52.560  5011  5011 W Monkey  :  arg: "-c"
+04-09 20:34:52.560  5011  5011 W Monkey  :  arg: "android.intent.category.LAUNCHER"
+04-09 20:34:52.560  5011  5011 W Monkey  :  arg: "1"
+04-09 20:34:52.560  5011  5011 W Monkey  : data="com.papergallery.zeldasdaughter"
+04-09 20:34:52.560  5011  5011 W Monkey  : data="android.intent.category.LAUNCHER"
+04-09 20:34:52.468  5011  5011 W app_process: type=1400 audit(0.0:50): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=229 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 20:34:52.582   485   514 W BroadcastQueue: Skipping deliver [background] BroadcastRecord{35e4e57 u-1 android.net.conn.CONNECTIVITY_CHANGE} to ReceiverList{9500d44 5011 (unknown name)/2000/u-1 remote:b6ea3f1}: process gone or crashing
+04-09 20:34:52.585  1306  2956 E ProtoLiteUtils: Corrupt protobuf data, expected CRC: 76 computed CRC: 0
+04-09 20:34:52.586   485   871 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity} from uid 2000
+04-09 20:34:52.586   485   507 D EventSequenceValidator: inc AccIntentStartedEvents to 2
+04-09 20:34:52.472  5011  5011 W app_process: type=1400 audit(0.0:51): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=229 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 20:34:52.587  1306  2138 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0 [CONTEXT service_id=21 ]
+04-09 20:34:52.589  1306  2138 I Icing   : Indexing com.google.android.gms-internal.3p:MobileApplication from com.google.android.gms [CONTEXT service_id=21 ]
+04-09 20:34:52.589   402   402 I perfetto: ing_service_impl.cc:758 Configured tracing session 3, #sources:1, duration:5000 ms, #buffers:1, total buffer size:4096 KB, total sessions:1, uid:1071 session name: ""
+04-09 20:34:52.589   401   401 I perfetto: probes_producer.cc:230  Ftrace setup (target_buf=3)
+04-09 20:34:52.592  5011  5011 I Monkey  : Events injected: 1
+04-09 20:34:52.592   485   507 D CompatibilityChangeReporter: Compat change id reported: 135634846; UID 10167; state: DISABLED
+04-09 20:34:52.592   485   515 D CompatibilityChangeReporter: Compat change id reported: 143937733; UID 10167; state: ENABLED
+04-09 20:34:52.594  5011  5011 I Monkey  : ## Network stats: elapsed time=8ms (0ms mobile, 0ms wifi, 8ms not connected)
+04-09 20:34:52.599  1306  2138 I Icing   : Indexing done com.google.android.gms-internal.3p:MobileApplication [CONTEXT service_id=21 ]
+04-09 20:34:52.600  1306  2138 I Icing   : Indexing com.google.android.gms-apps from com.google.android.gms [CONTEXT service_id=21 ]
+04-09 20:34:52.600  5011  5011 I app_process: System.exit called, status: 0
+04-09 20:34:52.600  5011  5011 I AndroidRuntime: VM exiting with result code 0.
+04-09 20:34:52.600  1306  2138 E ProtoLiteUtils: Corrupt protobuf data, expected CRC: 76 computed CRC: 0
+04-09 20:34:52.601  1306  2045 I Icing   : IndexChimeraService.getServiceInterface callingPackage=com.google.android.gms componentName=null serviceId=36 [CONTEXT service_id=21 ]
+04-09 20:34:52.601  1306  2138 I Icing   : Indexing done com.google.android.gms-apps [CONTEXT service_id=21 ]
+04-09 20:34:52.603  1306  2138 I Icing   : Indexing com.google.android.gms-apps from com.google.android.gms [CONTEXT service_id=21 ]
+04-09 20:34:52.603  1306  2138 E ProtoLiteUtils: Corrupt protobuf data, expected CRC: 76 computed CRC: 0
+04-09 20:34:52.603  1306  2138 I Icing   : Indexing done com.google.android.gms-apps [CONTEXT service_id=21 ]
+04-09 20:34:52.611   275   275 D Zygote  : Forked child process 5030
+04-09 20:34:52.612  1306  5010 I Icing   : Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0 [CONTEXT service_id=21 ]
+04-09 20:34:52.617  5030  5030 W .zeldasdaughte: Unexpected CPU variant for X86 using defaults: x86_64
+04-09 20:34:52.618  5030  5030 I ndk_translation: Initialized NDK translation (armv7l), version 0.2.2
+04-09 20:34:52.619   401   401 I perfetto: ftrace_procfs.cc:176    enabled ftrace
+04-09 20:34:53.027     0     0 W perfetto: enabled ftrace
+04-09 20:34:52.620   485   515 I ActivityManager: Start proc 5030:com.papergallery.zeldasdaughter/u0a167 for pre-top-activity {com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity}
+04-09 20:34:52.763   379   398 I adbd    : jdwp connection from 5030
+04-09 20:34:52.795  5030  5030 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+04-09 20:34:52.795  5030  5030 D NetworkSecurityConfig: No Network Security Config specified, using platform default
+04-09 20:34:52.985  5030  5030 I Mono    : JNI_OnLoad called
+04-09 20:34:53.033   162   162 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device manifest.
+04-09 20:34:53.034  5030  5030 I Gralloc4: mapper 4.x is not supported
+04-09 20:34:53.034  5030  5030 D HostConnection: createUnique: call
+04-09 20:34:53.036  5030  5030 D HostConnection: HostConnection::get() New Host Connection established 0xeeba1720, tid 5030
+04-09 20:34:53.057  5030  5030 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+04-09 20:34:53.089   485   513 W system_server: Failed to determine oat file name for dex location /data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==/base.apk: Dalvik cache directory does not exist
+04-09 20:34:53.090   485   513 D ArtManagerInternalImpl: /data/misc/iorapd/com.papergallery.zeldasdaughter/1/com.unity3d.player.UnityPlayerActivity/compiled_traces/compiled_trace.pb doesn't exist
+04-09 20:34:53.090   485   507 D EventSequenceValidator: dec AccIntentStartedEvents to 1
+04-09 20:34:53.119   485   513 I ActivityTaskManager: Displayed com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity: +502ms
+04-09 20:34:53.148  1364  4114 I PBSessionCacheImpl: Deleted sessionId[6000711200512390] from persistence.
+04-09 20:34:53.150  1364  1983 W SearchServiceCore: Abort, client detached.
+04-09 20:34:53.198  5030  5054 I Unity   : MemoryManager: Using 'Dynamic Heap' Allocator.
+04-09 20:34:53.333  5030  5054 I Unity   : SystemInfo CPU = x86-64 SSE3 SSE4.1 SSE4.2 AVX AVX2, Cores = 1, Memory = 1981mb
+04-09 20:34:53.333  5030  5054 I Unity   : SystemInfo ARM big.LITTLE configuration: 1 big (mask: 0x2), 0 little (mask: 0x0)
+04-09 20:34:53.334  5030  5054 I Unity   : ApplicationInfo com.papergallery.zeldasdaughter version 0.1.0
+04-09 20:34:53.335  5030  5054 I Unity   : Built from '2022.3/staging' branch, Version '2022.3.30f1 (70558241b701)', Build type 'Release', Scripting Backend 'mono', CPU 'armeabi-v7a', Stripping 'Disabled'
+04-09 20:34:54.449  5030  5054 E libprocessgroup: set_timerslack_ns write failed: Operation not permitted
+04-09 20:34:54.478  5030  5054 I chatty  : uid=10167(com.papergallery.zeldasdaughter) UnityMain identical 14 lines
+04-09 20:34:54.478  5030  5054 E libprocessgroup: set_timerslack_ns write failed: Operation not permitted
+04-09 20:34:54.601  5030  5054 I Unity   : Company Name: PaperGallery
+04-09 20:34:54.601  5030  5054 I Unity   : Product Name: Zelda's Daughter
+04-09 20:34:54.613  5030  5054 D HostConnection: HostConnection::get() New Host Connection established 0xeeba8aa0, tid 5054
+04-09 20:34:54.615  5030  5054 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+04-09 20:34:54.617  5030  5054 D vulkan  : searching for layers in '/data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==/lib/arm'
+04-09 20:34:54.617  5030  5054 D vulkan  : searching for layers in '/data/app/~~mc4HBj0_CUXOMjsDvAl0nA==/com.papergallery.zeldasdaughter-JBltX3FZkYpbnoQ3Uq7h_Q==/base.apk!/lib/armeabi-v7a'
+04-09 20:34:54.633  5030  5054 E ndk_translation: Unknown function is used with vkGetInstanceProcAddr: vkGetPhysicalDeviceFragmentShadingRatesKHR
+04-09 20:34:54.635   162   162 I hwservicemanager: getTransport: Cannot find entry android.hardware.configstore@1.0::ISurfaceFlingerConfigs/default in either framework or device manifest.
+04-09 20:34:54.635  5030  5054 D goldfish_vulkan: on_vkEnumerateDeviceExtensionProperties: host has ext semaphore? win32 0 posix 1
+04-09 20:34:54.643  5030  5054 I chatty  : uid=10167(com.papergallery.zeldasdaughter) UnityMain identical 8 lines
+04-09 20:34:54.643  5030  5054 D goldfish_vulkan: on_vkEnumerateDeviceExtensionProperties: host has ext semaphore? win32 0 posix 1
+04-09 20:34:54.647  5030  5054 E ndk_translation: Unknown function is used with vkGetDeviceProcAddr: vkCmdBeginRenderPass2KHR
+04-09 20:34:54.647  5030  5054 E ndk_translation: Unknown function is used with vkGetInstanceProcAddr: vkCmdBeginRenderPass2KHR
+04-09 20:34:54.648  5030  5054 E ndk_translation: Unknown function is used with vkGetDeviceProcAddr: vkCmdEndRenderPass2KHR
+04-09 20:34:54.648  5030  5054 E ndk_translation: Unknown function is used with vkGetInstanceProcAddr: vkCmdEndRenderPass2KHR
+04-09 20:34:54.648  5030  5054 E ndk_translation: Unknown function is used with vkGetDeviceProcAddr: vkCmdNextSubpass2KHR
+04-09 20:34:54.648  5030  5054 E ndk_translation: Unknown function is used with vkGetInstanceProcAddr: vkCmdNextSubpass2KHR
+04-09 20:34:54.648  5030  5054 E ndk_translation: Unknown function is used with vkGetDeviceProcAddr: vkCreateRenderPass2KHR
+04-09 20:34:54.648  5030  5054 E ndk_translation: Unknown function is used with vkGetInstanceProcAddr: vkCreateRenderPass2KHR
+04-09 20:34:54.648  5030  5054 E ndk_translation: Unknown function is used with vkGetDeviceProcAddr: vkCmdSetFragmentShadingRateKHR
+04-09 20:34:54.648  5030  5054 E ndk_translation: Unknown function is used with vkGetInstanceProcAddr: vkCmdSetFragmentShadingRateKHR
+04-09 20:34:54.791  5030  5086 I SwappyDisplayManager: Starting looper thread
+04-09 20:34:54.792  5030  5054 V SwappyVk: SwappyVk initialized for VkDevice 0xef0333f0 using VK_GOOGLE_display_timing on Android
+04-09 20:34:54.793  5030  5054 I SwappyVk: Returning refresh duration of 16666666 nsec (approx 60.000002 Hz)
+04-09 20:34:54.804  5030  5054 V MediaRouter: Selecting route: RouteInfo{ name=Phone, description=null, status=null, category=RouteCategory{ name=System types=ROUTE_TYPE_LIVE_AUDIO ROUTE_TYPE_LIVE_VIDEO  groupable=false }, supportedTypes=ROUTE_TYPE_LIVE_AUDIO ROUTE_TYPE_LIVE_VIDEO , presentationDisplay=null }
+04-09 20:34:54.978   402   402 E libc    : The property "ro.build.fingerprint" has a value with length 92 that is too large for __system_property_get()/__system_property_read(); use __system_property_read_callback() instead.
+04-09 20:34:55.003   485  2849 I system_server: oneway function results will be dropped but finished with status OK and parcel size 4
+04-09 20:34:55.004   485  2849 I chatty  : uid=1000(system) Binder:485_1A identical 2 lines
+04-09 20:34:55.004   485  2849 I system_server: oneway function results will be dropped but finished with status OK and parcel size 4
+04-09 20:34:55.018   366   435 D AudioFlinger: Client defaulted notificationFrames to 682 for frameCount 2048
+04-09 20:34:55.019   366   435 D AF::TrackHandle: OpPlayAudio: track:56 usage:1 not muted
+04-09 20:34:55.020  5030  5089 W AudioTrack: Use of stream types is deprecated for operations other than volume control
+04-09 20:34:55.020  5030  5089 W AudioTrack: See the documentation of AudioTrack() for what to use instead with android.media.AudioAttributes to qualify your playback use case
+04-09 20:34:55.020  5030  5030 V MediaRouter: Selecting route: RouteInfo{ name=Phone, description=null, status=null, category=RouteCategory{ name=System types=ROUTE_TYPE_LIVE_AUDIO ROUTE_TYPE_LIVE_VIDEO  groupable=false }, supportedTypes=ROUTE_TYPE_LIVE_AUDIO ROUTE_TYPE_LIVE_VIDEO , presentationDisplay=null }
+04-09 20:34:55.020   366   435 W APM::AudioPolicyEngine: getDevicesForStrategy() unknown strategy: -1
+04-09 20:34:55.020   366   435 W APM::AudioPolicyEngine: getDevicesForStrategy() unknown strategy: -1
+04-09 20:34:55.021   485   499 I system_server: oneway function results will be dropped but finished with status OK and parcel size 4
+04-09 20:34:55.110   366   437 D AudioFlinger: mixer(0x72f542ee4040) throttle end: throttle time(35)
+04-09 20:34:56.291  5030  5054 I MONO    : Getting locale
+04-09 20:34:56.293  5030  5054 I Mono    : Locale en-US
+04-09 20:34:56.667  1306  4945 I Vision  : Requesting optional module download of ocr.
+04-09 20:34:56.672  1306  4965 E ConfigFileUtils: Failed to read config file: /data/user_de/0/com.google.android.gms/app_chimera/next_container.pb: open failed: ENOENT (No such file or directory)
+04-09 20:34:56.698  1306  4965 I ChmraDebugLogger: [73] 1801
+04-09 20:34:56.702  1306  4965 I ChmraDebugLogger: [30] [VisionOcr.optional:201817000800] permitMetered=true,
+04-09 20:34:56.710   485   499 D WifiNl80211Manager: Scan result ready event
+04-09 20:34:56.710   485   499 D WifiNative: Scan result ready event
+04-09 20:34:56.715  1306  4965 W ChimeraConfigService: Retry attempt was throttled.
+04-09 20:34:57.590   401   401 I perfetto: probes_producer.cc:329  Producer stop (id=3)
+04-09 20:34:57.593   402   402 I perfetto: ng_service_impl.cc:1948 Tracing session 3 ended, total sessions:0
+04-09 20:34:57.594   401   401 I perfetto: ftrace_procfs.cc:183    disabled ftrace
+04-09 20:34:58.010     0     0 W perfetto: disabled ftrace
+04-09 20:34:57.707  5030  5086 I SwappyDisplayManager: Terminating looper thread
+04-09 20:34:57.728  5030  5094 I SwappyDisplayManager: Starting looper thread
+04-09 20:34:57.728  5030  5054 V SwappyVk: SwappyVk initialized for VkDevice 0xef0333f0 using VK_GOOGLE_display_timing on Android
+04-09 20:34:57.729  5030  5054 I SwappyVk: Returning refresh duration of 16666666 nsec (approx 60.000002 Hz)
+04-09 20:34:58.014   485  4821 I system_server: oneway function results will be dropped but finished with status OK and parcel size 4
+04-09 20:34:58.027  5030  5096 D HostConnection: HostConnection::get() New Host Connection established 0xeeba8cd0, tid 5096
+04-09 20:34:58.070   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8452635679709772512 seems implausible relative to expectedPresent 363108755298
+04-09 20:34:58.077   341   560 E SurfaceFlinger: setDesiredDisplayConfigSpecs: failed to call setDesiredDisplayConfigSpecs: -22
+04-09 20:34:58.077   485   507 E SurfaceFlinger: setDesiredDisplayConfigSpecs failed to transact: -22
+04-09 20:34:58.204  1257  1340 I PeriodicStatsRunner: PeriodicStatsRunner.call():180 call()
+04-09 20:34:58.204  1257  1340 I PeriodicStatsRunner: PeriodicStatsRunner.call():184 No submit PeriodicStats since input started.
+04-09 20:34:58.229   485   513 I ActivityTaskManager: Fully drawn com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity: +5s642ms
+04-09 20:35:00.002   649   649 D KeyguardClockSwitch: Updating clock: 835
+04-09 20:35:00.152  5030  5094 I SwappyDisplayManager: Terminating looper thread
+04-09 20:35:00.175  5030  5099 I SwappyDisplayManager: Starting looper thread
+04-09 20:35:00.176  5030  5054 V SwappyVk: SwappyVk initialized for VkDevice 0xef0333f0 using VK_GOOGLE_display_timing on Android
+04-09 20:35:00.176  5030  5054 I SwappyVk: Returning refresh duration of 16666666 nsec (approx 60.000002 Hz)
+04-09 20:35:00.188  5030  5054 D CompatibilityChangeReporter: Compat change id reported: 147600208; UID 10167; state: ENABLED
+04-09 20:35:00.192   485  2849 W SensorService: sensor 00000000 already enabled in connection 0x7819f108bf50 (ignoring)
+04-09 20:35:00.333  5030  5101 D HostConnection: HostConnection::get() New Host Connection established 0xeeba9b40, tid 5101
+04-09 20:35:00.354   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 509378142916623072 seems implausible relative to expectedPresent 365392088540
+04-09 20:35:00.437   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1448645348332714720 seems implausible relative to expectedPresent 365475421870
+04-09 20:35:00.504   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1743356241723570912 seems implausible relative to expectedPresent 365542088534
+04-09 20:35:00.570   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2036418816860535520 seems implausible relative to expectedPresent 365608755198
+04-09 20:35:00.687   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2323855276897516256 seems implausible relative to expectedPresent 365725421860
+04-09 20:35:00.762   162   162 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device manifest.
+04-09 20:35:00.762  5107  5107 I Gralloc4: mapper 4.x is not supported
+04-09 20:35:00.767  5107  5107 D HostConnection: createUnique: call
+04-09 20:35:00.767  5107  5107 D HostConnection: HostConnection::get() New Host Connection established 0x750876fb4490, tid 5107
+04-09 20:35:00.788   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2815834430510512864 seems implausible relative to expectedPresent 365825421856
+04-09 20:35:00.801  5107  5107 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+04-09 20:35:00.837   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3382202890136632032 seems implausible relative to expectedPresent 365875421854
+04-09 20:35:00.870   341   341 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3559740972544080608 seems implausible relative to expectedPresent 365908755186
+04-09 20:35:01.293     0     0 D logd    : logdr: UID=2000 GID=2000 PID=5109 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+04-09 20:35:01.309     0     0 D logd    : logdr: UID=2000 GID=2000 PID=5112 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns

@@ -6,9 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/EmuStage3.unity
+    guid: b2832f35453c80d8da94fc155671e10e
+  - enabled: 0
+    path: Assets/Scenes/EmuStage2.unity
+    guid: f497ea0f352c44998992300563dc3f4c
+  - enabled: 0
+    path: Assets/Scenes/EmuStage1.unity
+    guid: e16fc0af01fcca2ddba91d22e4f34c2f
+  - enabled: 0
     path: Assets/Scenes/TestScene.unity
     guid: 37dfc438f5430872ca793eae302978b1
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DemoScene.unity
     guid: e5be4acd4c14e1f82a3a08501000a1ef
+  - enabled: 0
+    path: Assets/Scenes/EmulatorScene.unity
+    guid: 558db6f01e3d2c110b14862387382e24
   m_configObjects: {}

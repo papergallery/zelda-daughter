@@ -1,0 +1,175 @@
+--------- beginning of main
+04-09 22:29:18.276  4965  4965 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+04-09 22:29:18.294  4965  4965 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.profilebootclasspath"
+04-09 22:29:18.294  4965  4965 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_apex_image"
+04-09 22:29:18.294  4965  4965 I AndroidRuntime: Using default boot image
+04-09 22:29:18.294  4965  4965 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.disable_lock_profiling"
+04-09 22:29:18.294  4965  4965 I AndroidRuntime: Leaving lock profiling enabled
+04-09 22:29:18.294  4965  4965 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_generational_cc"
+04-09 22:29:18.296  4965  4965 I app_process: Core platform API reporting enabled, enforcing=false
+04-09 22:29:18.323   365   441 D AudioFlinger: mixer(0x78dd3f7e6040) throttle end: throttle time(3)
+04-09 22:29:18.344  4965  4965 D app_process: Time zone APEX ICU file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+04-09 22:29:18.345  4965  4965 D app_process: I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt66l.dat
+04-09 22:29:18.350  4965  4965 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+04-09 22:29:18.272  4965  4965 W app_process: type=1400 audit(0.0:65): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=8225 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 22:29:18.292  4965  4965 I chatty  : uid=2000(shell) app_process identical 1 line
+04-09 22:29:18.292  4965  4965 W app_process: type=1400 audit(0.0:67): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=8225 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 22:29:18.397  4965  4965 I app_process: The ClassLoaderContext is a special shared library.
+04-09 22:29:18.404  4965  4965 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+04-09 22:29:18.408  4965  4965 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+04-09 22:29:18.292  4965  4965 W app_process: type=1400 audit(0.0:68): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=8225 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 22:29:18.417   483   555 I InputDispatcher: Dropping event because there is no touchable window or gesture monitor at (540, 1400) in display 0.
+--------- beginning of system
+04-09 22:29:18.417   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.418   483   555 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 22:29:18.485   483  1382 I chatty  : uid=1000(system) Binder:483_13 identical 227 lines
+04-09 22:29:18.485   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.486   483  1136 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.517   483  1136 I chatty  : uid=1000(system) Binder:483_A identical 97 lines
+04-09 22:29:18.517   483  1136 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.518   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.556   483  1382 I chatty  : uid=1000(system) Binder:483_13 identical 82 lines
+04-09 22:29:18.559   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.560   483  1136 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.570   483  1136 I chatty  : uid=1000(system) Binder:483_A identical 32 lines
+04-09 22:29:18.571   483  1136 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.572   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.581   483  1382 I chatty  : uid=1000(system) Binder:483_13 identical 105 lines
+04-09 22:29:18.581   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.581   483  1136 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.617   483   555 I chatty  : uid=1000(system) InputDispatcher identical 621 lines
+04-09 22:29:18.617   483   555 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 22:29:18.618  4885  4978 D HostConnection: HostConnection::get() New Host Connection established 0xf05e8330, tid 4978
+04-09 22:29:18.618   483   555 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 22:29:18.658   483  1136 I chatty  : uid=1000(system) Binder:483_A identical 134 lines
+04-09 22:29:18.658   483  1136 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.659   483  1474 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.659   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.668   483   555 I chatty  : uid=1000(system) InputDispatcher identical 173 lines
+04-09 22:29:18.668   483   555 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 22:29:18.676  4885  4911 I Unity   : [ZD:Diag] Frame 2 rendered OK. FPS=0
+04-09 22:29:18.683   483   555 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 22:29:18.686   483  1382 I chatty  : uid=1000(system) Binder:483_13 identical 138 lines
+04-09 22:29:18.686   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.690   483  1474 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.693   483  1474 I chatty  : uid=1000(system) Binder:483_15 identical 35 lines
+04-09 22:29:18.693   483  1474 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.693   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.704   483  1382 I chatty  : uid=1000(system) Binder:483_13 identical 74 lines
+04-09 22:29:18.704   483  1382 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.704   483  1474 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:18.707   483   555 I chatty  : uid=1000(system) InputDispatcher identical 188 lines
+04-09 22:29:18.707   483   555 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 22:29:18.708  4965  4965 D AndroidRuntime: Shutting down VM
+04-09 22:29:18.786   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6459459477854544736 seems implausible relative to expectedPresent 310870822859
+04-09 22:29:18.834  4885  4911 I Unity   : [ZD:Diag] Frame 3 rendered OK. FPS=7
+04-09 22:29:18.936   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7096696379628381024 seems implausible relative to expectedPresent 311020822853
+04-09 22:29:19.013  4885  4911 I Unity   : [ZD:Diag] Frame 4 rendered OK. FPS=7
+04-09 22:29:19.086   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7666239975432446816 seems implausible relative to expectedPresent 311170822847
+04-09 22:29:19.103  4885  4911 I Unity   : [ZD:Diag] Frame 5 rendered OK. FPS=7
+04-09 22:29:19.153   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8314150102865077088 seems implausible relative to expectedPresent 311237489511
+04-09 22:29:19.353   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8670440454934553440 seems implausible relative to expectedPresent 311437489503
+04-09 22:29:20.227   162   162 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device manifest.
+04-09 22:29:20.227  4981  4981 I Gralloc4: mapper 4.x is not supported
+04-09 22:29:20.231  4981  4981 D HostConnection: createUnique: call
+04-09 22:29:20.231  4981  4981 D HostConnection: HostConnection::get() New Host Connection established 0x7ab37002c290, tid 4981
+04-09 22:29:20.249  4981  4981 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+--------- beginning of kernel
+04-09 22:29:20.784     0     0 D logd    : logdr: UID=2000 GID=2000 PID=4983 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+04-09 22:29:21.589   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 281346565284356960 seems implausible relative to expectedPresent 313670822747
+04-09 22:29:21.590  4988  4988 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+04-09 22:29:21.591  4988  4988 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.profilebootclasspath"
+04-09 22:29:21.591  4988  4988 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_apex_image"
+04-09 22:29:21.591  4988  4988 I AndroidRuntime: Using default boot image
+04-09 22:29:21.591  4988  4988 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.disable_lock_profiling"
+04-09 22:29:21.591  4988  4988 I AndroidRuntime: Leaving lock profiling enabled
+04-09 22:29:21.591  4988  4988 E libc    : Access denied finding property "persist.device_config.runtime_native_boot.enable_generational_cc"
+04-09 22:29:21.593  4988  4988 I app_process: Core platform API reporting enabled, enforcing=false
+04-09 22:29:21.656   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 573720670048674656 seems implausible relative to expectedPresent 313737489411
+04-09 22:29:21.669  4988  4988 D app_process: Time zone APEX ICU file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+04-09 22:29:21.669  4988  4988 D app_process: I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt66l.dat
+04-09 22:29:21.677  4988  4988 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+04-09 22:29:21.679  4988  4988 I app_process: The ClassLoaderContext is a special shared library.
+04-09 22:29:21.687  4988  4988 W app_process: JNI RegisterNativeMethods: attempt to register 0 native methods for android.media.AudioAttributes
+04-09 22:29:21.588  4988  4988 W app_process: type=1400 audit(0.0:69): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=8225 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 22:29:21.690  4988  4988 D AndroidRuntime: Calling main entry com.android.commands.input.Input
+04-09 22:29:21.704   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 920544965737374560 seems implausible relative to expectedPresent 313787489409
+04-09 22:29:21.588  4988  4988 W app_process: type=1400 audit(0.0:70): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=8225 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 22:29:21.588  4988  4988 W app_process: type=1400 audit(0.0:71): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=8225 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 22:29:21.737   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1106298792301093728 seems implausible relative to expectedPresent 313820822741
+04-09 22:29:21.737   483   555 I InputDispatcher: Dropping event because there is no touchable window or gesture monitor at (540, 1000) in display 0.
+04-09 22:29:21.588  4988  4988 W app_process: type=1400 audit(0.0:72): avc: denied { read } for name="u:object_r:device_config_runtime_native_boot_prop:s0" dev="tmpfs" ino=8225 scontext=u:r:shell:s0 tcontext=u:object_r:device_config_runtime_native_boot_prop:s0 tclass=file permissive=0
+04-09 22:29:18.707   483  1474 I chatty  : uid=1000(system) Binder:483_15 identical 44 lines
+04-09 22:29:18.707   483  1474 W InputManager: Input event injection from pid 4965 failed.
+04-09 22:29:21.744   483  1382 W InputManager: Input event injection from pid 4988 failed.
+04-09 22:29:21.744   483   555 I InputDispatcher: Dropping event because there is no touched foreground window in display 0 or gesture monitor to receive it.
+04-09 22:29:21.744  4988  4988 D AndroidRuntime: Shutting down VM
+04-09 22:29:21.787   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1291617457073349472 seems implausible relative to expectedPresent 313870822739
+04-09 22:29:21.803   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1473133821658194784 seems implausible relative to expectedPresent 313887489405
+04-09 22:29:21.837   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1610755959780336480 seems implausible relative to expectedPresent 313920822737
+04-09 22:29:21.878   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1754509842322350944 seems implausible relative to expectedPresent 313954156069
+04-09 22:29:21.903   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 1826013638982165344 seems implausible relative to expectedPresent 313987489401
+04-09 22:29:21.936   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2004097689042346848 seems implausible relative to expectedPresent 314020822733
+04-09 22:29:21.953   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2111115930322658144 seems implausible relative to expectedPresent 314037489399
+04-09 22:29:21.987   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2183459783930864480 seems implausible relative to expectedPresent 314070822731
+04-09 22:29:22.037   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2395046670548919136 seems implausible relative to expectedPresent 314120822729
+04-09 22:29:22.053   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2572266117922612064 seems implausible relative to expectedPresent 314137489395
+04-09 22:29:22.089   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2644816598112461664 seems implausible relative to expectedPresent 314170822727
+04-09 22:29:22.120   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2789120837763785568 seems implausible relative to expectedPresent 314204156059
+04-09 22:29:22.136   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 2941756635364516704 seems implausible relative to expectedPresent 314220822725
+04-09 22:29:22.170   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3000809622480937824 seems implausible relative to expectedPresent 314254156057
+04-09 22:29:22.221   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3142796439513260896 seems implausible relative to expectedPresent 314304156055
+04-09 22:29:22.236   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3321413894446834528 seems implausible relative to expectedPresent 314320822721
+04-09 22:29:22.270   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3465359401249727328 seems implausible relative to expectedPresent 314354156053
+04-09 22:29:22.303   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3537703937757733728 seems implausible relative to expectedPresent 314387489385
+04-09 22:29:22.336   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3690270324391994208 seems implausible relative to expectedPresent 314420822717
+04-09 22:29:22.374   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3836111865982542688 seems implausible relative to expectedPresent 314454156049
+04-09 22:29:22.403   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 3979551236659405664 seems implausible relative to expectedPresent 314487489381
+04-09 22:29:22.437   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4115609787642471264 seems implausible relative to expectedPresent 314520822713
+04-09 22:29:22.440  4885  4911 I Unity   : [ZD:Perf] FPS=30 mem=18MB
+04-09 22:29:22.470   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4260592932774273888 seems implausible relative to expectedPresent 314554156045
+04-09 22:29:22.503   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4475309068139684704 seems implausible relative to expectedPresent 314587489377
+04-09 22:29:22.536   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4547030795735065440 seems implausible relative to expectedPresent 314620822709
+04-09 22:29:22.570   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4723790913536320352 seems implausible relative to expectedPresent 314654156041
+04-09 22:29:22.586   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4864867021408232288 seems implausible relative to expectedPresent 314670822707
+04-09 22:29:22.637   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 4941319732789568352 seems implausible relative to expectedPresent 314720822705
+04-09 22:29:22.653   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5146839441231111008 seems implausible relative to expectedPresent 314737489371
+04-09 22:29:22.687   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5217449841743684448 seems implausible relative to expectedPresent 314770822703
+04-09 22:29:22.720   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5359403621887566688 seems implausible relative to expectedPresent 314804156035
+04-09 22:29:22.753   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5501570256315671392 seems implausible relative to expectedPresent 314837489367
+04-09 22:29:22.786   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5644968485500805984 seems implausible relative to expectedPresent 314870822699
+04-09 22:29:22.823   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5825376361976226656 seems implausible relative to expectedPresent 314904156031
+04-09 22:29:22.836   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 5897718411698168672 seems implausible relative to expectedPresent 314920822697
+04-09 22:29:22.870   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6042549991729062752 seems implausible relative to expectedPresent 314954156029
+04-09 22:29:22.886   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6116524726023938912 seems implausible relative to expectedPresent 314970822695
+04-09 22:29:22.927   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6265072573752337248 seems implausible relative to expectedPresent 315004156027
+04-09 22:29:22.936   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6338340910481072992 seems implausible relative to expectedPresent 315020822693
+04-09 22:29:22.953   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6411324752871088992 seems implausible relative to expectedPresent 315037489359
+04-09 22:29:22.964  1683  5002 I Vision  : Requesting optional module download of ocr.
+04-09 22:29:22.964  1683  5002 I Vision  : Checking for download completion for 325032 -- ocr
+04-09 22:29:22.986   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6559491512446280544 seems implausible relative to expectedPresent 315070822691
+04-09 22:29:23.023   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6632477244621906784 seems implausible relative to expectedPresent 315104156023
+04-09 22:29:23.036   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6774373605348008800 seems implausible relative to expectedPresent 315120822689
+04-09 22:29:23.053   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6845311664620626784 seems implausible relative to expectedPresent 315137489355
+04-09 22:29:23.087   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 6951119287764181856 seems implausible relative to expectedPresent 315170822687
+04-09 22:29:23.103   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7090286411522040672 seems implausible relative to expectedPresent 315187489353
+04-09 22:29:23.137   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7160103918122099552 seems implausible relative to expectedPresent 315220822685
+04-09 22:29:23.170   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7298193645038789472 seems implausible relative to expectedPresent 315254156017
+04-09 22:29:23.187   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7436474111453094752 seems implausible relative to expectedPresent 315270822683
+04-09 22:29:23.220   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7506007076469793632 seems implausible relative to expectedPresent 315304156015
+04-09 22:29:23.236   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7645866286962762592 seems implausible relative to expectedPresent 315320822681
+04-09 22:29:23.252   162   162 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device manifest.
+04-09 22:29:23.252  5005  5005 I Gralloc4: mapper 4.x is not supported
+04-09 22:29:23.263  5005  5005 D HostConnection: createUnique: call
+04-09 22:29:23.264  5005  5005 D HostConnection: HostConnection::get() New Host Connection established 0x7b968d8c23d0, tid 5005
+04-09 22:29:23.287   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7787989245868434272 seems implausible relative to expectedPresent 315370822679
+04-09 22:29:23.293  5005  5005 D HostConnection: HostComposition ext ANDROID_EMU_CHECKSUM_HELPER_v1 ANDROID_EMU_native_sync_v2 ANDROID_EMU_dma_v1 ANDROID_EMU_direct_mem ANDROID_EMU_host_composition_v1 ANDROID_EMU_host_composition_v2 ANDROID_EMU_vulkan ANDROID_EMU_deferred_vulkan_commands ANDROID_EMU_vulkan_null_optional_strings ANDROID_EMU_vulkan_create_resources_with_requirements ANDROID_EMU_YUV_Cache ANDROID_EMU_vulkan_ignored_handles ANDROID_EMU_has_shared_slots_host_memory_allocator ANDROID_EMU_vulkan_free_memory_sync ANDROID_EMU_vulkan_shader_float16_int8 ANDROID_EMU_vulkan_async_queue_submit ANDROID_EMU_sync_buffer_data ANDROID_EMU_vulkan_async_qsri ANDROID_EMU_read_color_buffer_dma ANDROID_EMU_hwc_color_transform GL_OES_EGL_image_external_essl3 GL_OES_vertex_array_object GL_KHR_texture_compression_astc_ldr ANDROID_EMU_host_side_tracing ANDROID_EMU_gles_max_version_3_0 
+04-09 22:29:23.337   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 7968294386726134624 seems implausible relative to expectedPresent 315420822677
+04-09 22:29:23.370   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8189158514372698976 seems implausible relative to expectedPresent 315454156009
+04-09 22:29:23.403   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8335252857738290016 seems implausible relative to expectedPresent 315487489341
+04-09 22:29:23.850     0     0 D logd    : logdr: UID=2000 GID=2000 PID=5007 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+04-09 22:29:23.875     0     0 D logd    : logdr: UID=2000 GID=2000 PID=5010 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+04-09 22:29:23.437   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8481196318902772576 seems implausible relative to expectedPresent 315520822673
+04-09 22:29:23.470   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8554698735644107616 seems implausible relative to expectedPresent 315554156005
+04-09 22:29:23.930     0     0 D logd    : logdr: UID=2000 GID=2000 PID=5013 n tail=0 logMask=99 pid=0 start=0ns timeout=0ns
+04-09 22:29:23.503   352   352 W BufferQueueLayer: [SurfaceView - com.papergallery.zeldasdaughter/com.unity3d.player.UnityPlayerActivity#0] Timestamp 8700517857505370976 seems implausible relative to expectedPresent 315587489337
