@@ -19,6 +19,27 @@ namespace ZeldaDaughter.World
                 _player.TryGetComponent(out _autoMove);
         }
 
+        private void Start()
+        {
+            // Debug: log screen positions of all interactable objects
+            var cam = Camera.main;
+            if (cam == null) return;
+            var interactables = FindObjectsOfType<MonoBehaviour>();
+            foreach (var mb in interactables)
+            {
+                if (mb is IInteractable interactable)
+                {
+                    Vector3 screenPos = cam.WorldToScreenPoint(mb.transform.position);
+                    // Convert to Android coords (1080x2340)
+                    float ax = screenPos.x * 1080f / Screen.width;
+                    float ay = (Screen.height - screenPos.y) * 2340f / Screen.height;
+                    ZeldaDaughter.Debugging.ZDLog.Log("Interact",
+                        $"Interactable {mb.gameObject.name} world=({mb.transform.position.x:F1},{mb.transform.position.y:F1},{mb.transform.position.z:F1}) " +
+                        $"screen=({screenPos.x:F0},{screenPos.y:F0}) android=({ax:F0},{ay:F0})");
+                }
+            }
+        }
+
         private void OnEnable()
         {
             GestureDispatcher.OnTap += HandleTap;
@@ -40,10 +61,56 @@ namespace ZeldaDaughter.World
                 return;
             }
             var ray = cam.ScreenPointToRay(screenPos);
-            if (!Physics.Raycast(ray, out var hit, 100f))
+
+            // Try precise raycast first, then widen with SphereCast for small objects
+            RaycastHit hit = default;
+            bool found = false;
+
+            // 1. Precise RaycastAll — check for direct hits on interactables/enemies
+            var hits = Physics.RaycastAll(ray, 100f);
+            for (int i = 0; i < hits.Length; i++)
             {
-                ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"HandleTap: Raycast miss at ({screenPos.x:F0},{screenPos.y:F0})");
-                return;
+                var go = hits[i].collider.gameObject;
+                if (go.CompareTag("Enemy")
+                    || go.GetComponent<IInteractable>() != null
+                    || go.GetComponentInParent<IInteractable>() != null)
+                {
+                    hit = hits[i];
+                    found = true;
+                    break;
+                }
+            }
+
+            // 2. If no interactable found, widen search with SphereCast
+            if (!found)
+            {
+                var sphereHits = Physics.SphereCastAll(ray, 1.2f, 100f);
+                for (int i = 0; i < sphereHits.Length; i++)
+                {
+                    var go = sphereHits[i].collider.gameObject;
+                    if (go.CompareTag("Enemy")
+                        || go.GetComponent<IInteractable>() != null
+                        || go.GetComponentInParent<IInteractable>() != null)
+                    {
+                        hit = sphereHits[i];
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            // 3. Fallback to ground/nearest from original raycast
+            if (!found)
+            {
+                if (hits.Length > 0)
+                {
+                    hit = hits[0];
+                }
+                else
+                {
+                    ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"HandleTap: Raycast miss at ({screenPos.x:F0},{screenPos.y:F0})");
+                    return;
+                }
             }
 
             ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"HandleTap: Hit {hit.collider.gameObject.name} at ({screenPos.x:F0},{screenPos.y:F0})");

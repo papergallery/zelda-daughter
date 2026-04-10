@@ -21,7 +21,7 @@ namespace ZeldaDaughter.Editor
             // EmuMin2 — лёгкая сцена для эмулятора (Player + Input + деревья)
             // EmulatorScene крашит SwiftShader (слишком сложная)
             // DemoScene — для реального устройства
-            string scenePath = "Assets/Scenes/EmuStage2.unity";
+            string scenePath = "Assets/Scenes/EmuStage5.unity";
             if (!System.IO.File.Exists(scenePath))
             {
                 scenePath = "Assets/Scenes/DemoScene.unity";
