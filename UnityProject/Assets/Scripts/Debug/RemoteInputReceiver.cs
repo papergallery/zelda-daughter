@@ -108,6 +108,14 @@ namespace ZeldaDaughter.Debugging
                     ExecuteLongPressOnPlayer(parts.Length >= 2 ? float.Parse(parts[1]) / 1000f : 0.7f);
                     break;
 
+                case "scan":
+                    ScanTargets();
+                    break;
+
+                case "tap_enemy":
+                    TapNearestEnemy();
+                    break;
+
                 default:
                     Debug.LogWarning($"[ZD:RemoteInput] Unknown command: {parts[0]}");
                     break;
@@ -219,6 +227,66 @@ namespace ZeldaDaughter.Debugging
                 upMethod?.Invoke(dispatcher, new object[] { unityPos });
                 Debug.Log($"[ZD:RemoteInput] Tap ({unityPos.x:F0},{unityPos.y:F0})");
             }
+        }
+
+        private void ScanTargets()
+        {
+            var cam = Camera.main;
+            if (cam == null) return;
+            try
+            {
+                foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+                {
+                    Vector3 sp = cam.WorldToScreenPoint(enemy.transform.position);
+                    float ax = sp.x * 1080f / Screen.width;
+                    float ay = (Screen.height - sp.y) * 2340f / Screen.height;
+                    Debug.Log($"[ZD:Scan] {enemy.name} android=({ax:F0},{ay:F0}) world=({enemy.transform.position.x:F1},{enemy.transform.position.y:F1},{enemy.transform.position.z:F1})");
+                }
+            }
+            catch { }
+            // Also scan interactables
+            var mbs = FindObjectsOfType<MonoBehaviour>();
+            foreach (var mb in mbs)
+            {
+                if (mb is ZeldaDaughter.World.IInteractable)
+                {
+                    Vector3 sp = cam.WorldToScreenPoint(mb.transform.position);
+                    float ax = sp.x * 1080f / Screen.width;
+                    float ay = (Screen.height - sp.y) * 2340f / Screen.height;
+                    Debug.Log($"[ZD:Scan] {mb.gameObject.name} android=({ax:F0},{ay:F0})");
+                }
+            }
+        }
+
+        private void TapNearestEnemy()
+        {
+            var cam = Camera.main;
+            if (cam == null) return;
+            GameObject nearest = null;
+            float minDist = float.MaxValue;
+            try
+            {
+                foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+                {
+                    float d = Vector3.Distance(cam.transform.position, enemy.transform.position);
+                    if (d < minDist) { minDist = d; nearest = enemy; }
+                }
+            }
+            catch { return; }
+            if (nearest == null) return;
+
+            Vector3 sp = cam.WorldToScreenPoint(nearest.transform.position + Vector3.up * 0.9f);
+            Vector2 pos = new Vector2(sp.x, sp.y);
+            Debug.Log($"[ZD:RemoteInput] TapEnemy {nearest.name} at screen ({pos.x:F0},{pos.y:F0})");
+
+            var dispatcher = FindObjectOfType<ZeldaDaughter.Input.GestureDispatcher>();
+            if (dispatcher == null) return;
+            var downMethod = dispatcher.GetType().GetMethod("OnPointerDown",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            downMethod?.Invoke(dispatcher, new object[] { pos });
+            var upMethod = dispatcher.GetType().GetMethod("OnPointerUp",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            upMethod?.Invoke(dispatcher, new object[] { pos });
         }
     }
 }
