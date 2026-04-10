@@ -889,6 +889,74 @@ namespace ZeldaDaughter.Editor
             // DeathToCarcass — converts dead enemy into lootable CarcassObject
             boarGo.AddComponent<ZeldaDaughter.Combat.DeathToCarcass>();
 
+            // === ScriptableObjectHolder — keeps CraftRecipeDatabase loaded for runtime craft ===
+            var recipeDb = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.CraftRecipeDatabase>(
+                "Assets/Data/Recipes/CraftRecipeDatabase.asset");
+            if (recipeDb != null)
+            {
+                var holderGo = new GameObject("DataHolder");
+                holderGo.transform.SetParent(tapSys.transform); // child to save root objects
+                var holder = holderGo.AddComponent<ZeldaDaughter.Debugging.ScriptableObjectHolder>();
+                var hso = new SerializedObject(holder);
+                var assetsProp = hso.FindProperty("_assets");
+                assetsProp.arraySize = 1;
+                assetsProp.GetArrayElementAtIndex(0).objectReferenceValue = recipeDb;
+                hso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === Pickupable items for crafting materials ===
+            // Use Data/Items/ versions (these match CraftRecipe references)
+            var pickupParent = new GameObject("Pickupables");
+            string[] craftItemPaths = {
+                "Assets/Data/Items/item_stick.asset",
+                "Assets/Content/Items/Item_Stone.asset",
+                "Assets/Content/Items/Item_Berry.asset",
+            };
+            Vector3[] craftPickupPos = {
+                new(-3, 1f, 3), new(-4, 1f, -2), new(5, 1f, -3),
+            };
+            for (int i = 0; i < craftItemPaths.Length; i++)
+            {
+                var itemData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.ItemData>(craftItemPaths[i]);
+                if (itemData == null) continue;
+                var pickup = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                pickup.name = $"Pickup_{itemData.name}";
+                pickup.transform.SetParent(pickupParent.transform);
+                pickup.transform.position = craftPickupPos[i];
+                pickup.transform.localScale = Vector3.one;
+                pickup.GetComponent<Renderer>().sharedMaterial = Mat("Pickup", new Color(0.9f, 0.8f, 0.2f));
+                var pickupComp = pickup.AddComponent<ZeldaDaughter.World.Pickupable>();
+                var pso = new SerializedObject(pickupComp);
+                pso.FindProperty("_itemData").objectReferenceValue = itemData;
+                pso.FindProperty("_amount").intValue = 3; // extra for crafting
+                pso.FindProperty("_saveId").stringValue = $"s4_pickup_{i}";
+                pso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // Also add cloth and herbs pickups for crafting bandage/splint
+            string[] healItemPaths = {
+                "Assets/Data/Items/item_cloth.asset",
+                "Assets/Data/Items/item_herbs.asset",
+            };
+            Vector3[] healPickupPos = { new(4, 1f, 4), new(-2, 1f, -4) };
+            for (int i = 0; i < healItemPaths.Length; i++)
+            {
+                var itemData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.ItemData>(healItemPaths[i]);
+                if (itemData == null) continue;
+                var pickup = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                pickup.name = $"Pickup_{itemData.name}";
+                pickup.transform.SetParent(pickupParent.transform);
+                pickup.transform.position = healPickupPos[i];
+                pickup.transform.localScale = Vector3.one;
+                pickup.GetComponent<Renderer>().sharedMaterial = Mat("Pickup", new Color(0.6f, 0.9f, 0.3f));
+                var pickupComp = pickup.AddComponent<ZeldaDaughter.World.Pickupable>();
+                var pso = new SerializedObject(pickupComp);
+                pso.FindProperty("_itemData").objectReferenceValue = itemData;
+                pso.FindProperty("_amount").intValue = 3;
+                pso.FindProperty("_saveId").stringValue = $"s4_heal_{i}";
+                pso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
             // Сохраняем сцену
             const string path = "Assets/Scenes/EmuStage4.unity";
             EditorSceneManager.SaveScene(
