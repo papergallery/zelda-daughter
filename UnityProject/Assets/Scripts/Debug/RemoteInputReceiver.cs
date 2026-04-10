@@ -132,6 +132,10 @@ namespace ZeldaDaughter.Debugging
                     LogInventory();
                     break;
 
+                case "heal" when parts.Length >= 2:
+                    ExecuteHeal(parts[1]);
+                    break;
+
                 default:
                     Debug.LogWarning($"[ZD:RemoteInput] Unknown command: {parts[0]}");
                     break;
@@ -389,6 +393,24 @@ namespace ZeldaDaughter.Debugging
                 }
             }
             Debug.Log($"[ZD:RemoteInput] Eat: item '{itemId}' not found in inventory");
+        }
+
+        private void ExecuteHeal(string woundTypeName)
+        {
+            var player = GameObject.FindWithTag("Player");
+            if (player == null) return;
+            var health = player.GetComponent<ZeldaDaughter.Combat.PlayerHealthState>();
+            if (health == null) { Debug.LogWarning("[ZD:RemoteInput] Heal: no PlayerHealthState"); return; }
+
+            if (System.Enum.TryParse<ZeldaDaughter.Combat.WoundType>(woundTypeName, true, out var woundType))
+            {
+                health.TreatWound(woundType);
+                Debug.Log($"[ZD:RemoteInput] Healed wound type={woundType}");
+            }
+            else
+            {
+                Debug.LogWarning($"[ZD:RemoteInput] Unknown wound type: {woundTypeName}");
+            }
         }
 
         private void LogInventory()
