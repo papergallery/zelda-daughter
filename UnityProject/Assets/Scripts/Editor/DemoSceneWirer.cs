@@ -738,7 +738,13 @@ namespace ZeldaDaughter.Editor
             var player = GameObject.FindGameObjectWithTag("Player");
             if (player != null)
             {
-                var footstep = player.GetComponent<Audio.FootstepSystem>();
+                var footstep = player.GetComponent<Audio.FootstepSystem>()
+                              ?? player.GetComponentInChildren<Audio.FootstepSystem>();
+                if (footstep == null)
+                {
+                    footstep = player.AddComponent<Audio.FootstepSystem>();
+                    Debug.Log("[DemoSceneWirer] FootstepSystem добавлен на Player.");
+                }
                 if (footstep != null)
                 {
                     var so = new SerializedObject(footstep);
