@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ZeldaDaughter.Editor
 {
@@ -8,6 +9,23 @@ namespace ZeldaDaughter.Editor
         [MenuItem("ZeldaDaughter/Build iOS Xcode Project")]
         public static void BuildXcodeProject()
         {
+            // Restore URP pipeline (AndroidBuilder disables it for emulator)
+            var urpAsset = AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>(
+                "Assets/Settings/URP_PipelineAsset.asset");
+            if (urpAsset != null)
+            {
+                GraphicsSettings.defaultRenderPipeline = urpAsset;
+                for (int i = 0; i < QualitySettings.names.Length; i++)
+                {
+                    QualitySettings.SetQualityLevel(i, false);
+                    QualitySettings.renderPipeline = urpAsset;
+                }
+                Debug.Log($"[IOSBuilder] URP restored: {urpAsset.name}");
+            }
+            else
+            {
+                Debug.LogWarning("[IOSBuilder] URP_PipelineAsset.asset not found! Shaders may be pink.");
+            }
             // Приоритет: DemoScene → TestScene
             string scenePath = "Assets/Scenes/DemoScene.unity";
             if (!System.IO.File.Exists(scenePath))
