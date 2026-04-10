@@ -100,8 +100,9 @@ namespace ZeldaDaughter.Editor
 
             if (existingModel != null)
             {
-                Debug.Log($"[PlayerModelSetup] Модель уже присутствует: {existingModel.name} — пропускаем инстанцирование.");
-                return;
+                // Remove old model to replace with new one
+                Debug.Log($"[PlayerModelSetup] Удаляю старую модель: {existingModel.name}");
+                Object.DestroyImmediate(existingModel.gameObject);
             }
 
             // Инстанцируем модель как дочерний объект
