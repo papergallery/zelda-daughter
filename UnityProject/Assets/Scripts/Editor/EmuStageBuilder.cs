@@ -889,6 +889,32 @@ namespace ZeldaDaughter.Editor
             // DeathToCarcass — converts dead enemy into lootable CarcassObject
             boarGo.AddComponent<ZeldaDaughter.Combat.DeathToCarcass>();
 
+            // === Enemy: Wolf (зелёная капсула, aggroOnSight=true, Puncture wounds) ===
+            var wolfGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            wolfGo.name = "Enemy_Wolf";
+            wolfGo.transform.position = new Vector3(-4, 0.05f, -3);
+            wolfGo.transform.localScale = Vector3.one * 1.2f;
+            wolfGo.GetComponent<Renderer>().sharedMaterial = Mat("Wolf", new Color(0.4f, 0.4f, 0.35f));
+            try { wolfGo.tag = "Enemy"; } catch { }
+            var wolfData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.EnemyData>(
+                "Assets/Data/Combat/EnemyData_Wolf.asset");
+            var wolfHealth = wolfGo.AddComponent<ZeldaDaughter.Combat.EnemyHealth>();
+            if (wolfData != null)
+            {
+                var so = new SerializedObject(wolfHealth);
+                so.FindProperty("_data").objectReferenceValue = wolfData;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+            var wolfFsm = wolfGo.AddComponent<ZeldaDaughter.Combat.EnemyFSM>();
+            if (wolfData != null)
+            {
+                var so = new SerializedObject(wolfFsm);
+                so.FindProperty("_data").objectReferenceValue = wolfData;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+            if (attackSignalType != null) wolfGo.AddComponent(attackSignalType);
+            wolfGo.AddComponent<ZeldaDaughter.Combat.DeathToCarcass>();
+
             // === ScriptableObjectHolder — keeps CraftRecipeDatabase loaded for runtime craft ===
             var recipeDb = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.CraftRecipeDatabase>(
                 "Assets/Data/Recipes/CraftRecipeDatabase.asset");
@@ -933,12 +959,13 @@ namespace ZeldaDaughter.Editor
                 pso.ApplyModifiedPropertiesWithoutUndo();
             }
 
-            // Also add cloth and herbs pickups for crafting bandage/splint
+            // Also add cloth, herbs, knife pickups
             string[] healItemPaths = {
                 "Assets/Data/Items/item_cloth.asset",
                 "Assets/Data/Items/item_herbs.asset",
+                "Assets/Data/Items/item_knife.asset",
             };
-            Vector3[] healPickupPos = { new(4, 1f, 4), new(-2, 1f, -4) };
+            Vector3[] healPickupPos = { new(4, 1f, 4), new(-2, 1f, -4), new(0, 1f, -5) };
             for (int i = 0; i < healItemPaths.Length; i++)
             {
                 var itemData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.ItemData>(healItemPaths[i]);
