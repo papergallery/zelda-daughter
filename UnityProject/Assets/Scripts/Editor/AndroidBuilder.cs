@@ -18,10 +18,9 @@ namespace ZeldaDaughter.Editor
             EditorPrefs.SetString("AndroidNdkRootR23B", "/opt/android-sdk/ndk/23.1.7779620");
             EditorPrefs.SetBool("NdkUseEmbedded", false);
 
-            // EmuMin2 — лёгкая сцена для эмулятора (Player + Input + деревья)
-            // EmulatorScene крашит SwiftShader (слишком сложная)
-            // DemoScene — для реального устройства
-            string scenePath = "Assets/Scenes/EmuStage5.unity";
+            // DemoScene — для реального устройства (полная техно-демка)
+            // EmuStage* — лёгкие сцены для эмулятора
+            string scenePath = "Assets/Scenes/DemoScene.unity";
             if (!System.IO.File.Exists(scenePath))
             {
                 scenePath = "Assets/Scenes/DemoScene.unity";
