@@ -23,7 +23,8 @@ namespace ZeldaDaughter.Editor
         // FBX paths for world objects
         private const string FbxBasePath = "Assets/Models/Kenney/NatureKit/Models/FBX format/";
         private const string FbxTownPath = "Assets/Models/Kenney/FantasyTownKit/Models/FBX format/";
-        private const string FbxCharacterPath = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
+        // KayKit Rogue — Generic rig, совместим с KayKit Single Animations
+        private const string FbxCharacterPath = "Assets/Models/KayKit/Adventurers/Rogue.fbx";
         private const string PlayerPrefabPath = "Assets/Prefabs/Player/Player.prefab";
 
         [MenuItem("ZeldaDaughter/Create Test Scene")]

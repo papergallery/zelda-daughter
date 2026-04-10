@@ -10,8 +10,9 @@ namespace ZeldaDaughter.Editor
     /// </summary>
     public static class PlayerPrefabBuilder
     {
-        private const string FbxPath = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
-        private const string GlbFallbackPath = "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Rogue.glb";
+        // KayKit Rogue — Generic rig, совместим с KayKit Single Animations (тоже Generic)
+        private const string FbxPath = "Assets/Models/KayKit/Adventurers/Rogue.fbx";
+        private const string GlbFallbackPath = "Assets/Models/KayKit/Adventurers/Rogue_Hooded.fbx";
         private const string AnimatorControllerPath = "Assets/Animations/Controllers/PlayerAnimator.controller";
         private const string PrefabOutputDir = "Assets/Prefabs/Player";
         private const string PrefabOutputPath = "Assets/Prefabs/Player/Player.prefab";

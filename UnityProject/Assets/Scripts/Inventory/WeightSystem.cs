@@ -12,6 +12,10 @@ namespace ZeldaDaughter.Inventory
 
         private PlayerInventory _inventory;
         private float _lastReplyTime;
+        private bool _isOverloaded;
+
+        /// <summary>Fires when overload state changes. True = became overloaded, false = no longer overloaded.</summary>
+        public static event System.Action<bool> OnOverloadChanged;
 
         private void Awake()
         {
@@ -41,10 +45,17 @@ namespace ZeldaDaughter.Inventory
 
             float ratio = totalWeight / capacity;
 
-            if (ratio <= _config.OverloadThreshold)
+            bool nowOverloaded = ratio > _config.OverloadThreshold;
+
+            if (!nowOverloaded)
             {
-                // Не перегружен — полная скорость
                 _characterMovement.SetWeightSpeedMultiplier(1f);
+
+                if (_isOverloaded)
+                {
+                    _isOverloaded = false;
+                    OnOverloadChanged?.Invoke(false);
+                }
                 return;
             }
 
@@ -52,6 +63,12 @@ namespace ZeldaDaughter.Inventory
             float overloadProgress = Mathf.InverseLerp(_config.OverloadThreshold, 1f, ratio);
             float speedMul = Mathf.Lerp(1f, _config.OverloadSpeedMultiplier, overloadProgress);
             _characterMovement.SetWeightSpeedMultiplier(speedMul);
+
+            if (!_isOverloaded)
+            {
+                _isOverloaded = true;
+                OnOverloadChanged?.Invoke(true);
+            }
 
             // Реплика о перегрузе (не чаще чем раз в _replyInterval секунд)
             if (Time.time - _lastReplyTime >= _replyInterval && _config.OverloadReplies.Length > 0)

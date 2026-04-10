@@ -10,7 +10,7 @@
 
 - **Движок:** Unity (C#)
 - **Платформа:** iOS / Android (вертикальная ориентация), возможно расширение
-- **Визуальный стиль:** Low-poly 3D (прототип) → Hand-drawn (целевой)
+- **Визуальный стиль:** 2D billboard-спрайты в 3D мире (стиль Don't Starve, "книжная иллюстрация"). Прототип на low-poly 3D, целевой — 2D hand-drawn
 - **Ассеты для прототипа:** Бесплатные (CC0), см. ниже
 
 ## Ассеты для прототипа (все бесплатные, CC0)
@@ -141,11 +141,46 @@
 ### Правила кода (C#)
 - Prefer composition over inheritance
 - ScriptableObject для данных, MonoBehaviour для поведения
-- Namespaces: `ZeldaDaughter.{Input,Combat,Inventory,Progression,World,NPC,Save,UI}`
+- Namespaces: `ZeldaDaughter.{Input,Combat,Inventory,Progression,World,NPC,Save,UI,Rendering}`
 - Системы общаются через C# events, не прямые ссылки
 - Все числовые параметры в ScriptableObject, не хардкод
 - `[SerializeField] private` вместо `public` для инспектора
 - Тесты обязательны для систем с формулами
+
+## Генерация 2D-арта (персонажи, NPC, враги)
+
+**Все 2D-спрайты для персонажей генерируются нейросетями через GPU-туннель, не рисуются вручную.**
+
+### Инфраструктура
+- **Локальный ПК** (RTX 4080) запускает SD WebUI Forge → SSH reverse tunnel → VPS
+- **Скрипт для ПК:** `/var/www/html/Other/gpu-tunnel/imagegen-local.ps1` (Windows, `START.bat`)
+- **Скрипт для VPS:** `/var/www/html/Other/gpu-tunnel/setup-vps-imagegen.sh`
+- **Python-пайплайн:** `/var/www/html/Other/gpu-tunnel/character_pipeline/`
+
+### Пайплайн генерации персонажа
+1. `python3 cli.py concept --id <name> --count 4` — 4 варианта концепта, выбрать лучший
+2. `python3 cli.py full --id <name>` — полный прогон: 4 направления + нарезка на части + состояния (раненый/обожжённый/отравленный)
+3. В Unity: **Zelda's Daughter → Import Character Sprites** → автоимпорт PNG + создание CharacterVisualConfig
+
+### Визуальный стиль спрайтов
+- Стиль: "книжная иллюстрация" — pen ink outlines + watercolor fill
+- Палитра: приглушённая тёплая (охра, оливковый, выцветший голубой)
+- Референс: Don't Starve (2D billboard в 3D мире)
+
+### Unity-система рендеринга (namespace `ZeldaDaughter.Rendering`)
+- `BillboardRenderer` — поворот 2D-спрайта к камере
+- `BillboardDirectionResolver` — выбор направления (front/back/left/right)
+- `CharacterSpriteController` — переключение спрайтов по состоянию/направлению
+- `CharacterVisualConfig` — ScriptableObject со ссылками на все спрайты персонажа
+
+### Структура файлов спрайтов
+```
+art/sprites/{character_id}/
+    concept/          — полные концепты (front.png, back.png, ...)
+    parts/            — нарезанные части тела по направлениям
+    states/           — вариации состояний (wounded/, burned/, poisoned/)
+    metadata.json     — размеры, pivot points
+```
 
 ## Язык общения
 
