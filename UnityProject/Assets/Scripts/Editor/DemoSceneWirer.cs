@@ -215,7 +215,7 @@ namespace ZeldaDaughter.Editor
             return EnsureEnemyPrefab(
                 PrefabBoarPath,
                 "Enemy_Boar",
-                new Vector3(1.5f, 1.5f, 1.5f),
+                new Vector3(0.4f, 0.4f, 0.4f),
                 new Color(0.8f, 0.15f, 0.1f),
                 EnemyDataBoarPath,
                 PigFbxPath,
@@ -227,7 +227,7 @@ namespace ZeldaDaughter.Editor
             return EnsureEnemyPrefab(
                 PrefabWolfPath,
                 "Enemy_Wolf",
-                new Vector3(1.2f, 1.2f, 1.2f),
+                new Vector3(0.3f, 0.3f, 0.3f),
                 new Color(0.45f, 0.45f, 0.45f),
                 EnemyDataWolfPath,
                 WolfFbxPath,
