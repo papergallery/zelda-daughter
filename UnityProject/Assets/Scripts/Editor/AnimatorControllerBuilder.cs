@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -8,15 +9,9 @@ namespace ZeldaDaughter.Editor
     public static class AnimatorControllerBuilder
     {
         private const string ControllerOutputPath = "Assets/Animations/Controllers/PlayerAnimator.controller";
-        private const string IdleFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Idle.fbx";
-        private const string WalkFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Walk.fbx";
-        private const string RunFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Run.fbx";
-        private const string PickUpFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/PickUp.fbx";
-        private const string InteractFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Interact.fbx";
-        private const string Attack1hFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Attack(1h).fbx";
-        private const string DefeatFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Defeat.fbx";
-        private const string BlockFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Block.fbx";
-        private const string RollFbxPath = "Assets/Animations/KayKit/fbx/Single Animations/Roll.fbx";
+
+        // RPGCharacters FBX со встроенными анимациями
+        private const string RogueFbxPath = "Assets/Models/RPGCharacters/Rogue.fbx";
 
         private const float TransitionDuration = 0.15f;
 
@@ -25,15 +20,33 @@ namespace ZeldaDaughter.Editor
         {
             EnsureDirectoryExists("Assets/Animations/Controllers");
 
-            var idleClip = LoadAndConfigureClip(IdleFbxPath, loop: true);
-            var walkClip = LoadAndConfigureClip(WalkFbxPath, loop: true);
-            var runClip = LoadAndConfigureClip(RunFbxPath, loop: true);
-            var pickUpClip = LoadAndConfigureClip(PickUpFbxPath, loop: false);
-            var interactClip = LoadAndConfigureClip(InteractFbxPath, loop: false);
-            var attack1hClip = LoadAndConfigureClip(Attack1hFbxPath, loop: false);
-            var defeatClip = LoadAndConfigureClip(DefeatFbxPath, loop: false);
-            var blockClip = LoadAndConfigureClip(BlockFbxPath, loop: false);
-            var rollClip = LoadAndConfigureClip(RollFbxPath, loop: false);
+            // Выводим все найденные клипы для диагностики
+            var allClips = LoadAllClipsFromFbx(RogueFbxPath);
+            foreach (var kv in allClips)
+                Debug.Log($"[AnimatorControllerBuilder] Found clip: {kv.Key}");
+
+            var idleClip    = FindClip(allClips, "Idle");
+            var walkClip    = FindClip(allClips, "Walk");
+            var runClip     = FindClip(allClips, "Run");
+            var attackClip  = FindClip(allClips, "Attack");
+            var defeatClip  = FindClip(allClips, "Death", "Defeat", "Die");
+            var hitClip     = FindClip(allClips, "Hit", "Hurt", "Block");
+            var interactClip = FindClip(allClips, "Interact", "PickUp", "Use");
+
+            // Настраиваем loop-флаги через ModelImporter
+            ConfigureClipLooping(RogueFbxPath, new[]
+            {
+                ("Idle",  true),
+                ("Walk",  true),
+                ("Run",   true),
+            });
+
+            // Если контроллер уже существует — удаляем, создаём заново
+            if (File.Exists(Path.Combine(Application.dataPath, "../", ControllerOutputPath)))
+            {
+                AssetDatabase.DeleteAsset(ControllerOutputPath);
+                Debug.Log("[AnimatorControllerBuilder] Старый контроллер удалён.");
+            }
 
             var controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerOutputPath);
 
@@ -48,25 +61,27 @@ namespace ZeldaDaughter.Editor
 
             var rootStateMachine = controller.layers[0].stateMachine;
 
-            var idleState = rootStateMachine.AddState("Idle");
-            var walkState = rootStateMachine.AddState("Walk");
-            var runState = rootStateMachine.AddState("Run");
-            var pickUpState = rootStateMachine.AddState("PickUp");
+            var idleState    = rootStateMachine.AddState("Idle");
+            var walkState    = rootStateMachine.AddState("Walk");
+            var runState     = rootStateMachine.AddState("Run");
+            var pickUpState  = rootStateMachine.AddState("PickUp");
             var interactState = rootStateMachine.AddState("Interact");
             var attack1hState = rootStateMachine.AddState("Attack1h");
-            var hitState = rootStateMachine.AddState("Hit");
-            var defeatState = rootStateMachine.AddState("Defeat");
-            var eatState = rootStateMachine.AddState("Eat");
+            var hitState     = rootStateMachine.AddState("Hit");
+            var defeatState  = rootStateMachine.AddState("Defeat");
+            var eatState     = rootStateMachine.AddState("Eat");
 
-            idleState.motion = idleClip;
-            walkState.motion = walkClip;
-            runState.motion = runClip;
-            pickUpState.motion = pickUpClip;
-            interactState.motion = interactClip;
-            attack1hState.motion = attack1hClip;
-            if (blockClip != null) hitState.motion = blockClip;
-            if (defeatClip != null) defeatState.motion = defeatClip;
-            if (interactClip != null) eatState.motion = interactClip;
+            idleState.motion    = idleClip;
+            walkState.motion    = walkClip;
+            runState.motion     = runClip;
+            attack1hState.motion = attackClip;
+
+            // Fallback: если нет специального клипа — используем Idle
+            pickUpState.motion  = interactClip != null ? interactClip : idleClip;
+            interactState.motion = interactClip != null ? interactClip : idleClip;
+            hitState.motion     = hitClip    != null ? hitClip    : idleClip;
+            defeatState.motion  = defeatClip != null ? defeatClip : idleClip;
+            eatState.motion     = interactClip != null ? interactClip : idleClip;
 
             rootStateMachine.defaultState = idleState;
 
@@ -108,7 +123,70 @@ namespace ZeldaDaughter.Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            Debug.Log($"[AnimatorControllerBuilder] PlayerAnimator создан: {ControllerOutputPath}");
+            Debug.Log($"[AnimatorControllerBuilder] PlayerAnimator создан из RPGCharacters: {ControllerOutputPath}");
+        }
+
+        /// <summary>Загружает все AnimationClip из FBX, ключ = имя клипа (нижний регистр).</summary>
+        private static Dictionary<string, AnimationClip> LoadAllClipsFromFbx(string fbxPath)
+        {
+            var result = new Dictionary<string, AnimationClip>(System.StringComparer.OrdinalIgnoreCase);
+            var allAssets = AssetDatabase.LoadAllAssetsAtPath(fbxPath);
+            foreach (var asset in allAssets)
+            {
+                if (asset is AnimationClip clip && !clip.name.StartsWith("__"))
+                    result[clip.name] = clip;
+            }
+            return result;
+        }
+
+        /// <summary>Находит клип по одному из возможных имён (первое совпадение).</summary>
+        private static AnimationClip FindClip(Dictionary<string, AnimationClip> clips, params string[] candidateNames)
+        {
+            foreach (var name in candidateNames)
+            {
+                if (clips.TryGetValue(name, out var clip))
+                    return clip;
+
+                // Частичное совпадение (например "Attack_1h" содержит "Attack")
+                foreach (var kv in clips)
+                {
+                    if (kv.Key.IndexOf(name, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                        return kv.Value;
+                }
+            }
+            Debug.LogWarning($"[AnimatorControllerBuilder] Клип не найден для: {string.Join("/", candidateNames)}");
+            return null;
+        }
+
+        /// <summary>Настраивает loop через ModelImporter для указанных клипов.</summary>
+        private static void ConfigureClipLooping(string fbxPath, (string name, bool loop)[] settings)
+        {
+            var importer = AssetImporter.GetAtPath(fbxPath) as ModelImporter;
+            if (importer == null) return;
+
+            var clips = importer.clipAnimations;
+            if (clips == null || clips.Length == 0)
+                clips = importer.defaultClipAnimations;
+
+            bool changed = false;
+            foreach (var clip in clips)
+            {
+                foreach (var (name, loop) in settings)
+                {
+                    if (clip.name.Equals(name, System.StringComparison.OrdinalIgnoreCase) && clip.loopTime != loop)
+                    {
+                        clip.loopTime = loop;
+                        changed = true;
+                        Debug.Log($"[AnimatorControllerBuilder] Loop={loop} для клипа '{clip.name}'");
+                    }
+                }
+            }
+
+            if (changed)
+            {
+                importer.clipAnimations = clips;
+                importer.SaveAndReimport();
+            }
         }
 
         // AnyState → actionState (trigger), actionState → idle (exitTime=0.9)
@@ -133,52 +211,6 @@ namespace ZeldaDaughter.Editor
         {
             transition.hasExitTime = false;
             transition.duration = TransitionDuration;
-        }
-
-        private static AnimationClip LoadAndConfigureClip(string fbxPath, bool loop)
-        {
-            EnsureClipIsLooping(fbxPath, loop);
-
-            var clips = AssetDatabase.LoadAllAssetsAtPath(fbxPath);
-            foreach (var asset in clips)
-            {
-                if (asset is AnimationClip clip && !clip.name.Contains("__preview__"))
-                    return clip;
-            }
-
-            Debug.LogWarning($"[AnimatorControllerBuilder] AnimationClip не найден в: {fbxPath}");
-            return null;
-        }
-
-        private static void EnsureClipIsLooping(string fbxPath, bool loop)
-        {
-            if (!File.Exists(Path.Combine(Application.dataPath, "../", fbxPath)))
-                return;
-
-            var importer = AssetImporter.GetAtPath(fbxPath) as ModelImporter;
-            if (importer == null)
-                return;
-
-            var clipAnimations = importer.clipAnimations;
-            if (clipAnimations == null || clipAnimations.Length == 0)
-                clipAnimations = importer.defaultClipAnimations;
-
-            bool changed = false;
-            foreach (var clip in clipAnimations)
-            {
-                if (clip.loopTime != loop)
-                {
-                    clip.loopTime = loop;
-                    changed = true;
-                }
-            }
-
-            if (changed)
-            {
-                importer.clipAnimations = clipAnimations;
-                importer.SaveAndReimport();
-                Debug.Log($"[AnimatorControllerBuilder] Loop={loop} применён для: {fbxPath}");
-            }
         }
 
         private static void EnsureDirectoryExists(string assetPath)
