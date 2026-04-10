@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ZeldaDaughter.Editor
 {
     /// <summary>
-    /// Назначает KayKit модель и PlayerAnimator.controller на Player в DemoScene.
+    /// Назначает RPGCharacters/Rogue.fbx как модель Player и PlayerAnimator.controller на Player в DemoScene.
     /// Запуск через batch mode:
     ///   -executeMethod ZeldaDaughter.Editor.PlayerModelSetup.SetupPlayerModel
     ///   -executeMethod ZeldaDaughter.Editor.PlayerModelSetup.FixPlayerAnimator
@@ -15,7 +15,7 @@ namespace ZeldaDaughter.Editor
     public static class PlayerModelSetup
     {
         private const string ScenePath              = "Assets/Scenes/DemoScene.unity";
-        private const string KayKitFbxPath          = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
+        private const string KayKitFbxPath          = "Assets/Models/RPGCharacters/Rogue.fbx";
         private const string AnimatorControllerPath = "Assets/Animations/Controllers/PlayerAnimator.controller";
 
         [MenuItem("ZeldaDaughter/Player/Setup Player Model")]
@@ -127,7 +127,7 @@ namespace ZeldaDaughter.Editor
             }
 
             EditorUtility.SetDirty(player);
-            Debug.Log($"[PlayerModelSetup] KayKit модель добавлена как child 'Model': {KayKitFbxPath}");
+            Debug.Log($"[PlayerModelSetup] RPGCharacters модель добавлена как child 'Model': {KayKitFbxPath}");
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace ZeldaDaughter.Editor
                 return;
             }
 
-            // Загружаем avatar из KayKit FBX; если нет — reimport как Humanoid
+            // Загружаем avatar из RPGCharacters FBX; если нет — reimport как Humanoid
             var sourceAvatar = LoadOrReimportAvatar();
             if (sourceAvatar == null)
             {

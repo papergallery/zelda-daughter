@@ -519,19 +519,19 @@ namespace ZeldaDaughter.Editor
         // NPC wiring
         // ─────────────────────────────────────────────────────────────────────
 
-        // KayKit GLB characters for NPC visuals (role → model path)
+        // RPGCharacters FBX с встроенными анимациями (role → model path)
         private static readonly (string role, string modelPath)[] NpcModelMap = new[]
         {
-            ("Guard",      "Assets/Models/KayKit/Adventurers/Knight.fbx"),
-            ("Blacksmith", "Assets/Models/KayKit/Adventurers/Barbarian.fbx"),
-            ("Merchant",   "Assets/Models/KayKit/Adventurers/Rogue.fbx"),
-            ("Herbalist",  "Assets/Models/KayKit/Adventurers/Mage.fbx"),
-            ("Bartender",  "Assets/Models/KayKit/Adventurers/Rogue_Hooded.fbx"),
-            ("default",    "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx"),
+            ("Guard",      "Assets/Models/RPGCharacters/Warrior.fbx"),
+            ("Blacksmith", "Assets/Models/RPGCharacters/Ranger.fbx"),
+            ("Merchant",   "Assets/Models/RPGCharacters/Cleric.fbx"),
+            ("Herbalist",  "Assets/Models/RPGCharacters/Wizard.fbx"),
+            ("Bartender",  "Assets/Models/RPGCharacters/Monk.fbx"),
+            ("default",    "Assets/Models/RPGCharacters/Rogue.fbx"),
         };
 
-        // FBX fallback
-        private const string NpcFbxFallback = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
+        // FBX fallback — RPGCharacters Rogue
+        private const string NpcFbxFallback = "Assets/Models/RPGCharacters/Rogue.fbx";
 
         private static void WireNPCs()
         {
