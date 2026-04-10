@@ -889,6 +889,120 @@ namespace ZeldaDaughter.Editor
             Debug.Log($"[EmuStageBuilder] Stage 4 created: {path}");
         }
 
+        // ============================================================
+        // Stage 5: NPC и диалоги (TESTING_GUIDE секции 5, 13)
+        // Нужно: NPCInteractable (Peasant/синяя капсула), TapInteractionManager,
+        //        DialogueManager, LanguageSystem, PlayerInventory, SaveManager
+        // Root objects: base(10) + TapSystem + NPC_Peasant + DialogueManager + LanguageSystem = 14. OK.
+        // ============================================================
+        [MenuItem("ZeldaDaughter/Scenes/Build EmuStage5 (NPC)")]
+        public static void BuildStage5()
+        {
+            Init();
+            SetupStage1Base();
+
+            var player = GameObject.FindGameObjectWithTag("Player");
+
+            // === PlayerInventory on Player (нужен для торговли) ===
+            if (player != null)
+            {
+                if (player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>() == null)
+                    player.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            }
+
+            // === TapInteractionManager ===
+            var tapSys = new GameObject("TapSystem");
+            tapSys.AddComponent<ZeldaDaughter.World.TapInteractionManager>();
+
+            var tapMgr = Object.FindObjectOfType<ZeldaDaughter.World.TapInteractionManager>();
+            if (tapMgr != null && player != null)
+            {
+                var so = new SerializedObject(tapMgr);
+                var playerProp = so.FindProperty("_player");
+                if (playerProp != null) playerProp.objectReferenceValue = player;
+                var autoMoveProp = so.FindProperty("_autoMove");
+                var autoMove = player.GetComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+                if (autoMoveProp != null && autoMove != null) autoMoveProp.objectReferenceValue = autoMove;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === SaveManager (дочерний к TapSystem — экономим root object, лимит 15) ===
+            var saveSysGo = new GameObject("SaveManager");
+            saveSysGo.transform.SetParent(tapSys.transform);
+            saveSysGo.AddComponent<ZeldaDaughter.Save.SaveManager>();
+
+            // === LanguageSystem ===
+            var langSysGo = new GameObject("LanguageSystem");
+            var langSys = langSysGo.AddComponent<ZeldaDaughter.NPC.LanguageSystem>();
+
+            var langConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.NPC.LanguageConfig>(
+                "Assets/Data/NPC/LanguageConfig.asset");
+            if (langConfig == null)
+                Debug.LogWarning("[EmuStageBuilder] Stage5: LanguageConfig не найден по пути Assets/Data/NPC/LanguageConfig.asset");
+            else
+            {
+                var lso = new SerializedObject(langSys);
+                var configProp = lso.FindProperty("_config");
+                if (configProp != null) configProp.objectReferenceValue = langConfig;
+                lso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === DialogueManager ===
+            var dialogueMgrGo = new GameObject("DialogueManager");
+            var dialogueMgr = dialogueMgrGo.AddComponent<ZeldaDaughter.NPC.DialogueManager>();
+
+            // Wiring DialogueManager: LanguageSystem + PlayerInventory (без UI — нет canvases)
+            {
+                var dso = new SerializedObject(dialogueMgr);
+                var langProp = dso.FindProperty("_languageSystem");
+                if (langProp != null) langProp.objectReferenceValue = langSys;
+                if (player != null)
+                {
+                    var invRef = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+                    var invProp = dso.FindProperty("_playerInventory");
+                    if (invProp != null && invRef != null) invProp.objectReferenceValue = invRef;
+                }
+                dso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === NPC: Peasant (синяя капсула-placeholder) ===
+            var npcGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            npcGo.name = "NPC_Peasant";
+            npcGo.tag = "Untagged"; // Нет тега NPC
+            npcGo.transform.position = new Vector3(3, 0.05f, 2);
+            npcGo.GetComponent<Renderer>().sharedMaterial = Mat("NPC", new Color(0.2f, 0.5f, 0.85f));
+
+            // CapsuleCollider для raycast (уже добавлен CreatePrimitive — оставляем)
+            var npcCollider = npcGo.GetComponent<CapsuleCollider>();
+            if (npcCollider != null)
+            {
+                npcCollider.radius = 0.4f;
+                npcCollider.height = 1.8f;
+                npcCollider.center = new Vector3(0, 0.9f, 0);
+            }
+
+            // NPCInteractable + wiring _profile из Merchant как placeholder
+            var npcInteractable = npcGo.AddComponent<ZeldaDaughter.NPC.NPCInteractable>();
+            var merchantProfile = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.NPC.NPCProfile>(
+                "Assets/Data/NPC/Profiles/NPC_Merchant.asset");
+            if (merchantProfile == null)
+                Debug.LogWarning("[EmuStageBuilder] Stage5: NPC_Merchant.asset не найден по пути Assets/Data/NPC/Profiles/NPC_Merchant.asset");
+            else
+            {
+                var nso = new SerializedObject(npcInteractable);
+                var profileProp = nso.FindProperty("_profile");
+                if (profileProp != null) profileProp.objectReferenceValue = merchantProfile;
+                nso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // Сохраняем сцену
+            const string path = "Assets/Scenes/EmuStage5.unity";
+            EditorSceneManager.SaveScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene(), path);
+            AddToBuildSettings(path);
+            Debug.Log($"[EmuStageBuilder] Stage 5 created: {path}");
+        }
+
         private static void WireIsometricCamera(Component isoCam, Transform player)
         {
             var so = new SerializedObject(isoCam);
