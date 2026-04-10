@@ -899,7 +899,48 @@ namespace ZeldaDaughter.Editor
         public static void BuildStage5()
         {
             Init();
-            SetupStage1Base();
+            // Minimal base: NO trees/bushes/stones (to stay under SwiftShader limit)
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            // Ground
+            var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            ground.name = "Ground";
+            ground.transform.localScale = new Vector3(10, 1, 10);
+            ground.GetComponent<Renderer>().sharedMaterial = Mat("Ground", new Color(0.3f, 0.55f, 0.2f));
+            // Light
+            var lightGo = new GameObject("Directional Light");
+            var light = lightGo.AddComponent<Light>();
+            light.type = LightType.Directional;
+            light.shadows = LightShadows.None;
+            lightGo.transform.rotation = Quaternion.Euler(50, 170, 0);
+            // Player
+            var playerGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            playerGo.name = "Player";
+            playerGo.tag = "Player";
+            playerGo.transform.position = new Vector3(0, 0.05f, 0);
+            playerGo.GetComponent<Renderer>().sharedMaterial = Mat("Player", new Color(0.2f, 0.4f, 0.8f));
+            Object.DestroyImmediate(playerGo.GetComponent<CapsuleCollider>());
+            var cc = playerGo.AddComponent<CharacterController>();
+            cc.radius = 0.35f; cc.height = 1.8f; cc.center = new Vector3(0, 0.9f, 0);
+            playerGo.AddComponent<ZeldaDaughter.Input.CharacterMovement>();
+            playerGo.AddComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+            // Camera
+            var camGo = new GameObject("Main Camera");
+            camGo.tag = "MainCamera";
+            var cam = camGo.AddComponent<Camera>();
+            cam.orthographic = true; cam.orthographicSize = 8;
+            cam.backgroundColor = new Color(0.53f, 0.76f, 0.96f);
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            camGo.transform.position = new Vector3(0, 12, -12);
+            camGo.transform.rotation = Quaternion.Euler(45, 0, 0);
+            var isoCam = camGo.AddComponent<ZeldaDaughter.World.IsometricCamera>();
+            WireIsometricCamera(isoCam, playerGo.transform);
+            // Bootstrap + Input + EventSystem
+            new GameObject("GameBootstrap").AddComponent<ZeldaDaughter.World.GameBootstrap>();
+            new GameObject("InputSystem").AddComponent<ZeldaDaughter.Input.GestureDispatcher>();
+            var es = new GameObject("EventSystem");
+            es.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            es.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            // Total: 7 root objects (Ground, Light, Player, Camera, Bootstrap, Input, EventSystem)
 
             var player = GameObject.FindGameObjectWithTag("Player");
 
