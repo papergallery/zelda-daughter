@@ -940,6 +940,7 @@ namespace ZeldaDaughter.Editor
             Vector3[] craftPickupPos = {
                 new(-3, 1f, 3), new(-4, 1f, -2), new(5, 1f, -3),
             };
+            int[] craftAmounts = { 10, 10, 5 }; // enough for overload testing
             for (int i = 0; i < craftItemPaths.Length; i++)
             {
                 var itemData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.ItemData>(craftItemPaths[i]);
@@ -953,7 +954,7 @@ namespace ZeldaDaughter.Editor
                 var pickupComp = pickup.AddComponent<ZeldaDaughter.World.Pickupable>();
                 var pso = new SerializedObject(pickupComp);
                 pso.FindProperty("_itemData").objectReferenceValue = itemData;
-                pso.FindProperty("_amount").intValue = 3; // extra for crafting
+                pso.FindProperty("_amount").intValue = craftAmounts[i];
                 pso.FindProperty("_saveId").stringValue = $"s4_pickup_{i}";
                 pso.ApplyModifiedPropertiesWithoutUndo();
             }

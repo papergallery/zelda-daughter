@@ -16,7 +16,7 @@ namespace ZeldaDaughter.Combat
         [SerializeField] private Transform _interactionPoint;
         [SerializeField] private float _interactionRange = 1.5f;
         [SerializeField] private float _despawnTime = 120f;
-        [SerializeField] private string _butcherToolId = "knife";
+        [SerializeField] private string _butcherToolId = "item_knife";
 
         private bool _isLooted;
         private float _despawnTimer;
