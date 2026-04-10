@@ -28,7 +28,11 @@ namespace ZeldaDaughter.UI
             rt.anchorMin = new Vector2(1, 1);
             rt.anchorMax = new Vector2(1, 1);
             rt.pivot = new Vector2(1, 1);
-            rt.anchoredPosition = new Vector2(-10, -50);
+            // Account for iPhone notch/safe area
+            var safeArea = Screen.safeArea;
+            float topInset = Screen.height - safeArea.yMax;
+            float rightInset = Screen.width - safeArea.xMax;
+            rt.anchoredPosition = new Vector2(-(rightInset + 10), -(topInset + 10));
             rt.sizeDelta = new Vector2(120, 40);
 
             var img = btnGo.AddComponent<Image>();

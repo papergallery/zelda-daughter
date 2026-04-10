@@ -26,7 +26,10 @@ namespace ZeldaDaughter.UI
             rt.anchorMin = new Vector2(0, 1);
             rt.anchorMax = new Vector2(0, 1);
             rt.pivot = new Vector2(0, 1);
-            rt.anchoredPosition = new Vector2(10, -10);
+            // Account for iPhone notch/safe area
+            var safeArea = Screen.safeArea;
+            float topInset = Screen.height - safeArea.yMax;
+            rt.anchoredPosition = new Vector2(safeArea.x + 10, -(topInset + 10));
             rt.sizeDelta = new Vector2(80, 25);
 
             _text = textGo.AddComponent<Text>();
