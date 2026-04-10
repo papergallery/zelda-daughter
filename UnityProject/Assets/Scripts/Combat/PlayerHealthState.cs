@@ -69,6 +69,7 @@ namespace ZeldaDaughter.Combat
                     _activeWounds.RemoveAt(i);
                     OnWoundRemoved?.Invoke(wound.Type);
                     anyRemoved = true;
+                    Debugging.ZDLog.Log("Combat", $"WoundHealed type={wound.Type} (natural)");
                 }
                 else
                 {

@@ -75,10 +75,14 @@ namespace ZeldaDaughter.Progression
 
             _values[type] = newValue;
             OnStatChanged?.Invoke(type, currentValue, newValue);
+            Debugging.ZDLog.Log("Progression", $"SkillUp type={type} value={newValue:F2} (was {currentValue:F2})");
 
             int newTier = _config.EffectConfig.GetTier(newValue);
             if (newTier != oldTier)
+            {
                 OnTierReached?.Invoke(type, newTier);
+                Debugging.ZDLog.Log("Progression", $"TierReached type={type} tier={newTier}");
+            }
         }
 
         // --- Debug / Test helpers ---

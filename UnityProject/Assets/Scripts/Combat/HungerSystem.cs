@@ -11,6 +11,7 @@ namespace ZeldaDaughter.Combat
         [SerializeField] private CharacterMovement _movement;
 
         private float _hunger = 0f; // 0 = сыт, 1 = голоден
+        public float HungerRatio => _hunger;
         private bool _hungerPenaltyActive;
 
         private float _lastReplyTime = -60f;
