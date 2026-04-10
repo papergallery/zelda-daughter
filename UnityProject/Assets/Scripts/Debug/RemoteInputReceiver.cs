@@ -132,6 +132,10 @@ namespace ZeldaDaughter.Debugging
                     LogInventory();
                     break;
 
+                case "drop" when parts.Length >= 2:
+                    ExecuteDrop(parts[1], parts.Length >= 3 ? int.Parse(parts[2]) : 1);
+                    break;
+
                 case "heal" when parts.Length >= 2:
                     ExecuteHeal(parts[1]);
                     break;
@@ -411,6 +415,26 @@ namespace ZeldaDaughter.Debugging
             {
                 Debug.LogWarning($"[ZD:RemoteInput] Unknown wound type: {woundTypeName}");
             }
+        }
+
+        private void ExecuteDrop(string itemId, int amount)
+        {
+            var player = GameObject.FindWithTag("Player");
+            if (player == null) return;
+            var inv = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            if (inv == null) return;
+            bool removed = inv.RemoveItem(null, 0); // dummy
+            // Find by ID and remove
+            foreach (var stack in inv.Items)
+            {
+                if (stack.Item != null && stack.Item.Id == itemId)
+                {
+                    inv.RemoveItem(stack.Item, amount);
+                    Debug.Log($"[ZD:RemoteInput] Dropped {itemId} x{amount}");
+                    return;
+                }
+            }
+            Debug.Log($"[ZD:RemoteInput] Drop: item '{itemId}' not found");
         }
 
         private void LogInventory()

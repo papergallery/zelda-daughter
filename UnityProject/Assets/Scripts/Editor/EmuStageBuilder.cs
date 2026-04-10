@@ -681,6 +681,20 @@ namespace ZeldaDaughter.Editor
                 if (player.GetComponent<ZeldaDaughter.Combat.FoodConsumption>() == null)
                     player.AddComponent<ZeldaDaughter.Combat.FoodConsumption>();
 
+                // WeightSystem для перегруза
+                if (player.GetComponent<ZeldaDaughter.Inventory.WeightSystem>() == null)
+                {
+                    var ws = player.AddComponent<ZeldaDaughter.Inventory.WeightSystem>();
+                    var charMov = player.GetComponent<ZeldaDaughter.Input.CharacterMovement>();
+                    if (charMov != null)
+                    {
+                        var wso = new SerializedObject(ws);
+                        var movProp = wso.FindProperty("_characterMovement");
+                        if (movProp != null) movProp.objectReferenceValue = charMov;
+                        wso.ApplyModifiedPropertiesWithoutUndo();
+                    }
+                }
+
                 // Inventory для лута
                 if (player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>() == null)
                     player.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
