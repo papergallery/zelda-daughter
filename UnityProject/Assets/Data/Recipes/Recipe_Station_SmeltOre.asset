@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63ae50f9120598c748cbc8949062771c, type: 3}
+  m_Name: Recipe_Station_SmeltOre
+  m_EditorClassIdentifier: 
+  _ingredientA: {fileID: 11400000, guid: 6137f527badafdf19aac145c3873e06b, type: 2}
+  _ingredientB: {fileID: 0}
+  _ingredientACount: 1
+  _ingredientBCount: 0
+  _result: {fileID: 11400000, guid: 4b11b9d8075bfb999aa0180af4c036d3, type: 2}
+  _resultAmount: 1
+  _requiresStation: 1
+  _stationType: 1

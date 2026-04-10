@@ -104,6 +104,10 @@ namespace ZeldaDaughter.Debugging
                     StartSwipe(new Vector2(hx, hy), new Vector2(hx, hy), holdDuration);
                     break;
 
+                case "longpress_player":
+                    ExecuteLongPressOnPlayer(parts.Length >= 2 ? float.Parse(parts[1]) / 1000f : 0.7f);
+                    break;
+
                 default:
                     Debug.LogWarning($"[ZD:RemoteInput] Unknown command: {parts[0]}");
                     break;
@@ -162,6 +166,38 @@ namespace ZeldaDaughter.Debugging
                 }
                 Debug.Log($"[ZD:RemoteInput] SwipeEnd ({_swipeEnd.x:F0},{_swipeEnd.y:F0})");
             }
+        }
+
+        private void ExecuteLongPressOnPlayer(float duration)
+        {
+            // Find Player screen position via camera
+            var player = GameObject.FindGameObjectWithTag("Player");
+            var cam = Camera.main;
+            if (player == null || cam == null)
+            {
+                Debug.LogWarning("[ZD:RemoteInput] LongPressPlayer: Player or Camera not found");
+                return;
+            }
+
+            Vector3 screenPos = cam.WorldToScreenPoint(player.transform.position + Vector3.up * 0.9f);
+            Vector2 pos2d = new Vector2(screenPos.x, screenPos.y);
+
+            Debug.Log($"[ZD:RemoteInput] LongPressPlayer at screen ({pos2d.x:F0},{pos2d.y:F0}) for {duration}s");
+
+            // Call OnPointerDown at player position, then hold for duration
+            var dispatcher = FindObjectOfType<ZeldaDaughter.Input.GestureDispatcher>();
+            if (dispatcher == null) return;
+
+            var downMethod = dispatcher.GetType().GetMethod("OnPointerDown",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            downMethod?.Invoke(dispatcher, new object[] { pos2d });
+
+            // Start a coroutine to hold and then release
+            _swipeStart = pos2d;
+            _swipeEnd = pos2d;
+            _swipeDuration = duration;
+            _swipeElapsed = 0;
+            _swiping = true;
         }
 
         private void ExecuteTap(Vector2 pos)

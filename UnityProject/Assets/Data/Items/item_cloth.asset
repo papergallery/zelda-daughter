@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a78d73aefac630d0b3d493f22b59362, type: 3}
+  m_Name: item_cloth
+  m_EditorClassIdentifier: 
+  _id: item_cloth
+  _displayName: "\u0422\u043A\u0430\u043D\u044C"
+  _icon: {fileID: 0}
+  _weight: 0.2
+  _stackable: 1
+  _maxStack: 5
+  _pickupLine: "\u041A\u0443\u0441\u043E\u043A \u0442\u043A\u0430\u043D\u0438"
+  _itemType: 2
+  _description: 
+  _isPlaceable: 0
+  _worldPrefab: {fileID: 0}
+  _healAmount: 0
+  _hungerRestore: 0
+  _isMedicine: 0
+  _treatsWoundType: 4
+  _baseValue: 1
+  _weaponData: {fileID: 0}

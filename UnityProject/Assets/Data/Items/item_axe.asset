@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a78d73aefac630d0b3d493f22b59362, type: 3}
+  m_Name: item_axe
+  m_EditorClassIdentifier: 
+  _id: item_axe
+  _displayName: "\u0422\u043E\u043F\u043E\u0440"
+  _icon: {fileID: 0}
+  _weight: 1.2
+  _stackable: 0
+  _maxStack: 1
+  _pickupLine: "\u0422\u044F\u0436\u0451\u043B\u044B\u0439 \u0442\u043E\u043F\u043E\u0440"
+  _itemType: 1
+  _description: 
+  _isPlaceable: 0
+  _worldPrefab: {fileID: 0}
+  _healAmount: 0
+  _hungerRestore: 0
+  _isMedicine: 0
+  _treatsWoundType: 4
+  _baseValue: 1
+  _weaponData: {fileID: 0}

@@ -78,8 +78,8 @@ namespace ZeldaDaughter.Editor
             player.tag = "Player";
             player.transform.position = new Vector3(0, 0.05f, 0); // Just above ground
             player.GetComponent<Renderer>().sharedMaterial = Mat("Player", new Color(0.2f, 0.4f, 0.8f));
-            // Remove default CapsuleCollider (CharacterController provides its own)
-            Object.DestroyImmediate(player.GetComponent<CapsuleCollider>());
+            // Keep CapsuleCollider for raycast detection (IsPointerOnCharacter needs it)
+            // CharacterController also added for movement
             var cc = player.AddComponent<CharacterController>();
             cc.radius = 0.35f;
             cc.height = 1.8f;
@@ -412,6 +412,235 @@ namespace ZeldaDaughter.Editor
             var reactorType = System.Type.GetType("ZeldaDaughter.World.EnvironmentReactor, Assembly-CSharp");
             if (reactorType != null)
                 bush.AddComponent(reactorType);
+        }
+
+        // ============================================================
+        // Stage 3: Инвентарь и крафт (TESTING_GUIDE секции 6-7)
+        // Нужно: PlayerInventory, WeightSystem, RadialMenu, InventoryPanel,
+        //        LongPressIndicator, CraftingSystem, CraftFeedback, Pickupables
+        // ============================================================
+        [MenuItem("ZeldaDaughter/Scenes/Build EmuStage3 (Inventory+Craft)")]
+        public static void BuildStage3()
+        {
+            Init();
+            SetupStage1Base();
+
+            // === PlayerInventory + WeightSystem on Player ===
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                if (player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>() == null)
+                    player.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+
+                var weightSys = player.AddComponent<ZeldaDaughter.Inventory.WeightSystem>();
+                var movement = player.GetComponent<ZeldaDaughter.Input.CharacterMovement>();
+                if (movement != null)
+                {
+                    var wso = new SerializedObject(weightSys);
+                    var moveProp = wso.FindProperty("_characterMovement");
+                    if (moveProp != null) moveProp.objectReferenceValue = movement;
+                    wso.ApplyModifiedPropertiesWithoutUndo();
+                }
+
+                // CraftFeedback также живёт на Player
+                player.AddComponent<ZeldaDaughter.UI.CraftFeedback>();
+            }
+
+            // === TapInteractionManager ===
+            var tapSys = new GameObject("TapSystem");
+            tapSys.AddComponent<ZeldaDaughter.World.TapInteractionManager>();
+
+            // Wire TapInteractionManager
+            var tapMgr = Object.FindObjectOfType<ZeldaDaughter.World.TapInteractionManager>();
+            if (tapMgr != null && player != null)
+            {
+                var tapSo = new SerializedObject(tapMgr);
+                var playerProp = tapSo.FindProperty("_player");
+                if (playerProp != null) playerProp.objectReferenceValue = player;
+                var autoMoveProp = tapSo.FindProperty("_autoMove");
+                var autoMove = player.GetComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+                if (autoMoveProp != null && autoMove != null) autoMoveProp.objectReferenceValue = autoMove;
+                tapSo.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === RadialMenu Canvas (sortingOrder=99) ===
+            var radialCanvasGo = new GameObject("RadialMenuCanvas");
+            var radialCanvas = radialCanvasGo.AddComponent<Canvas>();
+            radialCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            radialCanvas.sortingOrder = 99;
+            radialCanvasGo.AddComponent<UnityEngine.UI.CanvasScaler>();
+            radialCanvasGo.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+            var radialMenuGo = new GameObject("RadialMenu");
+            radialMenuGo.AddComponent<RectTransform>().SetParent(radialCanvasGo.transform, false);
+            var radialController = radialMenuGo.AddComponent<ZeldaDaughter.UI.RadialMenuController>();
+
+            // CanvasGroup для радиального меню
+            var radialCg = radialMenuGo.AddComponent<CanvasGroup>();
+            radialCg.alpha = 0f;
+
+            // Wire _playerTransform и _canvasGroup в RadialMenuController
+            if (player != null)
+            {
+                var rso = new SerializedObject(radialController);
+                var ptProp = rso.FindProperty("_playerTransform");
+                if (ptProp != null) ptProp.objectReferenceValue = player.transform;
+                var cgProp = rso.FindProperty("_canvasGroup");
+                if (cgProp != null) cgProp.objectReferenceValue = radialCg;
+                rso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === Inventory Canvas (sortingOrder=100) ===
+            var invCanvasGo = new GameObject("InventoryCanvas");
+            var invCanvas = invCanvasGo.AddComponent<Canvas>();
+            invCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            invCanvas.sortingOrder = 100;
+            invCanvasGo.AddComponent<UnityEngine.UI.CanvasScaler>();
+            invCanvasGo.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+            var invPanelGo = new GameObject("InventoryPanel");
+            invPanelGo.AddComponent<RectTransform>().SetParent(invCanvasGo.transform, false);
+            var invCg = invPanelGo.AddComponent<CanvasGroup>();
+            invCg.alpha = 0f;
+            var invPanel = invPanelGo.AddComponent<ZeldaDaughter.UI.InventoryPanel>();
+
+            // Wire _canvasGroup в InventoryPanel
+            {
+                var iso = new SerializedObject(invPanel);
+                var cgProp = iso.FindProperty("_canvasGroup");
+                if (cgProp != null) cgProp.objectReferenceValue = invCg;
+                iso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === LongPress Canvas (sortingOrder=98) ===
+            var lpCanvasGo = new GameObject("LongPressCanvas");
+            var lpCanvas = lpCanvasGo.AddComponent<Canvas>();
+            lpCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            lpCanvas.sortingOrder = 98;
+
+            var lpIndicatorGo = new GameObject("LongPressIndicator");
+            var lpRt = lpIndicatorGo.AddComponent<RectTransform>();
+            lpRt.SetParent(lpCanvasGo.transform, false);
+            var lpCg = lpIndicatorGo.AddComponent<CanvasGroup>();
+            lpCg.alpha = 0f;
+            var lpIndicator = lpIndicatorGo.AddComponent<ZeldaDaughter.UI.LongPressIndicator>();
+
+            // Дочерний Image для _fillImage
+            var fillImageGo = new GameObject("FillImage");
+            fillImageGo.AddComponent<RectTransform>().SetParent(lpIndicatorGo.transform, false);
+            var fillImg = fillImageGo.AddComponent<UnityEngine.UI.Image>();
+            fillImg.type = UnityEngine.UI.Image.Type.Filled;
+            fillImg.fillMethod = UnityEngine.UI.Image.FillMethod.Radial360;
+            fillImg.fillAmount = 0f;
+            fillImg.color = new Color(1f, 0.9f, 0.2f, 0.85f);
+
+            // Wire _fillImage, _canvasGroup, _followTarget в LongPressIndicator
+            {
+                var lpso = new SerializedObject(lpIndicator);
+                var fillProp = lpso.FindProperty("_fillImage");
+                if (fillProp != null) fillProp.objectReferenceValue = fillImg;
+                var cgProp = lpso.FindProperty("_canvasGroup");
+                if (cgProp != null) cgProp.objectReferenceValue = lpCg;
+                if (player != null)
+                {
+                    var targetProp = lpso.FindProperty("_followTarget");
+                    if (targetProp != null) targetProp.objectReferenceValue = player.transform;
+                }
+                lpso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === SaveManager (дочерний к TapSystem — экономим root object, лимит 15) ===
+            var saveSys = new GameObject("SaveManager");
+            saveSys.transform.SetParent(tapSys.transform);
+            saveSys.AddComponent<ZeldaDaughter.Save.SaveManager>();
+
+            // === Pickupable предметы (те же три, что в Stage2) ===
+            var pickupParent = new GameObject("Pickupables");
+            string[] itemPaths = {
+                "Assets/Content/Items/Item_Stick.asset",
+                "Assets/Content/Items/Item_Stone.asset",
+                "Assets/Content/Items/Item_Berry.asset",
+            };
+            Vector3[] pickupPositions = {
+                new(3, 1f, 3),
+                new(-4, 1f, 2),
+                new(2, 1f, -4),
+            };
+
+            for (int i = 0; i < itemPaths.Length; i++)
+            {
+                var itemData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.ItemData>(itemPaths[i]);
+                if (itemData == null)
+                {
+                    Debug.LogWarning($"[EmuStageBuilder] Stage3: ItemData not found: {itemPaths[i]}");
+                    continue;
+                }
+
+                var pickup = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                pickup.name = $"Pickup_{itemData.name}";
+                pickup.transform.SetParent(pickupParent.transform);
+                pickup.transform.position = pickupPositions[i];
+                pickup.transform.localScale = Vector3.one;
+                pickup.GetComponent<Renderer>().sharedMaterial = Mat("Pickup", new Color(0.9f, 0.8f, 0.2f));
+
+                var pickupComp = pickup.AddComponent<ZeldaDaughter.World.Pickupable>();
+                var pso = new SerializedObject(pickupComp);
+                var itemProp = pso.FindProperty("_itemData");
+                if (itemProp != null) itemProp.objectReferenceValue = itemData;
+                var amountProp = pso.FindProperty("_amount");
+                if (amountProp != null) amountProp.intValue = 1;
+                var saveProp = pso.FindProperty("_saveId");
+                if (saveProp != null) saveProp.stringValue = $"s3_pickup_{i}";
+                pso.ApplyModifiedPropertiesWithoutUndo();
+
+                var highlightType = System.Type.GetType("ZeldaDaughter.World.InteractableHighlight, Assembly-CSharp");
+                if (highlightType != null)
+                    pickup.AddComponent(highlightType);
+            }
+
+            // === CraftRecipeDatabase — загружаем SO и добавляем хранителя в сцену ===
+            var recipeDb = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.CraftRecipeDatabase>(
+                "Assets/Data/Recipes/CraftRecipeDatabase.asset");
+            if (recipeDb == null)
+                Debug.LogWarning("[EmuStageBuilder] Stage3: CraftRecipeDatabase not found at Assets/Data/Recipes/CraftRecipeDatabase.asset");
+
+            // CraftingSystem — статический класс, но CraftFeedback уже на Player.
+            // Добавляем CraftSystemBridge-объект для хранения ссылки на БД в сцене (если компонент существует)
+            var craftBridgeType = System.Type.GetType("ZeldaDaughter.Inventory.CraftSystemBridge, Assembly-CSharp");
+            if (craftBridgeType != null)
+            {
+                var craftBridgeGo = new GameObject("CraftSystemBridge");
+                var bridge = craftBridgeGo.AddComponent(craftBridgeType) as MonoBehaviour;
+                if (bridge != null && recipeDb != null)
+                {
+                    var bso = new SerializedObject(bridge);
+                    var dbProp = bso.FindProperty("_recipeDatabase");
+                    if (dbProp != null) dbProp.objectReferenceValue = recipeDb;
+                    bso.ApplyModifiedPropertiesWithoutUndo();
+                }
+            }
+            else if (recipeDb != null)
+            {
+                // Нет отдельного bridge-компонента — логируем что БД найдена, крафт работает через статику
+                Debug.Log($"[EmuStageBuilder] Stage3: CraftRecipeDatabase loaded ({recipeDb.Recipes.Count} recipes). Wire manually if CraftSystemBridge exists.");
+            }
+
+            // === InventoryConfig — загружаем если есть ===
+            var invConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.InventoryConfig>(
+                "Assets/Data/InventoryConfig.asset");
+            if (invConfig == null)
+                invConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.InventoryConfig>(
+                    "Assets/Data/Inventory/InventoryConfig.asset");
+
+            if (invConfig == null)
+                Debug.LogWarning("[EmuStageBuilder] Stage3: InventoryConfig not found — PlayerInventory will use defaults.");
+
+            // Сохраняем сцену
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            const string path = "Assets/Scenes/EmuStage3.unity";
+            EditorSceneManager.SaveScene(scene, path);
+            AddToBuildSettings(path);
+            Debug.Log($"[EmuStageBuilder] Stage 3 created: {path}");
         }
 
         private static void WireIsometricCamera(Component isoCam, Transform player)
