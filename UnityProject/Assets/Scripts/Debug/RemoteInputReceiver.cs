@@ -132,6 +132,10 @@ namespace ZeldaDaughter.Debugging
                     LogInventory();
                     break;
 
+                case "status":
+                    LogStatus();
+                    break;
+
                 case "drop" when parts.Length >= 2:
                     ExecuteDrop(parts[1], parts.Length >= 3 ? int.Parse(parts[2]) : 1);
                     break;
@@ -415,6 +419,22 @@ namespace ZeldaDaughter.Debugging
             {
                 Debug.LogWarning($"[ZD:RemoteInput] Unknown wound type: {woundTypeName}");
             }
+        }
+
+        private void LogStatus()
+        {
+            var player = GameObject.FindWithTag("Player");
+            if (player == null) return;
+            var health = player.GetComponent<ZeldaDaughter.Combat.PlayerHealthState>();
+            if (health != null)
+            {
+                Debug.Log($"[ZD:RemoteInput] Status HP={health.HealthRatio:F2} alive={health.IsAlive} wounds={health.ActiveWounds.Count}");
+                foreach (var w in health.ActiveWounds)
+                    Debug.Log($"[ZD:RemoteInput] Wound type={w.Type} severity={w.Severity:F2} remaining={w.RemainingTime:F1}s");
+            }
+            var hunger = player.GetComponent<ZeldaDaughter.Combat.HungerSystem>();
+            if (hunger != null)
+                Debug.Log($"[ZD:RemoteInput] Hunger={hunger.HungerRatio:F2}");
         }
 
         private void ExecuteDrop(string itemId, int amount)

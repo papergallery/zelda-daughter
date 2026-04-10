@@ -258,7 +258,7 @@ adb logcat -d -s Unity | grep "\[ZD:Interact\]" | tail -5
 - [ ] Закрыть инвентарь — игра снимается с паузы — проверить через [ZD:Scene] TimeScale=1
 
 **Проверка веса:**
-- [ ] Набрать много предметов (15-20 камней/палок) — персонаж замедляется — проверить через [ZD:Move] SpeedChanged (замедление)
+- [~] Перегруз — WeightSystem добавлен в Stage4, порог 40 кг (80% от 50 кг). При weight=3.0 нет замедления. Для теста нужны тяжёлые предметы или снижение порога.
 - [ ] Реплика о перегрузе ("Тяжело..." или аналог) — проверить через скриншот
 - [ ] Выбросить часть предметов — скорость восстанавливается — проверить через [ZD:Move] SpeedChanged (ускорение)
 
@@ -378,7 +378,7 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 - [x] Волк в EmuStage4 — Enemy_Wolf виден (серая капсула), aggroOnSight=true → сразу атакует без провокации (эмулятор 2026-04-10)
 - [x] Волк агрится на вид — EnemyState Attack сразу после загрузки (aggroOnSight=true). Chase→Attack подтверждён. (эмулятор 2026-04-10)
 - [x] Бросок волка — PlayerDamaged amount=12.0, WoundAdded type=Puncture severity=0.50 подтверждён. Волк наносит колотую рану. (эмулятор 2026-04-10)
-- [ ] При кровотечении: визуал (кровь на одежде), медленная потеря HP — проверить через [ZD:Combat] WoundEffect + Bleeding
+- [~] Кровотечение HP drain — логика HPDrainPerSecond есть в TickWounds(). Status команда показала HP=0.01 после боя — HP снижается. Визуал крови — реальное устройство.
 - [ ] Реплика о состоянии ("Ничего страшного" или "Плохо дело...") — проверить через скриншот
 - [x] Волк слабее кабана по урону (12 vs 20) но быстрее (chaseSpeed=7 vs 6) и агрится на вид. EnemyDamaged hp→0.00, EnemyDeath подтверждён. (эмулятор 2026-04-10)
 
@@ -386,7 +386,7 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 - [x] Лечение перелома: heal Fracture → [ZD:Combat] WoundRemoved type=Fracture, SpeedChanged 1.25→2.50 ✓ (эмулятор 2026-04-10, через RemoteInput 'heal')
 - [x] Кровотечение/Puncture лечится — heal Puncture → WoundRemoved подтверждён (аналогично Fracture). Бинт скрафтен (cloth+herbs→bandage). (эмулятор 2026-04-10)
 - [~] Применение лекарства — через RemoteInput 'heal' напрямую, drag&drop UI не тестируем на эмуляторе
-- [ ] Без лечения раны заживают медленно сами — не тестировано (враги умирали раньше чем начиналось заживление)
+- [~] Без лечения раны заживают медленно — TickWounds() уменьшает RemainingTime каждый кадр, WoundHealed (natural) логируется при RemainingTime<=0. Не подтверждено из-за отсутствия WoundConfig wiring в Stage6.
 - [ ] У костра раны заживают быстрее — проверить через [ZD:Combat] RestZone + WoundHealed (быстрее)
 
 ### 8.4 Нокаут
@@ -462,8 +462,8 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -i "eat\|food\|hunger" |
 
 **Что проверяем:** скрытый рост навыков, обратная связь.
 
-- [~] Подраться с врагами — 5+ ударов нанесено (AttackResult hit=True), но нет логов [ZD:Progression]. PlayerStats добавлен в EmuStage6, но не логирует рост навыков. Возможно нет подписчиков или ProgressionConfig не настроен. (эмулятор 2026-04-10)
-- [ ] Много ходить (особенно с перегрузом) — реплика про выносливость — проверить через [ZD:Progression] SkillUp type=Stamina
+- [~] Прогрессия от боя — **фича не реализована**: нет моста CombatController→PlayerStats.AddExperience(). ZDLog добавлен в PlayerStats, но AddExperience не вызывается при бое. Нужен компонент-мост.
+- [~] Прогрессия от ходьбы — не реализовано: нет подписки CharacterMovement→PlayerStats.AddExperience(Stamina)
 - [ ] Удары становятся быстрее с опытом *(скрытое — анимация, реальное устройство)* — проверить через [ZD:Progression] CombatSpeed
 - [ ] Промахи тоже дают рост (медленнее) — проверить через [ZD:Progression] SkillUp (после промаха)
 - [ ] Первые удары неуклюжие (медленные), со временем — увереннее *(анимация — реальное устройство)*
