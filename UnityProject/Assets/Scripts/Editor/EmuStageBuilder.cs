@@ -1239,6 +1239,114 @@ namespace ZeldaDaughter.Editor
                 }
             }
 
+                // WoundConfigs on PlayerHealthState
+                var phs2 = player.GetComponent<ZeldaDaughter.Combat.PlayerHealthState>();
+                if (phs2 != null)
+                {
+                    var wP = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Puncture.asset");
+                    var wF = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Fracture.asset");
+                    var wB = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Burn.asset");
+                    var wPo = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Poison.asset");
+                    if (wP != null)
+                    {
+                        var so = new SerializedObject(phs2);
+                        var wp = so.FindProperty("_woundConfigs");
+                        if (wp != null) { wp.arraySize = 4; wp.GetArrayElementAtIndex(0).objectReferenceValue = wP; wp.GetArrayElementAtIndex(1).objectReferenceValue = wF; wp.GetArrayElementAtIndex(2).objectReferenceValue = wB; wp.GetArrayElementAtIndex(3).objectReferenceValue = wPo; }
+                        so.ApplyModifiedPropertiesWithoutUndo();
+                    }
+                }
+
+                // WeaponEquipSystem
+                if (player.GetComponent<ZeldaDaughter.Combat.WeaponEquipSystem>() == null)
+                    player.AddComponent<ZeldaDaughter.Combat.WeaponEquipSystem>();
+
+                // Reload combatConfig for component wiring
+                var combatCfg6 = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.CombatConfig>(
+                    "Assets/Data/Combat/CombatConfig.asset");
+
+                // KnockoutSystem (needs _config + _gestureDispatcher)
+                if (player.GetComponent<ZeldaDaughter.Combat.KnockoutSystem>() == null)
+                {
+                    var ks = player.AddComponent<ZeldaDaughter.Combat.KnockoutSystem>();
+                    var kso = new SerializedObject(ks);
+                    if (combatCfg6 != null) kso.FindProperty("_config").objectReferenceValue = combatCfg6;
+                    var gd = Object.FindObjectOfType<ZeldaDaughter.Input.GestureDispatcher>();
+                    if (gd != null) kso.FindProperty("_gestureDispatcher").objectReferenceValue = gd;
+                    kso.ApplyModifiedPropertiesWithoutUndo();
+                }
+
+                // HungerSystem (needs _config + _movement)
+                if (player.GetComponent<ZeldaDaughter.Combat.HungerSystem>() == null)
+                {
+                    var hs = player.AddComponent<ZeldaDaughter.Combat.HungerSystem>();
+                    var hso = new SerializedObject(hs);
+                    if (combatCfg6 != null) hso.FindProperty("_config").objectReferenceValue = combatCfg6;
+                    var cm = player.GetComponent<ZeldaDaughter.Input.CharacterMovement>();
+                    if (cm != null) hso.FindProperty("_movement").objectReferenceValue = cm;
+                    hso.ApplyModifiedPropertiesWithoutUndo();
+                }
+
+                // WoundEffectApplier (needs _woundConfigs + _movement)
+                if (player.GetComponent<ZeldaDaughter.Combat.WoundEffectApplier>() == null)
+                {
+                    var wa = player.AddComponent<ZeldaDaughter.Combat.WoundEffectApplier>();
+                    var waso = new SerializedObject(wa);
+                    var wcp = waso.FindProperty("_woundConfigs");
+                    if (wcp != null)
+                    {
+                        var wP2 = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Puncture.asset");
+                        var wF2 = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Fracture.asset");
+                        var wB2 = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Burn.asset");
+                        var wPo2 = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.WoundConfig>("Assets/Data/Combat/WoundConfig_Poison.asset");
+                        wcp.arraySize = 4;
+                        wcp.GetArrayElementAtIndex(0).objectReferenceValue = wP2;
+                        wcp.GetArrayElementAtIndex(1).objectReferenceValue = wF2;
+                        wcp.GetArrayElementAtIndex(2).objectReferenceValue = wB2;
+                        wcp.GetArrayElementAtIndex(3).objectReferenceValue = wPo2;
+                    }
+                    var cm2 = player.GetComponent<ZeldaDaughter.Input.CharacterMovement>();
+                    if (cm2 != null) waso.FindProperty("_movement").objectReferenceValue = cm2;
+                    waso.ApplyModifiedPropertiesWithoutUndo();
+                }
+
+                // FoodConsumption
+                if (player.GetComponent<ZeldaDaughter.Combat.FoodConsumption>() == null)
+                    player.AddComponent<ZeldaDaughter.Combat.FoodConsumption>();
+
+                // WeightSystem (needs _characterMovement)
+                if (player.GetComponent<ZeldaDaughter.Inventory.WeightSystem>() == null)
+                {
+                    var ws2 = player.AddComponent<ZeldaDaughter.Inventory.WeightSystem>();
+                    var cm3 = player.GetComponent<ZeldaDaughter.Input.CharacterMovement>();
+                    if (cm3 != null)
+                    {
+                        var wso2 = new SerializedObject(ws2);
+                        wso2.FindProperty("_characterMovement").objectReferenceValue = cm3;
+                        wso2.ApplyModifiedPropertiesWithoutUndo();
+                    }
+                }
+
+                // Pickups for testing (stick, berry, knife)
+                var pickS6 = new GameObject("Pickups_S6");
+                string[] s6Items = { "Assets/Data/Items/item_stick.asset", "Assets/Content/Items/Item_Berry.asset", "Assets/Data/Items/item_knife.asset" };
+                Vector3[] s6Pos = { new(-2, 1, 2), new(2, 1, -2), new(0, 1, 4) };
+                for (int pi = 0; pi < s6Items.Length; pi++)
+                {
+                    var idata = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Inventory.ItemData>(s6Items[pi]);
+                    if (idata == null) continue;
+                    var pgo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    pgo.name = $"Pickup_{idata.name}";
+                    pgo.transform.SetParent(pickS6.transform);
+                    pgo.transform.position = s6Pos[pi];
+                    pgo.GetComponent<Renderer>().sharedMaterial = Mat("Pickup", new Color(0.9f, 0.8f, 0.2f));
+                    var pc = pgo.AddComponent<ZeldaDaughter.World.Pickupable>();
+                    var pso = new SerializedObject(pc);
+                    pso.FindProperty("_itemData").objectReferenceValue = idata;
+                    pso.FindProperty("_amount").intValue = 3;
+                    pso.FindProperty("_saveId").stringValue = $"s6_p{pi}";
+                    pso.ApplyModifiedPropertiesWithoutUndo();
+                }
+
             // === PlayerStats (progression) ===
             var statsGo = new GameObject("PlayerStats");
             var stats = statsGo.AddComponent<ZeldaDaughter.Progression.PlayerStats>();
@@ -1301,6 +1409,7 @@ namespace ZeldaDaughter.Editor
                 so.FindProperty("_data").objectReferenceValue = boarData;
                 so.ApplyModifiedPropertiesWithoutUndo();
             }
+            boarGo.AddComponent<ZeldaDaughter.Combat.DeathToCarcass>();
 
             // === TapInteractionManager ===
             var tapSys = new GameObject("TapSystem");

@@ -124,6 +124,7 @@ namespace ZeldaDaughter.World
             {
                 _currentTimeOfDay = newTimeOfDay;
                 OnTimeOfDayChanged?.Invoke(_currentTimeOfDay);
+                Debugging.ZDLog.Log("Scene", $"TimeOfDay={_currentTimeOfDay} (t={_timeOfDayNormalized:F2})");
             }
         }
 
