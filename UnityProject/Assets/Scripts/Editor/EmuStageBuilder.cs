@@ -1063,6 +1063,155 @@ namespace ZeldaDaughter.Editor
         }
 
         // ============================================================
+        // Stage 6: Progression + Day/Night + Water (TESTING_GUIDE секции 10, 12, 18)
+        // Нужно: DayNightCycle, PlayerStats, WaterZone, Combat (для прогрессии)
+        // ============================================================
+        [MenuItem("ZeldaDaughter/Scenes/Build EmuStage6 (Progression+DayNight+Water)")]
+        public static void BuildStage6()
+        {
+            Init();
+            SetupStage1Base();
+
+            var player = GameObject.FindGameObjectWithTag("Player");
+
+            // === Combat on Player (progression needs combat events) ===
+            if (player != null)
+            {
+                if (player.GetComponent<ZeldaDaughter.Combat.PlayerHealthState>() == null)
+                {
+                    var phs = player.AddComponent<ZeldaDaughter.Combat.PlayerHealthState>();
+                    var combatCfg0 = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.CombatConfig>(
+                        "Assets/Data/Combat/CombatConfig.asset");
+                    if (combatCfg0 != null)
+                    {
+                        var phsSo = new SerializedObject(phs);
+                        phsSo.FindProperty("_config").objectReferenceValue = combatCfg0;
+                        phsSo.ApplyModifiedPropertiesWithoutUndo();
+                    }
+                }
+                if (player.GetComponent<ZeldaDaughter.Combat.CombatController>() == null)
+                    player.AddComponent<ZeldaDaughter.Combat.CombatController>();
+                if (player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>() == null)
+                    player.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+
+                // PlayerHitbox
+                if (player.transform.Find("PlayerHitbox") == null)
+                {
+                    var hitboxGo = new GameObject("PlayerHitbox");
+                    hitboxGo.transform.SetParent(player.transform);
+                    hitboxGo.transform.localPosition = new Vector3(0, 0.9f, 0);
+                    var col = hitboxGo.AddComponent<BoxCollider>();
+                    col.isTrigger = true;
+                    col.size = new Vector3(0.6f, 0.6f, 0.6f);
+                    hitboxGo.AddComponent<ZeldaDaughter.Combat.HitboxTrigger>();
+                }
+
+                // Wire CombatController
+                var combatConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.CombatConfig>(
+                    "Assets/Data/Combat/CombatConfig.asset");
+                var cc = player.GetComponent<ZeldaDaughter.Combat.CombatController>();
+                if (cc != null && combatConfig != null)
+                {
+                    var so = new SerializedObject(cc);
+                    so.FindProperty("_config").objectReferenceValue = combatConfig;
+                    var autoMove = player.GetComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+                    if (autoMove != null) so.FindProperty("_autoMove").objectReferenceValue = autoMove;
+                    var hitbox = player.GetComponentInChildren<ZeldaDaughter.Combat.HitboxTrigger>();
+                    if (hitbox != null) so.FindProperty("_hitbox").objectReferenceValue = hitbox;
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                }
+            }
+
+            // === PlayerStats (progression) ===
+            var statsGo = new GameObject("PlayerStats");
+            var stats = statsGo.AddComponent<ZeldaDaughter.Progression.PlayerStats>();
+            var progConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Progression.ProgressionConfig>(
+                "Assets/Data/Progression/ProgressionConfig.asset");
+            if (progConfig != null)
+            {
+                var so = new SerializedObject(stats);
+                var configProp = so.FindProperty("_config");
+                if (configProp != null) configProp.objectReferenceValue = progConfig;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === DayNightCycle ===
+            var light = Object.FindObjectOfType<Light>();
+            var dnGo = new GameObject("DayNightCycle");
+            var dn = dnGo.AddComponent<ZeldaDaughter.World.DayNightCycle>();
+            if (light != null)
+            {
+                var so = new SerializedObject(dn);
+                var lightProp = so.FindProperty("_directionalLight");
+                if (lightProp != null) lightProp.objectReferenceValue = light;
+                // Fast cycle for testing (2 min = full day)
+                var cycleProp = so.FindProperty("_fullCycleMinutes");
+                if (cycleProp != null) cycleProp.floatValue = 2f;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === WaterZone (blue plane with trigger) ===
+            var waterGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            waterGo.name = "WaterZone";
+            waterGo.transform.position = new Vector3(-5, -0.2f, 0);
+            waterGo.transform.localScale = new Vector3(4, 0.5f, 6);
+            waterGo.GetComponent<Renderer>().sharedMaterial = Mat("Water", new Color(0.1f, 0.3f, 0.7f, 0.5f));
+            Object.DestroyImmediate(waterGo.GetComponent<BoxCollider>());
+            var waterTrigger = waterGo.AddComponent<BoxCollider>();
+            waterTrigger.isTrigger = true;
+            waterGo.AddComponent<ZeldaDaughter.World.WaterZone>();
+
+            // === Enemy Boar (for progression testing) ===
+            var boarGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            boarGo.name = "Enemy_Boar";
+            boarGo.transform.position = new Vector3(3, 0.05f, 0);
+            boarGo.transform.localScale = Vector3.one * 1.5f;
+            boarGo.GetComponent<Renderer>().sharedMaterial = Mat("Enemy", new Color(0.8f, 0.15f, 0.1f));
+            try { boarGo.tag = "Enemy"; } catch { }
+            var boarData = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.Combat.EnemyData>(
+                "Assets/Data/Combat/EnemyData_Boar.asset");
+            var eh = boarGo.AddComponent<ZeldaDaughter.Combat.EnemyHealth>();
+            if (boarData != null)
+            {
+                var so = new SerializedObject(eh);
+                so.FindProperty("_data").objectReferenceValue = boarData;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+            var fsm = boarGo.AddComponent<ZeldaDaughter.Combat.EnemyFSM>();
+            if (boarData != null)
+            {
+                var so = new SerializedObject(fsm);
+                so.FindProperty("_data").objectReferenceValue = boarData;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === TapInteractionManager ===
+            var tapSys = new GameObject("TapSystem");
+            tapSys.AddComponent<ZeldaDaughter.World.TapInteractionManager>();
+            var tapMgr = Object.FindObjectOfType<ZeldaDaughter.World.TapInteractionManager>();
+            if (tapMgr != null && player != null)
+            {
+                var so = new SerializedObject(tapMgr);
+                so.FindProperty("_player").objectReferenceValue = player;
+                var autoMove = player.GetComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+                if (autoMove != null) so.FindProperty("_autoMove").objectReferenceValue = autoMove;
+                var combatCtrl = player.GetComponent<ZeldaDaughter.Combat.CombatController>();
+                if (combatCtrl != null) so.FindProperty("_combatController").objectReferenceValue = combatCtrl;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // === SaveManager ===
+            var saveSys = new GameObject("SaveManager");
+            saveSys.AddComponent<ZeldaDaughter.Save.SaveManager>();
+
+            const string path = "Assets/Scenes/EmuStage6.unity";
+            EditorSceneManager.SaveScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene(), path);
+            AddToBuildSettings(path);
+            Debug.Log($"[EmuStageBuilder] Stage 6 created: {path}");
+        }
+
+        // ============================================================
         // Stage 5 Bisect variants — find which NPC component crashes SwiftShader
         // ============================================================
 
