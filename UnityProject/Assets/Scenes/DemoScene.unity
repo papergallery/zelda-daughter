@@ -4477,7 +4477,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyData: {fileID: 11400000, guid: 541c887003cc6796f829e900987ebd14, type: 2}
-  _enemyPrefab: {fileID: 810348033028835434, guid: fb1d0b630424da8c08100bd0d899f12d, type: 3}
+  _enemyPrefab: {fileID: 2109611297403280376, guid: fb1d0b630424da8c08100bd0d899f12d, type: 3}
   _maxEnemies: 2
   _spawnRadius: 12
   _carcassPrefab: {fileID: 0}
@@ -15009,7 +15009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyData: {fileID: 11400000, guid: 541c887003cc6796f829e900987ebd14, type: 2}
-  _enemyPrefab: {fileID: 810348033028835434, guid: fb1d0b630424da8c08100bd0d899f12d, type: 3}
+  _enemyPrefab: {fileID: 2109611297403280376, guid: fb1d0b630424da8c08100bd0d899f12d, type: 3}
   _maxEnemies: 1
   _spawnRadius: 6
   _carcassPrefab: {fileID: 0}
@@ -34360,7 +34360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyData: {fileID: 11400000, guid: 75915c57f0538b7a9bed9d7f100214b7, type: 2}
-  _enemyPrefab: {fileID: 1668305256830017965, guid: 98af3787bf78591c18fdd6e852d6b4fc, type: 3}
+  _enemyPrefab: {fileID: 3169286273542144957, guid: 98af3787bf78591c18fdd6e852d6b4fc, type: 3}
   _maxEnemies: 2
   _spawnRadius: 10
   _carcassPrefab: {fileID: 0}
@@ -37710,7 +37710,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1682151672}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 6562d6e3dbdec2a7686a2ce8d4768341, type: 3}
   m_Controller: {fileID: 9100000, guid: b478acd658804a5af972a529ce445aa1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0

@@ -46,7 +46,12 @@ namespace ZeldaDaughter.Input
             if (distance <= _stoppingDistance)
             {
                 _isAutoMoving = false;
-                _movement.ClearExternalMovement();
+                _movement.StopMovement();
+                // Поворот к цели
+                Vector3 lookDir = (_targetPosition - transform.position);
+                lookDir.y = 0;
+                if (lookDir.sqrMagnitude > 0.01f)
+                    transform.rotation = Quaternion.LookRotation(lookDir.normalized);
                 _onReachedCallback?.Invoke();
                 OnReachedTarget?.Invoke();
             }
@@ -76,7 +81,7 @@ namespace ZeldaDaughter.Input
             if (!_isAutoMoving) return;
 
             _isAutoMoving = false;
-            _movement.ClearExternalMovement();
+            _movement.StopMovement();
             OnAutoMoveCancelled?.Invoke();
         }
 
