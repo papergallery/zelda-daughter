@@ -64,6 +64,11 @@ namespace ZeldaDaughter.UI
             if (SaveManager.Instance != null)
                 SaveManager.Instance.DeleteSave();
 
+            // Move player to spawn point before reload
+            var player = GameObject.FindWithTag("Player");
+            if (player != null)
+                player.transform.position = new Vector3(0, 0.1f, -20f); // Start meadow
+
             // Reload current scene
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             UnityEngine.SceneManagement.SceneManager.LoadScene(scene.name);
