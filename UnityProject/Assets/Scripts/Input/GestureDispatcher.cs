@@ -136,9 +136,9 @@ namespace ZeldaDaughter.Input
                         _state = GestureState.Swiping;
                         EmitSwipe(screenPos);
                     }
-                    // Emulator fallback: если держим палец (любое время),
+                    // Emulator fallback: если держим палец (активное касание),
                     // свайпим в направлении от центра экрана к точке касания
-                    else if (elapsed > 0.01f && drift < 5f)
+                    else if (_touchStartTime > 0.1f && elapsed > 0.05f && elapsed < 5f && drift < 5f)
                     {
                         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
                         Vector2 dirFromCenter = (screenPos - screenCenter).normalized;
