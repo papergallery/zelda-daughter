@@ -12,8 +12,8 @@ namespace ZeldaDaughter.Audio
     public class FootstepSystem : MonoBehaviour
     {
         [Header("Intervals")]
-        [SerializeField] private float _walkStepInterval = 0.5f;
-        [SerializeField] private float _runStepInterval = 0.3f;
+        [SerializeField] private float _walkStepInterval = 0.8f;
+        [SerializeField] private float _runStepInterval = 0.5f;
 
         [Header("Pitch")]
         [SerializeField] private float _pitchVariation = 0.1f;
@@ -74,6 +74,8 @@ namespace ZeldaDaughter.Audio
 
         private void PlayFootstep()
         {
+            if (_audioSource.isPlaying) return;
+
             var clips = GetClipsForSurface(_currentSurface);
             if (clips == null || clips.Length == 0)
                 return;

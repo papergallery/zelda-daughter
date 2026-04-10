@@ -232,6 +232,15 @@ namespace ZeldaDaughter.Input
             _externalIntensity = 0f;
         }
 
+        public void StopMovement()
+        {
+            ClearExternalMovement();
+            _isMoving = false;
+            _isStopping = false;
+            _inputIntensity = 0f;
+            CurrentSpeed = 0f;
+        }
+
         public void SetInWater(bool inWater)
         {
             _inWater = inWater;

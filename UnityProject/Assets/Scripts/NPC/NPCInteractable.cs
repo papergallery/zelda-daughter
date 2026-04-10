@@ -69,12 +69,18 @@ namespace ZeldaDaughter.NPC
                 actorAnimator.SetTrigger("Interact");
 
             // Новая диалоговая система
-            if (_dialogueManager != null && _profile != null && _profile.DialogueTree != null && _speechBubble != null)
+            if (_dialogueManager != null && _profile != null && _profile.DialogueTree != null)
             {
+                if (_speechBubble == null)
+                    _speechBubble = gameObject.AddComponent<NPCSpeechBubble>();
                 _dialogueManager.StartDialogue(_profile, _speechBubble);
                 yield return new WaitUntil(() => !_dialogueManager.IsActive);
                 _isTalking = false;
                 yield break;
+            }
+            else
+            {
+                Debug.LogWarning($"[ZD:NPC] {gameObject.name} диалог не запущен: dm={_dialogueManager != null} profile={_profile != null} tree={_profile?.DialogueTree != null} bubble={_speechBubble != null}");
             }
 
             // Fallback: старая логика с иконками (для обратной совместимости)

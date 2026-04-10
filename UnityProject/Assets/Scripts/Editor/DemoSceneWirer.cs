@@ -55,6 +55,7 @@ namespace ZeldaDaughter.Editor
             WireAudio();
             EnsureDebugResetButton();
             WireRadialMenu();
+            PlayerModelSetup.FixPlayerAnimator();
 
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             EditorSceneManager.MarkSceneDirty(scene);
@@ -266,9 +267,9 @@ namespace ZeldaDaughter.Editor
 
             // Collider на root
             var col = root.AddComponent<CapsuleCollider>();
-            col.height = 1.5f;
-            col.radius = 0.4f;
-            col.center = new Vector3(0f, 0.75f, 0f);
+            col.height = 2.5f;
+            col.radius = 0.7f;
+            col.center = new Vector3(0f, 1.25f, 0f);
 
             // Animator на root — EnemyFSM использует GetComponentInChildren<Animator>()
             var animController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(animatorControllerPath);

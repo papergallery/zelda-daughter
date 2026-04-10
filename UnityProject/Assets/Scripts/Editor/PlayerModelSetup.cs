@@ -119,6 +119,8 @@ namespace ZeldaDaughter.Editor
 
         /// <summary>
         /// Исправляет Animator на Player в DemoScene: назначает AnimatorController и Avatar.
+        /// Если Avatar не найден в FBX — принудительно reimport как Humanoid.
+        /// Назначение через SerializedObject для надёжного сохранения в сцене.
         /// Запуск: -executeMethod ZeldaDaughter.Editor.PlayerModelSetup.FixPlayerAnimator
         /// </summary>
         [MenuItem("ZeldaDaughter/Player/Fix Player Animator")]
@@ -151,26 +153,15 @@ namespace ZeldaDaughter.Editor
                 return;
             }
 
-            // Загружаем avatar из KayKit FBX
-            Avatar sourceAvatar = null;
-            var allAssets = AssetDatabase.LoadAllAssetsAtPath(KayKitFbxPath);
-            foreach (var asset in allAssets)
-            {
-                if (asset is Avatar av)
-                {
-                    sourceAvatar = av;
-                    break;
-                }
-            }
-
+            // Загружаем avatar из KayKit FBX; если нет — reimport как Humanoid
+            var sourceAvatar = LoadOrReimportAvatar();
             if (sourceAvatar == null)
             {
-                Debug.LogError($"[PlayerModelSetup] Avatar не найден в {KayKitFbxPath}. " +
-                               "Запустите Fix KayKit Import Settings сначала.");
+                Debug.LogError($"[PlayerModelSetup] Avatar не найден даже после reimport. Проверьте {KayKitFbxPath}.");
                 return;
             }
 
-            Debug.Log($"[PlayerModelSetup] Avatar найден: {sourceAvatar.name}");
+            Debug.Log($"[PlayerModelSetup] Avatar найден: {sourceAvatar.name} (valid={sourceAvatar.isValid}, human={sourceAvatar.isHuman})");
 
             // Ищем Animator — сначала на root, потом в детях
             var animator = player.GetComponent<Animator>();
@@ -183,32 +174,39 @@ namespace ZeldaDaughter.Editor
                 Debug.Log("[PlayerModelSetup] Animator добавлен на Player root.");
             }
 
+            // Назначаем через SerializedObject для надёжного сохранения ссылок в сцене
+            var so = new SerializedObject(animator);
+            so.Update();
+
             bool changed = false;
 
-            if (animator.runtimeAnimatorController != animController)
+            var controllerProp = so.FindProperty("m_Controller");
+            if (controllerProp != null && controllerProp.objectReferenceValue != animController)
             {
-                animator.runtimeAnimatorController = animController;
+                controllerProp.objectReferenceValue = animController;
                 changed = true;
-                Debug.Log($"[PlayerModelSetup] AnimatorController назначен: {AnimatorControllerPath}");
+                Debug.Log($"[PlayerModelSetup] AnimatorController назначен через SerializedObject: {AnimatorControllerPath}");
             }
             else
             {
                 Debug.Log("[PlayerModelSetup] AnimatorController уже назначен.");
             }
 
-            if (animator.avatar != sourceAvatar)
+            var avatarProp = so.FindProperty("m_Avatar");
+            if (avatarProp != null && avatarProp.objectReferenceValue != sourceAvatar)
             {
-                animator.avatar = sourceAvatar;
+                avatarProp.objectReferenceValue = sourceAvatar;
                 changed = true;
-                Debug.Log($"[PlayerModelSetup] Avatar назначен: {sourceAvatar.name}");
+                Debug.Log($"[PlayerModelSetup] Avatar назначен через SerializedObject: {sourceAvatar.name}");
             }
             else
             {
-                Debug.Log("[PlayerModelSetup] Avatar уже назначен.");
+                Debug.Log($"[PlayerModelSetup] Avatar уже назначен: {avatarProp?.objectReferenceValue?.name ?? "null"}");
             }
 
             if (changed)
             {
+                so.ApplyModifiedPropertiesWithoutUndo();
                 EditorUtility.SetDirty(animator);
                 var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
                 EditorSceneManager.MarkSceneDirty(scene);
@@ -219,6 +217,42 @@ namespace ZeldaDaughter.Editor
             {
                 Debug.Log("[PlayerModelSetup] FixPlayerAnimator: всё уже настроено корректно.");
             }
+        }
+
+        private static Avatar LoadOrReimportAvatar()
+        {
+            // Первая попытка — загружаем из уже импортированных sub-assets
+            var avatar = FindAvatarInAssets(KayKitFbxPath);
+            if (avatar != null)
+                return avatar;
+
+            Debug.LogWarning($"[PlayerModelSetup] Avatar не найден в {KayKitFbxPath} — принудительный reimport как Humanoid.");
+
+            var importer = AssetImporter.GetAtPath(KayKitFbxPath) as ModelImporter;
+            if (importer == null)
+            {
+                Debug.LogError($"[PlayerModelSetup] ModelImporter не получен для {KayKitFbxPath}");
+                return null;
+            }
+
+            importer.animationType = ModelImporterAnimationType.Human;
+            importer.SaveAndReimport();
+            Debug.Log("[PlayerModelSetup] FBX reimport завершён как Humanoid.");
+
+            // Вторая попытка после reimport
+            avatar = FindAvatarInAssets(KayKitFbxPath);
+            return avatar;
+        }
+
+        private static Avatar FindAvatarInAssets(string path)
+        {
+            var allAssets = AssetDatabase.LoadAllAssetsAtPath(path);
+            foreach (var asset in allAssets)
+            {
+                if (asset is Avatar av)
+                    return av;
+            }
+            return null;
         }
 
         private static Transform FindChildWithSkinned(Transform parent)
