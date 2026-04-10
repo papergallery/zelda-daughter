@@ -17,7 +17,7 @@ MonoBehaviour:
   _role: 1
   _portrait: {fileID: 0}
   _schedule: {fileID: 11400000, guid: 1edfed8b490614fa9aba21f984063065, type: 2}
-  _dialogueTree: {fileID: 0}
+  _dialogueTree: {fileID: 11400000, guid: 648248ac2ba091867a9d305237c28d8e, type: 2}
   _tradeInventory: {fileID: 11400000, guid: 3fb5f9dc396cb071ba2345b8660ec43e, type: 2}
   _iconSequence: []
   _iconDisplayInterval: 1.5

@@ -15,7 +15,7 @@ namespace ZeldaDaughter.Editor
     public static class PlayerModelSetup
     {
         private const string ScenePath              = "Assets/Scenes/DemoScene.unity";
-        private const string KayKitFbxPath          = "Assets/Models/KayKit/Adventurers/Rogue_Hooded.fbx";
+        private const string KayKitFbxPath          = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
         private const string AnimatorControllerPath = "Assets/Animations/Controllers/PlayerAnimator.controller";
 
         [MenuItem("ZeldaDaughter/Player/Setup Player Model")]
@@ -113,6 +113,19 @@ namespace ZeldaDaughter.Editor
             modelInstance.transform.localRotation = Quaternion.identity;
             modelInstance.transform.localScale = Vector3.one;
 
+            // Деактивируем артефактные MeshRenderer-объекты (синий блок и подобные),
+            // которые не являются SkinnedMeshRenderer и не нужны для анимированного персонажа
+            foreach (Transform child in modelInstance.transform)
+            {
+                var smr = child.GetComponent<SkinnedMeshRenderer>();
+                var mr  = child.GetComponent<MeshRenderer>();
+                if (mr != null && smr == null)
+                {
+                    child.gameObject.SetActive(false);
+                    Debug.Log($"[PlayerModelSetup] Деактивирован артефактный MeshRenderer: {child.name}");
+                }
+            }
+
             EditorUtility.SetDirty(player);
             Debug.Log($"[PlayerModelSetup] KayKit модель добавлена как child 'Model': {KayKitFbxPath}");
         }
@@ -173,6 +186,8 @@ namespace ZeldaDaughter.Editor
                 animator = player.AddComponent<Animator>();
                 Debug.Log("[PlayerModelSetup] Animator добавлен на Player root.");
             }
+
+            Debug.Log($"[PlayerModelSetup] Found Animator on: {animator.gameObject.name}, controller={animator.runtimeAnimatorController?.name ?? "NULL"}, avatar={animator.avatar?.name ?? "NULL"}");
 
             // Назначаем через SerializedObject для надёжного сохранения ссылок в сцене
             var so = new SerializedObject(animator);
