@@ -89,6 +89,13 @@ adb shell "echo 'hold 540 1170 700' > /storage/emulated/0/Android/data/com.paper
 | EmuStage2 | 3-4 | + Pickupable + ResourceNode + TapInteractionManager + PlayerInventory |
 | EmuStage3 | 5-7 | + Inventory UI + Crafting (TODO) |
 
+### Известные баги найденные при тестировании
+
+1. **Персонаж проваливается при множественных свайпах** — после 10+ свайпов подряд Y уходит в -6000. CharacterController покидает Ground plane (100x100). Workaround: не делать больше 5 свайпов подряд, или увеличить Ground.
+2. **OnboardingHint swipe не видна** — SwipeHint не отображается на эмуляторе (0% UI пикселей). TapHint видна (12.8%). Возможно: font не рендерится, или hint позиция за пределами экрана 480x800.
+3. **TapHint не исчезает после тапа** — OnFirstTap подписывается после ShowTapHint, но тап через RemoteInputReceiver возможно не вызывает GestureDispatcher.OnTap корректно для OnboardingManager.
+4. **LongPress не распознаётся** — `hold` команда RemoteInputReceiver вызывает OnPointerDown+OnPointerHeld, но GestureDispatcher проверяет `IsPointerOnCharacter` (raycast на Player). На эмуляторе raycast может не попадать в Player capsule.
+
 ### Координаты экрана
 
 Эмулятор zelda_test (Pixel 4) имеет физическое разрешение **480x800** (не 1080x2340!).

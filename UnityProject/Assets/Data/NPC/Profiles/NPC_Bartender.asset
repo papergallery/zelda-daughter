@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa180cdeeb6cad3858d9e0af8153a775, type: 3}
+  m_Name: NPC_Bartender
+  m_EditorClassIdentifier: 
+  _npcId: bartender
+  _npcName: "\u0411\u0430\u0440\u043C\u0435\u043D"
+  _role: 2
+  _portrait: {fileID: 0}
+  _schedule: {fileID: 11400000, guid: 143b520cbf46b6099826189a54ead69c, type: 2}
+  _dialogueTree: {fileID: 0}
+  _tradeInventory: {fileID: 11400000, guid: a09f5eb025e22b9de89c02684c119155, type: 2}
+  _iconSequence: []
+  _iconDisplayInterval: 1.5
