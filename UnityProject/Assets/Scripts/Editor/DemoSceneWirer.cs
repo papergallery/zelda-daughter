@@ -306,7 +306,7 @@ namespace ZeldaDaughter.Editor
                 capsule.transform.localScale = Vector3.one;
                 var capsuleCol = capsule.GetComponent<Collider>();
                 if (capsuleCol != null) Object.DestroyImmediate(capsuleCol);
-                var mat = new Material(Shader.Find("Standard"));
+                var mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard"));
                 mat.color = color;
                 capsule.GetComponent<Renderer>().sharedMaterial = mat;
                 Debug.LogWarning($"[DemoSceneWirer] {goName}: модель не найдена ({modelFbxPath}), используется capsule-placeholder.");
