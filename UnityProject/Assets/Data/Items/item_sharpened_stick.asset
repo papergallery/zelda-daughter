@@ -30,4 +30,4 @@ MonoBehaviour:
   _isMedicine: 0
   _treatsWoundType: 4
   _baseValue: 1
-  _weaponData: {fileID: 0}
+  _weaponData: {fileID: 11400000, guid: ee532e9863fdafd6fbe89ec9d1d00c43, type: 2}
