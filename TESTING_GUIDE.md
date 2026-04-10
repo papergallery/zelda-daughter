@@ -367,9 +367,9 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 - [x] Тап по кабану — Hit Enemy_Boar подтверждён. AttackResult hit=True, AttackPerformed weapon=Unarmed. Tag-based routing работает (tag=Enemy → CombatController.AttackTarget). (эмулятор 2026-04-10, RaycastAll+SphereCast)
 - [x] Каждый тап = один удар — AttackPerformed weapon=Unarmed, один AttackResult на тап (эмулятор 2026-04-10)
 - [x] Кабан агрится, бежит на игрока (Chase→Attack) — EnemyState Chase+Attack подтверждён после прямого урона. aggroOnDamage=true работает. (эмулятор 2026-04-10, direct damage fix)
-- [ ] Есть окно для уклонения: увести палец, персонаж отходит — проверить через [ZD:Move] + [ZD:Combat] DodgeWindow
+- [x] Есть окно для уклонения: свайп в сторону во время Chase → персонаж движется (speed=2.50→1.25 из-за перелома), кабан догоняет но даёт время среагировать. (эмулятор 2026-04-10)
 - [x] Кабан бьёт головой — PlayerDamaged amount=20.0, WoundAdded type=Fracture severity=0.60 подтверждён (эмулятор 2026-04-10)
-- [~] При переломе: замедление — не проверено визуально (нет анимации), WoundAdded подтверждён
+- [x] При переломе: SpeedChanged speed=2.50→1.25 (50% замедление от Fracture severity=0.60). WoundEffectApplier работает. (эмулятор 2026-04-10)
 - [x] Убить кабана — EnemyDamaged hp=0.83→0.75→0.67→0.58→...→0.00, EnemyState=Death, EnemyDeath enemy=EnemyData_Boar подтверждён (эмулятор 2026-04-10)
 - [ ] Тап по туше без ножа — минимальный лут (клык/перо) — проверить через [ZD:Interact] Loot (минимальный)
 - [ ] Тап по туше С ножом в инвентаре — полная разделка (шкура, мясо, кости) — проверить через [ZD:Interact] Loot (полный)
@@ -525,9 +525,9 @@ adb logcat -d -s Unity | grep "\[ZD:Scene\]" | tail -5
 **Что проверяем:** взаимодействие с водой.
 
 - [ ] Найти реку/ручей — проверить через скриншот
-- [~] Зайти в воду — персонаж вошёл в WaterZone (pos=-5.8,0.1,-0.8), но замедления нет. **БАГ: CharacterController не вызывает OnTriggerEnter** — WaterZone не детектирует игрока. (эмулятор 2026-04-10)
+- [x] Зайти в воду — WaterZone entered, SpeedChanged 5.00→1.00 (slowdownMultiplier=0.4). WaterZone exited при выходе, speed восстановлена до 2.50. Фикс: bounds.Contains() в Update(). (эмулятор 2026-04-10)
 - [ ] Визуал: персонаж по пояс в воде — проверить через скриншот
-- [ ] На глубине — невидимая стена (нельзя плыть) — проверить через [ZD:Move] позицию (не меняется при свайпе в глубину)
+- [~] На глубине — невидимая стена — pushBackForce логика есть в WaterZone.CheckDepth(), но не тестировано (нет глубокой воды в EmuStage6)
 - [ ] Найти мост — можно пройти по мосту через реку — проверить через [ZD:Move] + скриншот
 
 ### Автоматизация
@@ -904,7 +904,7 @@ adb logcat -d -s Unity | grep "\[ZD:Combat\]" | grep -i "heal\|wound\|recover" |
 - [x] Прогресс на месте — инвентарь сохраняется после фикса (List→Array в SaveData + ItemCache). Added item=Палка amount=1 после restart подтверждён. (эмулятор 2026-04-10)
 - [x] Убить приложение полностью (am force-stop) — приложение перезапускается (эмулятор 2026-04-10)
 - [x] Запустить заново — [ZD:Save] Loaded success подтверждён (эмулятор 2026-04-10)
-- [~] Подобранные предметы респавн — Pickupable ISaveable registration добавлена, но респавн не перепроверен после фикса (нужен retест)
+- [~] Подобранные предметы респавн — Pickupable ISaveable зарегистрирован, но предметы всё ещё в scan после restart. CaptureState/RestoreState не деактивирует pickup. Нужна доработка SaveManager для ISaveable restore.
 - [ ] Раны и квесты сохранены — не проверено (нет ран/квестов в EmuStage2)
 
 ### Автоматизация
@@ -941,8 +941,8 @@ adb logcat -d -s Unity | grep "\[ZD:Save\]" | tail -10
 **Что проверяем:** ресурсы возвращаются через время.
 
 - [x] Срубить дерево — ResourceHit hp=5/5→4→3→2→1→0/5, дропнуты Палка x2 + Дрова x1 (weight +3.0). Рендереры деактивированы при hp=0. (эмулятор 2026-04-10)
-- [ ] Подождать (или промотать через сон) — дерево появляется снова — проверить через [ZD:Interact] ResourceRespawn + скриншот
-- [ ] Враги тоже респавнятся через время — проверить через [ZD:Combat] EnemySpawn
+- [ ] Подождать — респаун ресурсов через время не тестирован (нет промотки)
+- [ ] Враги не респавнятся — нет EnemySpawnZone в EmuStage сценах, кабан создан напрямую
 
 ### Автоматизация
 ```bash
