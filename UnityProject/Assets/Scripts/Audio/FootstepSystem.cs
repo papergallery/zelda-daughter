@@ -35,9 +35,11 @@ namespace ZeldaDaughter.Audio
         private void Awake()
         {
             _audioSource = GetComponent<AudioSource>();
+            if (_audioSource == null) _audioSource = gameObject.AddComponent<AudioSource>();
             _audioSource.spatialBlend = 0f; // 2D — own footsteps
             _audioSource.loop = false;
             _audioSource.playOnAwake = false;
+            _audioSource.volume = 0.3f; // не слишком громко
         }
 
         private void OnEnable()
