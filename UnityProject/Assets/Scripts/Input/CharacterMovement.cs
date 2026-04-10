@@ -206,7 +206,11 @@ namespace ZeldaDaughter.Input
 
         private void UpdateAnimator()
         {
-            if (_animator == null) return;
+            if (_animator == null)
+            {
+                Debug.LogWarning("[ZD:ANIM] _animator is NULL on " + gameObject.name);
+                return;
+            }
 
             // Speed: 0 = idle, 0-0.5 = walk, 0.5-1 = run
             float animSpeed = _isMoving
@@ -215,6 +219,15 @@ namespace ZeldaDaughter.Input
 
             _animator.SetFloat(AnimSpeed, animSpeed, 0.1f, Time.deltaTime);
             _animator.SetBool(AnimIsMoving, _isMoving);
+
+#if UNITY_EDITOR || ZD_DEBUG
+            if (Time.frameCount % 60 == 0)
+            {
+                Debug.Log($"[ZD:ANIM] speed={animSpeed:F2} isMoving={_isMoving} " +
+                          $"hasCtrl={_animator.runtimeAnimatorController != null} " +
+                          $"state={_animator.GetCurrentAnimatorStateInfo(0).shortNameHash}");
+            }
+#endif
         }
 
         public void SetExternalMovement(Vector3 worldDirection, float intensity)
