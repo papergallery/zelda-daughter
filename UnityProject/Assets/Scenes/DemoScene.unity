@@ -635,7 +635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d4f3cb29d8d9186baae6b7b77813fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemData: {fileID: 0}
+  _itemData: {fileID: 11400000, guid: b07210dd8b8ddfc298a8f790eb7beaf2, type: 2}
   _amount: 1
   _saveId: pickup_meadow_6
   _interactionRange: 1.5
@@ -1294,7 +1294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03dd50c535fe7131ad67ec34a236dfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _config: {fileID: 0}
+  _config: {fileID: 11400000, guid: 09bf861d1ee6f2dcbb43c6f93dcc8338, type: 2}
   _menuRoot: {fileID: 1092781696}
   _sectors:
   - {fileID: 726459914}
@@ -1648,6 +1648,7 @@ MonoBehaviour:
   _cameraAngle: 35
   _cameraDistance: 20
   _cameraYRotation: 45
+  _screenOffset: {x: 0, y: 3, z: 0}
   _useBounds: 0
   _boundsMin: {x: -50, y: -50}
   _boundsMax: {x: 50, y: 50}
@@ -2070,7 +2071,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a8b229fd0b4eb496ba798a930c30b9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data: {fileID: 0}
+  _data: {fileID: 11400000, guid: 0905a6cdd094184208428b0fde7704c8, type: 2}
   _saveId: resourcenode_resourcenode_tree0
   _interactionRange: 1.5
 --- !u!114 &157171545
@@ -2294,8 +2295,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e112fa97e639267df92cc6c09f714dc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyData: {fileID: 0}
-  _enemyPrefab: {fileID: 0}
+  _enemyData: {fileID: 11400000, guid: 541c887003cc6796f829e900987ebd14, type: 2}
+  _enemyPrefab: {fileID: 7391706707680543517, guid: 4200cc4ab14d2ce0f87909266d0f5155, type: 3}
   _maxEnemies: 2
   _spawnRadius: 12
   _carcassPrefab: {fileID: 0}
@@ -3924,7 +3925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a8b229fd0b4eb496ba798a930c30b9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data: {fileID: 0}
+  _data: {fileID: 11400000, guid: 3071d6941b90558a8913a2b7c1170e1f, type: 2}
   _saveId: resourcenode_resourcenode_stone1
   _interactionRange: 1.5
 --- !u!114 &323652437
@@ -4294,7 +4295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d4f3cb29d8d9186baae6b7b77813fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemData: {fileID: 0}
+  _itemData: {fileID: 11400000, guid: 20a8792e3fd4e4e989334ff064b9dbf5, type: 2}
   _amount: 1
   _saveId: pickup_meadow_5
   _interactionRange: 1.5
@@ -4970,7 +4971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d4f3cb29d8d9186baae6b7b77813fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemData: {fileID: 0}
+  _itemData: {fileID: 11400000, guid: 4f349567fedf6a4db94c1b71d531dd6a, type: 2}
   _amount: 1
   _saveId: pickup_meadow_7
   _interactionRange: 1.5
@@ -6589,7 +6590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d4f3cb29d8d9186baae6b7b77813fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemData: {fileID: 0}
+  _itemData: {fileID: 11400000, guid: 25021ff5d0afbf068a02056a3782f7f5, type: 2}
   _amount: 1
   _saveId: pickup_meadow_2
   _interactionRange: 1.5
@@ -7001,7 +7002,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d4f3cb29d8d9186baae6b7b77813fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemData: {fileID: 0}
+  _itemData: {fileID: 11400000, guid: ac7a4ed2d33d344ad84059368a5f1c55, type: 2}
   _amount: 1
   _saveId: pickup_meadow_4
   _interactionRange: 1.5
@@ -7817,8 +7818,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e112fa97e639267df92cc6c09f714dc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyData: {fileID: 0}
-  _enemyPrefab: {fileID: 0}
+  _enemyData: {fileID: 11400000, guid: 541c887003cc6796f829e900987ebd14, type: 2}
+  _enemyPrefab: {fileID: 7391706707680543517, guid: 4200cc4ab14d2ce0f87909266d0f5155, type: 3}
   _maxEnemies: 1
   _spawnRadius: 6
   _carcassPrefab: {fileID: 0}
@@ -8235,7 +8236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d4f3cb29d8d9186baae6b7b77813fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemData: {fileID: 0}
+  _itemData: {fileID: 11400000, guid: d0dc21f03fb2818e58911908ed2a74f4, type: 2}
   _amount: 1
   _saveId: pickup_meadow_3
   _interactionRange: 1.5
@@ -10317,7 +10318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a8b229fd0b4eb496ba798a930c30b9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data: {fileID: 0}
+  _data: {fileID: 11400000, guid: 3071d6941b90558a8913a2b7c1170e1f, type: 2}
   _saveId: resourcenode_resourcenode_ore
   _interactionRange: 1.5
 --- !u!114 &901825018
@@ -11528,7 +11529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a8b229fd0b4eb496ba798a930c30b9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data: {fileID: 0}
+  _data: {fileID: 11400000, guid: 0905a6cdd094184208428b0fde7704c8, type: 2}
   _saveId: resourcenode_resourcenode_tree1
   _interactionRange: 1.5
 --- !u!114 &983735951
@@ -15144,7 +15145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d4f3cb29d8d9186baae6b7b77813fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemData: {fileID: 0}
+  _itemData: {fileID: 11400000, guid: 02b2f17d6cf6643f49481e4e47fe82a5, type: 2}
   _amount: 1
   _saveId: pickup_meadow_0
   _interactionRange: 1.5
@@ -16311,7 +16312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d4f3cb29d8d9186baae6b7b77813fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemData: {fileID: 0}
+  _itemData: {fileID: 11400000, guid: b07210dd8b8ddfc298a8f790eb7beaf2, type: 2}
   _amount: 1
   _saveId: pickup_meadow_1
   _interactionRange: 1.5
@@ -16544,8 +16545,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e112fa97e639267df92cc6c09f714dc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyData: {fileID: 0}
-  _enemyPrefab: {fileID: 0}
+  _enemyData: {fileID: 11400000, guid: 75915c57f0538b7a9bed9d7f100214b7, type: 2}
+  _enemyPrefab: {fileID: 4872109595940875459, guid: 1ff5af6b604c3c8c79da8bcbc855e82c, type: 3}
   _maxEnemies: 2
   _spawnRadius: 10
   _carcassPrefab: {fileID: 0}
@@ -18155,7 +18156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56cffe2d2ef2f7dfd896557416645481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _config: {fileID: 0}
+  _config: {fileID: 11400000, guid: fbddbb49601aff4bebfa2ec3a22ad3b2, type: 2}
 --- !u!114 &1682151675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18195,7 +18196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c9c094c944addfc8a849a0e0beba77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _config: {fileID: 0}
+  _config: {fileID: 11400000, guid: e46be82803bb79a9a9d590fe88543bad, type: 2}
   _weaponEquip: {fileID: 1682151676}
   _hitbox: {fileID: 863375205}
   _autoMove: {fileID: 1682151678}
@@ -18267,7 +18268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca2737c9fab794f53a43d553ea68a090, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _config: {fileID: 0}
+  _config: {fileID: 11400000, guid: e46be82803bb79a9a9d590fe88543bad, type: 2}
   _gestureDispatcher: {fileID: 581254634}
 --- !u!114 &1682151683
 MonoBehaviour:
@@ -18298,10 +18299,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movement: {fileID: 1682151696}
   _woundConfigs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: a4f8e452bc0545318af3eba478ffb064, type: 2}
+  - {fileID: 11400000, guid: b555a74311fbb94d49f3625266e83d8d, type: 2}
+  - {fileID: 11400000, guid: b78043a2235f49f7b90a02c811ac1a19, type: 2}
+  - {fileID: 11400000, guid: d391a41cd7b4af5d991115394e1c9529, type: 2}
 --- !u!114 &1682151685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18314,7 +18315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2914f8e64109834d7ba85876938e588c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _config: {fileID: 0}
+  _config: {fileID: 11400000, guid: e46be82803bb79a9a9d590fe88543bad, type: 2}
   _movement: {fileID: 1682151696}
 --- !u!114 &1682151686
 MonoBehaviour:
@@ -18340,12 +18341,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab9c2492e00a36437a2e59db1d92f1cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _config: {fileID: 0}
+  _config: {fileID: 11400000, guid: e46be82803bb79a9a9d590fe88543bad, type: 2}
   _woundConfigs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: a4f8e452bc0545318af3eba478ffb064, type: 2}
+  - {fileID: 11400000, guid: b555a74311fbb94d49f3625266e83d8d, type: 2}
+  - {fileID: 11400000, guid: b78043a2235f49f7b90a02c811ac1a19, type: 2}
+  - {fileID: 11400000, guid: d391a41cd7b4af5d991115394e1c9529, type: 2}
 --- !u!114 &1682151688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21476,7 +21477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a8b229fd0b4eb496ba798a930c30b9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data: {fileID: 0}
+  _data: {fileID: 11400000, guid: 3071d6941b90558a8913a2b7c1170e1f, type: 2}
   _saveId: resourcenode_resourcenode_stone0
   _interactionRange: 1.5
 --- !u!114 &1983385104

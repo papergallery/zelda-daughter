@@ -18,6 +18,9 @@ namespace ZeldaDaughter.World
         [SerializeField] private float _cameraDistance = 20f;
         [SerializeField] private float _cameraYRotation = 45f;
 
+        [Header("Screen Framing")]
+        [SerializeField] private Vector3 _screenOffset = new Vector3(0f, 3f, 0f);
+
         [Header("Bounds (optional)")]
         [SerializeField] private bool _useBounds;
         [SerializeField] private Vector2 _boundsMin = new(-50f, -50f);
@@ -42,7 +45,7 @@ namespace ZeldaDaughter.World
         {
             if (_target == null) return;
 
-            var targetPosition = _target.position + _offset;
+            var targetPosition = _target.position + _offset + _screenOffset;
 
             if (_useBounds)
                 targetPosition = ClampToBounds(targetPosition);
@@ -53,6 +56,12 @@ namespace ZeldaDaughter.World
         public void SetTarget(Transform target)
         {
             _target = target;
+        }
+
+        /// <summary>Sets world-space offset applied on top of the isometric offset to shift the player toward the bottom of the screen.</summary>
+        public void SetScreenOffset(Vector3 offset)
+        {
+            _screenOffset = offset;
         }
 
         private void CalculateOffset()

@@ -66,6 +66,7 @@ namespace ZeldaDaughter.Editor
                 cameraGO.AddComponent<UniversalAdditionalCameraData>();
             var isoCam = cameraGO.AddComponent<World.IsometricCamera>();
             isoCam.SetTarget(player.transform);
+            isoCam.SetScreenOffset(new Vector3(0f, 3f, 0f));
 
             // EventSystem (обязательно для GestureDispatcher)
             var eventSystemGO = new GameObject("EventSystem");
@@ -485,6 +486,7 @@ namespace ZeldaDaughter.Editor
                 cameraGO.AddComponent<UniversalAdditionalCameraData>();
             var isoCam = cameraGO.AddComponent<World.IsometricCamera>();
             isoCam.SetTarget(player.transform);
+            isoCam.SetScreenOffset(new Vector3(0f, 3f, 0f));
 
             // GameBootstrap
             var bootstrapGO = new GameObject("GameBootstrap");
@@ -1698,6 +1700,8 @@ namespace ZeldaDaughter.Editor
                 cameraGO.AddComponent<UniversalAdditionalCameraData>();
             var isoCam = cameraGO.AddComponent<ZeldaDaughter.World.IsometricCamera>();
             isoCam.SetTarget(player.transform);
+            // Смещаем камеру вверх по мировому Y, чтобы персонаж был в нижней трети экрана
+            isoCam.SetScreenOffset(new Vector3(0f, 3f, 0f));
         }
 
         // 4. SetupDemoCoreSystems — EventSystem, GestureDispatcher, DayNightCycle, WeatherSystem, SaveManager
