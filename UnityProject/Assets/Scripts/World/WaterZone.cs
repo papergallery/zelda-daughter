@@ -21,11 +21,15 @@ namespace ZeldaDaughter.World
         private CharacterController _trackedController;
         private Vector3 _lastSafePosition;
 
+        private BoxCollider _box;
+        private bool _playerInside;
+
         private void Awake()
         {
+            _box = GetComponent<BoxCollider>();
             // Верхняя грань коллайдера = поверхность воды
-            if (TryGetComponent<BoxCollider>(out var box))
-                _waterSurfaceY = transform.TransformPoint(box.center + Vector3.up * box.size.y * 0.5f).y;
+            if (_box != null)
+                _waterSurfaceY = transform.TransformPoint(_box.center + Vector3.up * _box.size.y * 0.5f).y;
             else
                 _waterSurfaceY = transform.position.y;
         }
@@ -33,52 +37,88 @@ namespace ZeldaDaughter.World
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player")) return;
-
-            if (other.TryGetComponent<CharacterMovement>(out var movement))
-            {
-                movement.SetInWater(true);
-                _trackedPlayer = movement;
-                other.TryGetComponent(out _trackedController);
-                _lastSafePosition = other.transform.position;
-            }
+            EnterWater(other.gameObject);
         }
 
         private void OnTriggerStay(Collider other)
         {
             if (_trackedPlayer == null || !other.CompareTag("Player")) return;
+            CheckDepth(other.transform);
+        }
 
-            float playerFeetY = other.transform.position.y;
+        private void OnTriggerExit(Collider other)
+        {
+            if (!other.CompareTag("Player")) return;
+            ExitWater(other.gameObject);
+        }
+
+        // Fallback for CharacterController which doesn't reliably trigger OnTriggerEnter
+        private void Update()
+        {
+            if (_box == null) return;
+            var player = GameObject.FindWithTag("Player");
+            if (player == null) return;
+
+            bool inside = _box.bounds.Contains(player.transform.position);
+            if (inside && !_playerInside)
+            {
+                _playerInside = true;
+                EnterWater(player);
+            }
+            else if (!inside && _playerInside)
+            {
+                _playerInside = false;
+                ExitWater(player);
+            }
+            else if (inside && _trackedPlayer != null)
+            {
+                CheckDepth(player.transform);
+            }
+        }
+
+        private void EnterWater(GameObject playerGo)
+        {
+            if (playerGo.TryGetComponent<CharacterMovement>(out var movement))
+            {
+                movement.SetInWater(true);
+                _trackedPlayer = movement;
+                playerGo.TryGetComponent(out _trackedController);
+                _lastSafePosition = playerGo.transform.position;
+                Debugging.ZDLog.Log("Move", "WaterZone entered");
+            }
+        }
+
+        private void ExitWater(GameObject playerGo)
+        {
+            if (playerGo.TryGetComponent<CharacterMovement>(out var movement))
+            {
+                movement.SetInWater(false);
+                _trackedPlayer = null;
+                _trackedController = null;
+                Debugging.ZDLog.Log("Move", "WaterZone exited");
+            }
+        }
+
+        private void CheckDepth(Transform playerTransform)
+        {
+            float playerFeetY = playerTransform.position.y;
             float depth = _waterSurfaceY - playerFeetY;
 
             if (depth <= _maxWadeDepth)
             {
-                _lastSafePosition = other.transform.position;
+                _lastSafePosition = playerTransform.position;
                 return;
             }
 
             // Глубина превышена — выталкиваем к последней безопасной позиции
             if (_trackedController != null)
             {
-                Vector3 pushDir = (_lastSafePosition - other.transform.position);
+                Vector3 pushDir = (_lastSafePosition - playerTransform.position);
                 pushDir.y = 0f;
-
                 if (pushDir.sqrMagnitude < 0.01f)
-                    pushDir = -other.transform.forward; // fallback: назад
-
+                    pushDir = -playerTransform.forward;
                 pushDir = pushDir.normalized;
                 _trackedController.Move(pushDir * _pushBackForce * Time.deltaTime);
-            }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (!other.CompareTag("Player")) return;
-
-            if (other.TryGetComponent<CharacterMovement>(out var movement))
-            {
-                movement.SetInWater(false);
-                _trackedPlayer = null;
-                _trackedController = null;
             }
         }
 
