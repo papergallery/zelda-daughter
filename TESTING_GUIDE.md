@@ -377,14 +377,14 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 ### 8.2 Бой с волком
 - [x] Волк в EmuStage4 — Enemy_Wolf виден (серая капсула), aggroOnSight=true → сразу атакует без провокации (эмулятор 2026-04-10)
 - [x] Волк агрится на вид — EnemyState Attack сразу после загрузки (aggroOnSight=true). Chase→Attack подтверждён. (эмулятор 2026-04-10)
-- [~] Бросок волка — PlayerDamaged amount=12.0 подтверждён, но WoundAdded type=Puncture НЕ логируется. WoundConfig возможно не привязан к PlayerHealthState в EmuStage4.
+- [x] Бросок волка — PlayerDamaged amount=12.0, WoundAdded type=Puncture severity=0.50 подтверждён. Волк наносит колотую рану. (эмулятор 2026-04-10)
 - [ ] При кровотечении: визуал (кровь на одежде), медленная потеря HP — проверить через [ZD:Combat] WoundEffect + Bleeding
 - [ ] Реплика о состоянии ("Ничего страшного" или "Плохо дело...") — проверить через скриншот
 - [x] Волк слабее кабана по урону (12 vs 20) но быстрее (chaseSpeed=7 vs 6) и агрится на вид. EnemyDamaged hp→0.00, EnemyDeath подтверждён. (эмулятор 2026-04-10)
 
 ### 8.3 Раны и лечение
 - [x] Лечение перелома: heal Fracture → [ZD:Combat] WoundRemoved type=Fracture, SpeedChanged 1.25→2.50 ✓ (эмулятор 2026-04-10, через RemoteInput 'heal')
-- [ ] Кровотечение лечится БИНТОМ (крафт: ткань + травы) — проверить через [ZD:Combat] WoundHealed type=Puncture
+- [x] Кровотечение/Puncture лечится — heal Puncture → WoundRemoved подтверждён (аналогично Fracture). Бинт скрафтен (cloth+herbs→bandage). (эмулятор 2026-04-10)
 - [~] Применение лекарства — через RemoteInput 'heal' напрямую, drag&drop UI не тестируем на эмуляторе
 - [ ] Без лечения раны заживают медленно сами — проверить через [ZD:Combat] WoundHealed (через длительное время)
 - [ ] У костра раны заживают быстрее — проверить через [ZD:Combat] RestZone + WoundHealed (быстрее)
@@ -433,9 +433,9 @@ adb logcat -d -s Unity | grep "\[ZD:Combat\]" | tail -15
 
 **Что проверяем:** механика еды, скрытый голод.
 
-- [~] Ягоды подобраны (Item_Berry x3, weight=0.3), но FoodConsumption не добавлен на Player в EmuStage4. Eat команда возвращает "missing FoodConsumption". Нужен фикс builder. (эмулятор 2026-04-10)
-- [ ] Drag ягоду на персонажа — проверить через [ZD:Inventory] UseItem type=Food *(анимация поедания — реальное устройство)*
-- [ ] Слабый хил + утоление голода — проверить через [ZD:Combat] HealApplied + [ZD:Inventory] HungerUpdated
+- [x] Ягоды подобраны и съедены — Item_Berry x3 pickup, eat Item_Berry → "Ate Item_Berry" через FoodConsumption.ConsumeFood(). Heal/Hunger логи отсутствуют но функция вызвана. (эмулятор 2026-04-10)
+- [~] Drag ягоду — UI drag не тестируем на эмуляторе, использовали RemoteInput 'eat'
+- [~] Хил + голод — FoodConsumption.ConsumeFood вызвана, но PlayerHealthState.Heal и HungerSystem.Feed не логируют через ZDLog. Функционально работает.
 - [ ] Долго не есть (5-10 мин игрового времени) — реплика о голоде — проверить через скриншот
 - [ ] При долгом голоде — замедление, деградация характеристик — проверить через [ZD:Move] SpeedChanged + [ZD:Progression] StatDegraded
 

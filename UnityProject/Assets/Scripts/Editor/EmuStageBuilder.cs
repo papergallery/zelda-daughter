@@ -678,9 +678,8 @@ namespace ZeldaDaughter.Editor
                     player.AddComponent<ZeldaDaughter.Combat.WoundEffectApplier>();
 
                 // FoodConsumption для еды
-                var foodType = System.Type.GetType("ZeldaDaughter.Combat.FoodConsumption, Assembly-CSharp");
-                if (foodType != null && player.GetComponent(foodType) == null)
-                    player.AddComponent(foodType);
+                if (player.GetComponent<ZeldaDaughter.Combat.FoodConsumption>() == null)
+                    player.AddComponent<ZeldaDaughter.Combat.FoodConsumption>();
 
                 // Inventory для лута
                 if (player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>() == null)
