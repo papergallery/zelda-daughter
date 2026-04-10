@@ -748,11 +748,11 @@ namespace ZeldaDaughter.Editor
                 if (footstep != null)
                 {
                     var so = new SerializedObject(footstep);
-                    AssignClipArray(so, "_grassClips", "Assets/Audio/SFX/Footsteps", "grass");
-                    AssignClipArray(so, "_stoneClips", "Assets/Audio/SFX/Footsteps", "stone");
-                    AssignClipArray(so, "_dirtClips", "Assets/Audio/SFX/Footsteps", "footstep0");
-                    AssignClipArray(so, "_woodClips", "Assets/Audio/SFX/Footsteps", "wood");
-                    AssignClipArray(so, "_waterClips", "Assets/Audio/SFX/Footsteps", "wet");
+                    AssignClipArray(so, "_grassClips", "Assets/Audio/SFX/Footsteps", "footstep_grass");
+                    AssignClipArray(so, "_stoneClips", "Assets/Audio/SFX/Footsteps", "sfx100v2_footstep_0");
+                    AssignClipArray(so, "_dirtClips", "Assets/Audio/SFX/Footsteps", "footstep_snow");
+                    AssignClipArray(so, "_woodClips", "Assets/Audio/SFX/Footsteps", "footstep_wood");
+                    AssignClipArray(so, "_waterClips", "Assets/Audio/SFX/Footsteps", "footstep_wet");
                     so.ApplyModifiedPropertiesWithoutUndo();
                     Debug.Log("[DemoSceneWirer] FootstepSystem — аудио назначено.");
                 }
