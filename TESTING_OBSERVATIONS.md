@@ -96,6 +96,9 @@ adb shell "echo 'hold 540 1170 700' > /storage/emulated/0/Android/data/com.paper
 3. **TapHint не исчезает после тапа** — OnFirstTap подписывается после ShowTapHint, но тап через RemoteInputReceiver возможно не вызывает GestureDispatcher.OnTap корректно для OnboardingManager.
 4. **LongPress не распознаётся** — `hold` команда RemoteInputReceiver вызывает OnPointerDown+OnPointerHeld, но GestureDispatcher проверяет `IsPointerOnCharacter` (raycast на Player). На эмуляторе raycast может не попадать в Player capsule.
 
+5. **Враги не атакуются через тап** — TapInteractionManager проверяет `GetComponent<IInteractable>()` → null для врагов (EnemyHealth/EnemyFSM не реализуют IInteractable). Тап попадает в Enemy_Boar (`HandleTap: Hit Enemy_Boar`) но обработка прерывается. Нужно: либо враг реализует IInteractable, либо TapInteractionManager проверяет tag="Enemy" до IInteractable.
+6. **UI Canvas overlay крашит SwiftShader** — LongPress показывает RadialMenu/LongPressIndicator Canvas → SIGSEGV. Все тесты с UI overlay невозможны на эмуляторе.
+
 ### Координаты экрана
 
 Эмулятор zelda_test (Pixel 4) имеет физическое разрешение **480x800** (не 1080x2340!).

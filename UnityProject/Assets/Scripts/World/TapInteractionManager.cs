@@ -48,20 +48,21 @@ namespace ZeldaDaughter.World
 
             ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"HandleTap: Hit {hit.collider.gameObject.name} at ({screenPos.x:F0},{screenPos.y:F0})");
 
+            // Враг (tag=Enemy) — передаём управление CombatController напрямую
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"Tap target={hit.collider.gameObject.name} (Enemy)");
+                if (_combatController != null)
+                    _combatController.AttackTarget(hit.collider.gameObject);
+                return;
+            }
+
             var interactable = hit.collider.GetComponent<IInteractable>()
                                ?? hit.collider.GetComponentInParent<IInteractable>();
 
             if (interactable == null || !interactable.CanInteract())
             {
                 ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"HandleTap: {hit.collider.gameObject.name} is not interactable");
-                return;
-            }
-
-            // Враг — передаём управление CombatController, он сам подходит и бьёт
-            if (interactable.Type == InteractionType.Enemy)
-            {
-                if (_combatController != null)
-                    _combatController.AttackTarget(hit.collider.gameObject);
                 return;
             }
 

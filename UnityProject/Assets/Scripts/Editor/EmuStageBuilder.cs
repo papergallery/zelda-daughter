@@ -833,8 +833,8 @@ namespace ZeldaDaughter.Editor
             // === Enemy: Boar (красная капсула рядом с игроком) ===
             var boarGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             boarGo.name = "Enemy_Boar";
-            boarGo.transform.position = new Vector3(5, 0.05f, 3);
-            boarGo.transform.localScale = Vector3.one * 0.8f;
+            boarGo.transform.position = new Vector3(2, 0.05f, 0); // Right next to player
+            boarGo.transform.localScale = Vector3.one * 1.5f; // Big for easy tap
             boarGo.GetComponent<Renderer>().sharedMaterial = Mat("Enemy", new Color(0.8f, 0.15f, 0.1f));
 
             // Тег Enemy если существует
@@ -845,9 +845,9 @@ namespace ZeldaDaughter.Editor
             var boarCollider = boarGo.GetComponent<CapsuleCollider>();
             if (boarCollider != null)
             {
-                boarCollider.radius = 0.35f;
-                boarCollider.height = 1.6f;
-                boarCollider.center = new Vector3(0, 0.8f, 0);
+                boarCollider.radius = 0.6f;
+                boarCollider.height = 2f;
+                boarCollider.center = new Vector3(0, 1f, 0);
             }
 
             // Грузим EnemyData_Boar
