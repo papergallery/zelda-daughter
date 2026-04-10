@@ -1176,6 +1176,9 @@ namespace ZeldaDaughter.Editor
             if (yRotProp != null) yRotProp.floatValue = 0f;
             var sizeProp = so.FindProperty("_orthographicSize");
             if (sizeProp != null) sizeProp.floatValue = 8f;
+            // Сдвигаем камеру вверх, чтобы персонаж был в нижней трети экрана
+            var screenOffsetProp = so.FindProperty("_screenOffset");
+            if (screenOffsetProp != null) screenOffsetProp.vector3Value = new Vector3(0f, 3f, 0f);
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
