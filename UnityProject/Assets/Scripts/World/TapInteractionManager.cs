@@ -124,13 +124,18 @@ namespace ZeldaDaughter.World
 
             ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"HandleTap: Hit {hit.collider.gameObject.name} at ({screenPos.x:F0},{screenPos.y:F0})");
 
-            // Враг (tag=Enemy) — передаём управление CombatController напрямую
+            // Враг (tag=Enemy) — атакуем только если жив; мёртвый → IInteractable (CarcassObject)
             if (hit.collider.CompareTag("Enemy"))
             {
-                ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"Tap target={hit.collider.gameObject.name} (Enemy)");
-                if (_combatController != null)
-                    _combatController.AttackTarget(hit.collider.gameObject);
-                return;
+                var enemyHealth = hit.collider.GetComponent<ZeldaDaughter.Combat.EnemyHealth>();
+                if (enemyHealth != null && enemyHealth.IsAlive)
+                {
+                    ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"Tap target={hit.collider.gameObject.name} (Enemy)");
+                    if (_combatController != null)
+                        _combatController.AttackTarget(hit.collider.gameObject);
+                    return;
+                }
+                // Dead enemy falls through to IInteractable check (CarcassObject)
             }
 
             var interactable = hit.collider.GetComponent<IInteractable>()

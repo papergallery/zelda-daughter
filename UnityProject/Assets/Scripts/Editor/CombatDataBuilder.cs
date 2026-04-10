@@ -17,6 +17,7 @@ namespace ZeldaDaughter.Editor
             BuildWoundConfigs();
             BuildWeaponData();
             BuildEnemyData();
+            BuildLootTables();
             LinkWeaponDataToItems();
             BuildMedicineItems();
 
@@ -182,6 +183,69 @@ namespace ZeldaDaughter.Editor
                 so.FindProperty("_aggroOnDamage").boolValue = true;
                 so.FindProperty("_windupTime").floatValue = 0.3f;
                 so.FindProperty("_attackCooldown").floatValue = 1.5f;
+                so.ApplyModifiedProperties();
+            }
+        }
+
+        private static void BuildLootTables()
+        {
+            EnsureFolder("Assets/Data/Combat/Loot");
+
+            // Boar LootTable
+            var boarLoot = CreateIfNotExists<LootTable>("Assets/Data/Combat/Loot/LootTable_Boar.asset");
+            if (boarLoot != null)
+            {
+                var fatItem = AssetDatabase.LoadAssetAtPath<ItemData>("Assets/Content/Items/Item_Fat.asset");
+                var stickItem = AssetDatabase.LoadAssetAtPath<ItemData>("Assets/Content/Items/Item_Stick.asset");
+
+                var so = new SerializedObject(boarLoot);
+                // Minimal loot (without knife)
+                var minLoot = so.FindProperty("_minimalLoot");
+                if (minLoot != null && stickItem != null)
+                {
+                    minLoot.arraySize = 1;
+                    var entry = minLoot.GetArrayElementAtIndex(0);
+                    entry.FindPropertyRelative("Item").objectReferenceValue = stickItem;
+                    entry.FindPropertyRelative("MinAmount").intValue = 1;
+                    entry.FindPropertyRelative("MaxAmount").intValue = 2;
+                    entry.FindPropertyRelative("Chance").floatValue = 1f;
+                }
+                // Full loot (with knife)
+                var fullLoot = so.FindProperty("_fullLoot");
+                if (fullLoot != null)
+                {
+                    int count = 0;
+                    if (fatItem != null) count++;
+                    if (stickItem != null) count++;
+                    fullLoot.arraySize = count;
+                    int idx = 0;
+                    if (fatItem != null)
+                    {
+                        var e = fullLoot.GetArrayElementAtIndex(idx++);
+                        e.FindPropertyRelative("Item").objectReferenceValue = fatItem;
+                        e.FindPropertyRelative("MinAmount").intValue = 1;
+                        e.FindPropertyRelative("MaxAmount").intValue = 3;
+                        e.FindPropertyRelative("Chance").floatValue = 1f;
+                    }
+                    if (stickItem != null)
+                    {
+                        var e = fullLoot.GetArrayElementAtIndex(idx++);
+                        e.FindPropertyRelative("Item").objectReferenceValue = stickItem;
+                        e.FindPropertyRelative("MinAmount").intValue = 1;
+                        e.FindPropertyRelative("MaxAmount").intValue = 1;
+                        e.FindPropertyRelative("Chance").floatValue = 0.5f;
+                    }
+                }
+                so.ApplyModifiedProperties();
+            }
+
+            // Link LootTable to EnemyData_Boar
+            var boarData = AssetDatabase.LoadAssetAtPath<EnemyData>("Assets/Data/Combat/EnemyData_Boar.asset");
+            if (boarData != null && boarLoot != null)
+            {
+                var so = new SerializedObject(boarData);
+                var lootProp = so.FindProperty("_lootTable");
+                if (lootProp != null) lootProp.objectReferenceValue = boarLoot;
                 so.ApplyModifiedProperties();
             }
         }

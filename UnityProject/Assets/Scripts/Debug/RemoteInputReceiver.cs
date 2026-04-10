@@ -116,6 +116,22 @@ namespace ZeldaDaughter.Debugging
                     TapNearestEnemy();
                     break;
 
+                case "craft" when parts.Length >= 3:
+                    ExecuteCraft(parts[1], parts[2]);
+                    break;
+
+                case "equip" when parts.Length >= 2:
+                    ExecuteEquip(parts[1]);
+                    break;
+
+                case "eat" when parts.Length >= 2:
+                    ExecuteEat(parts[1]);
+                    break;
+
+                case "inventory":
+                    LogInventory();
+                    break;
+
                 default:
                     Debug.LogWarning($"[ZD:RemoteInput] Unknown command: {parts[0]}");
                     break;
@@ -287,6 +303,107 @@ namespace ZeldaDaughter.Debugging
             var upMethod = dispatcher.GetType().GetMethod("OnPointerUp",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             upMethod?.Invoke(dispatcher, new object[] { pos });
+        }
+
+        private void ExecuteCraft(string itemIdA, string itemIdB)
+        {
+            var player = GameObject.FindWithTag("Player");
+            if (player == null) { Debug.LogWarning("[ZD:RemoteInput] Craft: Player not found"); return; }
+            var inv = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            if (inv == null) { Debug.LogWarning("[ZD:RemoteInput] Craft: No PlayerInventory"); return; }
+
+            // Find slots by item ID
+            int slotA = -1, slotB = -1;
+            var items = inv.Items;
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (items[i].Item == null) continue;
+                if (slotA < 0 && items[i].Item.Id == itemIdA) { slotA = i; continue; }
+                if (slotB < 0 && items[i].Item.Id == itemIdB) { slotB = i; continue; }
+            }
+
+            if (slotA < 0 || slotB < 0)
+            {
+                Debug.Log($"[ZD:RemoteInput] Craft failed: missing items. {itemIdA}={slotA} {itemIdB}={slotB}");
+                return;
+            }
+
+            // Find CraftRecipeDatabase from any loaded asset
+            var dbs = Resources.FindObjectsOfTypeAll<ZeldaDaughter.Inventory.CraftRecipeDatabase>();
+            ZeldaDaughter.Inventory.CraftRecipeDatabase db = dbs.Length > 0 ? dbs[0] : null;
+
+            if (db == null)
+            {
+                Debug.LogWarning("[ZD:RemoteInput] Craft: No CraftRecipeDatabase found");
+                return;
+            }
+
+            bool success = ZeldaDaughter.Inventory.CraftingSystem.TryCraft(slotA, slotB, inv, db);
+            Debug.Log($"[ZD:RemoteInput] Craft {itemIdA}+{itemIdB} = {(success ? "SUCCESS" : "FAILED")}");
+        }
+
+        private void ExecuteEquip(string itemId)
+        {
+            var player = GameObject.FindWithTag("Player");
+            if (player == null) return;
+            var inv = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            var equip = player.GetComponent<ZeldaDaughter.Combat.WeaponEquipSystem>();
+            if (inv == null || equip == null)
+            {
+                Debug.LogWarning("[ZD:RemoteInput] Equip: missing PlayerInventory or WeaponEquipSystem");
+                return;
+            }
+
+            foreach (var stack in inv.Items)
+            {
+                if (stack.Item != null && stack.Item.Id == itemId)
+                {
+                    equip.EquipFromItem(stack.Item);
+                    Debug.Log($"[ZD:RemoteInput] Equipped {stack.Item.Id}");
+                    return;
+                }
+            }
+            Debug.Log($"[ZD:RemoteInput] Equip: item '{itemId}' not found in inventory");
+        }
+
+        private void ExecuteEat(string itemId)
+        {
+            var player = GameObject.FindWithTag("Player");
+            if (player == null) return;
+            var inv = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            var food = player.GetComponent<ZeldaDaughter.Combat.FoodConsumption>();
+            if (inv == null || food == null)
+            {
+                Debug.LogWarning("[ZD:RemoteInput] Eat: missing PlayerInventory or FoodConsumption");
+                return;
+            }
+
+            foreach (var stack in inv.Items)
+            {
+                if (stack.Item != null && stack.Item.Id == itemId)
+                {
+                    food.ConsumeFood(stack.Item);
+                    inv.RemoveItem(stack.Item, 1);
+                    Debug.Log($"[ZD:RemoteInput] Ate {stack.Item.Id}");
+                    return;
+                }
+            }
+            Debug.Log($"[ZD:RemoteInput] Eat: item '{itemId}' not found in inventory");
+        }
+
+        private void LogInventory()
+        {
+            var player = GameObject.FindWithTag("Player");
+            if (player == null) return;
+            var inv = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            if (inv == null) return;
+            Debug.Log($"[ZD:RemoteInput] Inventory: {inv.Items.Count} slots");
+            for (int i = 0; i < inv.Items.Count; i++)
+            {
+                var s = inv.Items[i];
+                if (s.Item != null)
+                    Debug.Log($"[ZD:RemoteInput] Slot[{i}] = {s.Item.Id} x{s.Amount} (weapon={s.Item.IsWeapon})");
+            }
         }
     }
 }

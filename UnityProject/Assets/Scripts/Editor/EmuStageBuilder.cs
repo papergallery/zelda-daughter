@@ -677,6 +677,11 @@ namespace ZeldaDaughter.Editor
                 if (player.GetComponent<ZeldaDaughter.Combat.WoundEffectApplier>() == null)
                     player.AddComponent<ZeldaDaughter.Combat.WoundEffectApplier>();
 
+                // FoodConsumption для еды
+                var foodType = System.Type.GetType("ZeldaDaughter.Combat.FoodConsumption, Assembly-CSharp");
+                if (foodType != null && player.GetComponent(foodType) == null)
+                    player.AddComponent(foodType);
+
                 // Inventory для лута
                 if (player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>() == null)
                     player.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
@@ -880,6 +885,9 @@ namespace ZeldaDaughter.Editor
             var attackSignalType = System.Type.GetType("ZeldaDaughter.Combat.EnemyAttackSignal, Assembly-CSharp");
             if (attackSignalType != null)
                 boarGo.AddComponent(attackSignalType);
+
+            // DeathToCarcass — converts dead enemy into lootable CarcassObject
+            boarGo.AddComponent<ZeldaDaughter.Combat.DeathToCarcass>();
 
             // Сохраняем сцену
             const string path = "Assets/Scenes/EmuStage4.unity";

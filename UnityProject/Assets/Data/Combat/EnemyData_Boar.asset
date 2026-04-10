@@ -27,5 +27,5 @@ MonoBehaviour:
   _wanderRadius: 10
   _aggroOnSight: 0
   _aggroOnDamage: 1
-  _lootTable: {fileID: 0}
+  _lootTable: {fileID: 11400000, guid: 997b7202696914289bd1d4feef939e77, type: 2}
   _respawnTime: 60
