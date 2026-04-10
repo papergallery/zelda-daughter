@@ -37926,12 +37926,14 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0c206fef4293d6fe9bede74d90a89f6c, type: 3}
   - {fileID: 8300000, guid: 4107758832cd57e02824edc225c2d762, type: 3}
   - {fileID: 8300000, guid: 95f29951d0d7da5b8a7fdbb61795d64a, type: 3}
-  _stoneClips: []
+  _stoneClips:
+  - {fileID: 8300000, guid: 630a5e43624487db08b6cbe5ea27f6b4, type: 3}
+  - {fileID: 0}
   _dirtClips:
-  - {fileID: 8300000, guid: 770bf55dc93d57f8498538c8edcd24de, type: 3}
-  - {fileID: 8300000, guid: 90516b5c017de74e3b47fa27452f0f98, type: 3}
-  - {fileID: 8300000, guid: e30ab9cfaee2f4eecb7de47e3dbf229e, type: 3}
-  - {fileID: 8300000, guid: 99c2998ce13763f53b8b05ec98e32503, type: 3}
+  - {fileID: 8300000, guid: 0a895d60cb57048e5ae9ee7bb92ba356, type: 3}
+  - {fileID: 8300000, guid: 406308fcdd756842e98f857e48026475, type: 3}
+  - {fileID: 8300000, guid: e7c08b99b28969f8f8d1a2fae2a4e09c, type: 3}
+  - {fileID: 8300000, guid: d847c809771f0eba1a14fd45eae2b3fe, type: 3}
   _woodClips:
   - {fileID: 8300000, guid: 7b560f1924b55b740939d7e0a7faabee, type: 3}
   - {fileID: 8300000, guid: 7c2b57cf04987f11db974f3f689de08c, type: 3}
