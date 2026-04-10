@@ -124,6 +124,11 @@ namespace ZeldaDaughter.Combat
             else
             {
                 var info = new DamageInfo(finalDamage, woundType, woundSeverity, gameObject);
+                // Direct damage when target is known (works without attack animations on emulator)
+                if (_currentTarget != null && _currentTarget.TryGetComponent<IDamageable>(out var damageable))
+                {
+                    damageable.TakeDamage(info);
+                }
                 if (_hitbox != null) _hitbox.Activate(info);
                 ApplyStun(weapon, isHit);
             }
