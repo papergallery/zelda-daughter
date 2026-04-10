@@ -30,13 +30,22 @@ namespace ZeldaDaughter.World
                 if (mb is IInteractable interactable)
                 {
                     Vector3 screenPos = cam.WorldToScreenPoint(mb.transform.position);
-                    // Convert to Android coords (1080x2340)
                     float ax = screenPos.x * 1080f / Screen.width;
                     float ay = (Screen.height - screenPos.y) * 2340f / Screen.height;
                     ZeldaDaughter.Debugging.ZDLog.Log("Interact",
                         $"Interactable {mb.gameObject.name} world=({mb.transform.position.x:F1},{mb.transform.position.y:F1},{mb.transform.position.z:F1}) " +
                         $"screen=({screenPos.x:F0},{screenPos.y:F0}) android=({ax:F0},{ay:F0})");
                 }
+            }
+            // Also log enemies (tag-based, not IInteractable)
+            foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+            {
+                Vector3 sp = cam.WorldToScreenPoint(enemy.transform.position);
+                float eax = sp.x * 1080f / Screen.width;
+                float eay = (Screen.height - sp.y) * 2340f / Screen.height;
+                ZeldaDaughter.Debugging.ZDLog.Log("Interact",
+                    $"Enemy {enemy.name} world=({enemy.transform.position.x:F1},{enemy.transform.position.y:F1},{enemy.transform.position.z:F1}) " +
+                    $"screen=({sp.x:F0},{sp.y:F0}) android=({eax:F0},{eay:F0})");
             }
         }
 
