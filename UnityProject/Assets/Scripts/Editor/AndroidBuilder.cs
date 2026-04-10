@@ -74,7 +74,7 @@ namespace ZeldaDaughter.Editor
             var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android);
             if (!defines.Contains("ZD_DEBUG"))
             {
-                defines = string.IsNullOrEmpty(defines) ? "ZD_DEBUG" : defines + ";ZD_DEBUG";
+                defines = string.IsNullOrEmpty(defines) ? "ZD_DEBUG;ZD_EMULATOR" : defines + ";ZD_DEBUG;ZD_EMULATOR";
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, defines);
             }
 

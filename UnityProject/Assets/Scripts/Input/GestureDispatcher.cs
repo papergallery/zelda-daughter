@@ -136,19 +136,21 @@ namespace ZeldaDaughter.Input
                         _state = GestureState.Swiping;
                         EmitSwipe(screenPos);
                     }
-                    // Emulator fallback: если держим палец (активное касание),
-                    // свайпим в направлении от центра экрана к точке касания
+#if ZD_EMULATOR
+                    // Emulator-only: держим палец → свайп в направлении от центра экрана.
+                    // На реальном устройстве это мешает (тап двигает персонажа бесконечно).
                     else if (_touchStartTime > 0.1f && elapsed > 0.05f && elapsed < 5f && drift < 5f)
                     {
                         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
                         Vector2 dirFromCenter = (screenPos - screenCenter).normalized;
                         float distFromCenter = Vector2.Distance(screenPos, screenCenter);
-                        if (distFromCenter > 50f) // достаточно далеко от центра
+                        if (distFromCenter > 50f)
                         {
                             float intensity = Mathf.Clamp01(distFromCenter / (Screen.width * 0.3f));
                             OnMoveInput?.Invoke(dirFromCenter, intensity);
                         }
                     }
+#endif
                     break;
             }
         }
