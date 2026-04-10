@@ -108,18 +108,11 @@ namespace ZeldaDaughter.World
                 }
             }
 
-            // 3. Fallback to ground/nearest from original raycast
+            // 3. No interactable/enemy found — ignore tap on ground (don't move to tap point)
             if (!found)
             {
-                if (hits.Length > 0)
-                {
-                    hit = hits[0];
-                }
-                else
-                {
-                    ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"HandleTap: Raycast miss at ({screenPos.x:F0},{screenPos.y:F0})");
-                    return;
-                }
+                // Tap on ground = do nothing. Movement is swipe-only.
+                return;
             }
 
             ZeldaDaughter.Debugging.ZDLog.Log("Interact", $"HandleTap: Hit {hit.collider.gameObject.name} at ({screenPos.x:F0},{screenPos.y:F0})");
