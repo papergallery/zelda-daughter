@@ -372,7 +372,7 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 - [x] При переломе: SpeedChanged speed=2.50→1.25 (50% замедление от Fracture severity=0.60). WoundEffectApplier работает. (эмулятор 2026-04-10)
 - [x] Убить кабана — EnemyDamaged hp=0.83→0.75→0.67→0.58→...→0.00, EnemyState=Death, EnemyDeath enemy=EnemyData_Boar подтверждён (эмулятор 2026-04-10)
 - [x] Тап по туше без ножа — CarcassObject создан при смерти (DeathToCarcass), тап → Added item=Палка amount=1 из minimalLoot. Dead enemy fallthrough к IInteractable работает. (эмулятор 2026-04-10)
-- [ ] Тап по туше С ножом — не тестировано (нет ножа в инвентаре, нужен крафт)
+- [~] Тап по туше С ножом — CarcassObject проверяет butcherToolId="knife", но item_knife.Id="item_knife". ID не совпадает → minimalLoot вместо fullLoot. Баг в butcherToolId. (эмулятор 2026-04-10)
 
 ### 8.2 Бой с волком
 - [x] Волк в EmuStage4 — Enemy_Wolf виден (серая капсула), aggroOnSight=true → сразу атакует без провокации (эмулятор 2026-04-10)
@@ -386,7 +386,7 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 - [x] Лечение перелома: heal Fracture → [ZD:Combat] WoundRemoved type=Fracture, SpeedChanged 1.25→2.50 ✓ (эмулятор 2026-04-10, через RemoteInput 'heal')
 - [x] Кровотечение/Puncture лечится — heal Puncture → WoundRemoved подтверждён (аналогично Fracture). Бинт скрафтен (cloth+herbs→bandage). (эмулятор 2026-04-10)
 - [~] Применение лекарства — через RemoteInput 'heal' напрямую, drag&drop UI не тестируем на эмуляторе
-- [ ] Без лечения раны заживают медленно сами — проверить через [ZD:Combat] WoundHealed (через длительное время)
+- [ ] Без лечения раны заживают медленно сами — не тестировано (враги умирали раньше чем начиналось заживление)
 - [ ] У костра раны заживают быстрее — проверить через [ZD:Combat] RestZone + WoundHealed (быстрее)
 
 ### 8.4 Нокаут
@@ -973,7 +973,7 @@ adb logcat -d -s Unity | grep "\[ZD:Interact\]" | grep -i "respawn\|resource" | 
 - [x] FPS стабильный >= 30: FPS=56-59, min=56 (эмулятор 2026-04-10, EmuStage2)
 - [ ] Нет фризов при открытии инвентаря/карты/блокнота — нет UI в EmuStage2
 - [x] Нет фризов при начале боя — FPS=57-58 стабильный с Enemy_Boar в EmuStage4, без просадок во время AttackResult (эмулятор 2026-04-10)
-- [ ] Нет фризов при входе в город — нет города в EmuStage2
+- [~] Нет фризов при входе в город — нет города в сценах. FPS=57-58 стабильно с 2 врагами (кабан+волк) в EmuStage4. (эмулятор 2026-04-10)
 - [x] Память стабильна: 12-13MB Unity (dumpsys), стабильна в течение боя и pickup (эмулятор 2026-04-10)
 - [x] Нет артефактов рендеринга — визуально OK на скриншотах (примитивы), 28 рендереров без артефактов (эмулятор 2026-04-10)
 
