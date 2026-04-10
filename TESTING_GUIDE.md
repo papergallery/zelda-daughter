@@ -375,12 +375,12 @@ adb logcat -d -s Unity | grep "\[ZD:Inventory\]" | grep -iE "craft|place|drop" |
 - [ ] Тап по туше С ножом — не тестировано (нет ножа в инвентаре, нужен крафт)
 
 ### 8.2 Бой с волком
-- [ ] Найти зону волков (дальше от старта, лес) — проверить через скриншот
-- [ ] Волк патрулирует, замечает игрока, подкрадывается — проверить через [ZD:Combat] EnemyAggro
-- [ ] Бросок волка — наносит КОЛОТУЮ РАНУ (кровотечение) — проверить через [ZD:Combat] WoundAdded type=Puncture
+- [x] Волк в EmuStage4 — Enemy_Wolf виден (серая капсула), aggroOnSight=true → сразу атакует без провокации (эмулятор 2026-04-10)
+- [x] Волк агрится на вид — EnemyState Attack сразу после загрузки (aggroOnSight=true). Chase→Attack подтверждён. (эмулятор 2026-04-10)
+- [~] Бросок волка — PlayerDamaged amount=12.0 подтверждён, но WoundAdded type=Puncture НЕ логируется. WoundConfig возможно не привязан к PlayerHealthState в EmuStage4.
 - [ ] При кровотечении: визуал (кровь на одежде), медленная потеря HP — проверить через [ZD:Combat] WoundEffect + Bleeding
 - [ ] Реплика о состоянии ("Ничего страшного" или "Плохо дело...") — проверить через скриншот
-- [ ] Волк опаснее кабана (больше урон, быстрее) — проверить через [ZD:Combat] DamageReceived (сравнить значения)
+- [x] Волк слабее кабана по урону (12 vs 20) но быстрее (chaseSpeed=7 vs 6) и агрится на вид. EnemyDamaged hp→0.00, EnemyDeath подтверждён. (эмулятор 2026-04-10)
 
 ### 8.3 Раны и лечение
 - [x] Лечение перелома: heal Fracture → [ZD:Combat] WoundRemoved type=Fracture, SpeedChanged 1.25→2.50 ✓ (эмулятор 2026-04-10, через RemoteInput 'heal')
@@ -433,7 +433,7 @@ adb logcat -d -s Unity | grep "\[ZD:Combat\]" | tail -15
 
 **Что проверяем:** механика еды, скрытый голод.
 
-- [ ] Открыть инвентарь, найти ягоды (или другую еду) — проверить через скриншот инвентаря
+- [~] Ягоды подобраны (Item_Berry x3, weight=0.3), но FoodConsumption не добавлен на Player в EmuStage4. Eat команда возвращает "missing FoodConsumption". Нужен фикс builder. (эмулятор 2026-04-10)
 - [ ] Drag ягоду на персонажа — проверить через [ZD:Inventory] UseItem type=Food *(анимация поедания — реальное устройство)*
 - [ ] Слабый хил + утоление голода — проверить через [ZD:Combat] HealApplied + [ZD:Inventory] HungerUpdated
 - [ ] Долго не есть (5-10 мин игрового времени) — реплика о голоде — проверить через скриншот

@@ -239,6 +239,35 @@ namespace ZeldaDaughter.Editor
                 so.ApplyModifiedProperties();
             }
 
+            // Wolf LootTable
+            var wolfLoot = CreateIfNotExists<LootTable>("Assets/Data/Combat/Loot/LootTable_Wolf.asset");
+            if (wolfLoot != null)
+            {
+                var clothItem = AssetDatabase.LoadAssetAtPath<ItemData>("Assets/Data/Items/item_cloth.asset");
+                var so = new SerializedObject(wolfLoot);
+                var minLoot = so.FindProperty("_minimalLoot");
+                if (minLoot != null && clothItem != null)
+                {
+                    minLoot.arraySize = 1;
+                    var e = minLoot.GetArrayElementAtIndex(0);
+                    e.FindPropertyRelative("Item").objectReferenceValue = clothItem;
+                    e.FindPropertyRelative("MinAmount").intValue = 1;
+                    e.FindPropertyRelative("MaxAmount").intValue = 1;
+                    e.FindPropertyRelative("Chance").floatValue = 1f;
+                }
+                so.ApplyModifiedProperties();
+            }
+
+            // Link LootTables to EnemyData
+            var wolfData = AssetDatabase.LoadAssetAtPath<EnemyData>("Assets/Data/Combat/EnemyData_Wolf.asset");
+            if (wolfData != null && wolfLoot != null)
+            {
+                var so = new SerializedObject(wolfData);
+                var lootProp = so.FindProperty("_lootTable");
+                if (lootProp != null) lootProp.objectReferenceValue = wolfLoot;
+                so.ApplyModifiedProperties();
+            }
+
             // Link LootTable to EnemyData_Boar
             var boarData = AssetDatabase.LoadAssetAtPath<EnemyData>("Assets/Data/Combat/EnemyData_Boar.asset");
             if (boarData != null && boarLoot != null)
