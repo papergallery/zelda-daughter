@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using System.IO;
+using TMPro;
 
 namespace ZeldaDaughter.Editor
 {
@@ -19,6 +20,10 @@ namespace ZeldaDaughter.Editor
         private const string ResourceRockPath      = "Assets/Content/Resources/Resource_Rock.asset";
         private const string PrefabBoarPath        = "Assets/Prefabs/Enemies/Enemy_Boar.prefab";
         private const string PrefabWolfPath        = "Assets/Prefabs/Enemies/Enemy_Wolf.prefab";
+        private const string BoarAnimatorPath      = "Assets/Animations/Controllers/BoarAnimator.controller";
+        private const string WolfAnimatorPath      = "Assets/Animations/Controllers/WolfAnimator.controller";
+        private const string WolfFbxPath           = "Assets/Models/Animals/Animal Pack Vol.2 by @Quaternius/FBX/Wolf.fbx";
+        private const string PigFbxPath            = "Assets/Models/Animals/Farm Animals by @Quaternius/FBX/Pig.fbx";
 
         [MenuItem("ZeldaDaughter/Scene/Wire DemoScene References")]
         public static void WireAll()
@@ -46,6 +51,9 @@ namespace ZeldaDaughter.Editor
             WireEnemySpawnZones();
             WireResourceNodes();
             WirePickupables();
+            WireNPCs();
+            WireAudio();
+            EnsureDebugResetButton();
             WireRadialMenu();
 
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
@@ -209,7 +217,9 @@ namespace ZeldaDaughter.Editor
                 "Enemy_Boar",
                 new Vector3(1.5f, 1.5f, 1.5f),
                 new Color(0.8f, 0.15f, 0.1f),
-                EnemyDataBoarPath);
+                EnemyDataBoarPath,
+                PigFbxPath,
+                BoarAnimatorPath);
         }
 
         private static GameObject EnsureWolfPrefab()
@@ -219,7 +229,9 @@ namespace ZeldaDaughter.Editor
                 "Enemy_Wolf",
                 new Vector3(1.2f, 1.2f, 1.2f),
                 new Color(0.45f, 0.45f, 0.45f),
-                EnemyDataWolfPath);
+                EnemyDataWolfPath,
+                WolfFbxPath,
+                WolfAnimatorPath);
         }
 
         private static GameObject EnsureEnemyPrefab(
@@ -227,43 +239,89 @@ namespace ZeldaDaughter.Editor
             string goName,
             Vector3 scale,
             Color color,
-            string enemyDataPath)
+            string enemyDataPath,
+            string modelFbxPath,
+            string animatorControllerPath)
         {
             var existing = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
             if (existing != null)
             {
+                // Обновляем Animator на существующем prefab если не назначен
+                UpdateExistingEnemyPrefabAnimator(prefabPath, animatorControllerPath);
                 Debug.Log($"[DemoSceneWirer] Prefab уже существует: {prefabPath}");
-                return existing;
+                return AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
             }
 
             var dir = Path.GetDirectoryName(prefabPath);
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
-            // Создаём временный GO в сцене для сохранения в prefab
-            var tempGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            tempGo.name = goName;
-            tempGo.transform.localScale = scale;
-
-            // Материал-placeholder
-            var mat = new Material(Shader.Find("Standard"));
-            mat.color = color;
-            tempGo.GetComponent<Renderer>().sharedMaterial = mat;
+            // Root — пустой GameObject (не Capsule), чтобы не было лишнего MeshRenderer
+            var root = new GameObject(goName);
+            root.transform.localScale = scale;
 
             // Тег Enemy
-            try { tempGo.tag = "Enemy"; }
-            catch { Debug.LogWarning($"[DemoSceneWirer] Тег 'Enemy' не существует — пропускаем назначение тега для {goName}."); }
+            try { root.tag = "Enemy"; }
+            catch { Debug.LogWarning($"[DemoSceneWirer] Тег 'Enemy' не существует — пропускаем для {goName}."); }
 
-            // CapsuleCollider уже создан CreatePrimitive — ничего не добавляем
-            tempGo.AddComponent<Combat.EnemyHealth>();
-            tempGo.AddComponent<Combat.EnemyFSM>();
-            tempGo.AddComponent<Combat.DeathToCarcass>();
+            // Collider на root
+            var col = root.AddComponent<CapsuleCollider>();
+            col.height = 1.5f;
+            col.radius = 0.4f;
+            col.center = new Vector3(0f, 0.75f, 0f);
 
-            // Назначаем EnemyData через SerializedObject до сохранения prefab
+            // Animator на root — EnemyFSM использует GetComponentInChildren<Animator>()
+            var animController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(animatorControllerPath);
+            var animator = root.AddComponent<Animator>();
+            if (animController != null)
+            {
+                animator.runtimeAnimatorController = animController;
+                Debug.Log($"[DemoSceneWirer] {goName}: AnimatorController назначен: {animatorControllerPath}");
+            }
+            else
+            {
+                Debug.LogWarning($"[DemoSceneWirer] {goName}: AnimatorController не найден: {animatorControllerPath}. " +
+                                 "Запустите ZeldaDaughter/Animation/Build Enemy Animators.");
+            }
+
+            // Визуальная модель — child "Visual"
+            var modelAsset = AssetDatabase.LoadAssetAtPath<GameObject>(modelFbxPath);
+            if (modelAsset != null)
+            {
+                var modelInstance = (GameObject)PrefabUtility.InstantiatePrefab(modelAsset);
+                modelInstance.name = "Visual";
+                modelInstance.transform.SetParent(root.transform);
+                modelInstance.transform.localPosition = Vector3.zero;
+                modelInstance.transform.localRotation = Quaternion.identity;
+                modelInstance.transform.localScale = Vector3.one;
+                Debug.Log($"[DemoSceneWirer] {goName}: модель назначена из {modelFbxPath}");
+            }
+            else
+            {
+                // Fallback: капсула-placeholder
+                var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                capsule.name = "Visual";
+                capsule.transform.SetParent(root.transform);
+                capsule.transform.localPosition = Vector3.zero;
+                capsule.transform.localScale = Vector3.one;
+                var capsuleCol = capsule.GetComponent<Collider>();
+                if (capsuleCol != null) Object.DestroyImmediate(capsuleCol);
+                var mat = new Material(Shader.Find("Standard"));
+                mat.color = color;
+                capsule.GetComponent<Renderer>().sharedMaterial = mat;
+                Debug.LogWarning($"[DemoSceneWirer] {goName}: модель не найдена ({modelFbxPath}), используется capsule-placeholder.");
+            }
+
+            // Игровые компоненты
+            root.AddComponent<Combat.EnemyHealth>();
+            root.AddComponent<Combat.EnemyFSM>();
+            root.AddComponent<Combat.DeathToCarcass>();
+
+            // Назначаем EnemyData
             var enemyData = AssetDatabase.LoadAssetAtPath<Combat.EnemyData>(enemyDataPath);
             if (enemyData != null)
             {
-                var health = tempGo.GetComponent<Combat.EnemyHealth>();
+                var health = root.GetComponent<Combat.EnemyHealth>();
                 if (health != null)
                 {
                     var so = new SerializedObject(health);
@@ -275,7 +333,7 @@ namespace ZeldaDaughter.Editor
                     }
                 }
 
-                var fsm = tempGo.GetComponent<Combat.EnemyFSM>();
+                var fsm = root.GetComponent<Combat.EnemyFSM>();
                 if (fsm != null)
                 {
                     var so = new SerializedObject(fsm);
@@ -292,8 +350,8 @@ namespace ZeldaDaughter.Editor
                 Debug.LogWarning($"[DemoSceneWirer] EnemyData не найдена по {enemyDataPath} — prefab создан без данных.");
             }
 
-            var prefab = PrefabUtility.SaveAsPrefabAsset(tempGo, prefabPath);
-            Object.DestroyImmediate(tempGo);
+            var prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
+            Object.DestroyImmediate(root);
 
             if (prefab != null)
                 Debug.Log($"[DemoSceneWirer] Prefab создан: {prefabPath}");
@@ -301,6 +359,37 @@ namespace ZeldaDaughter.Editor
                 Debug.LogError($"[DemoSceneWirer] Не удалось создать prefab: {prefabPath}");
 
             return prefab;
+        }
+
+        /// <summary>
+        /// Назначает AnimatorController на уже существующий prefab если Animator не настроен.
+        /// </summary>
+        private static void UpdateExistingEnemyPrefabAnimator(string prefabPath, string animatorControllerPath)
+        {
+            var prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (prefabAsset == null) return;
+
+            var animController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(animatorControllerPath);
+            if (animController == null)
+            {
+                Debug.LogWarning($"[DemoSceneWirer] AnimatorController не найден: {animatorControllerPath}");
+                return;
+            }
+
+            // Редактируем prefab через PrefabUtility
+            using (var editScope = new PrefabUtility.EditPrefabContentsScope(prefabPath))
+            {
+                var root = editScope.prefabContentsRoot;
+                var animator = root.GetComponent<Animator>();
+                if (animator == null)
+                    animator = root.AddComponent<Animator>();
+
+                if (animator.runtimeAnimatorController != animController)
+                {
+                    animator.runtimeAnimatorController = animController;
+                    Debug.Log($"[DemoSceneWirer] Обновлён AnimatorController на {prefabPath}: {animatorControllerPath}");
+                }
+            }
         }
 
         // ─────────────────────────────────────────────────────────────────────
@@ -404,6 +493,348 @@ namespace ZeldaDaughter.Editor
             }
 
             Debug.Log($"[DemoSceneWirer] WirePickupables: {wiredCount}/{pickupables.Length} объектов — готово.");
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // NPC wiring
+        // ─────────────────────────────────────────────────────────────────────
+
+        // KayKit GLB characters for NPC visuals (role → model path)
+        private static readonly (string role, string modelPath)[] NpcModelMap = new[]
+        {
+            ("Guard",      "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Knight.glb"),
+            ("Mage",       "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Mage.glb"),
+            ("Rogue",      "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Rogue.glb"),
+            ("Herbalist",  "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Mage.glb"),
+            ("default",    "Assets/Models/KayKit/Adventurers/KayKit-Character-Pack-Adventures-1.0-main/addons/kaykit_character_pack_adventures/Characters/gltf/Barbarian.glb"),
+        };
+
+        // FBX fallback if GLB is not importable
+        private const string NpcFbxFallback = "Assets/Animations/KayKit/fbx/KayKit Animated Character_v1.2.fbx";
+
+        private static void WireNPCs()
+        {
+            if (!System.IO.Directory.Exists("Assets/Prefabs/NPCs"))
+                System.IO.Directory.CreateDirectory("Assets/Prefabs/NPCs");
+
+            var dialogueMgr = Object.FindObjectOfType<NPC.DialogueManager>();
+            if (dialogueMgr == null)
+                Debug.LogWarning("[DemoSceneWirer] WireNPCs: DialogueManager не найден в сцене.");
+
+            var npcs = Object.FindObjectsOfType<NPC.NPCInteractable>();
+            int wired = 0;
+
+            foreach (var npc in npcs)
+            {
+                var so = new SerializedObject(npc);
+                string npcName = npc.gameObject.name;
+
+                // ── 1. DialogueManager ──────────────────────────────────────
+                var dmProp = so.FindProperty("_dialogueManager");
+                if (dmProp != null && dmProp.objectReferenceValue == null && dialogueMgr != null)
+                    dmProp.objectReferenceValue = dialogueMgr;
+
+                // ── 2. NPCProfile ───────────────────────────────────────────
+                var profileProp = so.FindProperty("_profile");
+                NPC.NPCProfile profile = null;
+                if (profileProp != null)
+                {
+                    profile = profileProp.objectReferenceValue as NPC.NPCProfile;
+                    if (profile == null)
+                    {
+                        // Exact match first: NPC_Merchant.asset for "Merchant"
+                        string exactPath = $"Assets/Data/NPC/Profiles/NPC_{npcName}.asset";
+                        profile = AssetDatabase.LoadAssetAtPath<NPC.NPCProfile>(exactPath);
+
+                        if (profile == null)
+                        {
+                            // Fuzzy search fallback
+                            var guids = AssetDatabase.FindAssets($"t:ScriptableObject NPC_{npcName}",
+                                new[] { "Assets/Data/NPC/Profiles" });
+                            if (guids.Length > 0)
+                                profile = AssetDatabase.LoadAssetAtPath<NPC.NPCProfile>(
+                                    AssetDatabase.GUIDToAssetPath(guids[0]));
+                        }
+
+                        if (profile != null)
+                            profileProp.objectReferenceValue = profile;
+                        else
+                            Debug.LogWarning($"[DemoSceneWirer] WireNPCs: профиль не найден для '{npcName}'");
+                    }
+                }
+
+                // ── 3. SpeechBubble ─────────────────────────────────────────
+                var sbProp = so.FindProperty("_speechBubble");
+                if (sbProp != null && sbProp.objectReferenceValue == null)
+                {
+                    var existingBubble = npc.GetComponentInChildren<NPC.NPCSpeechBubble>();
+                    if (existingBubble != null)
+                    {
+                        sbProp.objectReferenceValue = existingBubble;
+                    }
+                    else
+                    {
+                        // Create SpeechBubble child
+                        var bubbleGO = new GameObject("SpeechBubble");
+                        bubbleGO.transform.SetParent(npc.transform);
+                        bubbleGO.transform.localPosition = new Vector3(0f, 2.8f, 0f);
+                        bubbleGO.transform.localRotation = Quaternion.identity;
+                        bubbleGO.transform.localScale = Vector3.one;
+
+                        var canvas = bubbleGO.AddComponent<Canvas>();
+                        canvas.renderMode = RenderMode.WorldSpace;
+
+                        var canvasRect = bubbleGO.GetComponent<RectTransform>();
+                        canvasRect.sizeDelta = new Vector2(200f, 80f);
+                        canvasRect.localScale = Vector3.one * 0.01f;
+
+                        var cg = bubbleGO.AddComponent<CanvasGroup>();
+                        cg.alpha = 0f;
+                        cg.blocksRaycasts = false;
+
+                        // Background
+                        var bgGO = new GameObject("Background");
+                        bgGO.transform.SetParent(bubbleGO.transform);
+                        bgGO.transform.localPosition = Vector3.zero;
+                        bgGO.transform.localRotation = Quaternion.identity;
+                        bgGO.transform.localScale = Vector3.one;
+                        var bgRect = bgGO.AddComponent<RectTransform>();
+                        bgRect.anchorMin = Vector2.zero;
+                        bgRect.anchorMax = Vector2.one;
+                        bgRect.offsetMin = Vector2.zero;
+                        bgRect.offsetMax = Vector2.zero;
+                        var bgImg = bgGO.AddComponent<UnityEngine.UI.Image>();
+                        bgImg.color = new Color(0f, 0f, 0f, 0.7f);
+
+                        // Text
+                        var textGO = new GameObject("Text");
+                        textGO.transform.SetParent(bubbleGO.transform);
+                        textGO.transform.localPosition = Vector3.zero;
+                        textGO.transform.localRotation = Quaternion.identity;
+                        textGO.transform.localScale = Vector3.one;
+                        var textRect = textGO.AddComponent<RectTransform>();
+                        textRect.anchorMin = new Vector2(0.05f, 0.05f);
+                        textRect.anchorMax = new Vector2(0.95f, 0.95f);
+                        textRect.offsetMin = Vector2.zero;
+                        textRect.offsetMax = Vector2.zero;
+                        var tmp = textGO.AddComponent<TMPro.TextMeshProUGUI>();
+                        tmp.fontSize = 14f;
+                        tmp.alignment = TMPro.TextAlignmentOptions.Center;
+                        tmp.color = Color.white;
+
+                        // Icon
+                        var iconGO = new GameObject("Icon");
+                        iconGO.transform.SetParent(bubbleGO.transform);
+                        iconGO.transform.localPosition = Vector3.zero;
+                        iconGO.transform.localRotation = Quaternion.identity;
+                        iconGO.transform.localScale = Vector3.one;
+                        var iconRect = iconGO.AddComponent<RectTransform>();
+                        iconRect.anchorMin = Vector2.zero;
+                        iconRect.anchorMax = Vector2.one;
+                        iconRect.offsetMin = Vector2.zero;
+                        iconRect.offsetMax = Vector2.zero;
+                        var iconImg = iconGO.AddComponent<UnityEngine.UI.Image>();
+                        iconImg.preserveAspect = true;
+                        iconGO.SetActive(false);
+
+                        var speechBubble = bubbleGO.AddComponent<NPC.NPCSpeechBubble>();
+                        var bubbleSo = new SerializedObject(speechBubble);
+                        bubbleSo.FindProperty("_textField").objectReferenceValue = tmp;
+                        bubbleSo.FindProperty("_iconImage").objectReferenceValue = iconImg;
+                        bubbleSo.FindProperty("_canvasGroup").objectReferenceValue = cg;
+                        bubbleSo.ApplyModifiedPropertiesWithoutUndo();
+
+                        sbProp.objectReferenceValue = speechBubble;
+                        Debug.Log($"[DemoSceneWirer] WireNPCs: создан SpeechBubble для '{npcName}'");
+                    }
+                }
+
+                // ── 4. Visual model ─────────────────────────────────────────
+                // Check if there's already a visual child (non-UI, non-SpeechBubble)
+                bool hasVisual = false;
+                for (int ci = 0; ci < npc.transform.childCount; ci++)
+                {
+                    var child = npc.transform.GetChild(ci);
+                    if (child.name == "SpeechBubble" || child.name == "IconBubble")
+                        continue;
+                    if (child.GetComponent<Renderer>() != null || child.GetComponent<Animator>() != null)
+                    {
+                        hasVisual = true;
+                        break;
+                    }
+                }
+
+                if (!hasVisual)
+                {
+                    string modelPath = ResolveNpcModelPath(npcName);
+                    if (modelPath != null)
+                    {
+                        var modelAsset = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
+                        if (modelAsset != null)
+                        {
+                            var modelInstance = (GameObject)Object.Instantiate(modelAsset);
+                            modelInstance.name = "Model";
+                            modelInstance.transform.SetParent(npc.transform);
+                            modelInstance.transform.localPosition = Vector3.zero;
+                            modelInstance.transform.localRotation = Quaternion.identity;
+                            modelInstance.transform.localScale = Vector3.one;
+                            Debug.Log($"[DemoSceneWirer] WireNPCs: модель '{System.IO.Path.GetFileName(modelPath)}' добавлена к '{npcName}'");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"[DemoSceneWirer] WireNPCs: модель не загружена: {modelPath}");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[DemoSceneWirer] WireNPCs: модель для '{npcName}' не найдена — NPC остаётся без визуала");
+                    }
+                }
+
+                so.ApplyModifiedPropertiesWithoutUndo();
+                wired++;
+            }
+
+            Debug.Log($"[DemoSceneWirer] WireNPCs: {wired}/{npcs.Length} NPC обработано.");
+        }
+
+        private static string ResolveNpcModelPath(string npcName)
+        {
+            // Try role-based mapping first
+            foreach (var (role, path) in NpcModelMap)
+            {
+                if (role == "default") continue;
+                if (npcName.IndexOf(role, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null)
+                        return path;
+                }
+            }
+
+            // Default KayKit character
+            foreach (var (role, path) in NpcModelMap)
+            {
+                if (role == "default")
+                {
+                    if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null)
+                        return path;
+                }
+            }
+
+            // FBX fallback
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(NpcFbxFallback) != null)
+                return NpcFbxFallback;
+
+            return null;
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Audio wiring
+        // ─────────────────────────────────────────────────────────────────────
+
+        private static void WireAudio()
+        {
+            // FootstepSystem on Player
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                var footstep = player.GetComponent<Audio.FootstepSystem>();
+                if (footstep != null)
+                {
+                    var so = new SerializedObject(footstep);
+                    AssignClipArray(so, "_grassClips", "Assets/Audio/SFX/Footsteps", "grass");
+                    AssignClipArray(so, "_stoneClips", "Assets/Audio/SFX/Footsteps", "stone");
+                    AssignClipArray(so, "_dirtClips", "Assets/Audio/SFX/Footsteps", "footstep0");
+                    AssignClipArray(so, "_woodClips", "Assets/Audio/SFX/Footsteps", "wood");
+                    AssignClipArray(so, "_waterClips", "Assets/Audio/SFX/Footsteps", "wet");
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                    Debug.Log("[DemoSceneWirer] FootstepSystem — аудио назначено.");
+                }
+
+                // Ensure AudioSource on Player
+                if (player.GetComponent<AudioSource>() == null)
+                    player.AddComponent<AudioSource>();
+            }
+
+            // AmbientZones
+            var ambientZones = Object.FindObjectsOfType<Audio.AmbientZone>();
+            foreach (var zone in ambientZones)
+            {
+                var so = new SerializedObject(zone);
+                string zoneName = zone.gameObject.name.ToLower();
+
+                if (zoneName.Contains("meadow") || zoneName.Contains("forest"))
+                {
+                    AssignSingleClip(so, "_dayClip", "Assets/Audio/SFX/Ambient", "birds");
+                    AssignSingleClip(so, "_nightClip", "Assets/Audio/SFX/Ambient", "crickets");
+                }
+                else if (zoneName.Contains("city") || zoneName.Contains("town"))
+                {
+                    AssignSingleClip(so, "_dayClip", "Assets/Audio/SFX/Ambient", "town");
+                    AssignSingleClip(so, "_nightClip", "Assets/Audio/SFX/Ambient", "night");
+                }
+
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+            Debug.Log($"[DemoSceneWirer] AmbientZones: {ambientZones.Length} зон обработано.");
+        }
+
+        private static void AssignClipArray(SerializedObject so, string propName, string folder, string filter)
+        {
+            var prop = so.FindProperty(propName);
+            if (prop == null) return;
+
+            var guids = AssetDatabase.FindAssets($"t:AudioClip {filter}", new[] { folder });
+            if (guids.Length == 0) return;
+
+            int count = Mathf.Min(guids.Length, 4); // max 4 clips per surface
+            prop.arraySize = count;
+            for (int i = 0; i < count; i++)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guids[i]);
+                var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+                if (clip != null)
+                    prop.GetArrayElementAtIndex(i).objectReferenceValue = clip;
+            }
+        }
+
+        private static void AssignSingleClip(SerializedObject so, string propName, string folder, string filter)
+        {
+            var prop = so.FindProperty(propName);
+            if (prop == null) return;
+
+            var guids = AssetDatabase.FindAssets($"t:AudioClip {filter}", new[] { folder });
+            if (guids.Length == 0) return;
+
+            var path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+            if (clip != null)
+                prop.objectReferenceValue = clip;
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // Debug Reset Button
+        // ─────────────────────────────────────────────────────────────────────
+
+        private static void EnsureDebugResetButton()
+        {
+            if (Object.FindObjectOfType<UI.DebugResetButton>() != null)
+            {
+                Debug.Log("[DemoSceneWirer] DebugResetButton уже в сцене.");
+                return;
+            }
+
+            var go = new GameObject("DebugResetButton");
+            go.AddComponent<UI.DebugResetButton>();
+            Debug.Log("[DemoSceneWirer] DebugResetButton добавлен в сцену.");
+
+            // FPS Counter
+            if (Object.FindObjectOfType<UI.FPSCounter>() == null)
+            {
+                var fps = new GameObject("FPSCounter");
+                fps.AddComponent<UI.FPSCounter>();
+                Debug.Log("[DemoSceneWirer] FPSCounter добавлен.");
+            }
         }
 
         // ─────────────────────────────────────────────────────────────────────
