@@ -1062,6 +1062,219 @@ namespace ZeldaDaughter.Editor
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        // ============================================================
+        // Stage 5 Bisect variants — find which NPC component crashes SwiftShader
+        // ============================================================
+
+        /// <summary>
+        /// Stage5_Bare: Same base as Stage5 + bare NPC capsule (NO NPCInteractable, NO LanguageSystem, NO DialogueManager).
+        /// If this crashes → problem is in the base setup or rendering.
+        /// </summary>
+        [MenuItem("ZeldaDaughter/Scenes/Bisect/Stage5_Bare (no NPC components)")]
+        public static void BuildStage5_Bare()
+        {
+            Init();
+            SetupStage5Base();
+
+            // NPC capsule WITHOUT any NPC components
+            var npcGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            npcGo.name = "NPC_Peasant";
+            npcGo.transform.position = new Vector3(3, 0.05f, 2);
+            npcGo.GetComponent<Renderer>().sharedMaterial = Mat("NPC", new Color(0.2f, 0.5f, 0.85f));
+
+            const string path = "Assets/Scenes/EmuStage5_Bare.unity";
+            EditorSceneManager.SaveScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene(), path);
+            AddToBuildSettings(path);
+            Debug.Log($"[EmuStageBuilder] Stage5_Bare created: {path}");
+        }
+
+        /// <summary>
+        /// Stage5_Lang: Base + LanguageSystem only (no DialogueManager, no NPCInteractable).
+        /// Tests if LanguageSystem causes crash.
+        /// </summary>
+        [MenuItem("ZeldaDaughter/Scenes/Bisect/Stage5_Lang (LanguageSystem only)")]
+        public static void BuildStage5_Lang()
+        {
+            Init();
+            SetupStage5Base();
+
+            // LanguageSystem
+            var langSysGo = new GameObject("LanguageSystem");
+            var langSys = langSysGo.AddComponent<ZeldaDaughter.NPC.LanguageSystem>();
+            var langConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.NPC.LanguageConfig>(
+                "Assets/Data/NPC/LanguageConfig.asset");
+            if (langConfig != null)
+            {
+                var lso = new SerializedObject(langSys);
+                var configProp = lso.FindProperty("_config");
+                if (configProp != null) configProp.objectReferenceValue = langConfig;
+                lso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            const string path = "Assets/Scenes/EmuStage5_Lang.unity";
+            EditorSceneManager.SaveScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene(), path);
+            AddToBuildSettings(path);
+            Debug.Log($"[EmuStageBuilder] Stage5_Lang created: {path}");
+        }
+
+        /// <summary>
+        /// Stage5_NPC: Base + NPC capsule WITH NPCInteractable (no LanguageSystem, no DialogueManager).
+        /// Tests if NPCInteractable causes crash.
+        /// </summary>
+        [MenuItem("ZeldaDaughter/Scenes/Bisect/Stage5_NPC (NPCInteractable only)")]
+        public static void BuildStage5_NPC()
+        {
+            Init();
+            SetupStage5Base();
+
+            // NPC capsule WITH NPCInteractable
+            var npcGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            npcGo.name = "NPC_Peasant";
+            npcGo.transform.position = new Vector3(3, 0.05f, 2);
+            npcGo.GetComponent<Renderer>().sharedMaterial = Mat("NPC", new Color(0.2f, 0.5f, 0.85f));
+            var npcCollider = npcGo.GetComponent<CapsuleCollider>();
+            if (npcCollider != null)
+            {
+                npcCollider.radius = 0.4f;
+                npcCollider.height = 1.8f;
+                npcCollider.center = new Vector3(0, 0.9f, 0);
+            }
+            var npcInteractable = npcGo.AddComponent<ZeldaDaughter.NPC.NPCInteractable>();
+            var merchantProfile = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.NPC.NPCProfile>(
+                "Assets/Data/NPC/Profiles/NPC_Merchant.asset");
+            if (merchantProfile != null)
+            {
+                var nso = new SerializedObject(npcInteractable);
+                var profileProp = nso.FindProperty("_profile");
+                if (profileProp != null) profileProp.objectReferenceValue = merchantProfile;
+                nso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            const string path = "Assets/Scenes/EmuStage5_NPC.unity";
+            EditorSceneManager.SaveScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene(), path);
+            AddToBuildSettings(path);
+            Debug.Log($"[EmuStageBuilder] Stage5_NPC created: {path}");
+        }
+
+        /// <summary>
+        /// Stage5_Dialogue: Base + LanguageSystem + DialogueManager (no NPC capsule).
+        /// Tests if DialogueManager causes crash.
+        /// </summary>
+        [MenuItem("ZeldaDaughter/Scenes/Bisect/Stage5_Dialogue (DialogueManager only)")]
+        public static void BuildStage5_Dialogue()
+        {
+            Init();
+            SetupStage5Base();
+
+            var player = GameObject.FindGameObjectWithTag("Player");
+
+            // LanguageSystem (DialogueManager depends on it)
+            var langSysGo = new GameObject("LanguageSystem");
+            var langSys = langSysGo.AddComponent<ZeldaDaughter.NPC.LanguageSystem>();
+            var langConfig = AssetDatabase.LoadAssetAtPath<ZeldaDaughter.NPC.LanguageConfig>(
+                "Assets/Data/NPC/LanguageConfig.asset");
+            if (langConfig != null)
+            {
+                var lso = new SerializedObject(langSys);
+                var configProp = lso.FindProperty("_config");
+                if (configProp != null) configProp.objectReferenceValue = langConfig;
+                lso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            // DialogueManager
+            var dialogueMgrGo = new GameObject("DialogueManager");
+            var dialogueMgr = dialogueMgrGo.AddComponent<ZeldaDaughter.NPC.DialogueManager>();
+            {
+                var dso = new SerializedObject(dialogueMgr);
+                var langProp = dso.FindProperty("_languageSystem");
+                if (langProp != null) langProp.objectReferenceValue = langSys;
+                if (player != null)
+                {
+                    var invRef = player.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+                    var invProp = dso.FindProperty("_playerInventory");
+                    if (invProp != null && invRef != null) invProp.objectReferenceValue = invRef;
+                }
+                dso.ApplyModifiedPropertiesWithoutUndo();
+            }
+
+            const string path = "Assets/Scenes/EmuStage5_Dialogue.unity";
+            EditorSceneManager.SaveScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene(), path);
+            AddToBuildSettings(path);
+            Debug.Log($"[EmuStageBuilder] Stage5_Dialogue created: {path}");
+        }
+
+        /// <summary>
+        /// Shared base for Stage5 bisect variants.
+        /// Minimal scene: Ground, Light, Player (with movement+inventory), Camera, Bootstrap, Input, EventSystem, TapSystem+SaveManager.
+        /// </summary>
+        private static void SetupStage5Base()
+        {
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            // Ground
+            var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
+            ground.name = "Ground";
+            ground.transform.localScale = new Vector3(10, 1, 10);
+            ground.GetComponent<Renderer>().sharedMaterial = Mat("Ground", new Color(0.3f, 0.55f, 0.2f));
+            // Light
+            var lightGo = new GameObject("Directional Light");
+            var light = lightGo.AddComponent<Light>();
+            light.type = LightType.Directional;
+            light.shadows = LightShadows.None;
+            lightGo.transform.rotation = Quaternion.Euler(50, 170, 0);
+            // Player
+            var playerGo = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            playerGo.name = "Player";
+            playerGo.tag = "Player";
+            playerGo.transform.position = new Vector3(0, 0.05f, 0);
+            playerGo.GetComponent<Renderer>().sharedMaterial = Mat("Player", new Color(0.2f, 0.4f, 0.8f));
+            Object.DestroyImmediate(playerGo.GetComponent<CapsuleCollider>());
+            var cc = playerGo.AddComponent<CharacterController>();
+            cc.radius = 0.35f; cc.height = 1.8f; cc.center = new Vector3(0, 0.9f, 0);
+            playerGo.AddComponent<ZeldaDaughter.Input.CharacterMovement>();
+            playerGo.AddComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+            if (playerGo.GetComponent<ZeldaDaughter.Inventory.PlayerInventory>() == null)
+                playerGo.AddComponent<ZeldaDaughter.Inventory.PlayerInventory>();
+            // Camera
+            var camGo = new GameObject("Main Camera");
+            camGo.tag = "MainCamera";
+            var cam = camGo.AddComponent<Camera>();
+            cam.orthographic = true; cam.orthographicSize = 8;
+            cam.backgroundColor = new Color(0.53f, 0.76f, 0.96f);
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            camGo.transform.position = new Vector3(0, 12, -12);
+            camGo.transform.rotation = Quaternion.Euler(45, 0, 0);
+            var isoCam = camGo.AddComponent<ZeldaDaughter.World.IsometricCamera>();
+            WireIsometricCamera(isoCam, playerGo.transform);
+            // Bootstrap + Input + EventSystem
+            new GameObject("GameBootstrap").AddComponent<ZeldaDaughter.World.GameBootstrap>();
+            new GameObject("InputSystem").AddComponent<ZeldaDaughter.Input.GestureDispatcher>();
+            var es = new GameObject("EventSystem");
+            es.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            es.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            // TapInteractionManager
+            var tapSys = new GameObject("TapSystem");
+            tapSys.AddComponent<ZeldaDaughter.World.TapInteractionManager>();
+            var tapMgr = Object.FindObjectOfType<ZeldaDaughter.World.TapInteractionManager>();
+            if (tapMgr != null)
+            {
+                var so = new SerializedObject(tapMgr);
+                var playerProp = so.FindProperty("_player");
+                if (playerProp != null) playerProp.objectReferenceValue = playerGo;
+                var autoMoveProp = so.FindProperty("_autoMove");
+                var autoMove = playerGo.GetComponent<ZeldaDaughter.Input.CharacterAutoMove>();
+                if (autoMoveProp != null && autoMove != null) autoMoveProp.objectReferenceValue = autoMove;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+            // SaveManager (child of TapSystem)
+            var saveSysGo = new GameObject("SaveManager");
+            saveSysGo.transform.SetParent(tapSys.transform);
+            saveSysGo.AddComponent<ZeldaDaughter.Save.SaveManager>();
+        }
+
         private static void AddToBuildSettings(string scenePath)
         {
             var scenes = EditorBuildSettings.scenes;

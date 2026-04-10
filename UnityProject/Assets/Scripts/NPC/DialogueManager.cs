@@ -45,12 +45,14 @@ namespace ZeldaDaughter.NPC
 
         private void OnEnable()
         {
-            _dialoguePanel.OnOptionSelected += HandleOptionSelected;
+            if (_dialoguePanel != null)
+                _dialoguePanel.OnOptionSelected += HandleOptionSelected;
         }
 
         private void OnDisable()
         {
-            _dialoguePanel.OnOptionSelected -= HandleOptionSelected;
+            if (_dialoguePanel != null)
+                _dialoguePanel.OnOptionSelected -= HandleOptionSelected;
         }
 
         public void StartDialogue(NPCProfile profile, NPCSpeechBubble bubble)
