@@ -8,7 +8,7 @@
 - [x] R0-03 Каркас процессов (CLAUDE.md, plan/, NEXT.md, ADR, справочник) — 2026-09-30
 - [x] R0-04 Реестр апрельского кода — `docs/inventory-2026-04.md`
 - [ ] R0-05 Сторож правил (хук) и `tools/check.sh`
-- [ ] R0-06 Разбор купленной библиотеки Asset Store под Zelda — `docs/research/asset-library-zd.md`
+- [x] R0-06 Разбор купленной библиотеки Asset Store под Zelda — `docs/research/asset-library-zd.md`, 2026-09-30
 - [ ] R0-07 Агенты и навыки: пересмотр 5 субагентов, `frame-critic`, навыки `zd-*`
 
 ---
