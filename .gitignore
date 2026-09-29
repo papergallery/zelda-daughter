@@ -34,8 +34,6 @@
 *.opendb
 *.VC.db
 
-# Unity Package Manager
-/[Pp]ackages/packages-lock.json
 
 # Builds
 *.apk
@@ -68,3 +66,15 @@ Thumbs.db
 
 # Неиспользуемые ассеты (перемещены из Assets/~Disabled)
 DisabledAssets/
+
+# Секреты и личные настройки инструментов (R0-01: пароль утёк через settings.local.json)
+.claude/settings.local.json
+*.env
+
+# Выход сборок и прогонов
+*_BurstDebugInformation_DoNotShip/
+test_results/
+
+# Купленные ассеты Asset Store — не в git (лицензия, ADR-0004); список пакетов — docs/asset-licenses.md
+/UnityProject/[Aa]ssets/ThirdParty/
+/UnityProject/[Aa]ssets/ThirdParty.meta
