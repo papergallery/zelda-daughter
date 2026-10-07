@@ -21,6 +21,8 @@
 {"want": "deny", "tool_name": "Bash", "tool_input": {"command": "cp ~/.ssh/zelda_deploy /tmp/k"}}
 {"want": "deny", "tool_name": "Bash", "tool_input": {"command": "sed -n 1p ~/.config/gh/hosts.yml"}}
 {"want": "ok", "tool_name": "Bash", "tool_input": {"command": "python3 /var/www/html/Other/tensorlay/tools/bridge/tlbridge.py ping"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "T=$(cat ~/.tensorlay_bridge_token); echo $T"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "T=$(grep -m1 oauth_token ~/.config/gh/hosts.yml | awk '{print $2}'); printf '%s' \"$T\" > /tmp/t"}}
 {"want": "deny", "tool_name": "Write", "tool_input": {"file_path": "x.json", "content": "{\"api_key\": \"{{FAKE16}}\"}"}}
 {"want": "ok", "tool_name": "Write", "tool_input": {"file_path": "x.json", "content": "{\"api_key\": \"$API_KEY\"}"}}
 {"want": "ok", "tool_name": "Write", "tool_input": {"file_path": "x.md", "content": "Токен — из файла, password: <секрет>"}}

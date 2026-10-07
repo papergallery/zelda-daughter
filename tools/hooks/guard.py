@@ -58,6 +58,16 @@ def known_secrets():
     return values
 
 
+def leaks_captured_secret(text):
+    """X=$(… secret file …) is allowed, but not printing X afterwards. A regex is no taint tracker — this closes the obvious
+    paths; the hard gates are tools/git-hooks/pre-commit and GitHub push protection."""
+    names = [m.group(0).split("=", 1)[0] for m in CAPTURE.finditer(text) if SECRET_FILES.search(m.group(0))]
+    for n in names:
+        if re.search(r"(\b(echo|printf|print|tee|cat|base64|xxd|od)\b|>>?|<<<)[^\n;&|]*\$\{?" + re.escape(n) + r"\b", text):
+            return True
+    return False
+
+
 def deny(reason):
     print(json.dumps({"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny",
                                              "permissionDecisionReason": reason}}, ensure_ascii=False))
@@ -81,6 +91,10 @@ def main():
              "(docs/agent-handbook.md, R1-02). Нужен перезапуск — попросить автора.")
         return 0
 
+    if tool == "Bash" and leaks_captured_secret(text):
+        deny("R0-05: переменная с секретом уходит в вывод или файл (echo/printf/tee/>/<<<). Секрет из X=$(…) — только в заголовок "
+             "запроса (Authorization) или аргумент программы, не на экран и не на диск.")
+        return 0
     if PASSWORD_ARG.search(text) or (tool == "Bash" and SECRET_FILES.search(CAPTURE.sub("", text))):
         deny("R0-05: пароль в команде или обращение к файлу с секретом не через X=$(…). Репозиторий публичный, пароль Unity уже "
              "утекал через allowlist (R0-01, ADR-0006). Секрет — только в переменную, без печати и копирования.")
