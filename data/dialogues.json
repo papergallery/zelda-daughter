@@ -1,0 +1,23 @@
+{
+  "_source": "project-design.md §2 «Пролог» (крестьянин — жесты и иконки, показывает направление к городу), §3 этап 1 (кракозябры + иконки, герой отвечает иконками, провалы коммуникации). Тексты — сырьё апрельского DialogueTreeBuilder.cs, переписаны: без рода героя (docs/for-author.md п. 1), направление — жестом на объект, а не «на север» (в апреле расходилось с раскладкой).",
+  "icons": ["question", "town", "point", "food", "danger", "hand", "map", "coin", "sleep"],
+  "npcs": {
+    "peasant": {
+      "name": "Крестьянин",
+      "nodes": {
+        "start": { "line": "Эй! Издалека, видать? Одежда-то чудная.", "icons": ["question"], "replies": [ { "icon": "town", "to": "town" }, { "icon": "food", "to": "food" }, { "icon": "question", "to": "who" } ] },
+        "who":   { "line": "Не разберу тебя. Говори толком.", "icons": ["question", "hand"], "replies": [ { "icon": "town", "to": "town" }, { "icon": "food", "to": "food" } ] },
+        "food":  { "line": "Еды лишней нет, сам впроголодь. В городе купишь.", "icons": ["food", "town"], "replies": [ { "icon": "town", "to": "town" } ] },
+        "town":  { "line": "Город? Вон он, за холмом. По дороге иди, не свернёшь.", "icons": ["town", "point"], "gesture": { "type": "point", "target": "town_gate" }, "end": true }
+      }
+    },
+    "guard": {
+      "name": "Стражник",
+      "nodes": {
+        "start": { "line": "Стой! Куда идёшь?", "icons": ["hand", "question"], "replies": [ { "icon": "town", "to": "pass" }, { "icon": "question", "to": "huh" } ] },
+        "huh":   { "line": "Чего? По-людски говори.", "icons": ["question"], "replies": [ { "icon": "town", "to": "pass" } ] },
+        "pass":  { "line": "Проходи. И без глупостей.", "icons": ["point", "danger"], "gesture": { "type": "point", "target": "town_square" }, "end": true }
+      }
+    }
+  }
+}

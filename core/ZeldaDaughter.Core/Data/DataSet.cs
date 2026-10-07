@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using ZeldaDaughter.Core.Condition;
+using ZeldaDaughter.Core.Dialogue;
 using ZeldaDaughter.Core.Input;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
@@ -43,6 +44,7 @@ namespace ZeldaDaughter.Core.Data
         public LanguageSettings Language { get; private set; } = new LanguageSettings();
         public RemarkSettings Remarks { get; private set; } = new RemarkSettings();
         public OnboardingSettings Onboarding { get; private set; } = new OnboardingSettings();
+        public DialogueSettings Dialogues { get; private set; } = new DialogueSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -67,6 +69,7 @@ namespace ZeldaDaughter.Core.Data
                 Language = Read<LanguageSettings>(read, "language.json", problems),
                 Remarks = Read<RemarkSettings>(read, "remarks.json", problems),
                 Onboarding = Read<OnboardingSettings>(read, "onboarding.json", problems),
+                Dialogues = Read<DialogueSettings>(read, "dialogues.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);
@@ -115,6 +118,17 @@ namespace ZeldaDaughter.Core.Data
             }
             foreach (var kv in d.Wounds.Types)
                 if (!string.IsNullOrEmpty(kv.Value.Medicine)) Ref("wounds.json", kv.Key, kv.Value.Medicine);
+            foreach (var npc in d.Dialogues.Npcs)
+            {
+                if (!npc.Value.Nodes.ContainsKey("start")) problems.Add($"dialogues.json: '{npc.Key}' — нет узла start");
+                foreach (var node in npc.Value.Nodes)
+                {
+                    foreach (var r in node.Value.Replies)
+                        if (!npc.Value.Nodes.ContainsKey(r.To)) problems.Add($"dialogues.json: {npc.Key}.{node.Key} → '{r.To}' — нет узла");
+                    foreach (var icon in node.Value.Icons)
+                        if (!d.Dialogues.Icons.Contains(icon)) problems.Add($"dialogues.json: {npc.Key}.{node.Key} — иконка '{icon}' не в списке");
+                }
+            }
             var pairs = recipes.Field.GroupBy(r => string.CompareOrdinal(r.A, r.B) <= 0 ? r.A + "|" + r.B : r.B + "|" + r.A).Where(g => g.Count() > 1);
             foreach (var g in pairs) problems.Add($"recipes.json: пара {g.Key.Replace("|", " + ")} — два рецепта");
 
