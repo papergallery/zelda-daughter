@@ -1,3 +1,5 @@
+> **Архив (ADR-0007).** Апрельский проект — справочник, не собирается. Разбор — `docs/april-review.md`.
+
 # Scripts Architecture
 
 ## Namespaces
