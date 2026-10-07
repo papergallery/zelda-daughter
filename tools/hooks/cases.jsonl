@@ -1,0 +1,18 @@
+{"want": "ok", "tool_name": "Bash", "tool_input": {"command": "grep -rn \"taskkill Unity\" docs"}}
+{"want": "ok", "tool_name": "Bash", "tool_input": {"command": "cat > a.md <<EOF\nредактор не закрывать: EditorApplication.Exit запрещён\nEOF"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "python3 tlbridge.py exec 'Stop-Process -Name Unity -Force'"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "python3 tlbridge.py exec 'taskkill /F /IM Unity.exe'"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "python3 tlbridge.py exec 'Get-Process python | ? { $_.CommandLine -match \"x\" }; Stop-Process -Id 17300 # mcp-for-unity'"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "python3 umcp.py code exit.cs # EditorApplication.Exit(0)"}}
+{"want": "deny", "tool_name": "mcp__unity-mcp__execute_code", "tool_input": {"code": "EditorApplication.Exit(0);"}}
+{"want": "deny", "tool_name": "mcp__unity-mcp__execute_code", "tool_input": {"code": "MCPServiceLocator.Server.StopLocalHttpServer();"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "Unity.exe -batchmode -username a@b.c -password hunter2 -quit"}}
+{"want": "ok", "tool_name": "Bash", "tool_input": {"command": "Unity.exe -batchmode -username \"$U\" -password \"$UNITY_PASSWORD\" -quit"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "cat ~/.tensorlay_bridge_token"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "head -3 ~/.config/gh/hosts.yml"}}
+{"want": "ok", "tool_name": "Bash", "tool_input": {"command": "cat ~/.ssh/zelda_deploy.pub"}}
+{"want": "ok", "tool_name": "Bash", "tool_input": {"command": "T=$(grep -m1 oauth_token ~/.config/gh/hosts.yml | awk '{print $2}'); curl -H \"Authorization: token $T\" https://api.github.com/user"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "cd logic && dotnet test"}}
+{"want": "ok", "tool_name": "Bash", "tool_input": {"command": "flock -o /tmp/thechest-heavy.lock dotnet test logic/ZeldaDaughter.Logic.Tests"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "flock -o /tmp/thechest-heavy.lock tools/check.sh"}}
+{"want": "ok", "tool_name": "Bash", "tool_input": {"command": "git log --grep 'dotnet test'"}}

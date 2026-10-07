@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|mcp__unity-mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/tools/hooks/guard.py\"",
+            "timeout": 15,
+            "statusMessage": "R0-05: сторож правил"
+          }
+        ]
+      }
+    ]
+  }
+}
