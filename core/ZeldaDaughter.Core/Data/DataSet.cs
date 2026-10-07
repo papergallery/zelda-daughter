@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Input;
+using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Progression;
 using ZeldaDaughter.Core.Movement;
 using ZeldaDaughter.Core.World;
@@ -35,6 +36,7 @@ namespace ZeldaDaughter.Core.Data
         public SkillSettings Skills { get; private set; } = new SkillSettings();
         public WoundSettings Wounds { get; private set; } = new WoundSettings();
         public HungerSettings Hunger { get; private set; } = new HungerSettings();
+        public InventorySettings Inventory { get; private set; } = new InventorySettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -55,6 +57,7 @@ namespace ZeldaDaughter.Core.Data
                 Skills = Read<SkillSettings>(read, "skills.json", problems),
                 Wounds = Read<WoundSettings>(read, "wounds.json", problems),
                 Hunger = Read<HungerSettings>(read, "hunger.json", problems),
+                Inventory = Read<InventorySettings>(read, "inventory.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);
