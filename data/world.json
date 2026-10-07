@@ -1,0 +1,10 @@
+{
+  "_source": "project-design.md §2: цикл 20–30 мин, день → закат → ночь → рассвет; сон в таверне — промотка (§6). Числа — апрель DayNightCycle.cs: сутки 25 мин, старт 0,35, ночь < 0,2, рассвет < 0,3, день < 0,7, закат < 0,8; сон +8 ч — KnockoutSystem/SleepInteraction.",
+  "dayLengthSeconds": 1500,
+  "startTimeOfDay": 0.35,
+  "dawnStart": 0.2,
+  "dayStart": 0.3,
+  "duskStart": 0.7,
+  "nightStart": 0.8,
+  "sleepHours": 8
+}
