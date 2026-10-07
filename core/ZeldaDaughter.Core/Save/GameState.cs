@@ -5,6 +5,7 @@ using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Data;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
+using ZeldaDaughter.Core.Onboarding;
 using ZeldaDaughter.Core.Progression;
 using ZeldaDaughter.Core.World;
 
@@ -23,6 +24,7 @@ namespace ZeldaDaughter.Core.Save
             Bag = new Bag(data.Inventory, data.Items);
             Crafting = new Crafting.Crafting(data);
             Language = new Comprehension(data.Language);
+            Hints = new Hints(data.Onboarding);
         }
 
         public DataSet Data { get; }
@@ -33,6 +35,7 @@ namespace ZeldaDaughter.Core.Save
         public Bag Bag { get; }
         public Crafting.Crafting Crafting { get; }
         public Comprehension Language { get; }
+        public Hints Hints { get; }
 
         /// <summary>Hero position on the ground (x, z) and height, and the zone (scene) they are in.</summary>
         public Vec2 HeroPosition { get; set; }

@@ -23,6 +23,7 @@ namespace ZeldaDaughter.Core.Tests
             g.Bag.Add("stick", 12); g.Bag.Add("knife"); g.Bag.Add("cloth", 2);
             g.Crafting.Combine("knife", "stick", g.Bag);
             g.Language.Heard("peasant", "l1"); g.Language.Heard("guard", "l2");
+            g.Hints.Did("swipe");
             return g;
         }
 
@@ -37,6 +38,7 @@ namespace ZeldaDaughter.Core.Tests
             Assert.Equal(11, fresh.Bag.Count("stick"));
             Assert.Equal("g1-capsule", fresh.Zone);
             Assert.Equal(3.5f, fresh.HeroPosition.X);
+            Assert.Null(fresh.Hints.Visible);
         }
 
         [Fact]

@@ -12,6 +12,7 @@ using ZeldaDaughter.Core.Language;
 using ZeldaDaughter.Core.Remarks;
 using ZeldaDaughter.Core.Progression;
 using ZeldaDaughter.Core.Movement;
+using ZeldaDaughter.Core.Onboarding;
 using ZeldaDaughter.Core.World;
 
 namespace ZeldaDaughter.Core.Data
@@ -41,6 +42,7 @@ namespace ZeldaDaughter.Core.Data
         public InventorySettings Inventory { get; private set; } = new InventorySettings();
         public LanguageSettings Language { get; private set; } = new LanguageSettings();
         public RemarkSettings Remarks { get; private set; } = new RemarkSettings();
+        public OnboardingSettings Onboarding { get; private set; } = new OnboardingSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -64,6 +66,7 @@ namespace ZeldaDaughter.Core.Data
                 Inventory = Read<InventorySettings>(read, "inventory.json", problems),
                 Language = Read<LanguageSettings>(read, "language.json", problems),
                 Remarks = Read<RemarkSettings>(read, "remarks.json", problems),
+                Onboarding = Read<OnboardingSettings>(read, "onboarding.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);
