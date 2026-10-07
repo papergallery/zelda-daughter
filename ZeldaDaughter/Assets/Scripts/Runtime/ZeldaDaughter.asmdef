@@ -3,7 +3,8 @@
     "rootNamespace": "ZeldaDaughter",
     "references": [
         "ZeldaDaughter.Core",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

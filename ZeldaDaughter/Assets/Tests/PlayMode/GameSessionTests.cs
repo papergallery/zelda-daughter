@@ -1,0 +1,156 @@
+using System.Collections;
+using System.IO;
+using System.Linq;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+using ZeldaDaughter.Core.Common;
+using ZeldaDaughter.Core.Input;
+using ZeldaDaughter.Game;
+using ZeldaDaughter.Hero;
+using ZeldaDaughter.World;
+using TouchPhase = ZeldaDaughter.Core.Input.TouchPhase;
+
+namespace ZeldaDaughter.Tests
+{
+    /// <summary>T-10, docs/done-criteria/T-10.md items 1–8 in the grey prologue.</summary>
+    public class GameSessionTests
+    {
+        GameSession _s;
+        HeroController _hero;
+
+        static void ClearSlot()
+        {
+            foreach (var f in new[] { GameSession.SlotPath, GameSession.SlotPath + ".bak", GameSession.SlotPath + ".tmp" })
+                if (File.Exists(f)) File.Delete(f);
+        }
+
+        IEnumerator LoadScene()
+        {
+            Application.runInBackground = true;
+            yield return SceneManager.LoadSceneAsync("prologue-grey");
+            yield return null;
+            _s = Object.FindFirstObjectByType<GameSession>();
+            _hero = Object.FindFirstObjectByType<HeroController>();
+            Assert.NotNull(_s, "prologue-grey has a GameSession (SceneBuilder)");
+            _hero.UseDpi(160f);
+        }
+
+        [UnitySetUp] public IEnumerator SetUp() { ClearSlot(); yield return LoadScene(); }
+        [TearDown] public void TearDown() => ClearSlot();
+
+        [UnityTest]
+        public IEnumerator Clock_drives_the_sun()
+        {
+            var sun = Object.FindFirstObjectByType<SunController>();
+            _s.State.Clock.SetTime(1, 0.05);
+            yield return null;
+            float night = sun.Intensity;
+            _s.State.Clock.SetTime(1, 0.5);
+            yield return null;
+            float noon = sun.Intensity;
+            Assert.Less(night, noon * 0.1f, $"night {night} vs noon {noon}");
+        }
+
+        [UnityTest]
+        public IEnumerator Swipe_hint_goes_after_a_swipe_and_stays_gone_after_reload()
+        {
+            yield return null;
+            Assert.AreEqual(_s.State.Hints.TextOf("swipe"), _s.UI.CurrentHint);
+            var h = Camera.main.WorldToScreenPoint(_hero.transform.position);
+            var o = new Vec2(h.x, h.y - 250f);
+            _hero.Feed(new TouchSample(0, TouchPhase.Began, Time.realtimeSinceStartupAsDouble, o, TouchHit.Ground));
+            _hero.Feed(new TouchSample(0, TouchPhase.Moved, Time.realtimeSinceStartupAsDouble, new Vec2(o.X + 40, o.Y), default));
+            yield return null;
+            _hero.Feed(new TouchSample(0, TouchPhase.Ended, Time.realtimeSinceStartupAsDouble, new Vec2(o.X + 40, o.Y), default));
+            yield return null;
+            Assert.AreNotEqual(_s.State.Hints.TextOf("swipe"), _s.UI.CurrentHint);
+            _s.Save("test");
+            yield return LoadScene();
+            yield return null;
+            Assert.AreNotEqual(_s.State.Hints.TextOf("swipe"), _s.UI.CurrentHint);
+        }
+
+        [UnityTest]
+        public IEnumerator Hungry_hero_says_so()
+        {
+            LogAssert.Expect(LogType.Log, new System.Text.RegularExpressions.Regex(@"^\[ZD:Remark\] hunger_hungry: "));
+            _s.State.Hunger.Restore(0.8f);
+            yield return new WaitForSeconds(_s.State.Data.Session.RemarkCheckSeconds * 2 + 0.2f);
+            Assert.IsFalse(string.IsNullOrEmpty(_s.UI.HeroBubbleText));
+        }
+
+        [UnityTest]
+        public IEnumerator Picked_stick_goes_to_the_bag_and_does_not_come_back()
+        {
+            LogAssert.Expect(LogType.Log, "[ZD:Pickup] pickup_stick → stick");
+            _s.Tap("pickup_stick");
+            yield return null;
+            Assert.AreEqual(1, _s.State.Bag.Count("stick"));
+            Assert.IsFalse(GameObject.Find("Objects").transform.Find("pickup_stick").gameObject.activeSelf);
+            Assert.AreEqual(_s.State.Data.Items["stick"].Pickup, _s.UI.HeroBubbleText);
+            _s.Save("test");
+            yield return LoadScene();
+            Assert.IsFalse(GameObject.Find("Objects").transform.Find("pickup_stick").gameObject.activeSelf);
+            Assert.AreEqual(1, _s.State.Bag.Count("stick"));
+        }
+
+        [UnityTest]
+        public IEnumerator Talking_to_the_peasant_goes_by_icons_and_ends_pointing_at_the_town()
+        {
+            float before = _s.State.Language.Understanding;
+            _s.Tap("npc_peasant");
+            yield return null;
+            var raw = _s.State.Data.Dialogues.Npcs["peasant"].Nodes["start"].Line;
+            Assert.IsNotNull(_s.UI.NpcBubbleText);
+            Assert.IsFalse(_s.UI.NpcBubbleText.Contains(raw), "stage 1: gibberish, not the line");
+            Assert.IsTrue(_s.UI.ReplyButtons.Count > 0);
+            LogAssert.Expect(LogType.Log, "[ZD:Talk] peasant point town_gate");
+            for (int i = 0; i < 20 && _s.UI.ReplyButtons.Count > 0; i++)
+            {
+                var town = _s.UI.ReplyButtons.FirstOrDefault(b => b.name == "Reply_town") ?? _s.UI.ReplyButtons[0];
+                town.onClick.Invoke();
+                yield return null;
+            }
+            Assert.AreEqual(0, _s.UI.ReplyButtons.Count, "conversation ended");
+            Assert.Greater(_s.State.Language.Understanding, before);
+        }
+
+        [UnityTest]
+        public IEnumerator Reply_buttons_take_the_touch_not_the_hero()
+        {
+            _s.Tap("npc_peasant");
+            yield return null;
+            yield return null; // layout
+            var b = _s.UI.ReplyButtons[0].GetComponent<RectTransform>();
+            Vector3 c = b.position;
+            Assert.IsTrue(_hero.IsOverUI(new Vec2(c.x, c.y)), "a reply button is under the finger");
+            Assert.IsFalse(_hero.IsOverUI(new Vec2(Screen.width * 0.5f, Screen.height * 0.4f)), "open ground is not UI");
+        }
+
+        [UnityTest]
+        public IEnumerator Save_and_load_bring_back_place_time_and_knowledge()
+        {
+            var h = Camera.main.WorldToScreenPoint(_hero.transform.position);
+            var o = new Vec2(h.x, h.y - 250f);
+            _hero.Feed(new TouchSample(0, TouchPhase.Began, Time.realtimeSinceStartupAsDouble, o, TouchHit.Ground));
+            _hero.Feed(new TouchSample(0, TouchPhase.Moved, Time.realtimeSinceStartupAsDouble, new Vec2(o.X + 28, o.Y + 28), default));
+            float end = Time.time + 1.5f;
+            while (Time.time < end) { _hero.Feed(new TouchSample(0, TouchPhase.Stationary, Time.realtimeSinceStartupAsDouble, new Vec2(o.X + 28, o.Y + 28), default)); yield return null; }
+            _hero.Feed(new TouchSample(0, TouchPhase.Ended, Time.realtimeSinceStartupAsDouble, new Vec2(o.X + 28, o.Y + 28), default));
+            yield return null;
+            _s.State.Language.Heard("peasant", "start");
+            yield return null;
+            var where = _hero.transform.position;
+            double t = _s.State.Clock.TimeOfDay;
+            float lang = _s.State.Language.Understanding;
+            LogAssert.Expect(LogType.Log, "[ZD:Save] saved test");
+            _s.Save("test");
+            yield return LoadScene();
+            Assert.Less(Vector3.Distance(_hero.transform.position, where), 0.2f, "same place");
+            Assert.AreEqual(t, _s.State.Clock.TimeOfDay, 0.01);
+            Assert.AreEqual(lang, _s.State.Language.Understanding, 1e-4);
+        }
+    }
+}

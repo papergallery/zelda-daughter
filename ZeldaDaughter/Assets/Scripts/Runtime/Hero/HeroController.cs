@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 using ZeldaDaughter.Core.Common;
 using ZeldaDaughter.Core.Input;
@@ -48,6 +50,29 @@ namespace ZeldaDaughter.Hero
 
         public bool IsMoving => _intent.IsMoving;
 
+        /// <summary>Every recognised gesture — the game session listens (T-10).</summary>
+        public event Action<GestureEvent> Gesture;
+
+        /// <summary>Move without walking (loading a save).</summary>
+        public void Teleport(Vector3 position, float facingDegrees)
+        {
+            if (_cc == null) _cc = GetComponent<CharacterController>(); // the session may load before this Awake
+            _cc.enabled = false;
+            transform.SetPositionAndRotation(position, Quaternion.Euler(0f, facingDegrees, 0f));
+            _cc.enabled = true;
+            _intent = MoveIntent.None;
+        }
+
+        /// <summary>A touch over UI (reply buttons) belongs to the UI, not to walking.</summary>
+        public bool IsOverUI(Vec2 screen)
+        {
+            var es = EventSystem.current;
+            if (es == null) return false;
+            var hits = new List<RaycastResult>();
+            es.RaycastAll(new PointerEventData(es) { position = new Vector2(screen.X, screen.Y) }, hits);
+            return hits.Count > 0;
+        }
+
         private void Awake()
         {
             _cc = GetComponent<CharacterController>();
@@ -81,6 +106,7 @@ namespace ZeldaDaughter.Hero
                 var phase = Map(t.phase);
                 if (phase == null) continue;
                 var pos = new Vec2(t.screenPosition.x, t.screenPosition.y);
+                if (phase == CoreTouchPhase.Began && IsOverUI(pos)) continue;
                 Feed(new TouchSample(t.finger.index, phase.Value, t.time, pos, phase == CoreTouchPhase.Began ? HitAt(pos) : default));
             }
             Handle(_gestures.Tick(Time.realtimeSinceStartupAsDouble));
@@ -105,6 +131,7 @@ namespace ZeldaDaughter.Hero
         {
             foreach (var e in events)
             {
+                Gesture?.Invoke(e);
                 switch (e.Kind)
                 {
                     case GestureKind.SwipeStarted:

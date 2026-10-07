@@ -9,7 +9,10 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using ZeldaDaughter.Core.Scenes;
+using ZeldaDaughter.Game;
 using ZeldaDaughter.Hero;
 using ZeldaDaughter.World;
 
@@ -85,6 +88,7 @@ namespace ZeldaDaughter.Editor
             hero.AddComponent<HeroController>().Configure(iso, cam, config.Ground.Terrain);
 
             var root = new GameObject("Objects").transform;
+            var tagged = new List<SceneTags>();
             foreach (var o in config.Objects)
             {
                 var go = Spawn(o.Id, o.Shape, o.Prefab, o.Color);
@@ -92,7 +96,22 @@ namespace ZeldaDaughter.Editor
                 go.transform.localPosition = V(o.Position);
                 go.transform.localRotation = Quaternion.Euler(V(o.Rotation));
                 go.transform.localScale = V(o.Scale);
+                var tags = go.AddComponent<SceneTags>();
+                tags.Configure(o.Id, o.Tags.ToArray(), o.Item);
+                tagged.Add(tags);
             }
+
+            // T-10: the session that runs the core in this scene, with its placeholder UI.
+            var game = new GameObject("Game");
+            var sunCtl = game.AddComponent<SunController>();
+            sunCtl.Configure(sun, V(config.Light.Rotation), config.Light.Intensity, ColorOf(config.Ambient.Color));
+            var uiGo = new GameObject("UI");
+            uiGo.transform.SetParent(game.transform, false);
+            var ui = uiGo.AddComponent<SessionUI>();
+            ui.Configure(cam);
+            game.AddComponent<GameSession>().Configure(hero.GetComponent<HeroController>(), sunCtl, ui, config.Name, tagged.ToArray());
+            var es = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            es.transform.SetParent(game.transform, false);
 
             if (!AssetDatabase.IsValidFolder(ScenesDir)) AssetDatabase.CreateFolder("Assets", "Scenes");
             string scenePath = $"{ScenesDir}/{config.Name}.unity";
