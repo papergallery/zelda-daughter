@@ -157,6 +157,15 @@ namespace ZeldaDaughter.Core.Tests
         }
 
         [Fact]
+        public void Hero_hit_is_by_screen_projection_with_density_scaled_tolerance()
+        {
+            var hero = new Vec2(500, 900);
+            Assert.True(S.IsOnHero(new Vec2(500 + S.HeroTouchRadiusPx, 900), hero, 160));
+            Assert.False(S.IsOnHero(new Vec2(500 + S.HeroTouchRadiusPx + 1, 900), hero, 160));
+            Assert.True(S.IsOnHero(new Vec2(500 + S.HeroTouchRadiusPx * 2, 900), hero, 320));
+        }
+
+        [Fact]
         public void Cancelled_swipe_ends_the_swipe()
         {
             var r = New();

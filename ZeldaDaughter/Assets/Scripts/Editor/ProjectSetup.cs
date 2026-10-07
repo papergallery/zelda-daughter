@@ -57,6 +57,9 @@ namespace ZeldaDaughter.Editor
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel28;
             EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ASTC;
             SetProjectSetting("activeInputHandler", 1); // Input System only
+            // Domain reload on entering Play Mode stays on: statics (GameData) start clean. The bridge's run_tests
+            // switched it on by itself on 2026-10-07 — Apply() puts it back.
+            EditorSettings.enterPlayModeOptionsEnabled = false;
 
             var asset = EnsurePipeline();
             GraphicsSettings.defaultRenderPipeline = asset;
@@ -95,6 +98,7 @@ namespace ZeldaDaughter.Editor
             Check("minSdk", PlayerSettings.Android.minSdkVersion, AndroidSdkVersions.AndroidApiLevel28);
             Check("textures.android", EditorUserBuildSettings.androidBuildSubtarget, MobileTextureSubtarget.ASTC);
             Check("activeInputHandler", GetProjectSetting("activeInputHandler"), 1);
+            Check("enterPlayModeOptions", EditorSettings.enterPlayModeOptionsEnabled, false);
 
             Check("lights.linearIntensity", GraphicsSettings.lightsUseLinearIntensity, true);
             Check("lights.colorTemperature", GraphicsSettings.lightsUseColorTemperature, true);

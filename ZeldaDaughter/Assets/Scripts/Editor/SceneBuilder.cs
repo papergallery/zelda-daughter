@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using ZeldaDaughter.Core.Scenes;
+using ZeldaDaughter.Hero;
 using ZeldaDaughter.World;
 
 namespace ZeldaDaughter.Editor
@@ -79,7 +80,9 @@ namespace ZeldaDaughter.Editor
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.backgroundColor = ColorOf(config.Ambient.Color);
             camGo.AddComponent<AudioListener>();
-            camGo.AddComponent<IsoCamera>().Configure(hero.transform, config.Camera.Pitch, config.Camera.Yaw, config.Camera.Distance, config.Camera.FollowSmoothTime);
+            var iso = camGo.AddComponent<IsoCamera>();
+            iso.Configure(hero.transform, config.Camera.Pitch, config.Camera.Yaw, config.Camera.Distance, config.Camera.FollowSmoothTime);
+            hero.AddComponent<HeroController>().Configure(iso, cam, config.Ground.Terrain);
 
             var root = new GameObject("Objects").transform;
             foreach (var o in config.Objects)

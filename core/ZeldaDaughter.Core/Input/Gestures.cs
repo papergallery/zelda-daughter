@@ -11,6 +11,15 @@ namespace ZeldaDaughter.Core.Input
         public float MoveThresholdPx { get; set; }
         public float ReferenceDpi { get; set; }
         public float SwipeFullStrengthPx { get; set; }
+        /// <summary>Touch counts as «on the hero» within this distance of the hero's screen projection (§1).</summary>
+        public float HeroTouchRadiusPx { get; set; }
+
+        /// <summary>Hero hit by screen projection with tolerance, scaled to the device density.</summary>
+        public bool IsOnHero(Vec2 touch, Vec2 heroOnScreen, float screenDpi)
+        {
+            float scale = screenDpi > 0 && ReferenceDpi > 0 ? screenDpi / ReferenceDpi : 1f;
+            return (touch - heroOnScreen).Length <= HeroTouchRadiusPx * scale;
+        }
     }
 
     public enum GestureKind { SwipeStarted, SwipeUpdated, SwipeEnded, Tap, LongPressOnHero, LongPressReleased }
