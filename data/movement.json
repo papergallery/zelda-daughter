@@ -1,0 +1,10 @@
+{
+  "_source": "Апрель: CharacterMovement.cs — ходьба 2,5, бег 5 при силе ≥ 0,7, вода ×0,4, грязь ×0,6, множители в [0,1; 2]; нижняя граница итога 0,35 — новое (в апреле итог падал до ≈ 0,1, docs/april-review.md §1). Вода — project-design.md §1.",
+  "walkSpeed": 2.5,
+  "runSpeed": 5.0,
+  "runStartStrength": 0.7,
+  "multiplierMin": 0.1,
+  "multiplierMax": 2.0,
+  "minTotalMultiplier": 0.35,
+  "terrain": { "ground": 1.0, "road": 1.0, "grass": 1.0, "water": 0.4, "mud": 0.6 }
+}
