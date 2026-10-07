@@ -3,6 +3,7 @@
     "rootNamespace": "ZeldaDaughter.Editor",
     "references": [
         "ZeldaDaughter.Core",
+        "ZeldaDaughter",
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.RenderPipelines.Core.Runtime"
     ],

@@ -1,3 +1,4 @@
+#nullable enable
 using ZeldaDaughter.Core.Common;
 
 namespace ZeldaDaughter.Core.Input

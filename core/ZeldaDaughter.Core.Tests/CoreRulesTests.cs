@@ -28,6 +28,14 @@ namespace ZeldaDaughter.Core.Tests
         }
 
         [Fact]
+        public void Every_file_enables_nullable_for_unity()
+        {
+            // Unity compiles packages without a nullable context: `string?` gives CS8632 warnings (T-04, 2026-10-07).
+            var bad = Sources().Where(f => !File.ReadAllText(f).StartsWith("#nullable enable")).ToArray();
+            Assert.Empty(bad);
+        }
+
+        [Fact]
         public void Asmdef_has_no_engine_references()
         {
             var asmdef = File.ReadAllText(Path.Combine(CoreDir, "ZeldaDaughter.Core.asmdef"));
