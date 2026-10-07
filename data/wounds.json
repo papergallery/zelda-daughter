@@ -1,0 +1,21 @@
+{
+  "_source": "project-design.md §6 «Раны и состояние», «Типы ран», «Лечение», «Нокаут». Апрель: PlayerHealthState.cs (кровотечение = drain·severity·dt, рана того же типа заменяется только более тяжёлой, отдых ×3, HP 100, лечение 0,1/с, оживление 15 %), WoundConfig_*.asset (колотая 0,5 HP/с; перелом скорость ×0,5; ожог точность ×0,5; яд 0,3 HP/с, скорость и атака ×0,7), KnockoutSystem.cs (проблески 5 с), сон до 70 %. Изменено: само заживление — сутки и больше (апрель 90–180 с — не «очень медленно»); нокаут ещё и по сумме тяжести ран (§6), не только по HP. Секунды — реальные; игровые сутки = 1500 с (world.json). Баланс — на G2/GВ.",
+  "maxHp": 100,
+  "naturalHpRegenPerSecond": 0.1,
+  "restMultiplier": 3.0,
+  "knockoutWoundLoad": 2.0,
+  "knockoutSeconds": 5.0,
+  "reviveHpFraction": 0.15,
+  "sleepHpFraction": 0.7,
+  "sleepWoundSeverity": 0.3,
+  "types": {
+    "cut":      { "naturalHealSeconds": 1500, "hpDrainPerSecond": 0.5, "medicine": "bandage" },
+    "fracture": { "naturalHealSeconds": 4500, "speedAtFull": 0.5, "medicine": "splint" },
+    "burn":     { "naturalHealSeconds": 2250, "accuracyAtFull": 0.5, "medicine": "burn_salve" },
+    "poison":   { "naturalHealSeconds": 1500, "hpDrainPerSecond": 0.3, "speedAtFull": 0.7, "attackAtFull": 0.7, "medicine": "antidote" }
+  },
+  "flags": {
+    "limpFromFracture": 0.2,
+    "holdSideBelowHp": 0.5
+  }
+}
