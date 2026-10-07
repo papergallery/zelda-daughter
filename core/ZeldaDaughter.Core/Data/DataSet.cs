@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Input;
+using ZeldaDaughter.Core.Progression;
 using ZeldaDaughter.Core.Movement;
 using ZeldaDaughter.Core.World;
 
@@ -30,6 +32,9 @@ namespace ZeldaDaughter.Core.Data
         public GestureSettings Input { get; private set; } = new GestureSettings();
         public MovementSettings Movement { get; private set; } = new MovementSettings();
         public WorldSettings World { get; private set; } = new WorldSettings();
+        public SkillSettings Skills { get; private set; } = new SkillSettings();
+        public WoundSettings Wounds { get; private set; } = new WoundSettings();
+        public HungerSettings Hunger { get; private set; } = new HungerSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -47,6 +52,9 @@ namespace ZeldaDaughter.Core.Data
                 Input = Read<GestureSettings>(read, "input.json", problems),
                 Movement = Read<MovementSettings>(read, "movement.json", problems),
                 World = Read<WorldSettings>(read, "world.json", problems),
+                Skills = Read<SkillSettings>(read, "skills.json", problems),
+                Wounds = Read<WoundSettings>(read, "wounds.json", problems),
+                Hunger = Read<HungerSettings>(read, "hunger.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);
@@ -88,6 +96,13 @@ namespace ZeldaDaughter.Core.Data
                 foreach (var k in r.Keep)
                     if (k != r.With) problems.Add($"recipes.json: {r.Target} ← {r.With} — keep '{k}' не предмет рецепта");
             }
+            foreach (var food in d.Hunger.Food.Keys)
+            {
+                Ref("hunger.json", "food", food);
+                if (byId.TryGetValue(food, out var fd) && fd.Kind != "food") problems.Add($"hunger.json: '{food}' — в items.json не food");
+            }
+            foreach (var kv in d.Wounds.Types)
+                if (!string.IsNullOrEmpty(kv.Value.Medicine)) Ref("wounds.json", kv.Key, kv.Value.Medicine);
             var pairs = recipes.Field.GroupBy(r => string.CompareOrdinal(r.A, r.B) <= 0 ? r.A + "|" + r.B : r.B + "|" + r.A).Where(g => g.Count() > 1);
             foreach (var g in pairs) problems.Add($"recipes.json: пара {g.Key.Replace("|", " + ")} — два рецепта");
 
