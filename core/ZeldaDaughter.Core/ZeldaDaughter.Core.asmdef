@@ -2,6 +2,10 @@
     "name": "ZeldaDaughter.Core",
     "rootNamespace": "ZeldaDaughter.Core",
     "references": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
     "autoReferenced": true,
     "noEngineReferences": true
 }

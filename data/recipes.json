@@ -1,0 +1,23 @@
+{
+  "_source": "project-design.md §6 «Лечение», §7 «Полевой крафт», «Станочный крафт», «Логические цепочки». Апрель — CraftRecipeBuilder.cs (10 рецептов). Исправлено против апреля: инструменты (нож, топор, кремень) не расходуются (keep); антидот — из двух ингредиентов; добавлены костёр, огонь трением, наконечник стрелы. Шина = палка + бинт (апрель): в дизайне §6 «палка + ткань», но §7 даёт палке + ткани факел — вопрос автору (docs/for-author.md).",
+  "field": [
+    { "a": "stick",          "b": "cloth",          "out": "torch_unlit" },
+    { "a": "knife",          "b": "stick",          "out": "sharpened_stick", "keep": ["knife"] },
+    { "a": "axe",            "b": "firewood",       "out": "planks", "count": 2, "keep": ["axe"] },
+    { "a": "cloth",          "b": "herbs",          "out": "bandage" },
+    { "a": "stick",          "b": "bandage",        "out": "splint" },
+    { "a": "special_herb",   "b": "fat",            "out": "burn_salve" },
+    { "a": "healing_herbs",  "b": "healing_herbs",  "out": "antidote" }
+  ],
+  "station": [
+    { "station": "smelter", "in": ["ore"],             "out": "metal" },
+    { "station": "anvil",   "in": ["metal", "stick"],       "out": "sword" },
+    { "station": "anvil",   "in": ["metal", "short_stick"], "out": "knife" },
+    { "station": "anvil",   "in": ["metal"],           "out": "arrowhead", "count": 3 }
+  ],
+  "world": [
+    { "target": "firewood_placed", "with": "flint",       "result": "campfire", "keep": ["flint"] },
+    { "target": "planks_placed",   "with": "stick",       "result": "campfire" },
+    { "target": "fire",            "with": "torch_unlit", "result": "torch" }
+  ]
+}
