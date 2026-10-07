@@ -1,0 +1,14 @@
+<Project>
+  <!-- Shared build settings for core/ (C-01, ADR-0008; modelled on thechest/sim). -->
+  <PropertyGroup>
+    <!-- bin/ and obj/ go to core/artifacts/: the package folder is read by Unity as is. -->
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <CoreHostTargetFramework>net10.0</CoreHostTargetFramework>
+    <AnalysisLevel>10.0</AnalysisLevel>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+</Project>

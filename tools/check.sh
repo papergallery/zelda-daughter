@@ -10,7 +10,7 @@ cd "$(dirname "$0")/.."
 fail=()
 lock=/tmp/thechest-heavy.lock
 
-sln=$(ls logic/*.sln 2>/dev/null | head -1)
+sln=$(ls core/*.sln 2>/dev/null | head -1)
 if [[ -n "$sln" ]]; then
   [[ -x "$HOME/.dotnet/dotnet" ]] && export PATH="$HOME/.dotnet:$PATH"
   export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1 MSBUILDDISABLENODEREUSE=1

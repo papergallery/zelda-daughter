@@ -1,0 +1,7 @@
+{
+  "name": "com.zeldadaughter.core",
+  "version": "0.1.0",
+  "displayName": "Zelda's Daughter Core",
+  "description": "Game rules without UnityEngine, shared with dotnet tests on the server (ADR-0008).",
+  "unity": "6000.3"
+}

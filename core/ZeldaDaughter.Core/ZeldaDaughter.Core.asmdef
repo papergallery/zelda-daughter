@@ -1,0 +1,7 @@
+{
+    "name": "ZeldaDaughter.Core",
+    "rootNamespace": "ZeldaDaughter.Core",
+    "references": [],
+    "autoReferenced": true,
+    "noEngineReferences": true
+}
