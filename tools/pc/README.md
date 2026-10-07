@@ -12,5 +12,11 @@
 | `zd-apply.ps1` + `apply.cs` | `ProjectSetup.Apply()` + отчёт `[ZD:Setup]` + `git status` |
 | `zd-build.ps1` + `build.cs` | `SceneBuilder.BuildAll()` дважды + консоль (`[ZD:Scene] … hash=…`) |
 | `zd-list.ps1`, `zd-instances.ps1` | инструменты моста; подключённые редакторы |
+| `zd-reload.ps1` | нажать «Reload» в окне Unity «scene modified externally» (Win32 `BM_CLICK`) — вызывается из `zd-sync` |
+| `zd-run.ps1 <файл.cs>` | `execute_code` с таймаутом 15 мин (сборки): `build-win-release.cs`, `build-win-debug.cs` |
+| `zd-types.ps1` | есть ли типы (`PerfProbe`, …) в `ZeldaDaughter.dll` сборок release/debug |
+| `zd-player.ps1` | отладочный Windows-плеер 15 с без окна, строки `[ZD:*]` из журнала |
+
+**Модальные окна глушат мост.** Редактор молчит («ping not answered», `TimeoutError`) — почти всегда окно в Unity. Посмотреть — скриншот **только окна Unity** (UI Automation `BoundingRectangle`, не весь экран: там терминалы автора), удалить после. «Scene modified externally» — `zd-reload.ps1`. Запуск отладочного плеера вызывает окно брандмауэра Windows (порт профайлера) — оно системное, мостом не закрывается: не запускать debug-плеер без нужды, в записке автору — «нажмите Отменить».
 
 Порядок проверки изменения Unity-кода: файлы на ПК (`put` или архив `tar` → `tar -xf`) → `zd-refresh` → ждать `zd-state` `compiling=False` → `zd-check`. PlayMode-тесты — `run_tests` `{"mode":"PlayMode",…}` → `get_test_job` (см. `docs/test-runs/`); `run_tests` включает Enter Play Mode Options — `ProjectSetup.Apply()` возвращает.
