@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """R0-05: rules the agents of Zelda's Daughter (and The Chest before them) kept breaking, as a PreToolUse hook (.claude/settings.json).
 
-- Secrets: the repository is public (ADR-0006) and a Unity password already leaked through a command allowlist (R0-01).
+- Secrets (the hard gate is tools/git-hooks/pre-commit, core.hooksPath — this hook only sees the index before the command):
+  the repository is public (ADR-0006) and a Unity password already leaked through a command allowlist (R0-01).
   A command must not carry a password, and must not print a token file; a commit must not stage a known secret.
 - Heavy work only under the lock shared with The Chest: `flock -o /tmp/thechest-heavy.lock` (docs/agent-handbook.md §1).
 - The Unity editors and the shared unity-mcp server on the author's PC are not ours to kill (CLAUDE.md; R1-02 — the server
@@ -94,7 +95,7 @@ def main():
              "(docs/agent-handbook.md §1).")
         return 0
 
-    if tool == "Bash" and re.search(r"\bgit\s+commit\b", text):
+    if tool == "Bash" and re.search(r"\bgit\b[^\n;&|]*\bcommit\b", text):
         try:
             staged = subprocess.run(["git", "diff", "--cached", "-U0"], capture_output=True, text=True, timeout=20).stdout
         except (OSError, subprocess.SubprocessError):

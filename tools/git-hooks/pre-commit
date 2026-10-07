@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# R0-05: the secret gate at commit time. The PreToolUse hook sees the index before the command runs, so
+# `git add … && git commit`, `git commit -a` or `git -C … commit` slipped past it; this runs on the real index.
+exec python3 "$(git rev-parse --show-toplevel)/tools/check-staged-secrets.py"
