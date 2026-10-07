@@ -28,6 +28,8 @@ if python3 tools/check-plan.py; then :; else fail+=(plan); fi
 
 bad=0
 while IFS= read -r case; do
+  # Fake secrets are made here, never stored: a fixture in git would itself be a secret-like line.
+  case=${case//\{\{FAKE16\}\}/zq$(date +%N)x7k}
   want=$(python3 -c 'import json,sys;print(json.loads(sys.argv[1])["want"])' "$case")
   got=$(printf '%s' "$case" | python3 tools/hooks/guard.py | grep -q '"deny"' && echo deny || echo ok)
   [[ "$want" == "$got" ]] || { echo "guard: expected $want, got $got: $case"; bad=1; }

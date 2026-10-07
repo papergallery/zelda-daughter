@@ -24,10 +24,16 @@ KILL_UNITY = re.compile(r"(^|[;&|(']|\bthen\b|\bdo\b)\s*(sudo\s+)?(taskkill|Stop
                         re.I | re.M)
 EDITOR_EXIT = re.compile(r"EditorApplication\.Exit|StopLocalHttpServer|StopManagedLocalHttpServer", re.I)
 PASSWORD_ARG = re.compile(r"(^|\s)--?(password|passwd|pass)(\s+|=)(?!\$|\"\$|<|\*{3})\S+", re.I)
-PRINT_SECRET = re.compile(r"\b(cat|less|more|head|tail|type|Get-Content|echo)\b[^\n;&|]*"
-                          r"(\.tensorlay_bridge_token|gh/hosts\.yml|\.cloudflare_api_token|polza\.env|id_ed25519(?!\.pub)|zelda_deploy(?!\.pub))", re.I)
-SECRET_TEXT = re.compile(r"ghp_[A-Za-z0-9]{20,}|gho_[A-Za-z0-9]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|"
-                         r"-password\s+\\?\"(?![A-Z_]+\\?\")[^\"$<]+\\?\"")  # ALLCAPS — заглушка вида "PASSWORD"
+# Files that hold secrets on this host. A command may only read one into a variable — X=$(… file …) — never anything else:
+# cat/base64/sed/python -c/cp would all put the value on screen or in a file.
+SECRET_FILES = re.compile(r"\.tensorlay_bridge_token|gh/hosts\.yml|\.cloudflare_api_token|polza\.env|/etc/thechest-cloud/|"
+                          r"id_ed25519(?!\.pub)|zelda_deploy(?!\.pub)|thechest_deploy(?!\.pub)", re.I)
+CAPTURE = re.compile(r"\b\w+=\$\((?:[^()]|\([^()]*\))*\)")
+SECRET_TEXT = re.compile(
+    r"gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|"
+    r"-password\s+\\?\"(?![A-Z_]+\\?\")[^\"$<]+\\?\"|"  # ALLCAPS — заглушка вида "PASSWORD"
+    r"(?i:\b(?:password|passwd|pwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token|bearer)\b(?:\\\\?[\"'])?\s*[:=]\s*(?:\\\\?[\"'])?)"
+    r"(?![A-Z_]{4,}[\"'\s]|\$|<|\{|\*)[^\s\"'<>{}$`]{10,}")
 TICK = re.compile(r"^\+- \[x\] (K-\d{2}|R2-\d{2}|R1-07) ", re.M)
 EVIDENCE = re.compile(r"кадр|frame|shot|видео|video|запис|\.jpg|\.png|\.mp4|\[ZD:|logcat|Player\.log|годится", re.I)
 
@@ -75,9 +81,9 @@ def main():
              "(docs/agent-handbook.md, R1-02). Нужен перезапуск — попросить автора.")
         return 0
 
-    if PASSWORD_ARG.search(text) or (tool == "Bash" and PRINT_SECRET.search(text)):
-        deny("R0-05: пароль в команде или вывод файла с токеном. Репозиторий публичный, пароль Unity уже утекал через allowlist "
-             "(R0-01, ADR-0006). Секрет — из файла или переменной окружения, без печати.")
+    if PASSWORD_ARG.search(text) or (tool == "Bash" and SECRET_FILES.search(CAPTURE.sub("", text))):
+        deny("R0-05: пароль в команде или обращение к файлу с секретом не через X=$(…). Репозиторий публичный, пароль Unity уже "
+             "утекал через allowlist (R0-01, ADR-0006). Секрет — только в переменную, без печати и копирования.")
         return 0
     if tool != "Bash" and SECRET_TEXT.search(text):
         deny("R0-05: в тексте похоже на секрет (токен GitHub, приватный ключ, -password). Секреты — только вне репозитория.")

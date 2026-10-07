@@ -7,7 +7,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "hooks"))
 from guard import SECRET_TEXT, known_secrets  # noqa: E402
 
-staged = subprocess.run(["git", "diff", "--cached", "-U0", "--no-color", "--", ".", ":(exclude)tools/hooks/cases.jsonl"],
+staged = subprocess.run(["git", "diff", "--cached", "-U0", "--no-color", "--", "."],
                         capture_output=True, text=True).stdout
 added = "\n".join(l for l in staged.splitlines() if l.startswith("+") and not l.startswith("+++"))
 if SECRET_TEXT.search(added) or any(s in added for s in known_secrets()):

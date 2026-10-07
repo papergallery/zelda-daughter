@@ -12,7 +12,7 @@ files = subprocess.run(["git", "ls-files", "-z"], capture_output=True, text=True
 secrets = known_secrets()
 hits = []
 for f in files:
-    if not f or not os.path.isfile(f) or os.path.getsize(f) > 2_000_000 or f.startswith("tools/hooks/"):
+    if not f or not os.path.isfile(f) or os.path.getsize(f) > 2_000_000:
         continue
     try:
         text = open(f, encoding="utf-8").read()

@@ -16,3 +16,11 @@
 {"want": "ok", "tool_name": "Bash", "tool_input": {"command": "flock -o /tmp/thechest-heavy.lock dotnet test logic/ZeldaDaughter.Logic.Tests"}}
 {"want": "deny", "tool_name": "Bash", "tool_input": {"command": "flock -o /tmp/thechest-heavy.lock tools/check.sh"}}
 {"want": "ok", "tool_name": "Bash", "tool_input": {"command": "git log --grep 'dotnet test'"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "base64 ~/.tensorlay_bridge_token"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "python3 -c \"print(open('/home/papermax/.tensorlay_bridge_token').read())\""}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "cp ~/.ssh/zelda_deploy /tmp/k"}}
+{"want": "deny", "tool_name": "Bash", "tool_input": {"command": "sed -n 1p ~/.config/gh/hosts.yml"}}
+{"want": "ok", "tool_name": "Bash", "tool_input": {"command": "python3 /var/www/html/Other/tensorlay/tools/bridge/tlbridge.py ping"}}
+{"want": "deny", "tool_name": "Write", "tool_input": {"file_path": "x.json", "content": "{\"api_key\": \"{{FAKE16}}\"}"}}
+{"want": "ok", "tool_name": "Write", "tool_input": {"file_path": "x.json", "content": "{\"api_key\": \"$API_KEY\"}"}}
+{"want": "ok", "tool_name": "Write", "tool_input": {"file_path": "x.md", "content": "Токен — из файла, password: <секрет>"}}
