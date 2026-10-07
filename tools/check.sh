@@ -25,6 +25,7 @@ fi
 
 if python3 tools/check-secrets.py; then echo "secrets: none in tracked files"; else fail+=(secrets); fi
 if python3 tools/check-plan.py; then :; else fail+=(plan); fi
+if python3 tools/unity-meta.py --check >/dev/null; then echo "meta: every core file has one"; else echo "meta: missing — python3 tools/unity-meta.py"; fail+=(meta); fi
 
 bad=0
 while IFS= read -r case; do

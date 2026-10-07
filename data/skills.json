@@ -1,0 +1,39 @@
+{
+  "_source": "project-design.md §6 «Прогрессия в стиле Kenshi», «Обучение не мгновенное». Формула и числа — апрель: StatGrowthCurve.cs:26 (gain = raw·rate·(1 − v/max)^decay), Data/Progression/GrowthCurve_*.asset, StatEffectConfig.asset, ActionTracker.cs (опыт: удар +1 сила, попадание +1 точность, промах ×failure, урон ·0,1 стойкость, каждые 5 м выносливость, перегруз — грузоподъёмность, уворот +0,5 ловкость), WeaponProficiencyData.asset, WeaponProficiencyApplier.cs:60-62. Изменено: штраф попадания нового оружия −0,2 (апрель −0,3 давал старт 0,2 — разбор); бонус за победу точности — из своей кривой (в апреле брался из кривой силы).",
+  "max": 100,
+  "tiers": [0, 25, 50, 80],
+  "stats": {
+    "strength":       { "rate": 0.8, "decay": 0.5, "failure": 0.2, "victory": 3.0, "start": 5 },
+    "toughness":      { "rate": 1.0, "decay": 0.6, "failure": 0.3, "victory": 1.0, "start": 5 },
+    "agility":        { "rate": 0.5, "decay": 0.5, "failure": 0.3, "victory": 2.0, "start": 5 },
+    "accuracy":       { "rate": 0.7, "decay": 0.4, "failure": 0.4, "victory": 2.5, "start": 5 },
+    "endurance":      { "rate": 0.3, "decay": 0.5, "failure": 0.3, "victory": 1.0, "start": 5 },
+    "carry_capacity": { "rate": 0.4, "decay": 0.6, "failure": 0.3, "victory": 0.5, "start": 5 }
+  },
+  "weapons": {
+    "blade":  { "rate": 0.8, "decay": 0.5, "failure": 0.3 },
+    "bow":    { "rate": 0.6, "decay": 0.4, "failure": 0.4 },
+    "blunt":  { "rate": 0.7, "decay": 0.5, "failure": 0.25 },
+    "fists":  { "rate": 1.0, "decay": 0.6, "failure": 0.5 }
+  },
+  "experience": {
+    "attack": 1.0,
+    "hit": 1.0,
+    "dodge": 0.5,
+    "damageToToughness": 0.1,
+    "metersPerUnit": 5.0
+  },
+  "effects": {
+    "maxDamageBonus": 1.5,
+    "maxDamageReduction": 0.5,
+    "maxAttackSpeedBonus": 0.8,
+    "baseHitChance": 0.5,
+    "maxHealBonus": 1.0,
+    "maxCapacityBonus": 2.0
+  },
+  "newWeapon": {
+    "damageFrom": 0.7,
+    "speedFrom": 0.6,
+    "hitFrom": -0.2
+  }
+}
