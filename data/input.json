@@ -1,0 +1,8 @@
+{
+  "_source": "project-design.md §1 «Диспетчер жестов»: лонг-пресс ≥ 0,5 с, смещение ≤ 20 px; тап < 0,5 с. Пиксели — при referenceDpi, на устройстве пересчитываются по его DPI (C-02). swipeFullStrengthPx 80 — апрель, GestureDispatcher.cs:196 (там без пересчёта DPI).",
+  "longPressSeconds": 0.5,
+  "tapMaxSeconds": 0.5,
+  "moveThresholdPx": 20,
+  "referenceDpi": 160,
+  "swipeFullStrengthPx": 80
+}

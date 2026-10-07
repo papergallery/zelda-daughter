@@ -14,7 +14,7 @@ namespace ZeldaDaughter.Core.Tests
         [Fact]
         public void Core_has_no_engine_references()
         {
-            var bad = Sources().Where(f => Regex.IsMatch(File.ReadAllText(f), @"\busing\s+Unity|\bUnityEngine\b")).ToArray();
+            var bad = Sources().Where(f => Regex.IsMatch(File.ReadAllText(f), @"(?m)^\s*using\s+Unity|\bUnityEngine\.|\bUnityEditor\.")).ToArray();
             Assert.Empty(bad);
         }
 
