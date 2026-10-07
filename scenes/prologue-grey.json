@@ -1,0 +1,702 @@
+{
+ "_source": "T-09: серый пролог — раскладка §2 «Пролог» примитивами до выбора стиля. Черновик — апрельский region_startmeadow.json (спавн с костром у бревна на западе, дорога на восток, ферма, город ≈ +14…27), поправлен под §2: поле с крестьянином ≈ 37 м от спавна (≈ 15 с ходьбы при 2,5 м/с, data/movement.json; в апреле ≈ 30 м), ворота города ≈ 70 м. Id town_gate, town_square — цели жестов data/dialogues.json.",
+ "name": "prologue-grey",
+ "ground": {
+  "sizeX": 140,
+  "sizeZ": 60,
+  "color": "#7d8a5c",
+  "terrain": "grass"
+ },
+ "light": {
+  "rotation": {
+   "x": 40,
+   "y": -60,
+   "z": 0
+  },
+  "color": "#ffe9c8",
+  "intensity": 1.0,
+  "shadows": "hard"
+ },
+ "ambient": {
+  "color": "#a8aeb4"
+ },
+ "camera": {
+  "orthographic": true,
+  "pitch": 35,
+  "yaw": 45,
+  "distance": 20,
+  "size": 8,
+  "followSmoothTime": 0.15
+ },
+ "hero": {
+  "spawn": {
+   "x": -50,
+   "y": 0,
+   "z": 0
+  },
+  "shape": "capsule",
+  "color": "#c9a46a"
+ },
+ "objects": [
+  {
+   "id": "road_1",
+   "shape": "cube",
+   "position": {
+    "x": -50.0,
+    "y": 0.02,
+    "z": 0.5
+   },
+   "rotation": {
+    "x": 0,
+    "y": -2.8624052261117474,
+    "z": 0
+   },
+   "scale": {
+    "x": 21.024984394500787,
+    "y": 0.04,
+    "z": 3
+   },
+   "color": "#a68a64",
+   "tags": [
+    "road"
+   ]
+  },
+  {
+   "id": "road_2",
+   "shape": "cube",
+   "position": {
+    "x": -30.0,
+    "y": 0.02,
+    "z": 0.5
+   },
+   "rotation": {
+    "x": 0,
+    "y": 2.8624052261117474,
+    "z": 0
+   },
+   "scale": {
+    "x": 21.024984394500787,
+    "y": 0.04,
+    "z": 3
+   },
+   "color": "#a68a64",
+   "tags": [
+    "road"
+   ]
+  },
+  {
+   "id": "road_3",
+   "shape": "cube",
+   "position": {
+    "x": -10.0,
+    "y": 0.02,
+    "z": 1.0
+   },
+   "rotation": {
+    "x": 0,
+    "y": -5.710593137499642,
+    "z": 0
+   },
+   "scale": {
+    "x": 21.09975124224178,
+    "y": 0.04,
+    "z": 3
+   },
+   "color": "#a68a64",
+   "tags": [
+    "road"
+   ]
+  },
+  {
+   "id": "road_4",
+   "shape": "cube",
+   "position": {
+    "x": 10.0,
+    "y": 0.02,
+    "z": 2.5
+   },
+   "rotation": {
+    "x": 0,
+    "y": -2.8624052261117474,
+    "z": 0
+   },
+   "scale": {
+    "x": 21.024984394500787,
+    "y": 0.04,
+    "z": 3
+   },
+   "color": "#a68a64",
+   "tags": [
+    "road"
+   ]
+  },
+  {
+   "id": "road_5",
+   "shape": "cube",
+   "position": {
+    "x": 32.5,
+    "y": 0.02,
+    "z": 3.0
+   },
+   "scale": {
+    "x": 26.0,
+    "y": 0.04,
+    "z": 3
+   },
+   "color": "#a68a64",
+   "tags": [
+    "road"
+   ]
+  },
+  {
+   "id": "log_spawn",
+   "shape": "cylinder",
+   "position": {
+    "x": -52,
+    "y": 0.3,
+    "z": -3
+   },
+   "rotation": {
+    "x": 0,
+    "y": 90,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.6,
+    "y": 1.2,
+    "z": 0.6
+   },
+   "color": "#6b4f35",
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "pickup_stick",
+   "shape": "cube",
+   "position": {
+    "x": -44,
+    "y": 0.1,
+    "z": 1.8
+   },
+   "rotation": {
+    "x": 0,
+    "y": 20,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 0.1,
+    "z": 0.1
+   },
+   "color": "#7a5a3a",
+   "tags": [
+    "pickup"
+   ]
+  },
+  {
+   "id": "field",
+   "shape": "cube",
+   "position": {
+    "x": -12,
+    "y": 0.03,
+    "z": 9
+   },
+   "scale": {
+    "x": 12,
+    "y": 0.06,
+    "z": 8
+   },
+   "color": "#b9a65a",
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "hut",
+   "shape": "cube",
+   "position": {
+    "x": -20,
+    "y": 1.5,
+    "z": 11
+   },
+   "scale": {
+    "x": 4,
+    "y": 3,
+    "z": 4
+   },
+   "color": "#7b5b3e",
+   "tags": [
+    "building"
+   ]
+  },
+  {
+   "id": "npc_peasant",
+   "shape": "capsule",
+   "position": {
+    "x": -12,
+    "y": 1,
+    "z": 4
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "color": "#8f7a4a",
+   "tags": [
+    "npc"
+   ]
+  },
+  {
+   "id": "bush_berries",
+   "shape": "sphere",
+   "position": {
+    "x": -4,
+    "y": 0.6,
+    "z": -3
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 1.2,
+    "z": 1.2
+   },
+   "color": "#4f6b3a",
+   "tags": [
+    "pickup"
+   ]
+  },
+  {
+   "id": "tree_1",
+   "shape": "cylinder",
+   "position": {
+    "x": -58,
+    "y": 2.5,
+    "z": -12
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 2.5,
+    "z": 1.2
+   },
+   "color": "#4e5e36",
+   "tags": [
+    "tree"
+   ]
+  },
+  {
+   "id": "tree_2",
+   "shape": "cylinder",
+   "position": {
+    "x": -46,
+    "y": 2.5,
+    "z": -14
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 2.5,
+    "z": 1.2
+   },
+   "color": "#4e5e36",
+   "tags": [
+    "tree"
+   ]
+  },
+  {
+   "id": "tree_3",
+   "shape": "cylinder",
+   "position": {
+    "x": -36,
+    "y": 2.5,
+    "z": 10
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 2.5,
+    "z": 1.2
+   },
+   "color": "#4e5e36",
+   "tags": [
+    "tree"
+   ]
+  },
+  {
+   "id": "tree_4",
+   "shape": "cylinder",
+   "position": {
+    "x": -28,
+    "y": 2.5,
+    "z": -10
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 2.5,
+    "z": 1.2
+   },
+   "color": "#4e5e36",
+   "tags": [
+    "tree"
+   ]
+  },
+  {
+   "id": "tree_5",
+   "shape": "cylinder",
+   "position": {
+    "x": -2,
+    "y": 2.5,
+    "z": -12
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 2.5,
+    "z": 1.2
+   },
+   "color": "#4e5e36",
+   "tags": [
+    "tree"
+   ]
+  },
+  {
+   "id": "tree_6",
+   "shape": "cylinder",
+   "position": {
+    "x": 8,
+    "y": 2.5,
+    "z": 14
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 2.5,
+    "z": 1.2
+   },
+   "color": "#4e5e36",
+   "tags": [
+    "tree"
+   ]
+  },
+  {
+   "id": "tree_7",
+   "shape": "cylinder",
+   "position": {
+    "x": 12,
+    "y": 2.5,
+    "z": -14
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 2.5,
+    "z": 1.2
+   },
+   "color": "#4e5e36",
+   "tags": [
+    "tree"
+   ]
+  },
+  {
+   "id": "tree_8",
+   "shape": "cylinder",
+   "position": {
+    "x": -62,
+    "y": 2.5,
+    "z": 10
+   },
+   "scale": {
+    "x": 1.2,
+    "y": 2.5,
+    "z": 1.2
+   },
+   "color": "#4e5e36",
+   "tags": [
+    "tree"
+   ]
+  },
+  {
+   "id": "fence_1",
+   "shape": "cube",
+   "position": {
+    "x": 20,
+    "y": 0.6,
+    "z": -12
+   },
+   "scale": {
+    "x": 0.3,
+    "y": 1.2,
+    "z": 3.6
+   },
+   "color": "#6e5136",
+   "tags": [
+    "fence"
+   ]
+  },
+  {
+   "id": "fence_2",
+   "shape": "cube",
+   "position": {
+    "x": 20,
+    "y": 0.6,
+    "z": -8
+   },
+   "scale": {
+    "x": 0.3,
+    "y": 1.2,
+    "z": 3.6
+   },
+   "color": "#6e5136",
+   "tags": [
+    "fence"
+   ]
+  },
+  {
+   "id": "fence_3",
+   "shape": "cube",
+   "position": {
+    "x": 20,
+    "y": 0.6,
+    "z": -4
+   },
+   "scale": {
+    "x": 0.3,
+    "y": 1.2,
+    "z": 3.6
+   },
+   "color": "#6e5136",
+   "tags": [
+    "fence"
+   ]
+  },
+  {
+   "id": "fence_4",
+   "shape": "cube",
+   "position": {
+    "x": 20,
+    "y": 0.6,
+    "z": 8
+   },
+   "scale": {
+    "x": 0.3,
+    "y": 1.2,
+    "z": 3.6
+   },
+   "color": "#6e5136",
+   "tags": [
+    "fence"
+   ]
+  },
+  {
+   "id": "fence_5",
+   "shape": "cube",
+   "position": {
+    "x": 20,
+    "y": 0.6,
+    "z": 12
+   },
+   "scale": {
+    "x": 0.3,
+    "y": 1.2,
+    "z": 3.6
+   },
+   "color": "#6e5136",
+   "tags": [
+    "fence"
+   ]
+  },
+  {
+   "id": "town_gate",
+   "shape": "cube",
+   "position": {
+    "x": 20,
+    "y": 2.8,
+    "z": 2
+   },
+   "scale": {
+    "x": 0.6,
+    "y": 0.5,
+    "z": 6
+   },
+   "color": "#5d4630",
+   "tags": [
+    "gate"
+   ]
+  },
+  {
+   "id": "gate_post_1",
+   "shape": "cylinder",
+   "position": {
+    "x": 20,
+    "y": 1.4,
+    "z": -1
+   },
+   "scale": {
+    "x": 0.5,
+    "y": 1.4,
+    "z": 0.5
+   },
+   "color": "#5d4630",
+   "tags": [
+    "gate"
+   ]
+  },
+  {
+   "id": "gate_post_2",
+   "shape": "cylinder",
+   "position": {
+    "x": 20,
+    "y": 1.4,
+    "z": 5
+   },
+   "scale": {
+    "x": 0.5,
+    "y": 1.4,
+    "z": 0.5
+   },
+   "color": "#5d4630",
+   "tags": [
+    "gate"
+   ]
+  },
+  {
+   "id": "npc_guard",
+   "shape": "capsule",
+   "position": {
+    "x": 22,
+    "y": 1,
+    "z": -1
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "color": "#56606a",
+   "tags": [
+    "npc"
+   ]
+  },
+  {
+   "id": "house_1",
+   "shape": "cube",
+   "position": {
+    "x": 27,
+    "y": 2,
+    "z": -9
+   },
+   "scale": {
+    "x": 6,
+    "y": 4,
+    "z": 5
+   },
+   "color": "#9a7b5a",
+   "tags": [
+    "building"
+   ]
+  },
+  {
+   "id": "house_2",
+   "shape": "cube",
+   "position": {
+    "x": 27,
+    "y": 2,
+    "z": 13
+   },
+   "scale": {
+    "x": 5,
+    "y": 4,
+    "z": 6
+   },
+   "color": "#8d6e4f",
+   "tags": [
+    "building"
+   ]
+  },
+  {
+   "id": "town_square",
+   "shape": "cylinder",
+   "position": {
+    "x": 36,
+    "y": 0.5,
+    "z": 3
+   },
+   "scale": {
+    "x": 4,
+    "y": 0.5,
+    "z": 4
+   },
+   "color": "#9a9a92",
+   "tags": [
+    "square"
+   ]
+  },
+  {
+   "id": "stall",
+   "shape": "cube",
+   "position": {
+    "x": 38,
+    "y": 1,
+    "z": 10
+   },
+   "scale": {
+    "x": 3,
+    "y": 2,
+    "z": 2
+   },
+   "color": "#5f7d4f",
+   "tags": [
+    "building"
+   ]
+  },
+  {
+   "id": "tavern",
+   "shape": "cube",
+   "position": {
+    "x": 44,
+    "y": 2.5,
+    "z": -6
+   },
+   "scale": {
+    "x": 8,
+    "y": 5,
+    "z": 6
+   },
+   "color": "#7c5a3c",
+   "tags": [
+    "building"
+   ]
+  },
+  {
+   "id": "npc_townsfolk_1",
+   "shape": "capsule",
+   "position": {
+    "x": 33,
+    "y": 1,
+    "z": -2
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "color": "#7a6a8a",
+   "tags": [
+    "npc"
+   ]
+  },
+  {
+   "id": "npc_townsfolk_2",
+   "shape": "capsule",
+   "position": {
+    "x": 40,
+    "y": 1,
+    "z": 6
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "color": "#7a6a8a",
+   "tags": [
+    "npc"
+   ]
+  }
+ ]
+}

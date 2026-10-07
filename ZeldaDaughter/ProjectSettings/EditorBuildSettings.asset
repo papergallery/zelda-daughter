@@ -8,5 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/g1-capsule.unity
     guid: 1da813d46a0f24749ba1a76de25d5b25
+  - enabled: 1
+    path: Assets/Scenes/prologue-grey.unity
+    guid: caabd67c32c3a38458d59aff66e4f1cd
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

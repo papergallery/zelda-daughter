@@ -33,6 +33,22 @@ namespace ZeldaDaughter.Core.Tests
         }
 
         [Fact]
+        public void Prologue_distances_follow_the_design()
+        {
+            // §2: «через ~15 секунд ходьбы по дороге — крестьянин… город совсем рядом — в первые минуты».
+            var c = SceneConfig.Parse(File.ReadAllText(Path.Combine(ScenesDir, "prologue-grey.json")));
+            var walk = ZeldaDaughter.Core.Data.DataSet.Load(TestPaths.DataRoot).Movement.WalkSpeed;
+            float Dist(string id)
+            {
+                var p = c.Objects.Single(o => o.Id == id).Position;
+                return (float)System.Math.Sqrt((p.X - c.Hero.Spawn.X) * (p.X - c.Hero.Spawn.X) + (p.Z - c.Hero.Spawn.Z) * (p.Z - c.Hero.Spawn.Z));
+            }
+            Assert.InRange(Dist("npc_peasant") / walk, 13f, 17f);
+            Assert.InRange(Dist("town_gate") / walk, 20f, 60f);
+            foreach (var target in new[] { "town_gate", "town_square" }) Assert.Contains(c.Objects, o => o.Id == target);
+        }
+
+        [Fact]
         public void Problems_are_named()
         {
             var c = SceneConfig.Parse("{\"name\":\"t\",\"ground\":{\"sizeX\":10,\"sizeZ\":10},\"camera\":{\"pitch\":35,\"distance\":20,\"size\":8}," +
