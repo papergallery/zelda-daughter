@@ -1,0 +1,258 @@
+{
+  "_source": "project-design.md §1 (состояние — через реплики), §6 (раны, голод, «персонаж намекает»), §7 (подсказки крафта, перегруз, нельзя поставить). Тексты — апрель: CombatConfig.cs, InventoryConfig.cs, ProgressionFeedback.cs (по 3 на характеристику, ступени 1–3), CraftFeedback.cs, WorldPlacement.cs, CampfireObject.cs, CarcassObject.cs. Новые (без рода — кто герой, решает автор, docs/for-author.md п. 1): раны по типам, ночь без огня. Паузы — апрель: голод раз в 60 с; остальное — оценка.",
+  "globalGapSeconds": 8,
+  "healthHurtBelow": 0.75,
+  "healthBadBelow": 0.4,
+  "healthCriticalBelow": 0.15,
+  "woundSpeaksFrom": 0.3,
+  "topics": {
+    "health_hurt": {
+      "cooldown": 90,
+      "lines": [
+        "Ничего страшного...",
+        "Болит..."
+      ]
+    },
+    "health_bad": {
+      "cooldown": 60,
+      "lines": [
+        "Плохо дело..."
+      ]
+    },
+    "health_critical": {
+      "cooldown": 30,
+      "lines": [
+        "Не могу дальше..."
+      ]
+    },
+    "wound_cut": {
+      "cooldown": 60,
+      "lines": [
+        "Кровь... надо перевязать.",
+        "Рана кровит."
+      ]
+    },
+    "wound_fracture": {
+      "cooldown": 60,
+      "lines": [
+        "Нога... не наступить.",
+        "Кажется, сломано."
+      ]
+    },
+    "wound_burn": {
+      "cooldown": 60,
+      "lines": [
+        "Жжёт...",
+        "Пальцы как чужие."
+      ]
+    },
+    "wound_poison": {
+      "cooldown": 60,
+      "lines": [
+        "Мутит...",
+        "Тошнит..."
+      ]
+    },
+    "hunger_peckish": {
+      "cooldown": 180,
+      "lines": [
+        "Есть хочется..."
+      ]
+    },
+    "hunger_hungry": {
+      "cooldown": 60,
+      "lines": [
+        "В животе урчит...",
+        "Нужно что-нибудь съесть..."
+      ]
+    },
+    "hunger_starving": {
+      "cooldown": 40,
+      "lines": [
+        "Нужно что-нибудь съесть..."
+      ]
+    },
+    "overload": {
+      "cooldown": 60,
+      "lines": [
+        "Тяжело...",
+        "Спина не выдержит...",
+        "Надо что-то выбросить...",
+        "Еле тащу..."
+      ]
+    },
+    "night_no_fire": {
+      "cooldown": 120,
+      "lines": [
+        "Темно. Огонь бы...",
+        "Без огня тут не по себе."
+      ]
+    },
+    "craft_ok": {
+      "cooldown": 0,
+      "lines": [
+        "Сгодится.",
+        "Получилось!"
+      ]
+    },
+    "craft_fail": {
+      "cooldown": 0,
+      "lines": [
+        "Это не сработает...",
+        "Нет, не подходит.",
+        "Бесполезно..."
+      ]
+    },
+    "craft_station": {
+      "cooldown": 0,
+      "lines": [
+        "Тут нужна наковальня."
+      ]
+    },
+    "craft_no_room": {
+      "cooldown": 0,
+      "lines": [
+        "Некуда положить."
+      ]
+    },
+    "hint_world_use": {
+      "cooldown": 30,
+      "lines": [
+        "Хм, если поднести к этому..."
+      ]
+    },
+    "place_invalid": {
+      "cooldown": 0,
+      "lines": [
+        "Сюда нельзя поставить...",
+        "Это нельзя поставить."
+      ]
+    },
+    "need_fire": {
+      "cooldown": 20,
+      "lines": [
+        "Нужно чем-то поджечь..."
+      ]
+    },
+    "butcher_no_knife": {
+      "cooldown": 20,
+      "lines": [
+        "Без ножа много не возьмёшь..."
+      ]
+    },
+    "loot_empty": {
+      "cooldown": 0,
+      "lines": [
+        "Ничего полезного..."
+      ]
+    },
+    "skill_strength_1": {
+      "cooldown": 0,
+      "lines": [
+        "Чувствую силу в руках"
+      ]
+    },
+    "skill_strength_2": {
+      "cooldown": 0,
+      "lines": [
+        "Удары стали увереннее..."
+      ]
+    },
+    "skill_strength_3": {
+      "cooldown": 0,
+      "lines": [
+        "Эта мощь... она моя"
+      ]
+    },
+    "skill_toughness_1": {
+      "cooldown": 0,
+      "lines": [
+        "Тело привыкает к ударам"
+      ]
+    },
+    "skill_toughness_2": {
+      "cooldown": 0,
+      "lines": [
+        "Боль уже не так пугает..."
+      ]
+    },
+    "skill_toughness_3": {
+      "cooldown": 0,
+      "lines": [
+        "Я выдержу что угодно"
+      ]
+    },
+    "skill_agility_1": {
+      "cooldown": 0,
+      "lines": [
+        "Руки двигаются быстрее..."
+      ]
+    },
+    "skill_agility_2": {
+      "cooldown": 0,
+      "lines": [
+        "Движения становятся плавнее"
+      ]
+    },
+    "skill_agility_3": {
+      "cooldown": 0,
+      "lines": [
+        "Клинок словно часть меня"
+      ]
+    },
+    "skill_accuracy_1": {
+      "cooldown": 0,
+      "lines": [
+        "Рука уже не дрожит..."
+      ]
+    },
+    "skill_accuracy_2": {
+      "cooldown": 0,
+      "lines": [
+        "Вижу куда целить"
+      ]
+    },
+    "skill_accuracy_3": {
+      "cooldown": 0,
+      "lines": [
+        "Каждый удар находит цель"
+      ]
+    },
+    "skill_endurance_1": {
+      "cooldown": 0,
+      "lines": [
+        "Дорога уже не так утомляет..."
+      ]
+    },
+    "skill_endurance_2": {
+      "cooldown": 0,
+      "lines": [
+        "Ноги несут легко"
+      ]
+    },
+    "skill_endurance_3": {
+      "cooldown": 0,
+      "lines": [
+        "Могу идти бесконечно"
+      ]
+    },
+    "skill_carry_capacity_1": {
+      "cooldown": 0,
+      "lines": [
+        "Привыкаю к тяжести..."
+      ]
+    },
+    "skill_carry_capacity_2": {
+      "cooldown": 0,
+      "lines": [
+        "Ноша кажется легче"
+      ]
+    },
+    "skill_carry_capacity_3": {
+      "cooldown": 0,
+      "lines": [
+        "Тащу как вол и не устаю"
+      ]
+    }
+  }
+}
