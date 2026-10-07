@@ -9,6 +9,7 @@
 4. `docs/agent-handbook.md` — хост, ПК автора, общие ресурсы с The Chest; темы — `docs/handbook/`. Новое общее знание — туда, а не в личную память инструмента.
 5. `docs/april-review.md` — что из апреля стоит взять (правила, числа, тексты, конфиги, инструменты) и что нет; код не переносим, пишем заново.
 6. `docs/decisions/` — ADR. Решение, принятое автором, записывается ADR и не переспрашивается.
+7. Агенты — `.claude/agents/` (architect, code-writer, content-writer, level-designer, qa-tester, frame-critic; общее — `docs/handbook/agents-common.md`); навыки — `.claude/skills/zd-unity-bridge`, `zd-build`, `zd-art-pipeline`, `zd-taste-sheet`.
 
 ## Зафиксированные решения (не переспрашивать)
 - **Стиль:** 2D billboard-спрайты персонажей в 3D-мире (как Don't Starve), «книжная иллюстрация» — перо + акварель, палитра приглушённая тёплая. Персонажи, NPC, враги генерируются нейросетью на ПК автора (ADR-0001).

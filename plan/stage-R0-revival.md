@@ -9,7 +9,7 @@
 - [x] R0-04 Реестр апрельского кода — `docs/inventory-2026-04.md`
 - [ ] R0-05 Сторож правил (хук) и `tools/check.sh`
 - [x] R0-06 Разбор купленной библиотеки Asset Store под Zelda — `docs/research/asset-library-zd.md`, 2026-09-30
-- [ ] R0-07 Агенты и навыки: пересмотр 5 субагентов, `frame-critic`, навыки `zd-*`
+- [x] R0-07 Агенты и навыки: 5 агентов переписаны под план 0.2 (ядро, данные, мост), `frame-critic`, навыки `zd-unity-bridge`, `zd-build` (заготовка до модуля Android), `zd-art-pipeline`, `zd-taste-sheet`; ссылки в CLAUDE.md (2026-10-08)
 
 ---
 

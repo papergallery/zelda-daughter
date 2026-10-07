@@ -1,0 +1,27 @@
+---
+name: zd-unity-bridge
+description: Проверить Unity-код Zelda's Daughter в редакторе на ПК автора через мост TensorLay — перенос файлов, перекомпиляция, консоль, сборка сцен из конфига, PlayMode-тесты. Использовать после любой правки в ZeldaDaughter/ или core/, до коммита Unity-кода в master.
+---
+
+# Мост к редактору Zelda
+
+Unity есть только на ПК автора (ADR-0003). С сервера: мост TensorLay `127.0.0.1:6520` (`/var/www/html/Other/tensorlay/tools/bridge/tlbridge.py`) запускает PowerShell на ПК; там `C:\dev\zelda-tools\umcp.py` говорит с сервером unity-mcp `127.0.0.1:6510`, общим с The Chest (R1-02). Скрипты — `tools/pc/` (README там).
+
+## Перед началом
+1. `tools/resources.sh` — на ПК C: ≥ 20 ГБ и память ≥ 4 ГБ, иначе не запускать Unity.
+2. `tlbridge.py ping` — мост жив. Нет — записать в `docs/for-author.md` и делать серверные задачи.
+3. Скрипты на месте: `tlbridge.py put tools/pc/<f> C:/dev/zelda-tools/<f>` (и `umcp.py` из `/var/www/html/thechest/tools/umcp.py`).
+
+## Цикл проверки
+1. Файлы на ПК: архив `tar -cf … <пути>` → `put` → `tar -xf` в `C:\dev\zelda` (или `zd-sync.ps1` после пуша).
+2. `zd-refresh.ps1` → ждать `zd-state.ps1` = `compiling=False failed=False`.
+3. `zd-check.ps1`: `projectRoot` = `C:/dev/zelda/ZeldaDaughter` (иначе ответил чужой редактор — стоп) и 0 ошибок/предупреждений.
+4. Сцены: `zd-build.ps1` → `[ZD:Scene] built … hash=…` дважды одинаковый.
+5. PlayMode: `run_tests` `{"mode":"PlayMode","assembly_names":["ZeldaDaughter.Tests.PlayMode"]}` → `get_test_job` до `succeeded`; итог — `docs/test-runs/`.
+6. Файлы, которые Unity создал или поменял (сцены, материалы, ProjectSettings, `.meta`), — забрать архивом обратно; концы строк — LF (`.gitattributes`); `git status` на ПК после `zd-sync` должен быть чистым.
+7. `run_tests` включает Enter Play Mode Options — `zd-apply.ps1` возвращает.
+
+## Нельзя
+- Закрывать или перезапускать редакторы и сервер моста (сервер принадлежит редактору The Chest).
+- Запускать Unity через мост без задачи планировщика `RunLevel Limited` — иначе окно и файлы от администратора (`docs/agent-handbook.md`).
+- `-batchmode` по проекту, открытому в редакторе.

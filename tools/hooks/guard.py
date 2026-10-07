@@ -107,7 +107,7 @@ def main():
         deny("R0-05: в вызове настоящий токен с этого сервера. Читать его из файла внутри команды, не вписывать значение.")
         return 0
 
-    if tool == "Bash" and re.search(r"flock[^|;&\n]*check\.sh", text):
+    if tool == "Bash" and re.search(r"(^|[;&|(]|\bthen\b|\bdo\b)\s*flock(\s+-\S+)*\s+\S+\s+(\S*/)?check\.sh\b", text, re.M):
         deny("R0-05: tools/check.sh берёт общую блокировку сам — запускать без flock снаружи, иначе он ждёт сам себя.")
         return 0
     if tool == "Bash" and HEAVY.search(text) and "flock" not in text:
