@@ -49,6 +49,15 @@ namespace ZeldaDaughter.Core.Tests
         }
 
         [Fact]
+        public void Pickup_items_exist()
+        {
+            var items = ZeldaDaughter.Core.Data.DataSet.Load(TestPaths.DataRoot).Items;
+            foreach (var f in Directory.GetFiles(ScenesDir, "*.json"))
+                foreach (var o in SceneConfig.Parse(File.ReadAllText(f)).Objects.Where(o => o.Item != null))
+                    Assert.True(items.ContainsKey(o.Item!), $"{Path.GetFileName(f)}: {o.Id} → {o.Item}");
+        }
+
+        [Fact]
         public void Problems_are_named()
         {
             var c = SceneConfig.Parse("{\"name\":\"t\",\"ground\":{\"sizeX\":10,\"sizeZ\":10},\"camera\":{\"pitch\":35,\"distance\":20,\"size\":8}," +

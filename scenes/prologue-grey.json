@@ -192,7 +192,8 @@
    "color": "#7a5a3a",
    "tags": [
     "pickup"
-   ]
+   ],
+   "item": "stick"
   },
   {
    "id": "field",
@@ -264,7 +265,8 @@
    "color": "#4f6b3a",
    "tags": [
     "pickup"
-   ]
+   ],
+   "item": "berries"
   },
   {
    "id": "tree_1",

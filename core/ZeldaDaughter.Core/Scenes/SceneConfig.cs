@@ -137,5 +137,7 @@ namespace ZeldaDaughter.Core.Scenes
         public V3 Scale { get; set; } = new V3(1, 1, 1);
         public string? Color { get; set; }
         public List<string> Tags { get; set; } = new List<string>();
+        /// <summary>Item id from data/items.json the hero picks up by tapping this object.</summary>
+        public string? Item { get; set; }
     }
 }

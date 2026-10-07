@@ -25,6 +25,15 @@ namespace ZeldaDaughter.Core.Data
         public DataException(IReadOnlyList<string> problems) : base("data/: " + string.Join("; ", problems)) { Problems = problems; }
     }
 
+    /// <summary>data/session.json (T-10): how the game session paces saving and bubbles.</summary>
+    public sealed class SessionSettings
+    {
+        public float AutosaveSeconds { get; set; }
+        public float RemarkBubbleSeconds { get; set; }
+        public float NpcBubbleSeconds { get; set; }
+        public float RemarkCheckSeconds { get; set; }
+    }
+
     /// <summary>All of data/*.json, loaded and cross-checked once (C-05, ADR-0008). Unity reads the same files.</summary>
     public sealed class DataSet
     {
@@ -45,6 +54,7 @@ namespace ZeldaDaughter.Core.Data
         public RemarkSettings Remarks { get; private set; } = new RemarkSettings();
         public OnboardingSettings Onboarding { get; private set; } = new OnboardingSettings();
         public DialogueSettings Dialogues { get; private set; } = new DialogueSettings();
+        public SessionSettings Session { get; private set; } = new SessionSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -70,6 +80,7 @@ namespace ZeldaDaughter.Core.Data
                 Remarks = Read<RemarkSettings>(read, "remarks.json", problems),
                 Onboarding = Read<OnboardingSettings>(read, "onboarding.json", problems),
                 Dialogues = Read<DialogueSettings>(read, "dialogues.json", problems),
+                Session = Read<SessionSettings>(read, "session.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);

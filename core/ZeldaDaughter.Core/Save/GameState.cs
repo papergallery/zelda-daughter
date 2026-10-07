@@ -42,5 +42,8 @@ namespace ZeldaDaughter.Core.Save
         public float HeroHeight { get; set; }
         public float HeroFacingDegrees { get; set; }
         public string Zone { get; set; } = "";
+
+        /// <summary>World objects the hero took (picked-up items) — they do not come back after a load.</summary>
+        public System.Collections.Generic.HashSet<string> Picked { get; } = new System.Collections.Generic.HashSet<string>(StringComparer.Ordinal);
     }
 }

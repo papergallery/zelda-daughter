@@ -17,6 +17,8 @@ namespace ZeldaDaughter.Core.Onboarding
         public string ShowWhen { get; set; } = "start";
         /// <summary>The action that completes it (swipe, tap, long_press_hero).</summary>
         public string DoneBy { get; set; } = "";
+        /// <summary>Placeholder text until the hint has its look (R2-07).</summary>
+        public string Text { get; set; } = "";
     }
 
     /// <summary>
@@ -46,6 +48,12 @@ namespace ZeldaDaughter.Core.Onboarding
         }
 
         public bool AllDone => _done.Count >= _s.Hints.Count;
+
+        public string TextOf(string id)
+        {
+            foreach (var h in _s.Hints) if (h.Id == id) return h.Text;
+            return "";
+        }
         public IReadOnlyCollection<string> Done => _done;
 
         /// <summary>The player did an action (swipe, tap, long_press_hero).</summary>

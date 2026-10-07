@@ -48,6 +48,7 @@ namespace ZeldaDaughter.Core.Save
             s.MetNpcs = g.Language.MetNpcs.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.HeardLines = g.Language.HeardLines.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.HintsDone = g.Hints.Done.OrderBy(x => x, StringComparer.Ordinal).ToList();
+            s.Picked = g.Picked.OrderBy(x => x, StringComparer.Ordinal).ToList();
             return JsonConvert.SerializeObject(s, Json);
         }
 
@@ -68,6 +69,8 @@ namespace ZeldaDaughter.Core.Save
             g.Crafting.Restore(s.KnownRecipes);
             g.Language.Restore(s.Understanding, s.MetNpcs, s.HeardLines);
             g.Hints.Restore(s.HintsDone);
+            g.Picked.Clear();
+            foreach (var p in s.Picked) g.Picked.Add(p);
         }
 
         /// <summary>Write so that a crash mid-write never leaves a broken slot: temp → replace; the old one stays as .bak.</summary>
@@ -118,6 +121,7 @@ namespace ZeldaDaughter.Core.Save
             public List<string> MetNpcs { get; set; } = new List<string>();
             public List<string> HeardLines { get; set; } = new List<string>();
             public List<string> HintsDone { get; set; } = new List<string>();
+            public List<string> Picked { get; set; } = new List<string>();
         }
 
         sealed class StackDto
