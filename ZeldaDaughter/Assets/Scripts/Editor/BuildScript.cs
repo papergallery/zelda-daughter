@@ -23,7 +23,10 @@ namespace ZeldaDaughter.Editor
         public static string Build(BuildTarget target, bool debug)
         {
             DataSync.Sync();
-            SceneBuilder.BuildAll();
+            // Scenes are built from config as their own step (SceneBuilder.BuildAll) and committed: rebuilding here would give
+            // every build new fileIDs in the .unity files and a dirty working copy (2026-10-08).
+            var missing = EditorBuildSettings.scenes.Where(sc => sc.enabled && !File.Exists(sc.path)).Select(sc => sc.path).ToArray();
+            if (missing.Length > 0) throw new InvalidOperationException("[ZD:Build] scenes missing — run SceneBuilder.BuildAll: " + string.Join(", ", missing));
             string kind = debug ? "debug" : "release";
             string dir = Path.Combine(OutRoot, $"{target}-{kind}");
             string file = target == BuildTarget.Android ? "ZeldaDaughter.apk" : "ZeldaDaughter.exe";
