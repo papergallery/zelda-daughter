@@ -60,11 +60,15 @@ namespace ZeldaDaughter.Editor
 
             var asset = EnsurePipeline();
             GraphicsSettings.defaultRenderPipeline = asset;
+            // What URP sets by itself on the first interactive open — explicit, so Apply() is the only source.
+            GraphicsSettings.lightsUseLinearIntensity = true;
+            GraphicsSettings.lightsUseColorTemperature = true;
             int current = QualitySettings.GetQualityLevel();
             for (int i = 0; i < QualitySettings.names.Length; i++)
             {
                 QualitySettings.SetQualityLevel(i, false);
                 QualitySettings.renderPipeline = asset;
+                QualitySettings.antiAliasing = 0; // MSAA lives in the URP asset
             }
             QualitySettings.SetQualityLevel(current, false);
             AssetDatabase.SaveAssets();
@@ -92,6 +96,9 @@ namespace ZeldaDaughter.Editor
             Check("textures.android", EditorUserBuildSettings.androidBuildSubtarget, MobileTextureSubtarget.ASTC);
             Check("activeInputHandler", GetProjectSetting("activeInputHandler"), 1);
 
+            Check("lights.linearIntensity", GraphicsSettings.lightsUseLinearIntensity, true);
+            Check("lights.colorTemperature", GraphicsSettings.lightsUseColorTemperature, true);
+            Check("quality.antiAliasing", QualitySettings.antiAliasing, 0);
             var asset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(PipelinePath);
             Check("pipeline.asset", asset != null, true);
             Check("pipeline.default", GraphicsSettings.defaultRenderPipeline == asset && asset != null, true);

@@ -81,3 +81,9 @@ test_results/
 
 # --- .NET core (C-01): build output of core/ (UseArtifactsOutput)
 /core/artifacts/
+
+# --- Unity IDE files of ZeldaDaughter/
+/ZeldaDaughter/.vsconfig
+/ZeldaDaughter/*.slnx
+/ZeldaDaughter/*.sln
+/ZeldaDaughter/*.csproj
