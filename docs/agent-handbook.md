@@ -15,7 +15,8 @@
 - **Busy-файлы общие:** видеокарта — `/tmp/thechest-gpu.busy` (генерация арта Zelda тоже её занимает), редактор Zelda — `/tmp/zelda-unity.busy`. Занять: `echo "<агент> <ID> $(date -Is)" > файл`; освободить: `: > файл`. Чужой busy — ждать.
 - Генерация картинок — ComfyUI `8188` / SD Forge `7860` на ПК (поднимает автор). Пайплайн — `/var/www/html/Other/gpu-tunnel/character_pipeline/`.
 - Редактор не закрывать и не убивать — с ним умирает мост. Мост молчит после сборки — почти всегда модальное окно.
-- Клон на ПК — `C:\dev\zelda` (план, R1-01). Репозиторий — `github.com/papergallery/zelda-daughter`.
+- Клон на ПК — `C:\dev\zelda` (план, R1-01). Репозиторий — `github.com/papergallery/zelda-daughter`, **публичный** (ADR-0006): всё, что в git, видно всем. Push с сервера — deploy key `~/.ssh/zelda_deploy`, хост `github.com-zelda` в `~/.ssh/config` (remote `git@github.com-zelda:papergallery/zelda-daughter.git`), с 2026-10-07.
+- **Мост Zelda (R1-02) не подключён:** адрес сервера пакета unity-mcp — в EditorPrefs, общих для всех проектов ПК; второй редактор с пакетом встанет на сервер 6510 The Chest, и вызовы без `set_active_instance` у The Chest начнут падать. Пакет в Zelda не добавлять, пока автор не выбрал схему (`plan/stage-R1-environment.md`, R1-02).
 
 ## 3. Грабли апреля, которые ещё актуальны
 - **Library/Temp.** Не удалять `Library/` и `Temp/` целиком — полный переимпорт (в апреле 60+ мин на сервере). Застрявший лок — удалить только `Temp/UnityLockfile`, предварительно убедившись, что редактор не запущен.
