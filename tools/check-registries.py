@@ -41,6 +41,10 @@ def expect(name, table_, ids, files=()):
         has_files = any(rec.get(f) for f in files)
         if not rec.get("placeholder") and not has_files:
             errors.append(f"{name}: '{k}' has neither placeholder:true nor {'/'.join(files)}")
+        for pose, paths in (rec.get("poses") or {}).items():  # D-11/D-12: <action>_<view> -> frames
+            for p in paths:
+                if not (UNITY / p).exists():
+                    errors.append(f"{name}: '{k}' pose {pose} file missing: {p}")
         for f in files:
             v = rec.get(f)
             for p in ([v] if isinstance(v, str) else v or []):

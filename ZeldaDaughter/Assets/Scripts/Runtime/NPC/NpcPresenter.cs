@@ -87,6 +87,17 @@ namespace ZeldaDaughter.NPC
             _session.Events.NpcGesture -= OnGesture;
         }
 
+        /// <summary>Residents who work at a station while their shop hours last (D-12): id → the scene object they beat on.</summary>
+        private static readonly Dictionary<string, string> WorkTargets = new Dictionary<string, string>(StringComparer.Ordinal) { { "smith", "station_anvil" } };
+
+        /// <summary>At work (the Trade slot) she beats her station; in any other slot she does not.</summary>
+        private void UpdateWork(NpcView v, string npcId, NpcActivity activity)
+        {
+            if (activity == NpcActivity.Trade && WorkTargets.TryGetValue(npcId, out var targetId) && _session.Index.Find(targetId) != null)
+                v.Work(_session.Index.Find(targetId).transform.position);
+            else v.StopWork();
+        }
+
         private static string Key(string from, string to) => from + ">" + to;
 
         private void OnReady(GameState g)
@@ -147,6 +158,7 @@ namespace ZeldaDaughter.NPC
             var v = View(c.NpcId);
             if (v == null) return;
             bool sleep = c.Activity == NpcActivity.Sleep;
+            UpdateWork(v, c.NpcId, c.Activity);
             if (!TryPlace(c.NpcId, c.ToAnchor, c.Activity, out var dest))
             {
                 if (_warned.Add(c.ToAnchor)) ZdLog.Warn("Npc", $"no anchor '{c.ToAnchor}' in this scene: {c.NpcId} stays where she is");

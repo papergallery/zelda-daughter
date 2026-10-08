@@ -15,6 +15,13 @@ namespace ZeldaDaughter.Rendering
         public bool Lying;
         /// <summary>The whole figure is raised off the ground, metres (the bounce of a step, a hop of a blow).</summary>
         public float Lift;
+        /// <summary>
+        /// A drawn pose of the set (D-09: «attack», «pickup», «hurt», «eat», «point», «strike»). Shown instead of the walking frame when the
+        /// set has it; then the lean, crouch and lift (made by code for a silhouette with no such picture) are not applied — the drawing says it.
+        /// </summary>
+        public string Action;
+        /// <summary>0 … 1 along the pose's frames (the first frame at 0, the last at 1).</summary>
+        public float ActionPhase;
 
         public static BillboardPose Stand => default;
     }
@@ -48,6 +55,9 @@ namespace ZeldaDaughter.Rendering
         private BillboardPose _pose;
         private Facing _facing = Facing.Front;
         private bool _mirrored;
+        private bool _sideLeft;       // the last sideways move was to the left of the screen (side poses are drawn facing right)
+        private bool _flip;           // the card is drawn flipped now
+        private bool _drawnPose;      // the frame shown is a drawn pose (action / lying): no lean or squash on top
         private float _path;
         private bool _moving;
         private Sprite _shown;
@@ -65,6 +75,10 @@ namespace ZeldaDaughter.Rendering
         /// <summary>The card, for tests and effects (its rotation faces the camera, its scale is the figure's size).</summary>
         public Transform Card { get { EnsureBuilt(); return _card; } }
         public Camera Camera => _camera;
+        /// <summary>The set has a drawn pose of this action (for any view).</summary>
+        public bool HasPose(string action) => Set().HasPose(action);
+        /// <summary>A drawn pose is on the card now (an action frame or the lying one).</summary>
+        public bool ShowsDrawnPose => _drawnPose;
         /// <summary>Metres walked per full cycle of frames (of the current set).</summary>
         public float StrideMeters => Set().StrideMeters;
         /// <summary>Number of frames in the walking cycle of the facing now (1 when the set is a single picture).</summary>
@@ -101,6 +115,7 @@ namespace ZeldaDaughter.Rendering
             // Hysteresis (SpriteLook.FacingHysteresis): the side view is left only when the other axis wins clearly, and entered only when
             // the sideways axis wins clearly — so a walk along a diagonal does not flicker between the views.
             float h = Mathf.Max(1f, LookOrDefault().FacingHysteresis);
+            if (Mathf.Abs(x) > 1e-4f) _sideLeft = x < 0f;
             float ax = Mathf.Abs(x), ay = Mathf.Abs(y);
             Facing facing;
             bool mirrored = _mirrored;
@@ -197,7 +212,25 @@ namespace ZeldaDaughter.Rendering
             var frames = set.Frames(_facing);
             int count = Mathf.Max(1, frames.Length);
             int frame = _moving && count > 1 && set.StrideMeters > 0f ? (int)(_path / set.StrideMeters * count) % count : 0;
-            Sprite sprite = _pose.Lying && set.Down != null ? set.Down : (frames.Length > 0 ? frames[frame] : null);
+            Sprite sprite;
+            _drawnPose = false;
+            _flip = _facing == Facing.Side && _mirrored; // the front and back views are drawn as they are
+            Sprite[] acted;
+            Facing view;
+            if (_pose.Lying && set.Down != null)
+            {
+                sprite = set.Down;                       // lies on the ground, drawn facing right
+                _drawnPose = true;
+                _flip = _sideLeft;
+            }
+            else if (!_pose.Lying && !string.IsNullOrEmpty(_pose.Action) && (acted = set.Pose(_pose.Action, _facing, out view)) != null)
+            {
+                int n = acted.Length;
+                sprite = acted[Mathf.Clamp((int)(Mathf.Clamp01(_pose.ActionPhase) * n), 0, n - 1)];
+                _drawnPose = true;
+                _flip = view == Facing.Side && _sideLeft;
+            }
+            else sprite = frames.Length > 0 ? frames[frame] : null;
             if (sprite != _shown) { _shown = sprite; _dirty = true; }
             FrameIndex = frame;
 
@@ -205,24 +238,26 @@ namespace ZeldaDaughter.Rendering
             if (_dirty) Paint(sprite);
         }
 
+
         private void ApplyPose(CharacterSpriteSet set, Sprite sprite)
         {
             if (sprite == null) { _card.gameObject.SetActive(false); return; }
             _card.gameObject.SetActive(true);
             var rect = sprite.rect;
             float ppm = Mathf.Max(1f, set.PixelsPerMeter);
-            float w = rect.width / ppm, h = rect.height / ppm * (1f - 0.3f * Mathf.Clamp01(_pose.Crouch));
+            float crouch = _drawnPose ? 0f : _pose.Crouch, tiltDeg = _drawnPose ? 0f : _pose.TiltDegrees, lift = _drawnPose ? 0f : _pose.Lift;
+            float w = rect.width / ppm, h = rect.height / ppm * (1f - 0.3f * Mathf.Clamp01(crouch));
             var pivot = new Vector2(sprite.pivot.x / rect.width, sprite.pivot.y / rect.height);
 
             var face = _camera != null ? _camera.transform.rotation : Quaternion.identity;
             float shake = _pose.Shake > 0f ? Mathf.Sin(Time.time * 70f) * _pose.Shake : 0f;
-            var tilt = Quaternion.Euler(0f, 0f, -_pose.TiltDegrees - (_pose.Lying && set.Down == null ? 90f : 0f));
+            var tilt = Quaternion.Euler(0f, 0f, -tiltDeg - (_pose.Lying && set.Down == null ? 90f : 0f));
             _card.rotation = face * tilt;
-            _card.localScale = new Vector3(_mirrored ? -w : w, h, 1f);
+            _card.localScale = new Vector3(_flip ? -w : w, h, 1f);
             // the quad's origin is bottom-centre; move it so the sprite's pivot (the feet) sits on this object's origin
             var look = LookOrDefault();
-            var offset = _card.rotation * new Vector3((_mirrored ? -1f : 1f) * (0.5f - pivot.x) * w + shake, -pivot.y * h + (_pose.Lying ? look.LyingLift : 0f), 0f);
-            _card.position = transform.position + offset + Vector3.up * _pose.Lift;
+            var offset = _card.rotation * new Vector3((_flip ? -1f : 1f) * (0.5f - pivot.x) * w + shake, -pivot.y * h + (_pose.Lying && set.Down == null ? look.LyingLift : 0f), 0f);
+            _card.position = transform.position + offset + Vector3.up * lift;
 
             float sw = look.ShadowWidthMeters, depth = sw * 0.6f;
             _shadow.rotation = Quaternion.Euler(90f, 0f, 0f); // lies flat; the quad's long edge then runs along +Z from its origin
@@ -235,7 +270,7 @@ namespace ZeldaDaughter.Rendering
             _dirty = false;
             if (sprite == null) return;
             var tex = sprite.texture;
-            var r = sprite.textureRect;
+            var r = sprite.rect; // not textureRect: for a Tight-mesh sprite Unity gives the trimmed box there and the picture would be stretched over the card (D-21 frame)
             _cardRenderer.GetPropertyBlock(_block);
             _block.SetTexture(BaseMap, tex);
             _block.SetVector(BaseMapST, new Vector4(r.width / tex.width, r.height / tex.height, r.x / tex.width, r.y / tex.height));

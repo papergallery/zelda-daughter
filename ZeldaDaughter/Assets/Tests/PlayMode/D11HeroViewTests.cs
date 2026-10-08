@@ -6,7 +6,9 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using ZeldaDaughter.Core.Common;
 using ZeldaDaughter.Core.Condition;
+using ZeldaDaughter.Core.World;
 using ZeldaDaughter.Game;
 using ZeldaDaughter.Hero;
 using ZeldaDaughter.Rendering;
@@ -264,6 +266,58 @@ namespace ZeldaDaughter.Tests
             Assert.AreEqual(0f, _sprite.Pose.Crouch, 0.02f);
         }
 
+        // ------------------------------------------------------------------ criterion 6: the drawn poses of D-09
+
+        string Shown() => _sprite.CurrentSprite != null ? _sprite.CurrentSprite.name : "";
+
+        [UnityTest]
+        public IEnumerator The_hands_show_the_drawn_poses_a_blow_in_two_frames_and_mirrored_to_the_left()
+        {
+            Assume.That(_sprite.HasPose("attack"), "the registry has the D-09 poses");
+            _s.Events.RaiseHeroActed(new HeroAct(HeroActKind.Strike, _hero.transform.position + CamRight() * 2f));
+            var seen = new List<string>();
+            for (int i = 0; i < 40 && _view.Acting; i++) { yield return null; if (Shown() != (seen.Count > 0 ? seen[seen.Count - 1] : null)) seen.Add(Shown()); }
+            Assert.AreEqual(new[] { "heroine_side_attack_0", "heroine_side_attack_1" }, seen.GetRange(0, Mathf.Min(2, seen.Count)).ToArray(), "wind-up, then the thrust");
+            yield return new WaitForSeconds(0.7f);
+
+            _s.Events.RaiseHeroActed(new HeroAct(HeroActKind.Strike, _hero.transform.position - CamRight() * 2f));
+            yield return new WaitForSeconds(0.1f);
+            StringAssert.StartsWith("heroine_side_attack", Shown());
+            Assert.Less(_sprite.Card.localScale.x, 0f, "to the left of the screen: the drawing is mirrored");
+            Assert.Less(Quaternion.Angle(_sprite.Card.rotation, Camera.main.transform.rotation), 0.5f, "a drawn pose is not leaned on top");
+            yield return new WaitForSeconds(0.7f);
+
+            _s.Events.RaiseHeroActed(new HeroAct(HeroActKind.Pickup));
+            yield return new WaitForSeconds(0.15f);
+            Assert.AreEqual("heroine_front_pickup_0", Shown());
+            Assert.Greater(_sprite.Card.localScale.x, 0f, "the front view is never mirrored");
+            yield return new WaitForSeconds(0.7f);
+            _s.Events.RaiseHeroActed(new HeroAct(HeroActKind.Eat));
+            yield return new WaitForSeconds(0.15f);
+            Assert.AreEqual("heroine_front_eat_0", Shown());
+            yield return new WaitForSeconds(1.0f);
+            StringAssert.DoesNotContain("eat", Shown());
+        }
+
+        [UnityTest]
+        public IEnumerator A_wounded_hero_holds_her_side_standing_and_walks_on_the_step_frames_a_knockout_lies_on_the_drawn_frame()
+        {
+            Assume.That(_sprite.HasPose("hurt"), "the registry has the D-09 poses");
+            _s.State.Condition.Wound(WoundType.Cut, 0.8f);
+            yield return new WaitForSeconds(0.8f);
+            Assert.AreEqual("heroine_front_hurt_0", Shown(), "standing with a cut: the hand at the side");
+            yield return Walk(CamRight(), 0.6f);
+            StringAssert.StartsWith("heroine_side_", Shown());
+            StringAssert.DoesNotContain("hurt", Shown(), "walking: the step");
+            _s.State.Condition.Treat("bandage");
+
+            _s.State.Condition.Damage(10000f);
+            yield return new WaitForSeconds(0.7f);
+            Assert.IsTrue(_view.IsDown);
+            Assert.AreEqual("heroine_side_down_0", Shown(), "the knockout: the drawn lying frame");
+            Assert.Less(Quaternion.Angle(_sprite.Card.rotation, Camera.main.transform.rotation), 0.5f, "not turned: it is drawn lying");
+        }
+
         // ------------------------------------------------------------------ criterion 4: wounds without numbers
 
         [UnityTest]
@@ -384,7 +438,16 @@ namespace ZeldaDaughter.Tests
             Assert.Less(Mathf.Abs(shadow.transform.eulerAngles.x - 90f), 0.1f, "lying flat on the ground");
             Assert.NotNull(_sprite.CurrentSprite);
             foreach (var r in _hero.GetComponentsInChildren<MeshRenderer>(true))
-                if (r.transform != card.transform && r.transform != shadow.transform) Assert.IsFalse(r.enabled, "the capsule is not drawn");
+                if (r.transform != card.transform && r.transform != shadow.transform) Assert.IsFalse(r.enabled, "the capsule is not drawn: " + r.name + " (" + r.GetType().Name + ", under " + r.transform.parent.name + ")");
+            // the picture is not stretched: the card has the proportions of the PNG and shows the whole of it (a Tight sprite's textureRect is the trimmed box)
+            var cur = _sprite.CurrentSprite;
+            var sc = _sprite.Card.localScale;
+            Assert.AreEqual(cur.rect.width / cur.rect.height, Mathf.Abs(sc.x) / sc.y, 0.03f * cur.rect.width / cur.rect.height, "card proportions = PNG proportions");
+            var pb = new MaterialPropertyBlock();
+            card.GetPropertyBlock(pb);
+            var st = pb.GetVector("_BaseMap_ST");
+            Assert.AreEqual(1f, st.x, 1e-3f, "the whole width of the picture");
+            Assert.AreEqual(1f, st.y, 1e-3f, "the whole height of the picture");
             var feet = _sprite.transform.position.y;
             Assert.AreEqual(_hero.transform.position.y - 1f, feet, 0.01f, "the figure stands on the ground under the capsule's centre");
         }
@@ -396,7 +459,7 @@ namespace ZeldaDaughter.Tests
         Texture2D Crop(Texture2D full, Vector3 world)
         {
             var s = Camera.main.WorldToScreenPoint(world + Vector3.up * 0.9f);
-            int h = Mathf.Min(full.height, Mathf.RoundToInt(full.height * 0.2f)), w = Mathf.RoundToInt(h * 0.7f);
+            int h = Mathf.Min(full.height, Mathf.RoundToInt(full.height * 0.2f)), w = Mathf.RoundToInt(h * 0.9f);
             int x = Mathf.Clamp(Mathf.RoundToInt(s.x) - w / 2, 0, full.width - w), y = Mathf.Clamp(Mathf.RoundToInt(s.y) - h / 2, 0, full.height - h);
             var t = new Texture2D(w, h, TextureFormat.RGB24, false);
             t.SetPixels(full.GetPixels(x, y, w, h));
@@ -464,10 +527,10 @@ namespace ZeldaDaughter.Tests
 
             // the hands
             parts.Clear();
-            foreach (var kind in new[] { HeroActKind.Strike, HeroActKind.Pickup, HeroActKind.Eat, HeroActKind.Butcher })
+            foreach (var (kind, wait) in new[] { (HeroActKind.Strike, 0.06f), (HeroActKind.Strike, 0.30f), (HeroActKind.Pickup, 0.15f), (HeroActKind.Eat, 0.15f), (HeroActKind.Butcher, 0.35f) })
             {
                 _s.Events.RaiseHeroActed(new HeroAct(kind, kind == HeroActKind.Strike ? _hero.transform.position + CamRight() * 2f : default));
-                yield return new WaitForSeconds(kind == HeroActKind.Butcher ? 0.35f : 0.15f);
+                yield return new WaitForSeconds(wait);
                 Texture2D shot = null;
                 yield return Shot(t => shot = t);
                 parts.Add(Crop(shot, _hero.transform.position - Vector3.up));
@@ -528,6 +591,39 @@ namespace ZeldaDaughter.Tests
                 yield return null;
             }
             Assert.IsTrue(darkSaved, "the dark frame");
+        }
+
+        /// <summary>D-11 criterion 6 / task point 3: at night a campfire lights the figure (the sprite takes light) — a frame of the hero at the fire, day for comparison.</summary>
+        [UnityTest]
+        public IEnumerator Frame_of_the_hero_at_night_by_the_campfire()
+        {
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/region.unity", new LoadSceneParameters(LoadSceneMode.Single));
+            yield return null;
+            Grab();
+            _hero.UseDpi(160f);
+            var g = _s.State;
+            var at = _hero.transform.position;
+            g.Clock.SetTime(1, 0.5);
+            yield return new WaitForSeconds(0.8f);
+            Texture2D day = null;
+            yield return Shot(t => day = t);
+            Save(Crop(day, _hero.transform.position - Vector3.up), "day_for_light");
+            Object.Destroy(day);
+
+            g.Clock.SetTime(1, 0.0);
+            g.Bag.Add("firewood");
+            g.Bag.Add("flint");
+            var fireAt = at + CamRight() * 1.6f - CamForward() * 0.4f;
+            var placed = g.Camp.Place("firewood", new Vec2(fireAt.x, fireAt.z));
+            var used = g.Camp.Use(placed.Object.Id, "flint");
+            _s.Events.RaisePlaced(placed.Object);
+            _s.Events.RaiseUsedOnWorld(placed.Object.Id, used);
+            _s.BagChanged("frame");
+            yield return new WaitForSeconds(2.5f);
+            Texture2D night = null;
+            yield return Shot(t => night = t);
+            Save(night, "night_campfire");
+            Object.Destroy(night);
         }
     }
 }

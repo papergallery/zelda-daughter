@@ -32,6 +32,12 @@ namespace ZeldaDaughter.NPC
         private float _holdUntil;
         private float _poseUntil;
         private Vector3 _heading = Vector3.back;
+        private bool _working, _workShown;
+        private Vector3 _workPoint;
+        private float _workT;
+
+        /// <summary>The blow cycle of a worker: the tool up for this long, then down for <see cref="StrikeDownSeconds"/>, s.</summary>
+        public const float StrikeUpSeconds = 0.8f, StrikeDownSeconds = 0.3f;
 
         public string Id => _id;
         public BillboardSprite Figure => _figure;
@@ -45,6 +51,10 @@ namespace ZeldaDaughter.NPC
         public IReadOnlyList<Vector3> Waypoints => _path;
         public int NextWaypoint => _next;
         public bool Pointing => Time.time < _poseUntil;
+        /// <summary>At her work place, beating the anvil (asked to by the presenter; she really does it only standing there, awake, not talking).</summary>
+        public bool Working => _working;
+        /// <summary>The hammer frames are on the card now.</summary>
+        public bool WorkShown => _workShown;
         /// <summary>The height of her head above her feet, m (bubbles sit above it).</summary>
         public float HeadHeight => _figure != null ? Mathf.Clamp(_figure.Card.localScale.y, 1.2f, 3f) : 1.8f;
 
@@ -91,7 +101,11 @@ namespace ZeldaDaughter.NPC
         }
 
         /// <summary>The hero is talking to her: she stops and keeps still.</summary>
-        public void BeginTalk() => _talking = true;
+        public void BeginTalk()
+        {
+            _talking = true;
+            ShowWork(false, 0f);
+        }
 
         public void EndTalk() => _talking = false;
 
@@ -114,9 +128,44 @@ namespace ZeldaDaughter.NPC
             Face(target);
             _poseUntil = Time.time + PointSeconds;
             if (_figure == null) return;
+            if (_figure.HasPose("point")) // the drawn gesture (D-09): the arm stretched toward the thing
+            {
+                _figure.SetPose(new BillboardPose { Action = "point" });
+                return;
+            }
             var cam = _figure.Camera != null ? _figure.Camera.transform : null;
             float side = cam != null ? Vector3.Dot(_heading, cam.right) : _heading.x;
             _figure.SetPose(new BillboardPose { TiltDegrees = side >= 0f ? PointTiltDegrees : -PointTiltDegrees });
+        }
+
+        /// <summary>Works at the anvil: turns to <paramref name="point"/> and beats it with the «strike» frames, in a loop, while she stands there.</summary>
+        public void Work(Vector3 point)
+        {
+            if (_figure == null || !_figure.HasPose("strike")) return;
+            _working = true;
+            _workPoint = point;
+        }
+
+        public void StopWork()
+        {
+            _working = false;
+            ShowWork(false, 0f);
+        }
+
+        private void ShowWork(bool show, float dt)
+        {
+            if (_figure == null) return;
+            if (show)
+            {
+                if (!_workShown) { _workShown = true; _workT = 0f; Face(_workPoint); }
+                _workT = (_workT + dt) % (StrikeUpSeconds + StrikeDownSeconds);
+                _figure.SetPose(new BillboardPose { Action = "strike", ActionPhase = _workT < StrikeUpSeconds ? 0f : 0.99f });
+            }
+            else if (_workShown)
+            {
+                _workShown = false;
+                if (_poseUntil <= 0f) _figure.SetPose(BillboardPose.Stand);
+            }
         }
 
         private void Update()
@@ -127,6 +176,7 @@ namespace ZeldaDaughter.NPC
                 _poseUntil = 0f;
                 if (_figure != null) _figure.SetPose(BillboardPose.Stand);
             }
+            ShowWork(_working && !_hidden && !_talking && !IsWalking && _poseUntil <= 0f, dt);
             if (_hidden || _talking || !IsWalking || Time.time < _holdUntil) return;
 
             float budget = _speed * dt;

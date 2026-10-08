@@ -318,6 +318,36 @@ namespace ZeldaDaughter.Tests
             Assert.Greater(Vector3.Dot(peasant.Heading, toGate.normalized), 0.98f, "…and to the town gate");
             Assert.IsTrue(peasant.Pointing);
             Assert.IsFalse(peasant.Talking, "she is free again");
+            yield return null;
+            if (peasant.Figure.HasPose("point")) StringAssert.Contains("_point_", peasant.Figure.CurrentSprite.name, "the drawn gesture (D-09), not a lean");
+        }
+
+        [UnityTest]
+        public IEnumerator The_smith_beats_the_anvil_in_work_hours_and_not_at_night_or_in_a_talk()
+        {
+            yield return Load("region");
+            SetHour(12);
+            var smith = View("smith");
+            Assume.That(smith.Figure.HasPose("strike"), "the registry has the D-09 poses");
+            yield return null;
+            Assert.IsTrue(smith.Working, "the smith is at the forge at noon");
+            var seen = new HashSet<string>();
+            float t0 = Time.time;
+            while (Time.time - t0 < 2.6f) { yield return null; seen.Add(smith.Figure.CurrentSprite.name); }
+            CollectionAssert.IsSupersetOf(seen, new[] { "smith_side_strike_0", "smith_side_strike_1" }, "the hammer goes up and down");
+            Assert.IsTrue(smith.WorkShown);
+
+            _hero.Teleport(smith.transform.position + new Vector3(2.5f, 1f, -1.5f), 0f);
+            yield return null;
+            _s.Tap("npc_smith");
+            yield return new WaitForSeconds(0.3f);
+            Assert.IsTrue(smith.Talking);
+            Assert.IsFalse(smith.WorkShown, "while they talk she does not swing");
+            Assert.IsFalse(smith.Figure.CurrentSprite.name.Contains("strike"));
+
+            SetHour(23);
+            yield return null;
+            Assert.IsFalse(smith.Working, "night: no work");
         }
 
         [UnityTest]

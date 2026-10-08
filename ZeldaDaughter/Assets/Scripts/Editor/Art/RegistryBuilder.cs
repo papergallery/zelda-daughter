@@ -72,7 +72,7 @@ namespace ZeldaDaughter.Editor
                 set.name = kv.Key;
                 set.Configure(Frames(rec, "front", true), Frames(rec, "back", true), Frames(rec, "side", true),
                     SpriteAt((string)rec["down"], true), (float?)rec["pixelsPerMeter"] ?? 75f, (float?)rec["strideMeters"] ?? 0.8f,
-                    (bool?)rec["placeholder"] ?? false, ColorOf((string)rec["color"]));
+                    (bool?)rec["placeholder"] ?? false, ColorOf((string)rec["color"]), Poses(rec));
                 AssetDatabase.AddObjectToAsset(set, registry);
                 ids.Add(kv.Key);
                 sets.Add(set);
@@ -80,6 +80,14 @@ namespace ZeldaDaughter.Editor
             registry.Configure(ids.ToArray(), sets.ToArray());
             Stamp(registry, hash);
             return ids.Count;
+        }
+
+        /// <summary>"poses": {"attack_side": [paths…], …} — the D-09 poses; key = action_view.</summary>
+        static PoseFrames[] Poses(JObject rec)
+        {
+            var obj = rec["poses"] as JObject;
+            if (obj == null) return new PoseFrames[0];
+            return obj.Properties().Select(p => new PoseFrames(p.Name, Frames(obj, p.Name, true))).ToArray();
         }
 
         static Sprite[] Frames(JObject rec, string key, bool feet)
@@ -244,13 +252,17 @@ namespace ZeldaDaughter.Editor
                 var settings = new TextureImporterSettings();
                 importer.ReadTextureSettings(settings);
                 int align = (int)(feet ? SpriteAlignment.BottomCenter : SpriteAlignment.Center);
-                if (importer.textureType != TextureImporterType.Sprite || settings.spriteAlignment != align || importer.mipmapEnabled)
+                // figures are drawn at 320 px/m (docs/demo/sprites/README.md): the import says so too, though the card sizes itself from the rect
+                bool ppuOk = (!feet || Mathf.Approximately(importer.spritePixelsPerUnit, 320f)) && settings.spriteMeshType == SpriteMeshType.FullRect;
+                if (importer.textureType != TextureImporterType.Sprite || settings.spriteAlignment != align || importer.mipmapEnabled || !ppuOk)
                 {
                     importer.textureType = TextureImporterType.Sprite;
                     importer.spriteImportMode = SpriteImportMode.Single;
                     importer.alphaIsTransparency = true;
                     importer.mipmapEnabled = false;
+                    if (feet) importer.spritePixelsPerUnit = 320f;
                     importer.ReadTextureSettings(settings);
+                    settings.spriteMeshType = SpriteMeshType.FullRect; // the card is a quad: the whole rectangle, never the trimmed outline
                     settings.spriteAlignment = align;
                     importer.SetTextureSettings(settings);
                     importer.SaveAndReimport();

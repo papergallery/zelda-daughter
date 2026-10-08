@@ -147,6 +147,7 @@ namespace ZeldaDaughter.Combat
                 {
                     float p = _enemy.WindupProgress;
                     float e = p * p * (3f - 2f * p);
+                    pose.Action = "windup";                                 // the drawn crouch before the spring (D-09), when the set has it
                     pose.Crouch = WindupCrouch * e;
                     pose.TiltDegrees = -side * WindupLeanDegrees * e;     // back, away from the hero
                     pose.Shake = 0.02f + 0.05f * p;                        // never zero in a windup

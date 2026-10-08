@@ -21,6 +21,7 @@ namespace ZeldaDaughter.Hero
         // Look numbers (not balance): how long each action shows, how strong the poses are.
         const float StrikeSeconds = 0.40f, PickupSeconds = 0.45f, EatSeconds = 0.70f, TreatSeconds = 0.80f, ButcherSeconds = 1.00f, PlaceSeconds = 0.45f, CraftSeconds = 0.50f;
         const float FallSeconds = 0.30f, GetUpSeconds = 0.45f, HitShakeSeconds = 0.25f;
+        const float HoldSideAfterSeconds = 0.35f;
         const float StopGraceSeconds = 0.10f, TeleportMeters = 2f;
 
         [SerializeField] private GameSession _session;
@@ -276,11 +277,13 @@ namespace ZeldaDaughter.Hero
             }
 
             bool hurtSide = _g != null && (_g.Condition.Flags & (VisibleState.HoldingSide | VisibleState.Bleeding)) != 0;
-            if (hurtSide) // a hand at the side: she leans on it
+            if (hurtSide) // a hand at the side: she leans on it (a silhouette); the drawn «hurt» frame when she stands
             {
                 pose.TiltDegrees -= 4f;
                 pose.Crouch += 0.05f;
+                if (!_walking && !_hasAct && _idle > HoldSideAfterSeconds) pose.Action = "hurt";
             }
+            else if (_hitShake > 0f && !_walking && !_hasAct) pose.Action = "hurt"; // a blow: she doubles over for a moment
 
             if (_hasAct)
             {
@@ -289,28 +292,34 @@ namespace ZeldaDaughter.Hero
                 switch (_act)
                 {
                     case HeroActKind.Strike:
+                        pose.Action = "attack";                              // wind-up, thrust
                         pose.TiltDegrees += Side(_actToward) * 16f * hump;   // lunges at the target
                         pose.Lift += 0.06f * hump;
                         break;
                     case HeroActKind.Pickup:
                     case HeroActKind.Place:
+                        pose.Action = "pickup";
                         pose.Crouch += 0.65f * hump;
                         break;
                     case HeroActKind.Eat:
                     case HeroActKind.Treat:
+                        pose.Action = _act == HeroActKind.Eat ? "eat" : "hurt"; // dressing a wound: the hand at the side
                         pose.Crouch += 0.15f * hump;
                         pose.TiltDegrees -= 4f * hump;
                         pose.Shake = 0.012f * hump;                          // chews
                         break;
                     case HeroActKind.Butcher:
+                        pose.Action = "pickup";
                         pose.Crouch += 0.6f * Mathf.Min(1f, hump * 2f);
                         pose.Shake = 0.02f * hump;
                         break;
                     default: // Craft
+                        pose.Action = "pickup";
                         pose.Crouch += 0.3f * hump;
                         pose.Shake = 0.01f * hump;
                         break;
                 }
+                pose.ActionPhase = u;
                 if (u >= 1f) _hasAct = false;
             }
 
