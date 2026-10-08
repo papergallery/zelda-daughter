@@ -16,6 +16,7 @@ namespace ZeldaDaughter.UI
     public sealed class ScreenFader : MonoBehaviour
     {
         [SerializeField] private SessionUI _ui;
+        [SerializeField] private GameSession _session;
         private Image _sheet;
         private Coroutine _running;
 
@@ -34,22 +35,25 @@ namespace ZeldaDaughter.UI
         /// <summary>Glimpses seen in the current/last knockout (1–3; longer knockouts show more).</summary>
         public int Glimpses { get; private set; }
 
-        /// <summary>D-11: listens to the hero's knockout on the session bus. Called by the scene builder once.</summary>
-        public void Bind(SessionEvents events)
+        /// <summary>D-11: the session whose bus carries the hero's knockout (set once by the scene builder; the subscription is made at run time).</summary>
+        public void Bind(GameSession session) => _session = session;
+
+        private void OnEnable()
         {
-            if (_events != null) return;
-            _events = events;
-            events.StateReady += OnStateReady;
-            events.Condition += OnCondition;
-            events.Enemy += OnEnemy;
+            if (_session == null || _events != null) return;
+            _events = _session.Events;
+            _events.StateReady += OnStateReady;
+            _events.Condition += OnCondition;
+            _events.Enemy += OnEnemy;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             if (_events == null) return;
             _events.StateReady -= OnStateReady;
             _events.Condition -= OnCondition;
             _events.Enemy -= OnEnemy;
+            _events = null;
         }
 
         private void OnStateReady(GameState g)

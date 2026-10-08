@@ -23,7 +23,7 @@ namespace ZeldaDaughter.Editor
             sprite.Configure(ctx.Art.Characters, ctx.Art.Sprites, ctx.Cam, HeroCharacterId);
 
             hero.AddComponent<HeroView>().Configure(ctx.Session, ctx.HeroCtl, sprite, ctx.Art.Sprites);
-            ctx.Fader.Bind(ctx.Session.Events);
+            ctx.Fader.Bind(ctx.Session);
             ctx.ById["hero_sprite"] = go;
         }
     }
