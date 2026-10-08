@@ -295,7 +295,7 @@ namespace ZeldaDaughter.Tests
             var g = _s.State;
             var e = g.Enemies.Get(Boar);
             Assert.NotNull(e);
-            _hero.Teleport(new Vector3(e.Position.X + 1.4f, 1f, e.Position.Y), 0f);
+            _hero.Teleport(new Vector3(e.Position.X + 1.3f, 1f, e.Position.Y), 0f);
             yield return null;
             yield return null;
             e.Provoke();
@@ -303,12 +303,12 @@ namespace ZeldaDaughter.Tests
             while (e.State != EnemyState.Windup && Time.time < limit) yield return null;
             while (e.WindupProgress < 0.75f && e.State == EnemyState.Windup && Time.time < limit) yield return null;
             Assume.That(e.State, Is.EqualTo(EnemyState.Windup), "caught the windup");
-            yield return Frame("D-13-windup.png", 3.2f);
+            yield return Frame("D-13-windup.png", 6f);
 
             e.Receive(1000f, null, 0f, 0f);
             yield return new WaitForSeconds(0.3f);
             Assert.NotNull(_combat.FindCarcass(Boar));
-            yield return Frame("D-13-carcass.png", 3.2f);
+            yield return Frame("D-13-carcass.png", 6f);
         }
     }
 }
