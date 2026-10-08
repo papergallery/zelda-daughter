@@ -136,11 +136,11 @@ namespace ZeldaDaughter.Core.Cutout
         public float Reach { get; set; } = 0.97f;
         /// <summary>How much the stance leg shortens at mid-stance (a part of the full leg) — the run is lowest there.</summary>
         public float Compression { get; set; } = 0.14f;
-        public float LeanDegrees { get; set; } = 8f;
-        public float ArmSwingDegrees { get; set; } = 35f;
-        public float ArmBiasDegrees { get; set; } = 5f;
-        public float ElbowDegrees { get; set; } = 70f;
-        public float ElbowSwingDegrees { get; set; } = 25f;
+        public float LeanDegrees { get; set; } = 5f;
+        public float ArmSwingDegrees { get; set; } = 30f;
+        public float ArmBiasDegrees { get; set; } = 0f;
+        public float ElbowDegrees { get; set; } = 95f;
+        public float ElbowSwingDegrees { get; set; } = 20f;
     }
 
     public sealed class StandGait

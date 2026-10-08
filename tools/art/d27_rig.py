@@ -25,7 +25,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 SIDE0 = ROOT / 'ZeldaDaughter/Assets/Art/Sprites/heroine/heroine_side_0.png'
 LAYERS = ['forearmFar', 'upperArmFar', 'elbowCapFar', 'footFar', 'shinFar', 'thighFar', 'kneeCapFar',
           'footNear', 'shinNear', 'thighNear', 'kneeCapNear', 'body', 'forearmNear', 'upperArmNear', 'elbowCapNear']
-FAR_DARK = 0.74          # дальняя конечность в тени тела (ref2game animation.md §3)
+FAR_DARK = 0.8           # дальняя конечность в тени тела (ref2game animation.md §3)
 
 
 # ------------------------------------------------------------------ the sheet
@@ -104,7 +104,7 @@ def disc(img, cx, cy, r, feather=1.5):
     h, w = img.shape[:2]
     yy, xx = np.mgrid[0:h, 0:w]
     d = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2)
-    k = np.clip((r - d) / feather + 0.5, 0, 1)
+    k = np.clip((r - d) / feather + 0.5, 0, 1) if feather <= 2 else np.clip((r - d) / feather, 0, 1) ** 0.7  # a soft rim melts into the lower segment
     out = img.copy()
     out[:, :, 3] = (out[:, :, 3].astype(np.float32) * k).astype(np.uint8)
     return out
@@ -209,8 +209,8 @@ def cut(a):
     fore = band(arm, elA[1] - ko, arm.shape[0])
     kr = half_width(leg, kneeL[1] - 2 * ko) * a.cap
     er = half_width(arm, elA[1] - 2 * ko) * a.cap
-    kcap = disc(band(leg, 0, kneeL[1] + kr + 2), kneeL[0], kneeL[1], kr)
-    ecap = disc(band(arm, 0, elA[1] + er + 2), elA[0], elA[1], er)
+    kcap = disc(band(leg, 0, kneeL[1] + kr + 2), kneeL[0], kneeL[1], kr, feather=a.cap_feather * kr)
+    ecap = disc(band(arm, 0, elA[1] + er + 2), elA[0], elA[1], er, feather=a.cap_feather * er)
     pieces = {
         'body': (body, hipB, 0.0),
         'thigh': (thigh, hipL, angle(hipL, kneeL)), 'shin': (shin, kneeL, angle(kneeL, ankL)), 'foot': (foot, ankL, 0.0),
@@ -271,7 +271,7 @@ def cut(a):
 
 
 def vars_of(a):
-    return {k: getattr(a, k) for k in ('hip', 'shoulder', 'leg_hip', 'leg_knee', 'leg_ankle', 'arm_shoulder', 'arm_elbow', 'arm_hand', 'hip_sep', 'cap', 'foot_up')}
+    return {k: getattr(a, k) for k in ('hip', 'shoulder', 'leg_hip', 'leg_knee', 'leg_ankle', 'arm_shoulder', 'arm_elbow', 'arm_hand', 'hip_sep', 'cap', 'cap_feather', 'foot_up', 'round_thigh')}
 
 
 def angle(a, b):
@@ -295,7 +295,7 @@ def rest_placements(rig):
     return [(at[n][0] / 320, at[n][1] / 320, 0.0) for n in LAYERS]
 
 
-def render_frame(rig, atlas, placements, scale=1.0, marks=False, joints=None, pad=(250, 40, 230, 20)):
+def render_frame(rig, atlas, placements, scale=1.0, marks=False, joints=None, pad=(250, 40, 230, 20), clip=True):
     """Части по местам (метры риг-пространства, поворот против часовой) на прозрачном холсте; низ — земля."""
     ppu = rig['ppu'] * scale
     L, T, R, B = pad
@@ -306,13 +306,18 @@ def render_frame(rig, atlas, placements, scale=1.0, marks=False, joints=None, pa
     for name, (x, y, rot) in zip(LAYERS, placements):
         p = rig['parts'][name]
         rx, ry, w, h = p['rect']
-        piece = Image.fromarray(atlas[ry:ry + h, rx:rx + w])
+        arr = atlas[ry:ry + h, rx:rx + w].copy()
+        if clip:                                  # the game's sprite material cuts alpha at 0.5 (SpriteLook alphaCutoff): no soft edges there
+            arr[:, :, 3] = np.where(arr[:, :, 3] >= 128, 255, 0).astype(np.uint8)
+        piece = Image.fromarray(arr)
         if scale != 1.0:
             piece = piece.resize((max(1, round(w * scale)), max(1, round(h * scale))), Image.LANCZOS)
         pvx, pvy = (p['pivot'][0] - rx) * scale, (p['pivot'][1] - ry) * scale
         # rotate about the pivot: PIL rotates counter-clockwise for positive angles (image y down = screen up flipped → same sense)
         deg = math.degrees(rot)
-        big = Image.new('RGBA', (piece.width * 3 + 8, piece.height * 3 + 8), (0, 0, 0, 0))
+        reach = max(math.hypot(px_ - pvx, py_ - pvy) for px_ in (0, piece.width) for py_ in (0, piece.height))
+        side = int(2 * reach + 8)                 # any turn about the pivot stays on the canvas
+        big = Image.new('RGBA', (side, side), (0, 0, 0, 0))
         cx, cy = big.width // 2, big.height // 2
         big.alpha_composite(piece, (int(round(cx - pvx)), int(round(cy - pvy))))
         big = big.rotate(deg, resample=Image.BICUBIC, center=(cx, cy))
@@ -366,6 +371,7 @@ def main():
     c.add_argument('--overlap', type=float, default=0.012, help='нахлёст кусков на суставе, доля роста')
     c.add_argument('--cap', type=float, default=1.0, help='радиус шапки сустава / полуширина конечности')
     c.add_argument('--round-thigh', action='store_true', help='верх бедра срезать дугой')
+    c.add_argument('--cap-feather', type=float, default=0.05, help='мягкость края шапки сустава, доля её радиуса')
     r = sub.add_parser('render')
     r.add_argument('--rig', required=True); r.add_argument('--trace', required=True); r.add_argument('--out', required=True)
     r.add_argument('--every', type=int, default=1); r.add_argument('--start', type=int, default=0); r.add_argument('--stop', type=int, default=0)
