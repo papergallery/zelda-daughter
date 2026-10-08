@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using ZeldaDaughter.Core.Scenes;
 using ZeldaDaughter.Hero;
 using ZeldaDaughter.World;
@@ -70,6 +71,21 @@ namespace ZeldaDaughter.Editor
                 }
                 Debug.Log($"[ZD:Scene] scatter {config.Name} placed={placements.Count} digest={Scatterer.Digest(placements)}");
             }
+        }
+
+        /// <summary>
+        /// D-22: primitives of the config used as ground patches and mist: <c>collide: false</c> removes the collider of a primitive (it only was for models),
+        /// objects tagged <c>ground_patch</c> / <c>mist</c> cast no shadow, patches are batched statically (hundreds of discs of three colours).
+        /// </summary>
+        static void DressPrimitive(GameObject go, ObjectConfig o)
+        {
+            if (o.Marker || !string.IsNullOrEmpty(o.Model) || string.IsNullOrEmpty(o.Shape) || o.Shape == "empty") return;
+            if (o.Collide == false)
+                foreach (var c in go.GetComponentsInChildren<Collider>()) UnityEngine.Object.DestroyImmediate(c);
+            bool patch = o.Tags.Contains("ground_patch");
+            if (patch || o.Tags.Contains("mist"))
+                foreach (var r in go.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = ShadowCastingMode.Off;
+            if (patch) GameObjectUtility.SetStaticEditorFlags(go, StaticEditorFlags.BatchingStatic);
         }
 
         /// <summary>A model (or a composite of models) as a holder object with the FBX instances inside and simple colliders.</summary>

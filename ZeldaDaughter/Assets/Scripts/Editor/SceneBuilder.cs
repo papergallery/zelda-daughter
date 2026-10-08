@@ -149,6 +149,7 @@ namespace ZeldaDaughter.Editor
             {
                 var go = o.Marker ? new GameObject(o.Id)
                     : !string.IsNullOrEmpty(o.Model) ? SpawnModel(o.Id, o.Model, catalog, o.Collide ?? true) : Spawn(o.Id, o.Shape, o.Prefab, o.Color);
+                DressPrimitive(go, o); // D-22: patches / mist without colliders and shadows
                 go.transform.SetParent(root, false);
                 go.transform.localPosition = V(o.Position);
                 go.transform.localRotation = Quaternion.Euler(V(o.Rotation));

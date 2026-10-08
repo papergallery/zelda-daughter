@@ -61,6 +61,7 @@ namespace ZeldaDaughter.Editor
         static partial void AddNature(BuildContext ctx);    // D-16  SceneBuilder.Nature.cs
         static partial void AddAudio(BuildContext ctx);     // D-17  SceneBuilder.Audio.cs
         static partial void AddHints(BuildContext ctx);     // D-18  SceneBuilder.Hints.cs
+        static partial void AddMist(BuildContext ctx);      // D-22  SceneBuilder.Mist.cs
 
         static void EnsureLayers() => ProjectSetup.EnsureLayers();
 
@@ -121,6 +122,7 @@ namespace ZeldaDaughter.Editor
             AddNature(ctx);
             AddAudio(ctx);
             AddHints(ctx);
+            AddMist(ctx);
         }
 
         /// <summary>A tappable on every object of the config except markers: pick-ups, stations, beds and NPCs by their data; the rest are scenery (touch names them, tap does nothing).</summary>
