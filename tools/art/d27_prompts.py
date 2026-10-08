@@ -14,6 +14,7 @@ from style import STYLE, BG_GREY  # noqa: E402
 
 # D-24b: героиня взрослая, вариант G (README «Героиня взрослая»), плюс три правки независимого критика к следующему набору (координатор,
 # 2026-10-09): футболка заправлена только спереди, тёмные почти чёрно-каштановые волнистые волосы до плеч, голова прямо, плечи расслаблены.
+# Тело — с культей рукава из ткани: «без рукава» GPT рисует голое плечо, и на махе руки оно читается дырой (D-27, лист G-1).
 WHO = ('the SAME young adult woman as in the reference image — about 20 years old, slender, adult proportions (head-to-height about 1:4.7), '
        'a narrow oval adult face with a defined jaw and cheekbones, small narrow eyes, not a child; '
        'dark brown, almost black-brown, loose wavy shoulder-length hair; '
@@ -26,8 +27,9 @@ PARTS = (
     'Strict side view facing right, seen from a slightly high angle like an isometric game (Don\'t Starve). '
     'Exactly three separate pieces in one horizontal row with very wide empty gaps between them; no piece touches another: '
     '(1) LEFT — the BODY WITHOUT ARMS AND WITHOUT LEGS: head upright, chin level, relaxed shoulders; hair and face in profile, neck, the t-shirt torso with the backpack, '
-    'and the top of the jeans around the hips and seat, ending just below the hips in a clean rounded edge; the shoulder is whole and smooth with NO sleeve on it '
-    '(the sleeve belongs to the arm piece), no arm and no sleeve hole. '
+    'and the top of the jeans around the hips and seat, ending just below the hips in a clean rounded edge; the shoulder and the side of the chest are covered by the white t-shirt fabric — '
+    'a short t-shirt sleeve stub closed with fabric where the arm would join, NO bare skin on the shoulder, no arm and no hole. '
+    'The hair is dark brown, almost black-brown. '
     '(2) MIDDLE — ONE COMPLETE LEG standing perfectly straight and vertical: the jeans from the top of the thigh at the hip down to the rolled-up cuff, '
     'and the sneaker in side view with the toe pointing right, the sole flat and level. '
     '(3) RIGHT — ONE COMPLETE ARM hanging perfectly straight down: the short t-shirt sleeve at the top, the bare upper arm, the elbow, the forearm and a relaxed loose fist. '

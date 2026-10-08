@@ -34,13 +34,20 @@ def label(img, text, size=16):
     return img
 
 
+VIDEO = SPR
+
+
 def video_frame(phase, n=12):
-    """Кадр видео-цикла D-25 по фазе пути (как BillboardSprite: 1 … N-1 на цикл; у героини 12 кадров side_1..12)."""
+    """Кадр видео-цикла D-25 по фазе пути (12 кадров side_1..12 героини D; после D-24b их нет в master — `--video-dir`,
+    достать: `git archive 7df35a62 ZeldaDaughter/Assets/Art/Sprites/heroine`)."""
     k = 1 + int(phase * n) % n
-    return Image.open(SPR / f'heroine_side_{k}.png').convert('RGBA')
+    return Image.open(VIDEO / f'heroine_side_{k}.png').convert('RGBA')
 
 
 def core(a):
+    global VIDEO
+    if a.video_dir:
+        VIDEO = pathlib.Path(a.video_dir)
     rig = json.loads(pathlib.Path(a.rig).read_text(encoding='utf-8'))
     atlas = np.array(Image.open(pathlib.Path(a.rig).with_name(rig['atlas']['file'])).convert('RGBA'))
     tr = json.loads(pathlib.Path(a.trace).read_text(encoding='utf-8'))
@@ -58,7 +65,7 @@ def core(a):
         pairs.append((r, vc))
     out = pathlib.Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    write(pairs, out, ('риг (ядро)', 'видео D-25'), a)
+    write(pairs, out, ('риг (ядро), героиня G', 'видео-кадры D-25 Seedance, героиня D'), a)
 
 
 def game(a):
@@ -111,6 +118,7 @@ def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
     c = sub.add_parser('core'); c.add_argument('--rig', required=True); c.add_argument('--trace', required=True); c.add_argument('--out', required=True)
+    c.add_argument('--video-dir', default='', help='кадры бега Seedance D-25 (heroine_side_1..12.png)')
     g = sub.add_parser('game'); g.add_argument('--dir', required=True); g.add_argument('--out', required=True)
     for p in (c, g):
         p.add_argument('--fps', type=float, default=30); p.add_argument('--zoom', type=int, default=1); p.add_argument('--strip', type=int, default=8)
