@@ -31,12 +31,12 @@ namespace ZeldaDaughter.Editor
             public Vector3 FireAt;
         }
 
-        // models-test (scenes/models-test.json): road_main from (0,-8) to (6,2), campfire_a at (-4,16).
-        public static readonly Place F1 = new Place { Name = "F1", Hero = new Vector3(0.5f, 0, -10f), Ortho = 10f, Daylight = 0.62f };
-        public static readonly Place F1n = new Place { Name = "F1n", Hero = new Vector3(0.5f, 0, -10f), Ortho = 10f, Daylight = 0f, Fire = true, FireAt = new Vector3(-1.2f, 0.7f, -10.8f) };
+        // region (scenes/region.json): spawn on road_main at (-168,0), campfire_spawn at (-166.5,-4.6).
+        public static readonly Place F1 = new Place { Name = "F1", Hero = new Vector3(-165f, 0, -1.5f), Ortho = 9f, Daylight = 0.62f };
+        public static readonly Place F1n = new Place { Name = "F1n", Hero = new Vector3(-165f, 0, -1.5f), Ortho = 9f, Daylight = 0f, Fire = true, FireAt = new Vector3(-166.5f, 0.7f, -4.6f) };
 
         [MenuItem("Zelda/Look/Reference frames")]
-        public static void ReferenceMenu() => Reference("../docs/demo/frames/", "Assets/Scenes/models-test.unity");
+        public static void ReferenceMenu() => Reference("../docs/demo/frames/", "Assets/Scenes/region.unity");
 
         /// <summary>F1 / F1n with the effect, F1 without it, and the other times of day for the sun check. Returns the log lines.</summary>
         public static string Reference(string dir, string scene)
@@ -147,7 +147,7 @@ namespace ZeldaDaughter.Editor
         }
 
         [MenuItem("Zelda/Look/Measure frame time")]
-        public static void MeasureMenu() => Debug.Log(Measure("Assets/Scenes/models-test.unity", 120));
+        public static void MeasureMenu() => Debug.Log(Measure("Assets/Scenes/region.unity", 120));
 
         /// <summary>
         /// Editor frame time of the F1 view, with and without the effect: N camera renders into a 1080×2340 target, a read-back at the end
