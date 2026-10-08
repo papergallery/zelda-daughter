@@ -13,7 +13,7 @@ namespace ZeldaDaughter.Editor
     {
                 static bool Ours(string path) => path.StartsWith(ModelLook.ModelsRoot, System.StringComparison.Ordinal);
 
-        public override uint GetVersion() => 8u;
+        public override uint GetVersion() => 9u;
 
         void OnPreprocessModel()
         {
