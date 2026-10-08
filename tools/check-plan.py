@@ -5,7 +5,7 @@ import os
 import re
 import sys
 
-VISIBLE = re.compile(r"^(K|R2|G)\b|^R1-07$|^D-(0[89]|1\d|2[0-5])$")
+VISIBLE = re.compile(r"^(K|R2|G)\b|^R1-07$|^D-(0[89]|1\d|2[0-6])$")
 bad = []
 ids = 0
 for path in sorted(glob.glob("plan/stage-*.md")):
