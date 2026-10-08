@@ -21,7 +21,7 @@ namespace ZeldaDaughter.Core.Save
     public static class SaveGame
     {
         /// <summary>1 → 2 (D-01): Killed (killed enemies) and KnockoutLeft are added; both default to empty/0, so version 1 still loads.
-        /// 2 → 3 (D-03, D-04): map marks, notebook entries, requests, trade state (coins taught, barter deals, stock sold, buyback shelves) — absent in older saves, so they load as «nothing traded».</summary>
+        /// 2 → 3 (D-03, D-04): map marks, notebook entries, requests, carcasses (D-05), trade state (coins taught, barter deals, stock sold, buyback shelves) — absent in older saves, so they load as «nothing traded».</summary>
         public const int Version = 3;
 
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings
@@ -55,6 +55,7 @@ namespace ZeldaDaughter.Core.Save
             s.HintsDone = g.Hints.Done.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Picked = g.Picked.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Killed = g.Killed.OrderBy(x => x, StringComparer.Ordinal).ToList();
+            s.Carcasses = g.Carcasses.Active.Select(c => new CarcassDto { Id = c.Id, Def = c.DefId, X = c.Position.X, Z = c.Position.Y, Looted = c.State == Loot.CarcassState.Looted }).ToList();
             s.MapMarks = g.Map.Known.ToList();
             s.Notes = g.Notebook.Entries.Select(e => e.Id).ToList();
             s.QuestsOffered = g.Quests.OfferedIds.ToList();
@@ -98,6 +99,7 @@ namespace ZeldaDaughter.Core.Save
             foreach (var p in s.Picked) g.Picked.Add(p);
             g.Killed.Clear();
             foreach (var k in s.Killed) g.Killed.Add(k);
+            g.Carcasses.Restore(s.Carcasses.Select(c => new Loot.Carcass(c.Id, c.Def, new Vec2(c.X, c.Z), c.Looted ? Loot.CarcassState.Looted : Loot.CarcassState.Fresh)));
             g.Map.Restore(s.MapMarks);
             g.Notebook.Restore(s.Notes);
             g.Quests.Restore(s.QuestsOffered, s.QuestsDone);
@@ -181,6 +183,7 @@ namespace ZeldaDaughter.Core.Save
             public List<string> HintsDone { get; set; } = new List<string>();
             public List<string> Picked { get; set; } = new List<string>();
             public List<string> Killed { get; set; } = new List<string>();
+            public List<CarcassDto> Carcasses { get; set; } = new List<CarcassDto>();
             public List<string> MapMarks { get; set; } = new List<string>();
             public List<string> Notes { get; set; } = new List<string>();
             public List<string> QuestsOffered { get; set; } = new List<string>();
@@ -189,6 +192,15 @@ namespace ZeldaDaughter.Core.Save
             public int BarterDeals { get; set; }
             public Dictionary<string, Dictionary<string, int>> StockSold { get; set; } = new Dictionary<string, Dictionary<string, int>>();
             public Dictionary<string, Dictionary<string, int>> Buyback { get; set; } = new Dictionary<string, Dictionary<string, int>>();
+        }
+
+        sealed class CarcassDto
+        {
+            public string Id { get; set; } = "";
+            public string Def { get; set; } = "";
+            public float X { get; set; }
+            public float Z { get; set; }
+            public bool Looted { get; set; }
         }
 
         sealed class StackDto

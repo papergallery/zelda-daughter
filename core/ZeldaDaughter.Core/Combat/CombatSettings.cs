@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using ZeldaDaughter.Core.Condition;
+using ZeldaDaughter.Core.Loot;
 using ZeldaDaughter.Core.Progression;
 
 namespace ZeldaDaughter.Core.Combat
@@ -47,6 +48,8 @@ namespace ZeldaDaughter.Core.Combat
         public float LoseInterestFactor { get; set; }
         /// <summary>After walking away from a downed hero the enemy ignores him until he comes into aggroRange having moved this far (m).</summary>
         public float ReapproachMeters { get; set; }
+        /// <summary>The tool whose presence in the bag turns a tap on a carcass into butchering (§6): item id.</summary>
+        public string ButcherTool { get; set; } = "";
         /// <summary>Wound name (cut | fracture | burn | poison) → what it does to the enemy.</summary>
         public Dictionary<string, EnemyWoundEffect> WoundEffects { get; set; } = new Dictionary<string, EnemyWoundEffect>();
         public Dictionary<string, EnemyDef> Enemies { get; set; } = new Dictionary<string, EnemyDef>();
@@ -78,6 +81,8 @@ namespace ZeldaDaughter.Core.Combat
         public float AggroRange { get; set; }
         public bool AggroOnSight { get; set; }
         public bool AggroOnDamage { get; set; }
+        /// <summary>What the carcass gives: minimum for bare hands, full set with a knife (D-05).</summary>
+        public LootTable Loot { get; set; } = new LootTable();
 
         public WoundType? ParsedWound => WoundNames.Parse(Wound);
     }

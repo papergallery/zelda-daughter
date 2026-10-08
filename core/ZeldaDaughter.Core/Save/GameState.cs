@@ -10,6 +10,7 @@ using ZeldaDaughter.Core.Economy;
 using ZeldaDaughter.Core.Journal;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
+using ZeldaDaughter.Core.Loot;
 using ZeldaDaughter.Core.Npcs;
 using ZeldaDaughter.Core.Onboarding;
 using ZeldaDaughter.Core.Progression;
@@ -38,6 +39,7 @@ namespace ZeldaDaughter.Core.Save
             Map = new MapKnowledge(data.Map, () => Bag.Count(MapKnowledge.MapItem) > 0);
             Notebook = new Notebook(data.Notebook);
             Quests = new Quests(data.Quests, Bag, Notebook, Map);
+            Carcasses = new Carcasses(data.Enemies, Bag);
             Combat = new HeroCombat(data.Weapons, Skills, Condition, Hunger, Bag);
         }
 
@@ -54,6 +56,16 @@ namespace ZeldaDaughter.Core.Save
         public NpcRoster Npcs { get; }
         /// <summary>Barter and coins with the shop NPCs (D-03); a shop deals only while its NPC is at the counter.</summary>
         public Trade Trade { get; }
+        /// <summary>Dead enemies lying in the world; a tap calls <c>Carcasses.Tap(id)</c> (D-05).</summary>
+        public Carcasses Carcasses { get; }
+
+        /// <summary>An enemy died: remember the kill (it never comes back) and leave its carcass where it fell. Call once, on <c>EnemyEventKind.Died</c>.</summary>
+        public Carcass? EnemyKilled(Enemy enemy)
+        {
+            Killed.Add(enemy.Id);
+            return Carcasses.Spawn(enemy.Id, enemy.DefId, enemy.Position);
+        }
+
         /// <summary>Marks learned by talking; shown only while the hero holds a map (D-04).</summary>
         public MapKnowledge Map { get; }
         /// <summary>The hero's notes (§5) — no statuses.</summary>

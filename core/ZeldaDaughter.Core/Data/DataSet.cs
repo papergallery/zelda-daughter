@@ -184,6 +184,19 @@ namespace ZeldaDaughter.Core.Data
                 if (e.ChaseSpeed >= d.Movement.RunSpeed) problems.Add($"enemies.json: '{kv.Key}' — погоня {e.ChaseSpeed} м/с не медленнее бега героя {d.Movement.RunSpeed} м/с");
                 if (e.AggroRange <= 0) problems.Add($"enemies.json: '{kv.Key}' — радиус агро должен быть > 0");
             }
+            if (!byId.TryGetValue(d.Enemies.ButcherTool, out var bt) || bt.Kind != "tool") problems.Add($"enemies.json: butcherTool '{d.Enemies.ButcherTool}' — нужен предмет вида tool из items.json");
+            foreach (var kv in d.Enemies.Enemies)
+            {
+                foreach (var set in new[] { ("minimal", kv.Value.Loot.Minimal), ("full", kv.Value.Loot.Full) })
+                    foreach (var it in set.Item2)
+                    {
+                        if (!byId.ContainsKey(it.Key)) problems.Add($"enemies.json: '{kv.Key}' loot.{set.Item1} '{it.Key}' — нет в items.json");
+                        if (it.Value < 1) problems.Add($"enemies.json: '{kv.Key}' loot.{set.Item1} '{it.Key}' — количество < 1");
+                    }
+                if (kv.Value.Loot.Minimal.Count == 0 || kv.Value.Loot.Full.Count == 0) problems.Add($"enemies.json: '{kv.Key}' — пустой loot (minimal и full обязательны)");
+                foreach (var it in kv.Value.Loot.Minimal)
+                    if (!kv.Value.Loot.Full.TryGetValue(it.Key, out var f) || f < it.Value) problems.Add($"enemies.json: '{kv.Key}' loot — full не содержит minimal '{it.Key}'");
+            }
             foreach (var h in d.Onboarding.Hints)
             {
                 if (Array.IndexOf(Hints.KnownConditions, h.ShowWhen) < 0) problems.Add($"onboarding.json: '{h.Id}' — showWhen '{h.ShowWhen}' игра не сообщает ({string.Join(" | ", Hints.KnownConditions)})");
