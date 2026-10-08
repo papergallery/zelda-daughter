@@ -112,9 +112,9 @@ paths.append(line("trail_glade", [(-88, 1), (-88, -10), (-82, -22), (-76, -34), 
 paths.append(line("trail_stump", [(-72, -43), (-84, -48), (-96, -52), (-104, -56)], 1.4, "#9c8760"))
 paths.append(line("trail_lair", [(-72, -43), (-64, -52), (-56, -60), (-50, -68)], 1.4, "#9c8760"))
 paths.append(line("square_pave", [(62, 0), (82, 0)], 26, "#a39c8a"))
-for name, a, b, w in [("door_tavern", (60, 18.3), (60, 11), 2.4), ("door_smithy", (58, -19.2), (58, -11), 2.4), ("door_herb", (78.5, 18.7), (78.5, 11), 2.4),
-                      ("door_shop", (85.5, -19.2), (85.5, -11), 2.4), ("door_gatehouse", (38.5, 7.2), (38.5, 1.5), 2.2),
-                      ("door_house_a", (102.5, 6), (102.5, 1.5), 2.2), ("door_house_b", (111.5, -6), (111.5, -1.5), 2.2),
+for name, a, b, w in [("door_tavern", (60, 18.3), (60, 11), 2.4), ("door_smithy", (94, 18.7), (94, 1.5), 2.4), ("door_herb", (78.5, 18.7), (78.5, 11), 2.4),
+                      ("door_shop", (113, 18.7), (113, 1.5), 2.4), ("door_gatehouse", (38.5, 7.2), (38.5, 1.5), 2.2),
+                      ("door_house_a", (102.5, 6), (102.5, 1.5), 2.2), ("door_house_b", (108.0, -5), (105.5, -1.5), 2.2),
                       ("door_house_c", (122.5, 6), (122.5, 1.5), 2.2), ("door_hut", (-151.5, 21.2), (-151.5, 14), 2.0)]:
     paths.append(line(name, [a, b], w, "#a8946c"))
 paths.append(line("lane_field", [(-131, 8), (-131, 2)], 2.0, "#a8946c"))
@@ -208,7 +208,7 @@ pickup("pickup_ore_2", "stone_tall_h", "ore", 9, -44)
 
 # ---------------------------------------------------------------- мост, берег
 for i, bx in enumerate([-3.1, 0, 3.1]):
-    add(f"bridge_{i + 1}", "bridge_wood", bx, 0, 90, ["bridge"] + (["poi"] if i == 1 else []), centered=True)
+    add(f"bridge_{i + 1}", "bridge_wood", bx, 0, 0, ["bridge"] + (["poi"] if i == 1 else []), centered=True)
 marker("anchor_bridge", 0, 0, ["anchor"])
 add("east_tent", "tent_small_open", 15, -7.5, 200, ["decor", "poi"])
 add("east_camp_log", "log", 12, -9.5, 60, ["decor"], scale=0.9)
@@ -229,7 +229,7 @@ npc("guard", 37.6, -2.7, "#56606a")
 marker("anchor_gate", 37.6, -2.7, ["anchor"])
 house("gatehouse", "house_hut", 38.5, 7.2, "S", ["building", "poi"])
 marker("anchor_gatehouse", 40, 10, ["anchor"])
-add("gate_lantern", "town_lantern", 38, 3.4, 0, ["decor"])
+add("gate_lantern", "town_lantern", 41.6, 3.6, 0, ["decor"])
 # живая изгородь по северу, югу и востоку
 for k in range(0, 39):
     xh = 36.5 + 3 * k
@@ -249,8 +249,8 @@ for i, (lx, lz) in enumerate([(52, 6), (52, -6), (92, 6), (92, -8)]):
     add(f"square_lantern_{i}", "town_lantern", lx, lz, 0, ["decor"])
 add("square_bench_1", "prop_bench", 66, 8.5, 0, ["decor"])
 add("square_bench_2", "prop_bench", 78, 8.5, 0, ["decor"])
-add("square_tree_1", "town_tree", 62, 11.5, 0, ["decor"])
-add("square_tree_2", "town_tree", 84, 11.0, 0, ["decor"])
+add("square_tree_1", "town_tree", 53, 10.5, 0, ["decor"])
+add("square_tree_2", "town_tree", 91, 10.0, 0, ["decor"])
 add("square_tree_3", "town_tree", 66, -11.5, 0, ["decor"])
 add("square_tree_4", "town_tree", 78, -11.5, 0, ["decor"])
 add("gate_street_cart", "town_cart", 47, 5.5, 160, ["decor", "poi"])
@@ -277,27 +277,27 @@ add("tavern_lean_to", "tent_small_open", 66.8, 15.2, 0, ["decor", "poi"])
 add("bed_tavern", "prop_bed_twin1", 66.8, 15.4, 0, ["bed", "poi"], collide=False)
 add("tavern_sign", "sign", 62.4, 15.0, 0, ["decor"])
 
-# кузница
-house("smithy", "house_long", 58, -19.2, "N", ["building", "poi"])
-marker("anchor_forge_home", 58, -22, ["anchor"])
-npc("smith", 67.5, -14.6, "#6a5048")
-marker("anchor_forge", 67.5, -14.6, ["anchor"])
-add("station_smelter", "campfire_bricks", 65.6, -17.0, 0, ["station", "smelter", "poi"], collide=True)
-add("station_anvil", "prop_anvil", 69.8, -17.0, 0, ["station", "anvil", "poi"])
-add("forge_workbench", "prop_workbench", 67.5, -20.4, 0, ["decor"])
-add("forge_barrel", "prop_barrel", 63.4, -16.0, 0, ["decor"])
-add("forge_weapons", "prop_weapon_stand", 71.8, -18.8, 0, ["decor"])
-add("forge_chimney", "town_chimney_base", 64.2, -21.5, 0, ["decor"], collide=False)
+# кузница: большой дом на севере (дверь на юг, к камере), двор перед ним с плавильней и наковальней
+house("smithy", "house_long", 94, 18.7, "S", ["building", "poi"])
+marker("anchor_forge_home", 94, 22, ["anchor"])
+npc("smith", 94, 13.4, "#6a5048")
+marker("anchor_forge", 94, 13.4, ["anchor"])
+add("station_smelter", "campfire_bricks", 90.6, 15.4, 0, ["station", "smelter", "poi"], collide=True)
+add("station_anvil", "prop_anvil", 97.6, 15.4, 0, ["station", "anvil", "poi"])
+add("forge_workbench", "prop_workbench", 100.0, 14.0, 0, ["decor"])
+add("forge_barrel", "prop_barrel", 88.4, 14.0, 0, ["decor"])
+add("forge_weapons", "prop_weapon_stand", 88.2, 17.0, 0, ["decor"])
+add("forge_chimney", "town_chimney_base", 97.0, 21.0, 0, ["decor"], collide=False)
 
-# лавка торговца
-add("shop_stall", "town_stall_red", 85.5, -13.5, 180, ["building", "poi", "shop"])
-npc("merchant", 85.5, -10.4, "#7a5a8a")
-marker("anchor_shop", 85.5, -10.4, ["anchor"])
-house("shop_house", "house_small", 85.5, -19.2, "N", ["building"])
-marker("anchor_shop_rear", 84, -22, ["anchor"])
-add("shop_crate_1", "prop_crate_wooden", 82.4, -14.2, 10, ["decor"])
-add("shop_crate_2", "prop_crate_metal", 88.8, -14.0, 0, ["decor"])
-add("shop_barrel", "prop_barrel", 89.2, -12.2, 0, ["decor"])
+# лавка торговца: прилавок на улице, дом позади (дверь на юг)
+add("shop_stall", "town_stall_red", 113, 12.6, 180, ["building", "poi", "shop"])
+npc("merchant", 113, 9.6, "#7a5a8a")
+marker("anchor_shop", 113, 9.6, ["anchor"])
+house("shop_house", "house_small", 113, 18.7, "S", ["building"])
+marker("anchor_shop_rear", 114.5, 21.5, ["anchor"])
+add("shop_crate_1", "prop_crate_wooden", 109.8, 12.0, 10, ["decor"])
+add("shop_crate_2", "prop_crate_metal", 116.4, 12.2, 0, ["decor"])
+add("shop_barrel", "prop_barrel", 116.8, 10.2, 0, ["decor"])
 
 # дом травницы
 house("herb_house", "house_small", 78.5, 18.7, "S", ["building", "poi"])
@@ -312,8 +312,8 @@ add("herb_flowers_2", "flower_yellow_b", 81.2, 16.6, 0, ["decor"], collide=False
 house("house_a", "house_small", 102.5, 6.0, "S", ["building", "poi"])
 marker("anchor_house_a", 102.5, 8.2, ["anchor"])
 npc("townswoman", 102.5, 3.9, "#7a6a8a")
-house("house_b", "house_hut", 111.5, -6.0, "N", ["building", "poi"])
-marker("anchor_house_b", 111.5, -8.2, ["anchor"])
+house("house_b", "house_hut", 108.0, -5.0, "W", ["building", "poi"])
+marker("anchor_house_b", 109.5, -6.2, ["anchor"])
 house("house_c", "house_small", 122.5, 6.0, "S", ["building", "poi"])
 marker("anchor_house_c", 122.5, 8.2, ["anchor"])
 npc("weaver", 122.5, 3.9, "#9a7a6a")
@@ -321,11 +321,11 @@ add("house_c_loom", "prop_shelf_simple", 126.6, 4.0, 0, ["decor"])
 add("east_lantern_1", "town_lantern", 106, 3.6, 0, ["decor"])
 add("east_lantern_2", "town_lantern", 118, -3.6, 0, ["decor"])
 add("house_a_barrel", "prop_barrel", 106.6, 6.6, 0, ["decor"])
-add("house_b_crate", "prop_crate_wooden", 115.8, -6.5, 15, ["decor"])
+add("house_b_crate", "prop_crate_wooden", 107.4, -9.6, 15, ["decor"])
 add("east_end_cart", "town_cart", 144, -4.2, 200, ["decor", "poi"])
 add("east_end_barrels", "prop_barrel", 146.4, -3.4, 0, ["decor"])
 add("east_end_well", "pot_large", 140, 4.0, 0, ["decor", "poi"])
-for k, (wx, wz) in enumerate([(132, 9), (136, -9), (130, -22), (96, 24), (110, 28), (44, 24), (44, -24), (98, -24)]):
+for k, (wx, wz) in enumerate([(132, 9), (136, -9), (130, -22), (86, 28), (104, 28), (44, 24), (44, -24), (98, -24)]):
     add(f"town_tree_{k}", "town_tree", wx, wz, 0, ["decor"])
 
 # сухая трава: клетки огня D-06 (id grass_cell_NN, тег grass_cell; шаг 1,5 м, не ближе 2 м к костру)
@@ -379,7 +379,7 @@ def sc(id_, area, models, density, seed, avoid, smin=0.8, smax=1.2, spacing=0, c
 sc("meadow_west", rect(-92, 14, 176, 60), MEADOW, 4.5, 11, SOFT)
 sc("meadow_east_bank", rect(18, 0, 30, 70), MEADOW, 4, 12, SOFT)
 sc("meadow_town", rect(92, 0, 115, 90), MEADOW, 1.0, 13, {"paths": 1.2, "water": 1.5, "objects": 1.0, "zones": ["square_zone"]})
-sc("forest_trees", rect(-88, -56, 152, 80), TREES, 2.4, 21, FOREST_ZONES, 0.85, 1.25, 3.0, True)
+sc("forest_trees", rect(-88, -56, 152, 80), TREES, 4.2, 21, FOREST_ZONES, 0.85, 1.25, 2.6, True)
 sc("forest_undergrowth", rect(-88, -56, 152, 80),
    [{"id": "plant_bush", "weight": 2}, {"id": "plant_bush_large", "weight": 1}, {"id": "plant_bush_small", "weight": 2}, {"id": "mushroom_red", "weight": 0.3},
     {"id": "mushroom_tan", "weight": 0.3}, {"id": "grass", "weight": 3}, {"id": "plant_flat_tall", "weight": 1}],

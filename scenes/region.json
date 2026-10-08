@@ -231,12 +231,12 @@
    "id": "door_smithy",
    "points": [
     {
-     "x": 58,
-     "z": -19.2
+     "x": 94,
+     "z": 18.7
     },
     {
-     "x": 58,
-     "z": -11
+     "x": 94,
+     "z": 1.5
     }
    ],
    "width": 2.4,
@@ -261,12 +261,12 @@
    "id": "door_shop",
    "points": [
     {
-     "x": 85.5,
-     "z": -19.2
+     "x": 113,
+     "z": 18.7
     },
     {
-     "x": 85.5,
-     "z": -11
+     "x": 113,
+     "z": 1.5
     }
    ],
    "width": 2.4,
@@ -306,11 +306,11 @@
    "id": "door_house_b",
    "points": [
     {
-     "x": 111.5,
-     "z": -6
+     "x": 108.0,
+     "z": -5
     },
     {
-     "x": 111.5,
+     "x": 105.5,
      "z": -1.5
     }
    ],
@@ -2353,11 +2353,6 @@
     "y": 0,
     "z": 0.0
    },
-   "rotation": {
-    "x": 0,
-    "y": 90,
-    "z": 0
-   },
    "tags": [
     "bridge"
    ]
@@ -2369,11 +2364,6 @@
     "x": 0.0,
     "y": 0,
     "z": 0.0
-   },
-   "rotation": {
-    "x": 0,
-    "y": 90,
-    "z": 0
    },
    "tags": [
     "bridge",
@@ -2387,11 +2377,6 @@
     "x": 3.1,
     "y": 0,
     "z": 0.0
-   },
-   "rotation": {
-    "x": 0,
-    "y": 90,
-    "z": 0
    },
    "tags": [
     "bridge"
@@ -2983,9 +2968,9 @@
    "id": "gate_lantern",
    "model": "town_lantern",
    "position": {
-    "x": 38.0,
+    "x": 41.6,
     "y": 0,
-    "z": 3.4
+    "z": 3.6
    },
    "tags": [
     "decor"
@@ -4887,9 +4872,9 @@
    "id": "square_tree_1",
    "model": "town_tree",
    "position": {
-    "x": 62.0,
+    "x": 53.0,
     "y": 0,
-    "z": 11.5
+    "z": 10.5
    },
    "tags": [
     "decor"
@@ -4899,9 +4884,9 @@
    "id": "square_tree_2",
    "model": "town_tree",
    "position": {
-    "x": 84.0,
+    "x": 91.0,
     "y": 0,
-    "z": 11.0
+    "z": 10.0
    },
    "tags": [
     "decor"
@@ -5197,14 +5182,9 @@
    "id": "smithy",
    "model": "house_long",
    "position": {
-    "x": 58.0,
+    "x": 94.0,
     "y": 0,
-    "z": -22.05
-   },
-   "rotation": {
-    "x": 0,
-    "y": 180,
-    "z": 0
+    "z": 21.55
    },
    "tags": [
     "building",
@@ -5215,9 +5195,9 @@
    "id": "anchor_forge_home",
    "marker": true,
    "position": {
-    "x": 58.0,
+    "x": 94.0,
     "y": 0,
-    "z": -22.0
+    "z": 22.0
    },
    "tags": [
     "anchor"
@@ -5227,9 +5207,9 @@
    "id": "npc_smith",
    "shape": "capsule",
    "position": {
-    "x": 67.5,
+    "x": 94.0,
     "y": 1,
-    "z": -14.6
+    "z": 13.4
    },
    "color": "#6a5048",
    "tags": [
@@ -5241,9 +5221,9 @@
    "id": "anchor_forge",
    "marker": true,
    "position": {
-    "x": 67.5,
+    "x": 94.0,
     "y": 0,
-    "z": -14.6
+    "z": 13.4
    },
    "tags": [
     "anchor"
@@ -5253,9 +5233,9 @@
    "id": "station_smelter",
    "model": "campfire_bricks",
    "position": {
-    "x": 65.6,
+    "x": 90.6,
     "y": 0,
-    "z": -17.0
+    "z": 15.4
    },
    "collide": true,
    "tags": [
@@ -5268,9 +5248,9 @@
    "id": "station_anvil",
    "model": "prop_anvil",
    "position": {
-    "x": 69.861,
+    "x": 97.661,
     "y": 0,
-    "z": -17.0
+    "z": 15.4
    },
    "tags": [
     "station",
@@ -5282,9 +5262,9 @@
    "id": "forge_workbench",
    "model": "prop_workbench",
    "position": {
-    "x": 67.5,
+    "x": 100.0,
     "y": 0,
-    "z": -20.397
+    "z": 14.003
    },
    "tags": [
     "decor"
@@ -5294,9 +5274,9 @@
    "id": "forge_barrel",
    "model": "prop_barrel",
    "position": {
-    "x": 63.4,
+    "x": 88.4,
     "y": 0,
-    "z": -16.0
+    "z": 14.0
    },
    "tags": [
     "decor"
@@ -5306,9 +5286,9 @@
    "id": "forge_weapons",
    "model": "prop_weapon_stand",
    "position": {
-    "x": 71.8,
+    "x": 88.2,
     "y": 0,
-    "z": -18.797
+    "z": 17.003
    },
    "tags": [
     "decor"
@@ -5318,9 +5298,9 @@
    "id": "forge_chimney",
    "model": "town_chimney_base",
    "position": {
-    "x": 64.959,
+    "x": 97.759,
     "y": 0,
-    "z": -21.5
+    "z": 21.0
    },
    "collide": false,
    "tags": [
@@ -5331,9 +5311,9 @@
    "id": "shop_stall",
    "model": "town_stall_red",
    "position": {
-    "x": 85.5,
+    "x": 113.0,
     "y": 0,
-    "z": -13.5
+    "z": 12.6
    },
    "rotation": {
     "x": 0,
@@ -5350,9 +5330,9 @@
    "id": "npc_merchant",
    "shape": "capsule",
    "position": {
-    "x": 85.5,
+    "x": 113.0,
     "y": 1,
-    "z": -10.4
+    "z": 9.6
    },
    "color": "#7a5a8a",
    "tags": [
@@ -5364,9 +5344,9 @@
    "id": "anchor_shop",
    "marker": true,
    "position": {
-    "x": 85.5,
+    "x": 113.0,
     "y": 0,
-    "z": -10.4
+    "z": 9.6
    },
    "tags": [
     "anchor"
@@ -5376,14 +5356,9 @@
    "id": "shop_house",
    "model": "house_small",
    "position": {
-    "x": 84.0,
+    "x": 114.5,
     "y": 0,
-    "z": -22.05
-   },
-   "rotation": {
-    "x": 0,
-    "y": 180,
-    "z": 0
+    "z": 21.55
    },
    "tags": [
     "building"
@@ -5393,9 +5368,9 @@
    "id": "anchor_shop_rear",
    "marker": true,
    "position": {
-    "x": 84.0,
+    "x": 114.5,
     "y": 0,
-    "z": -22.0
+    "z": 21.5
    },
    "tags": [
     "anchor"
@@ -5405,9 +5380,9 @@
    "id": "shop_crate_1",
    "model": "prop_crate_wooden",
    "position": {
-    "x": 82.395,
+    "x": 109.795,
     "y": 0,
-    "z": -14.199
+    "z": 12.001
    },
    "rotation": {
     "x": 0,
@@ -5422,9 +5397,9 @@
    "id": "shop_crate_2",
    "model": "prop_crate_metal",
    "position": {
-    "x": 88.8,
+    "x": 116.4,
     "y": 0,
-    "z": -14.0
+    "z": 12.2
    },
    "tags": [
     "decor"
@@ -5434,9 +5409,9 @@
    "id": "shop_barrel",
    "model": "prop_barrel",
    "position": {
-    "x": 89.2,
+    "x": 116.8,
     "y": 0,
-    "z": -12.2
+    "z": 10.2
    },
    "tags": [
     "decor"
@@ -5598,13 +5573,13 @@
    "id": "house_b",
    "model": "house_hut",
    "position": {
-    "x": 110.0,
+    "x": 110.85,
     "y": 0,
-    "z": -8.85
+    "z": -6.5
    },
    "rotation": {
     "x": 0,
-    "y": 180,
+    "y": 90,
     "z": 0
    },
    "tags": [
@@ -5616,9 +5591,9 @@
    "id": "anchor_house_b",
    "marker": true,
    "position": {
-    "x": 111.5,
+    "x": 109.5,
     "y": 0,
-    "z": -8.2
+    "z": -6.2
    },
    "tags": [
     "anchor"
@@ -5715,9 +5690,9 @@
    "id": "house_b_crate",
    "model": "prop_crate_wooden",
    "position": {
-    "x": 115.795,
+    "x": 107.395,
     "y": 0,
-    "z": -6.499
+    "z": -9.599
    },
    "rotation": {
     "x": 0,
@@ -5811,9 +5786,9 @@
    "id": "town_tree_3",
    "model": "town_tree",
    "position": {
-    "x": 96.0,
+    "x": 86.0,
     "y": 0,
-    "z": 24.0
+    "z": 28.0
    },
    "tags": [
     "decor"
@@ -5823,7 +5798,7 @@
    "id": "town_tree_4",
    "model": "town_tree",
    "position": {
-    "x": 110.0,
+    "x": 104.0,
     "y": 0,
     "z": 28.0
    },
@@ -8969,7 +8944,7 @@
      "weight": 1
     }
    ],
-   "density": 2.4,
+   "density": 4.2,
    "seed": 21,
    "scale": {
     "min": 0.85,
@@ -8986,7 +8961,7 @@
     ],
     "zoneMargin": 1.2
    },
-   "minSpacing": 3.0,
+   "minSpacing": 2.6,
    "collide": true
   },
   {
