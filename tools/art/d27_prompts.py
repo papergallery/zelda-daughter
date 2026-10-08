@@ -12,15 +12,22 @@ import pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from style import STYLE, BG_GREY  # noqa: E402
 
-WHO = ('the SAME young woman as in the reference image: shoulder-length curly dark-brown hair, a cream short-sleeved loose t-shirt, '
-       'an olive-green canvas backpack on her back, high-waisted faded blue jeans with rolled-up cuffs, cream canvas sneakers')
+# D-24b: героиня взрослая, вариант G (README «Героиня взрослая»), плюс три правки независимого критика к следующему набору (координатор,
+# 2026-10-09): футболка заправлена только спереди, тёмные почти чёрно-каштановые волнистые волосы до плеч, голова прямо, плечи расслаблены.
+WHO = ('the SAME young adult woman as in the reference image — about 20 years old, slender, adult proportions (head-to-height about 1:4.7), '
+       'a narrow oval adult face with a defined jaw and cheekbones, small narrow eyes, not a child; '
+       'dark brown, almost black-brown, loose wavy shoulder-length hair; '
+       'a white t-shirt half-tucked — tucked in at the front only, loose at the sides and back, belt visible only at the buckle; '
+       'a small olive-green canvas backpack worn on one shoulder; light-blue high-waisted jeans with rolled-up cuffs and a ripped knee; '
+       'cream canvas sneakers of normal size')
 
 PARTS = (
     'Character PART SHEET for a cut-out (paper-doll) skeletal animation rig of ' + WHO + '. '
     'Strict side view facing right, seen from a slightly high angle like an isometric game (Don\'t Starve). '
     'Exactly three separate pieces in one horizontal row with very wide empty gaps between them; no piece touches another: '
-    '(1) LEFT — the BODY WITHOUT ARMS AND WITHOUT LEGS: head with hair and face in profile, neck, the t-shirt torso with the backpack on the back, '
-    'and the top of the jeans around the hips and seat, ending just below the hips in a clean rounded edge; the shoulder is whole and smooth, there is no arm and no sleeve hole. '
+    '(1) LEFT — the BODY WITHOUT ARMS AND WITHOUT LEGS: head upright, chin level, relaxed shoulders; hair and face in profile, neck, the t-shirt torso with the backpack, '
+    'and the top of the jeans around the hips and seat, ending just below the hips in a clean rounded edge; the shoulder is whole and smooth with NO sleeve on it '
+    '(the sleeve belongs to the arm piece), no arm and no sleeve hole. '
     '(2) MIDDLE — ONE COMPLETE LEG standing perfectly straight and vertical: the jeans from the top of the thigh at the hip down to the rolled-up cuff, '
     'and the sneaker in side view with the toe pointing right, the sole flat and level. '
     '(3) RIGHT — ONE COMPLETE ARM hanging perfectly straight down: the short t-shirt sleeve at the top, the bare upper arm, the elbow, the forearm and a relaxed loose fist. '
