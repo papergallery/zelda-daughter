@@ -1,0 +1,5013 @@
+{
+ "_source": "tools/gen-models.py (D-10): id из имени файла (nature — без префикса, town_, prop_), коллайдеры и теги — правила в скрипте; размеры — data/model-bounds.json (замер в Unity). Модули: Kenney Nature Kit 2.1, Fantasy Town Kit 2.0, Quaternius Fantasy Props (все CC0, лицензии рядом с FBX). Масштаб запечён при импорте (метры, клетка 3 м) — ModelImport.KitScale.",
+ "models": {
+  "bed": {
+   "path": "Assets/Art/Models/KenneyNature/bed.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bed"
+   ]
+  },
+  "bed_floor": {
+   "path": "Assets/Art/Models/KenneyNature/bed_floor.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bed"
+   ]
+  },
+  "bridge_center_stone": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_center_stone.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_center_stone_round": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_center_stoneRound.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_center_wood": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_center_wood.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_center_wood_round": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_center_woodRound.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_side_stone": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_side_stone.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_side_stone_round": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_side_stoneRound.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_side_wood": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_side_wood.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_side_wood_round": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_side_woodRound.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_stone": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_stone.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_stone_narrow": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_stoneNarrow.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_stone_round": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_stoneRound.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_stone_round_narrow": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_stoneRoundNarrow.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_wood": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_wood.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_wood_narrow": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_woodNarrow.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_wood_round": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_woodRound.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "bridge_wood_round_narrow": {
+   "path": "Assets/Art/Models/KenneyNature/bridge_woodRoundNarrow.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "bridge"
+   ]
+  },
+  "campfire_bricks": {
+   "path": "Assets/Art/Models/KenneyNature/campfire_bricks.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "campfire"
+   ]
+  },
+  "campfire_logs": {
+   "path": "Assets/Art/Models/KenneyNature/campfire_logs.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "campfire"
+   ]
+  },
+  "campfire_planks": {
+   "path": "Assets/Art/Models/KenneyNature/campfire_planks.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "campfire"
+   ]
+  },
+  "campfire_stones": {
+   "path": "Assets/Art/Models/KenneyNature/campfire_stones.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "campfire"
+   ]
+  },
+  "crop_carrot": {
+   "path": "Assets/Art/Models/KenneyNature/crop_carrot.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crop_melon": {
+   "path": "Assets/Art/Models/KenneyNature/crop_melon.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crop_pumpkin": {
+   "path": "Assets/Art/Models/KenneyNature/crop_pumpkin.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crop_turnip": {
+   "path": "Assets/Art/Models/KenneyNature/crop_turnip.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_bamboo_stage_a": {
+   "path": "Assets/Art/Models/KenneyNature/crops_bambooStageA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_bamboo_stage_b": {
+   "path": "Assets/Art/Models/KenneyNature/crops_bambooStageB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_corn_stage_a": {
+   "path": "Assets/Art/Models/KenneyNature/crops_cornStageA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_corn_stage_b": {
+   "path": "Assets/Art/Models/KenneyNature/crops_cornStageB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_corn_stage_c": {
+   "path": "Assets/Art/Models/KenneyNature/crops_cornStageC.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_corn_stage_d": {
+   "path": "Assets/Art/Models/KenneyNature/crops_cornStageD.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_dirt_double_row": {
+   "path": "Assets/Art/Models/KenneyNature/crops_dirtDoubleRow.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_dirt_double_row_corner": {
+   "path": "Assets/Art/Models/KenneyNature/crops_dirtDoubleRowCorner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_dirt_double_row_end": {
+   "path": "Assets/Art/Models/KenneyNature/crops_dirtDoubleRowEnd.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_dirt_row": {
+   "path": "Assets/Art/Models/KenneyNature/crops_dirtRow.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_dirt_row_corner": {
+   "path": "Assets/Art/Models/KenneyNature/crops_dirtRowCorner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_dirt_row_end": {
+   "path": "Assets/Art/Models/KenneyNature/crops_dirtRowEnd.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_dirt_single": {
+   "path": "Assets/Art/Models/KenneyNature/crops_dirtSingle.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_leafs_stage_a": {
+   "path": "Assets/Art/Models/KenneyNature/crops_leafsStageA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_leafs_stage_b": {
+   "path": "Assets/Art/Models/KenneyNature/crops_leafsStageB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_wheat_stage_a": {
+   "path": "Assets/Art/Models/KenneyNature/crops_wheatStageA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "crops_wheat_stage_b": {
+   "path": "Assets/Art/Models/KenneyNature/crops_wheatStageB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "crop"
+   ]
+  },
+  "fence_bend": {
+   "path": "Assets/Art/Models/KenneyNature/fence_bend.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_bend_center": {
+   "path": "Assets/Art/Models/KenneyNature/fence_bendCenter.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_corner": {
+   "path": "Assets/Art/Models/KenneyNature/fence_corner.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_gate": {
+   "path": "Assets/Art/Models/KenneyNature/fence_gate.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_planks": {
+   "path": "Assets/Art/Models/KenneyNature/fence_planks.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_planks_double": {
+   "path": "Assets/Art/Models/KenneyNature/fence_planksDouble.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_simple": {
+   "path": "Assets/Art/Models/KenneyNature/fence_simple.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_simple_center": {
+   "path": "Assets/Art/Models/KenneyNature/fence_simpleCenter.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_simple_diagonal": {
+   "path": "Assets/Art/Models/KenneyNature/fence_simpleDiagonal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_simple_diagonal_center": {
+   "path": "Assets/Art/Models/KenneyNature/fence_simpleDiagonalCenter.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_simple_high": {
+   "path": "Assets/Art/Models/KenneyNature/fence_simpleHigh.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "fence_simple_low": {
+   "path": "Assets/Art/Models/KenneyNature/fence_simpleLow.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "flower_purple_a": {
+   "path": "Assets/Art/Models/KenneyNature/flower_purpleA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "flower_purple_b": {
+   "path": "Assets/Art/Models/KenneyNature/flower_purpleB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "flower_purple_c": {
+   "path": "Assets/Art/Models/KenneyNature/flower_purpleC.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "flower_red_a": {
+   "path": "Assets/Art/Models/KenneyNature/flower_redA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "flower_red_b": {
+   "path": "Assets/Art/Models/KenneyNature/flower_redB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "flower_red_c": {
+   "path": "Assets/Art/Models/KenneyNature/flower_redC.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "flower_yellow_a": {
+   "path": "Assets/Art/Models/KenneyNature/flower_yellowA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "flower_yellow_b": {
+   "path": "Assets/Art/Models/KenneyNature/flower_yellowB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "flower_yellow_c": {
+   "path": "Assets/Art/Models/KenneyNature/flower_yellowC.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "flower"
+   ]
+  },
+  "grass": {
+   "path": "Assets/Art/Models/KenneyNature/grass.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "grass"
+   ]
+  },
+  "grass_large": {
+   "path": "Assets/Art/Models/KenneyNature/grass_large.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "grass"
+   ]
+  },
+  "grass_leafs": {
+   "path": "Assets/Art/Models/KenneyNature/grass_leafs.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "grass"
+   ]
+  },
+  "grass_leafs_large": {
+   "path": "Assets/Art/Models/KenneyNature/grass_leafsLarge.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "grass"
+   ]
+  },
+  "ground_grass": {
+   "path": "Assets/Art/Models/KenneyNature/ground_grass.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_bend": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathBend.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_bend_bank": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathBendBank.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_corner": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathCorner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_corner_small": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathCornerSmall.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_cross": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathCross.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_end": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathEnd.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_end_closed": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathEndClosed.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_open": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathOpen.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_rocks": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathRocks.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_side": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathSide.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_side_open": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathSideOpen.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_split": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathSplit.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_straight": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathStraight.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_path_tile": {
+   "path": "Assets/Art/Models/KenneyNature/ground_pathTile.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_bend": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverBend.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_bend_bank": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverBendBank.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_corner": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverCorner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_corner_small": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverCornerSmall.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_cross": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverCross.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_end": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverEnd.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_end_closed": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverEndClosed.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_open": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverOpen.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_rocks": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverRocks.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_side": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverSide.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_side_open": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverSideOpen.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_split": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverSplit.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_straight": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverStraight.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "ground_river_tile": {
+   "path": "Assets/Art/Models/KenneyNature/ground_riverTile.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "lily_large": {
+   "path": "Assets/Art/Models/KenneyNature/lily_large.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "water_plant"
+   ]
+  },
+  "lily_small": {
+   "path": "Assets/Art/Models/KenneyNature/lily_small.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "water_plant"
+   ]
+  },
+  "log": {
+   "path": "Assets/Art/Models/KenneyNature/log.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "log_large": {
+   "path": "Assets/Art/Models/KenneyNature/log_large.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "log_stack": {
+   "path": "Assets/Art/Models/KenneyNature/log_stack.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "log_stack_large": {
+   "path": "Assets/Art/Models/KenneyNature/log_stackLarge.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "mushroom_red": {
+   "path": "Assets/Art/Models/KenneyNature/mushroom_red.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "mushroom"
+   ]
+  },
+  "mushroom_red_group": {
+   "path": "Assets/Art/Models/KenneyNature/mushroom_redGroup.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "mushroom"
+   ]
+  },
+  "mushroom_red_tall": {
+   "path": "Assets/Art/Models/KenneyNature/mushroom_redTall.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "mushroom"
+   ]
+  },
+  "mushroom_tan": {
+   "path": "Assets/Art/Models/KenneyNature/mushroom_tan.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "mushroom"
+   ]
+  },
+  "mushroom_tan_group": {
+   "path": "Assets/Art/Models/KenneyNature/mushroom_tanGroup.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "mushroom"
+   ]
+  },
+  "mushroom_tan_tall": {
+   "path": "Assets/Art/Models/KenneyNature/mushroom_tanTall.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "mushroom"
+   ]
+  },
+  "path_stone": {
+   "path": "Assets/Art/Models/KenneyNature/path_stone.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "path_stone_circle": {
+   "path": "Assets/Art/Models/KenneyNature/path_stoneCircle.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "path_stone_corner": {
+   "path": "Assets/Art/Models/KenneyNature/path_stoneCorner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "path_stone_end": {
+   "path": "Assets/Art/Models/KenneyNature/path_stoneEnd.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "path_wood": {
+   "path": "Assets/Art/Models/KenneyNature/path_wood.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "path_wood_corner": {
+   "path": "Assets/Art/Models/KenneyNature/path_woodCorner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "path_wood_end": {
+   "path": "Assets/Art/Models/KenneyNature/path_woodEnd.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "ground_tile"
+   ]
+  },
+  "plant_bush": {
+   "path": "Assets/Art/Models/KenneyNature/plant_bush.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.7
+   },
+   "tags": [
+    "bush"
+   ]
+  },
+  "plant_bush_detailed": {
+   "path": "Assets/Art/Models/KenneyNature/plant_bushDetailed.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.7
+   },
+   "tags": [
+    "bush"
+   ]
+  },
+  "plant_bush_large": {
+   "path": "Assets/Art/Models/KenneyNature/plant_bushLarge.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.7
+   },
+   "tags": [
+    "bush"
+   ]
+  },
+  "plant_bush_large_triangle": {
+   "path": "Assets/Art/Models/KenneyNature/plant_bushLargeTriangle.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.7
+   },
+   "tags": [
+    "bush"
+   ]
+  },
+  "plant_bush_small": {
+   "path": "Assets/Art/Models/KenneyNature/plant_bushSmall.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.7
+   },
+   "tags": [
+    "bush"
+   ]
+  },
+  "plant_bush_triangle": {
+   "path": "Assets/Art/Models/KenneyNature/plant_bushTriangle.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.7
+   },
+   "tags": [
+    "bush"
+   ]
+  },
+  "plant_flat_short": {
+   "path": "Assets/Art/Models/KenneyNature/plant_flatShort.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "grass"
+   ]
+  },
+  "plant_flat_tall": {
+   "path": "Assets/Art/Models/KenneyNature/plant_flatTall.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "grass"
+   ]
+  },
+  "pot_large": {
+   "path": "Assets/Art/Models/KenneyNature/pot_large.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.8
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "pot_small": {
+   "path": "Assets/Art/Models/KenneyNature/pot_small.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.8
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "rock_large_a": {
+   "path": "Assets/Art/Models/KenneyNature/rock_largeA.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_large_b": {
+   "path": "Assets/Art/Models/KenneyNature/rock_largeB.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_large_c": {
+   "path": "Assets/Art/Models/KenneyNature/rock_largeC.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_large_d": {
+   "path": "Assets/Art/Models/KenneyNature/rock_largeD.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_large_e": {
+   "path": "Assets/Art/Models/KenneyNature/rock_largeE.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_large_f": {
+   "path": "Assets/Art/Models/KenneyNature/rock_largeF.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_small_a": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_b": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_c": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallC.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_d": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallD.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_e": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallE.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_f": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallF.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_flat_a": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallFlatA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_flat_b": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallFlatB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_flat_c": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallFlatC.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_g": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallG.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_h": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallH.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_i": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallI.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_top_a": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallTopA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_small_top_b": {
+   "path": "Assets/Art/Models/KenneyNature/rock_smallTopB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "rock_tall_a": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallA.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_b": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallB.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_c": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallC.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_d": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallD.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_e": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallE.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_f": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallF.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_g": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallG.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_h": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallH.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_i": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallI.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "rock_tall_j": {
+   "path": "Assets/Art/Models/KenneyNature/rock_tallJ.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "sign": {
+   "path": "Assets/Art/Models/KenneyNature/sign.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.6
+   },
+   "tags": [
+    "sign"
+   ]
+  },
+  "stone_large_a": {
+   "path": "Assets/Art/Models/KenneyNature/stone_largeA.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_large_b": {
+   "path": "Assets/Art/Models/KenneyNature/stone_largeB.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_large_c": {
+   "path": "Assets/Art/Models/KenneyNature/stone_largeC.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_large_d": {
+   "path": "Assets/Art/Models/KenneyNature/stone_largeD.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_large_e": {
+   "path": "Assets/Art/Models/KenneyNature/stone_largeE.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_large_f": {
+   "path": "Assets/Art/Models/KenneyNature/stone_largeF.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_small_a": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_b": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_c": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallC.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_d": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallD.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_e": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallE.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_f": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallF.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_flat_a": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallFlatA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_flat_b": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallFlatB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_flat_c": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallFlatC.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_g": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallG.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_h": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallH.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_i": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallI.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_top_a": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallTopA.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_small_top_b": {
+   "path": "Assets/Art/Models/KenneyNature/stone_smallTopB.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "rock",
+    "small"
+   ]
+  },
+  "stone_tall_a": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallA.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_b": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallB.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_c": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallC.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_d": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallD.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_e": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallE.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_f": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallF.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_g": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallG.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_h": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallH.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_i": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallI.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stone_tall_j": {
+   "path": "Assets/Art/Models/KenneyNature/stone_tallJ.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "stump_old": {
+   "path": "Assets/Art/Models/KenneyNature/stump_old.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "stump_old_tall": {
+   "path": "Assets/Art/Models/KenneyNature/stump_oldTall.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "stump_round": {
+   "path": "Assets/Art/Models/KenneyNature/stump_round.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "stump_round_detailed": {
+   "path": "Assets/Art/Models/KenneyNature/stump_roundDetailed.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "stump_square": {
+   "path": "Assets/Art/Models/KenneyNature/stump_square.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "stump_square_detailed": {
+   "path": "Assets/Art/Models/KenneyNature/stump_squareDetailed.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "stump_square_detailed_wide": {
+   "path": "Assets/Art/Models/KenneyNature/stump_squareDetailedWide.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.85
+   },
+   "tags": [
+    "wood"
+   ]
+  },
+  "tent_detailed_closed": {
+   "path": "Assets/Art/Models/KenneyNature/tent_detailedClosed.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "tent"
+   ]
+  },
+  "tent_detailed_open": {
+   "path": "Assets/Art/Models/KenneyNature/tent_detailedOpen.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "tent"
+   ]
+  },
+  "tent_small_closed": {
+   "path": "Assets/Art/Models/KenneyNature/tent_smallClosed.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "tent"
+   ]
+  },
+  "tent_small_open": {
+   "path": "Assets/Art/Models/KenneyNature/tent_smallOpen.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "tent"
+   ]
+  },
+  "tree_blocks": {
+   "path": "Assets/Art/Models/KenneyNature/tree_blocks.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_blocks_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_blocks_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_blocks_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_blocks_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_cone": {
+   "path": "Assets/Art/Models/KenneyNature/tree_cone.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_cone_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_cone_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_cone_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_cone_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_default": {
+   "path": "Assets/Art/Models/KenneyNature/tree_default.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_default_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_default_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_default_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_default_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_detailed": {
+   "path": "Assets/Art/Models/KenneyNature/tree_detailed.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_detailed_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_detailed_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_detailed_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_detailed_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_fat": {
+   "path": "Assets/Art/Models/KenneyNature/tree_fat.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.5
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_fat_darkh": {
+   "path": "Assets/Art/Models/KenneyNature/tree_fat_darkh.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.5
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_fat_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_fat_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.5
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_oak": {
+   "path": "Assets/Art/Models/KenneyNature/tree_oak.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_oak_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_oak_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_oak_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_oak_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_default_a": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineDefaultA.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_default_b": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineDefaultB.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_ground_a": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineGroundA.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_ground_b": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineGroundB.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_round_a": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineRoundA.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_round_b": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineRoundB.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_round_c": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineRoundC.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_round_d": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineRoundD.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_round_e": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineRoundE.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_round_f": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineRoundF.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_small_a": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineSmallA.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_small_b": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineSmallB.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_small_c": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineSmallC.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_small_d": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineSmallD.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_tall_a": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineTallA.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_tall_a_detailed": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineTallA_detailed.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_tall_b": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineTallB.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_tall_b_detailed": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineTallB_detailed.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_tall_c": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineTallC.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_tall_c_detailed": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineTallC_detailed.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_tall_d": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineTallD.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_pine_tall_d_detailed": {
+   "path": "Assets/Art/Models/KenneyNature/tree_pineTallD_detailed.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_plateau": {
+   "path": "Assets/Art/Models/KenneyNature/tree_plateau.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_plateau_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_plateau_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_plateau_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_plateau_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_simple": {
+   "path": "Assets/Art/Models/KenneyNature/tree_simple.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_simple_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_simple_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_simple_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_simple_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_small": {
+   "path": "Assets/Art/Models/KenneyNature/tree_small.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_small_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_small_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_small_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_small_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_tall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_tall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_tall_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_tall_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_tall_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_tall_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_thin": {
+   "path": "Assets/Art/Models/KenneyNature/tree_thin.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_thin_dark": {
+   "path": "Assets/Art/Models/KenneyNature/tree_thin_dark.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "tree_thin_fall": {
+   "path": "Assets/Art/Models/KenneyNature/tree_thin_fall.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.35
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "town_balcony_wall_fence": {
+   "path": "Assets/Art/Models/KenneyTown/balcony-wall-fence.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "balcony"
+   ]
+  },
+  "town_balcony_wall": {
+   "path": "Assets/Art/Models/KenneyTown/balcony-wall.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "balcony"
+   ]
+  },
+  "town_banner_green": {
+   "path": "Assets/Art/Models/KenneyTown/banner-green.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "banner"
+   ]
+  },
+  "town_banner_red": {
+   "path": "Assets/Art/Models/KenneyTown/banner-red.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "banner"
+   ]
+  },
+  "town_blade": {
+   "path": "Assets/Art/Models/KenneyTown/blade.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "blade"
+   ]
+  },
+  "town_cart_high": {
+   "path": "Assets/Art/Models/KenneyTown/cart-high.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "cart"
+   ]
+  },
+  "town_cart": {
+   "path": "Assets/Art/Models/KenneyTown/cart.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "cart"
+   ]
+  },
+  "town_chimney_base": {
+   "path": "Assets/Art/Models/KenneyTown/chimney-base.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "chimney"
+   ]
+  },
+  "town_chimney_top": {
+   "path": "Assets/Art/Models/KenneyTown/chimney-top.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "chimney"
+   ]
+  },
+  "town_chimney": {
+   "path": "Assets/Art/Models/KenneyTown/chimney.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "chimney"
+   ]
+  },
+  "town_fence_broken": {
+   "path": "Assets/Art/Models/KenneyTown/fence-broken.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "town_fence_curved": {
+   "path": "Assets/Art/Models/KenneyTown/fence-curved.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "town_fence_gate": {
+   "path": "Assets/Art/Models/KenneyTown/fence-gate.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "town_fence": {
+   "path": "Assets/Art/Models/KenneyTown/fence.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fence"
+   ]
+  },
+  "town_fountain_center": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-center.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_corner_inner_square": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-corner-inner-square.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_corner_inner": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-corner-inner.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_corner": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-corner.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_curved": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-curved.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_edge": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-edge.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_round_detail": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-round-detail.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_round": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-round.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_square_detail": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-square-detail.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_fountain_square": {
+   "path": "Assets/Art/Models/KenneyTown/fountain-square.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "fountain"
+   ]
+  },
+  "town_hedge_curved": {
+   "path": "Assets/Art/Models/KenneyTown/hedge-curved.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "hedge"
+   ]
+  },
+  "town_hedge_gate": {
+   "path": "Assets/Art/Models/KenneyTown/hedge-gate.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "hedge"
+   ]
+  },
+  "town_hedge_large_curved": {
+   "path": "Assets/Art/Models/KenneyTown/hedge-large-curved.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "hedge"
+   ]
+  },
+  "town_hedge_large_gate": {
+   "path": "Assets/Art/Models/KenneyTown/hedge-large-gate.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "hedge"
+   ]
+  },
+  "town_hedge_large": {
+   "path": "Assets/Art/Models/KenneyTown/hedge-large.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "hedge"
+   ]
+  },
+  "town_hedge": {
+   "path": "Assets/Art/Models/KenneyTown/hedge.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "hedge"
+   ]
+  },
+  "town_lantern": {
+   "path": "Assets/Art/Models/KenneyTown/lantern.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "lantern"
+   ]
+  },
+  "town_overhang": {
+   "path": "Assets/Art/Models/KenneyTown/overhang.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "overhang"
+   ]
+  },
+  "town_pillar_stone": {
+   "path": "Assets/Art/Models/KenneyTown/pillar-stone.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "pillar"
+   ]
+  },
+  "town_pillar_wood": {
+   "path": "Assets/Art/Models/KenneyTown/pillar-wood.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "pillar"
+   ]
+  },
+  "town_planks_half": {
+   "path": "Assets/Art/Models/KenneyTown/planks-half.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "planks"
+   ]
+  },
+  "town_planks_opening": {
+   "path": "Assets/Art/Models/KenneyTown/planks-opening.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "planks"
+   ]
+  },
+  "town_planks": {
+   "path": "Assets/Art/Models/KenneyTown/planks.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "planks"
+   ]
+  },
+  "town_poles_horizontal": {
+   "path": "Assets/Art/Models/KenneyTown/poles-horizontal.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "poles"
+   ]
+  },
+  "town_poles": {
+   "path": "Assets/Art/Models/KenneyTown/poles.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "poles"
+   ]
+  },
+  "town_road_bend": {
+   "path": "Assets/Art/Models/KenneyTown/road-bend.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_road_corner_inner": {
+   "path": "Assets/Art/Models/KenneyTown/road-corner-inner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_road_corner": {
+   "path": "Assets/Art/Models/KenneyTown/road-corner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_road_curb_end": {
+   "path": "Assets/Art/Models/KenneyTown/road-curb-end.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_road_curb": {
+   "path": "Assets/Art/Models/KenneyTown/road-curb.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_road_edge_slope": {
+   "path": "Assets/Art/Models/KenneyTown/road-edge-slope.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_road_edge": {
+   "path": "Assets/Art/Models/KenneyTown/road-edge.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_road_slope": {
+   "path": "Assets/Art/Models/KenneyTown/road-slope.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_road": {
+   "path": "Assets/Art/Models/KenneyTown/road.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "road"
+   ]
+  },
+  "town_rock_large": {
+   "path": "Assets/Art/Models/KenneyTown/rock-large.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "town_rock_small": {
+   "path": "Assets/Art/Models/KenneyTown/rock-small.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "town_rock_wide": {
+   "path": "Assets/Art/Models/KenneyTown/rock-wide.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.75
+   },
+   "tags": [
+    "rock"
+   ]
+  },
+  "town_roof_corner_inner": {
+   "path": "Assets/Art/Models/KenneyTown/roof-corner-inner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_corner_round": {
+   "path": "Assets/Art/Models/KenneyTown/roof-corner-round.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_corner": {
+   "path": "Assets/Art/Models/KenneyTown/roof-corner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_flat": {
+   "path": "Assets/Art/Models/KenneyTown/roof-flat.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_gable_detail": {
+   "path": "Assets/Art/Models/KenneyTown/roof-gable-detail.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_gable_end": {
+   "path": "Assets/Art/Models/KenneyTown/roof-gable-end.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_gable_top": {
+   "path": "Assets/Art/Models/KenneyTown/roof-gable-top.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_gable": {
+   "path": "Assets/Art/Models/KenneyTown/roof-gable.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_corner_round": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-corner-round.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_corner": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-corner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_cornerinner": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-cornerinner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_flat": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-flat.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_gable_detail": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-gable-detail.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_gable_end": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-gable-end.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_gable_top": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-gable-top.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_gable": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-gable.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_left": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-left.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_point": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-point.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_right": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-right.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high_window": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high-window.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_high": {
+   "path": "Assets/Art/Models/KenneyTown/roof-high.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_left": {
+   "path": "Assets/Art/Models/KenneyTown/roof-left.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_point": {
+   "path": "Assets/Art/Models/KenneyTown/roof-point.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_right": {
+   "path": "Assets/Art/Models/KenneyTown/roof-right.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof_window": {
+   "path": "Assets/Art/Models/KenneyTown/roof-window.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_roof": {
+   "path": "Assets/Art/Models/KenneyTown/roof.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "roof"
+   ]
+  },
+  "town_stairs_full_corner_inner": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-full-corner-inner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_full_corner_outer": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-full-corner-outer.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_full": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-full.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_stone_corner": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-stone-corner.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_stone_handrail": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-stone-handrail.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_stone_round": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-stone-round.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_stone": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-stone.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_wide_stone_handrail": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-wide-stone-handrail.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_wide_stone": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-wide-stone.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_wide_wood_handrail": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-wide-wood-handrail.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_wide_wood": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-wide-wood.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_wood_handrail": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-wood-handrail.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stairs_wood": {
+   "path": "Assets/Art/Models/KenneyTown/stairs-wood.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "stairs"
+   ]
+  },
+  "town_stall_bench": {
+   "path": "Assets/Art/Models/KenneyTown/stall-bench.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "stall"
+   ]
+  },
+  "town_stall_green": {
+   "path": "Assets/Art/Models/KenneyTown/stall-green.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "stall"
+   ]
+  },
+  "town_stall_red": {
+   "path": "Assets/Art/Models/KenneyTown/stall-red.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "stall"
+   ]
+  },
+  "town_stall_stool": {
+   "path": "Assets/Art/Models/KenneyTown/stall-stool.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "stall"
+   ]
+  },
+  "town_stall": {
+   "path": "Assets/Art/Models/KenneyTown/stall.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "stall"
+   ]
+  },
+  "town_tree_crooked": {
+   "path": "Assets/Art/Models/KenneyTown/tree-crooked.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.4
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "town_tree_high_crooked": {
+   "path": "Assets/Art/Models/KenneyTown/tree-high-crooked.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.4
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "town_tree_high_round": {
+   "path": "Assets/Art/Models/KenneyTown/tree-high-round.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.4
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "town_tree_high": {
+   "path": "Assets/Art/Models/KenneyTown/tree-high.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.4
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "town_tree": {
+   "path": "Assets/Art/Models/KenneyTown/tree.fbx",
+   "collider": {
+    "kind": "capsule",
+    "radius": 0.4
+   },
+   "tags": [
+    "tree"
+   ]
+  },
+  "town_wall_arch_top_detail": {
+   "path": "Assets/Art/Models/KenneyTown/wall-arch-top-detail.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_arch_top": {
+   "path": "Assets/Art/Models/KenneyTown/wall-arch-top.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_arch": {
+   "path": "Assets/Art/Models/KenneyTown/wall-arch.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_block_half": {
+   "path": "Assets/Art/Models/KenneyTown/wall-block-half.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_block": {
+   "path": "Assets/Art/Models/KenneyTown/wall-block.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_broken": {
+   "path": "Assets/Art/Models/KenneyTown/wall-broken.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_corner_detail": {
+   "path": "Assets/Art/Models/KenneyTown/wall-corner-detail.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_corner_diagonal_half": {
+   "path": "Assets/Art/Models/KenneyTown/wall-corner-diagonal-half.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_corner_diagonal": {
+   "path": "Assets/Art/Models/KenneyTown/wall-corner-diagonal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_corner_edge": {
+   "path": "Assets/Art/Models/KenneyTown/wall-corner-edge.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_corner": {
+   "path": "Assets/Art/Models/KenneyTown/wall-corner.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_curved": {
+   "path": "Assets/Art/Models/KenneyTown/wall-curved.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_detail_cross": {
+   "path": "Assets/Art/Models/KenneyTown/wall-detail-cross.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_detail_diagonal": {
+   "path": "Assets/Art/Models/KenneyTown/wall-detail-diagonal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_detail_horizontal": {
+   "path": "Assets/Art/Models/KenneyTown/wall-detail-horizontal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_diagonal": {
+   "path": "Assets/Art/Models/KenneyTown/wall-diagonal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_door": {
+   "path": "Assets/Art/Models/KenneyTown/wall-door.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_doorway_base": {
+   "path": "Assets/Art/Models/KenneyTown/wall-doorway-base.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_doorway_round": {
+   "path": "Assets/Art/Models/KenneyTown/wall-doorway-round.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_doorway_square_wide_curved": {
+   "path": "Assets/Art/Models/KenneyTown/wall-doorway-square-wide-curved.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_doorway_square_wide": {
+   "path": "Assets/Art/Models/KenneyTown/wall-doorway-square-wide.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_doorway_square": {
+   "path": "Assets/Art/Models/KenneyTown/wall-doorway-square.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_half": {
+   "path": "Assets/Art/Models/KenneyTown/wall-half.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_rounded": {
+   "path": "Assets/Art/Models/KenneyTown/wall-rounded.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_side": {
+   "path": "Assets/Art/Models/KenneyTown/wall-side.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_slope": {
+   "path": "Assets/Art/Models/KenneyTown/wall-slope.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_window_glass": {
+   "path": "Assets/Art/Models/KenneyTown/wall-window-glass.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_window_round": {
+   "path": "Assets/Art/Models/KenneyTown/wall-window-round.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_window_shutters": {
+   "path": "Assets/Art/Models/KenneyTown/wall-window-shutters.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_window_small": {
+   "path": "Assets/Art/Models/KenneyTown/wall-window-small.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_window_stone": {
+   "path": "Assets/Art/Models/KenneyTown/wall-window-stone.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_arch_top_detail": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-arch-top-detail.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_arch_top": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-arch-top.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_arch": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-arch.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_block_half": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-block-half.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_block": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-block.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_broken": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-broken.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_corner_diagonal_half": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-corner-diagonal-half.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_corner_diagonal": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-corner-diagonal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_corner_edge": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-corner-edge.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_corner": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-corner.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_curved": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-curved.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_detail_cross": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-detail-cross.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_detail_diagonal": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-detail-diagonal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_detail_horizontal": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-detail-horizontal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_diagonal": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-diagonal.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_door": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-door.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_wood_doorway_base": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-doorway-base.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_wood_doorway_round": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-doorway-round.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_wood_doorway_square_wide_curved": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-doorway-square-wide-curved.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_wood_doorway_square_wide": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-doorway-square-wide.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_wood_doorway_square": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-doorway-square.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wall",
+    "door"
+   ]
+  },
+  "town_wall_wood_half": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-half.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_rounded": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-rounded.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_side": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-side.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_slope": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-slope.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_window_glass": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-window-glass.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_window_round": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-window-round.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_window_shutters": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-window-shutters.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_window_small": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-window-small.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood_window_stone": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood-window-stone.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall_wood": {
+   "path": "Assets/Art/Models/KenneyTown/wall-wood.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_wall": {
+   "path": "Assets/Art/Models/KenneyTown/wall.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "wall"
+   ]
+  },
+  "town_watermill_wide": {
+   "path": "Assets/Art/Models/KenneyTown/watermill-wide.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "watermill"
+   ]
+  },
+  "town_watermill": {
+   "path": "Assets/Art/Models/KenneyTown/watermill.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "watermill"
+   ]
+  },
+  "town_wheel": {
+   "path": "Assets/Art/Models/KenneyTown/wheel.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "wheel"
+   ]
+  },
+  "town_windmill": {
+   "path": "Assets/Art/Models/KenneyTown/windmill.fbx",
+   "collider": {
+    "kind": "box"
+   },
+   "tags": [
+    "windmill"
+   ]
+  },
+  "prop_anvil": {
+   "path": "Assets/Art/Models/QuaterniusProps/Anvil.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "anvil"
+   ]
+  },
+  "prop_anvil_log": {
+   "path": "Assets/Art/Models/QuaterniusProps/Anvil_Log.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "anvil"
+   ]
+  },
+  "prop_axe_bronze": {
+   "path": "Assets/Art/Models/QuaterniusProps/Axe_Bronze.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_bag": {
+   "path": "Assets/Art/Models/QuaterniusProps/Bag.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_banner_1": {
+   "path": "Assets/Art/Models/QuaterniusProps/Banner_1.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_banner_2": {
+   "path": "Assets/Art/Models/QuaterniusProps/Banner_2.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_barrel": {
+   "path": "Assets/Art/Models/QuaterniusProps/Barrel.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_barrel_apples": {
+   "path": "Assets/Art/Models/QuaterniusProps/Barrel_Apples.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_barrel_holder": {
+   "path": "Assets/Art/Models/QuaterniusProps/Barrel_Holder.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_bed_twin1": {
+   "path": "Assets/Art/Models/QuaterniusProps/Bed_Twin1.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "bed"
+   ]
+  },
+  "prop_bed_twin2": {
+   "path": "Assets/Art/Models/QuaterniusProps/Bed_Twin2.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "bed"
+   ]
+  },
+  "prop_bench": {
+   "path": "Assets/Art/Models/QuaterniusProps/Bench.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "furniture"
+   ]
+  },
+  "prop_book_stand": {
+   "path": "Assets/Art/Models/QuaterniusProps/BookStand.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_bookcase_2": {
+   "path": "Assets/Art/Models/QuaterniusProps/Bookcase_2.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_bucket_metal": {
+   "path": "Assets/Art/Models/QuaterniusProps/Bucket_Metal.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_bucket_wooden_1": {
+   "path": "Assets/Art/Models/QuaterniusProps/Bucket_Wooden_1.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_cabinet": {
+   "path": "Assets/Art/Models/QuaterniusProps/Cabinet.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_carrot": {
+   "path": "Assets/Art/Models/QuaterniusProps/Carrot.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_cauldron": {
+   "path": "Assets/Art/Models/QuaterniusProps/Cauldron.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_chair_1": {
+   "path": "Assets/Art/Models/QuaterniusProps/Chair_1.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "furniture"
+   ]
+  },
+  "prop_chandelier": {
+   "path": "Assets/Art/Models/QuaterniusProps/Chandelier.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_chest_wood": {
+   "path": "Assets/Art/Models/QuaterniusProps/Chest_Wood.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_crate_metal": {
+   "path": "Assets/Art/Models/QuaterniusProps/Crate_Metal.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_crate_wooden": {
+   "path": "Assets/Art/Models/QuaterniusProps/Crate_Wooden.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_dummy": {
+   "path": "Assets/Art/Models/QuaterniusProps/Dummy.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_farm_crate_apple": {
+   "path": "Assets/Art/Models/QuaterniusProps/FarmCrate_Apple.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_farm_crate_carrot": {
+   "path": "Assets/Art/Models/QuaterniusProps/FarmCrate_Carrot.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_farm_crate_empty": {
+   "path": "Assets/Art/Models/QuaterniusProps/FarmCrate_Empty.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_lantern_wall": {
+   "path": "Assets/Art/Models/QuaterniusProps/Lantern_Wall.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_mug": {
+   "path": "Assets/Art/Models/QuaterniusProps/Mug.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_nightstand_shelf": {
+   "path": "Assets/Art/Models/QuaterniusProps/Nightstand_Shelf.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_peg_rack": {
+   "path": "Assets/Art/Models/QuaterniusProps/Peg_Rack.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_pickaxe_bronze": {
+   "path": "Assets/Art/Models/QuaterniusProps/Pickaxe_Bronze.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_pot_1": {
+   "path": "Assets/Art/Models/QuaterniusProps/Pot_1.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_pouch_large": {
+   "path": "Assets/Art/Models/QuaterniusProps/Pouch_Large.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_rope_1": {
+   "path": "Assets/Art/Models/QuaterniusProps/Rope_1.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_shelf_arch": {
+   "path": "Assets/Art/Models/QuaterniusProps/Shelf_Arch.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_shelf_simple": {
+   "path": "Assets/Art/Models/QuaterniusProps/Shelf_Simple.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_stall_cart_empty": {
+   "path": "Assets/Art/Models/QuaterniusProps/Stall_Cart_Empty.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "furniture"
+   ]
+  },
+  "prop_stall_empty": {
+   "path": "Assets/Art/Models/QuaterniusProps/Stall_Empty.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "furniture"
+   ]
+  },
+  "prop_stool": {
+   "path": "Assets/Art/Models/QuaterniusProps/Stool.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "furniture"
+   ]
+  },
+  "prop_sword_bronze": {
+   "path": "Assets/Art/Models/QuaterniusProps/Sword_Bronze.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_table_large": {
+   "path": "Assets/Art/Models/QuaterniusProps/Table_Large.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop",
+    "furniture"
+   ]
+  },
+  "prop_table_plate": {
+   "path": "Assets/Art/Models/QuaterniusProps/Table_Plate.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop",
+    "furniture"
+   ]
+  },
+  "prop_torch_metal": {
+   "path": "Assets/Art/Models/QuaterniusProps/Torch_Metal.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_vase_2": {
+   "path": "Assets/Art/Models/QuaterniusProps/Vase_2.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_weapon_stand": {
+   "path": "Assets/Art/Models/QuaterniusProps/WeaponStand.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_whetstone": {
+   "path": "Assets/Art/Models/QuaterniusProps/Whetstone.fbx",
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_workbench": {
+   "path": "Assets/Art/Models/QuaterniusProps/Workbench.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "prop_workbench_drawers": {
+   "path": "Assets/Art/Models/QuaterniusProps/Workbench_Drawers.fbx",
+   "collider": {
+    "kind": "box",
+    "shrink": 0.9
+   },
+   "tags": [
+    "prop"
+   ]
+  },
+  "house_hut": {
+   "parts": [
+    {
+     "model": "town_wall_wood",
+     "offset": {
+      "x": -1.5,
+      "z": -1.5
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall_wood",
+     "offset": {
+      "x": 1.5,
+      "z": -1.5
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall_wood_window_small",
+     "offset": {
+      "x": -1.5,
+      "z": 1.5
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall_wood_window_small",
+     "offset": {
+      "x": 1.5,
+      "z": 1.5
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall_wood_door",
+     "offset": {
+      "x": -1.5,
+      "z": -1.5
+     },
+     "yaw": 270,
+     "collider": "none"
+    },
+    {
+     "model": "town_wall_wood",
+     "offset": {
+      "x": -1.5,
+      "z": 1.5
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_wall_wood_window_small",
+     "offset": {
+      "x": 1.5,
+      "z": -1.5
+     },
+     "yaw": 270
+    },
+    {
+     "model": "town_wall_wood_window_small",
+     "offset": {
+      "x": 1.5,
+      "z": 1.5
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -1.5,
+      "z": -1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -1.5,
+      "z": 1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 1.5,
+      "z": -1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 1.5,
+      "z": 1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    }
+   ],
+   "collider": {
+    "kind": "parts"
+   },
+   "tags": [
+    "building"
+   ]
+  },
+  "house_small": {
+   "parts": [
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -1.5,
+      "z": -1.5
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": 1.5,
+      "z": -1.5
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall_window_small",
+     "offset": {
+      "x": -1.5,
+      "z": 1.5
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall_window_small",
+     "offset": {
+      "x": 1.5,
+      "z": 1.5
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall_door",
+     "offset": {
+      "x": -1.5,
+      "z": -1.5
+     },
+     "yaw": 270,
+     "collider": "none"
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -1.5,
+      "z": 1.5
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_wall_window_small",
+     "offset": {
+      "x": 1.5,
+      "z": -1.5
+     },
+     "yaw": 270
+    },
+    {
+     "model": "town_wall_window_small",
+     "offset": {
+      "x": 1.5,
+      "z": 1.5
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -1.5,
+      "z": -1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -1.5,
+      "z": 1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 1.5,
+      "z": -1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 1.5,
+      "z": 1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    }
+   ],
+   "collider": {
+    "kind": "parts"
+   },
+   "tags": [
+    "building"
+   ]
+  },
+  "house_long": {
+   "parts": [
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -3.0,
+      "z": -1.5
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": 3.0,
+      "z": -1.5
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall_window_shutters",
+     "offset": {
+      "x": -3.0,
+      "z": 1.5
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall_window_shutters",
+     "offset": {
+      "x": 3.0,
+      "z": 1.5
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -3.0,
+      "z": -1.5
+     },
+     "yaw": 270
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -3.0,
+      "z": 1.5
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_wall_door",
+     "offset": {
+      "x": 0.0,
+      "z": -1.5
+     },
+     "yaw": 270,
+     "collider": "none"
+    },
+    {
+     "model": "town_wall_window_shutters",
+     "offset": {
+      "x": 0.0,
+      "z": 1.5
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": 3.0,
+      "z": -1.5
+     },
+     "yaw": 270
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": 3.0,
+      "z": 1.5
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -3.0,
+      "z": -1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -3.0,
+      "z": 1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 0.0,
+      "z": -1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 0.0,
+      "z": 1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 3.0,
+      "z": -1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 3.0,
+      "z": 1.5
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    }
+   ],
+   "collider": {
+    "kind": "parts"
+   },
+   "tags": [
+    "building"
+   ]
+  },
+  "house_big": {
+   "parts": [
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -3.0,
+      "z": -3.0
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": 3.0,
+      "z": -3.0
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall_window_glass",
+     "offset": {
+      "x": -3.0,
+      "z": 0.0
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall_window_glass",
+     "offset": {
+      "x": 3.0,
+      "z": 0.0
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -3.0,
+      "z": 3.0
+     },
+     "yaw": 0
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": 3.0,
+      "z": 3.0
+     },
+     "yaw": 180
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -3.0,
+      "z": -3.0
+     },
+     "yaw": 270
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": -3.0,
+      "z": 3.0
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_wall_door",
+     "offset": {
+      "x": 0.0,
+      "z": -3.0
+     },
+     "yaw": 270,
+     "collider": "none"
+    },
+    {
+     "model": "town_wall_window_glass",
+     "offset": {
+      "x": 0.0,
+      "z": 3.0
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": 3.0,
+      "z": -3.0
+     },
+     "yaw": 270
+    },
+    {
+     "model": "town_wall",
+     "offset": {
+      "x": 3.0,
+      "z": 3.0
+     },
+     "yaw": 90
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -3.0,
+      "z": -3.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -3.0,
+      "z": 0.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": -3.0,
+      "z": 3.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 0.0,
+      "z": -3.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 0.0,
+      "z": 0.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 0.0,
+      "z": 3.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 3.0,
+      "z": -3.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 3.0,
+      "z": 0.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    },
+    {
+     "model": "town_roof_gable",
+     "offset": {
+      "x": 3.0,
+      "z": 3.0
+     },
+     "y": 3.0,
+     "yaw": 0,
+     "collider": "none"
+    }
+   ],
+   "collider": {
+    "kind": "parts"
+   },
+   "tags": [
+    "building"
+   ]
+  }
+ }
+}

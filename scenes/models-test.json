@@ -1,0 +1,66 @@
+{
+  "_source": "D-10: пробная сцена сборщика моделей — по несколько штук каждого вида, россыпь, речка с мостом, дом; не в сборку плеера. Размеры/позиции подобраны по data/model-bounds.json.",
+  "name": "models-test",
+  "build": { "include": false, "order": 1000 },
+  "save": { "slot": "" },
+  "ground": { "sizeX": 80, "sizeZ": 60, "color": "#8a9566", "terrain": "grass" },
+  "light": { "rotation": { "x": 50, "y": -30, "z": 0 }, "color": "#fff1dc", "intensity": 1.1, "shadows": "soft" },
+  "ambient": { "color": "#a8a8a0" },
+  "camera": { "orthographic": true, "pitch": 35, "yaw": 45, "distance": 30, "size": 10, "followSmoothTime": 0.15 },
+  "hero": { "spawn": { "x": 0, "y": 0, "z": -22 }, "shape": "capsule", "color": "#c9a46a" },
+  "paths": [
+    { "id": "road_main", "points": [ { "x": 0, "z": -26 }, { "x": 0, "z": -8 }, { "x": 6, "z": 2 }, { "x": 6, "z": 26 } ], "width": 3, "color": "#b09a6e" }
+  ],
+  "water": [
+    { "id": "river", "points": [ { "x": -40, "z": 8 }, { "x": 0, "z": 9 }, { "x": 40, "z": 8 } ], "width": 7, "color": "#5f8fa3" }
+  ],
+  "zones": [
+    { "id": "bridge_deck", "shape": "rect", "center": { "x": 6, "z": 8.6 }, "size": { "x": 3.6, "z": 9 }, "terrain": "road", "tags": [ "bridge" ] },
+    { "id": "wet_meadow", "shape": "circle", "center": { "x": -18, "z": -12 }, "radius": 6, "tags": [ "wet_grass" ] },
+    { "id": "predator_spawn", "shape": "rect", "center": { "x": 24, "z": -14 }, "size": { "x": 12, "z": 10 }, "tags": [ "predator_spawn" ] }
+  ],
+  "objects": [
+    { "id": "house_a", "model": "house_small", "position": { "x": -12, "y": 0, "z": -2 } },
+    { "id": "hut_a", "model": "house_hut", "position": { "x": 16, "y": 0, "z": -2 }, "rotation": { "x": 0, "y": 90, "z": 0 } },
+    { "id": "bridge_1", "model": "bridge_wood", "position": { "x": 6, "y": 0, "z": 6.2 } },
+    { "id": "bridge_2", "model": "bridge_wood", "position": { "x": 6, "y": 0, "z": 9.2 } },
+    { "id": "bridge_3", "model": "bridge_wood", "position": { "x": 6, "y": 0, "z": 12.2 } },
+    { "id": "tree_a", "model": "tree_oak", "position": { "x": -4, "y": 0, "z": -14 } },
+    { "id": "tree_b", "model": "tree_default", "position": { "x": -7, "y": 0, "z": -10 } },
+    { "id": "tree_c", "model": "tree_pine_tall_a", "position": { "x": 4, "y": 0, "z": -16 } },
+    { "id": "tree_d", "model": "tree_fat", "position": { "x": 9, "y": 0, "z": -12 } },
+    { "id": "bush_a", "model": "plant_bush_large", "position": { "x": 3, "y": 0, "z": -10 } },
+    { "id": "bush_b", "model": "plant_bush", "position": { "x": -2, "y": 0, "z": -6 } },
+    { "id": "rock_a", "model": "rock_large_a", "position": { "x": 10, "y": 0, "z": -6 } },
+    { "id": "rock_b", "model": "stone_tall_c", "position": { "x": -9, "y": 0, "z": -6 } },
+    { "id": "log_a", "model": "log_large", "position": { "x": -3, "y": 0, "z": -20 }, "rotation": { "x": 0, "y": 40, "z": 0 }, "tags": [ "log" ] },
+    { "id": "stump_a", "model": "stump_round", "position": { "x": 3, "y": 0, "z": -20 } },
+    { "id": "fence_a", "model": "fence_simple", "position": { "x": 20, "y": 0, "z": 14 } },
+    { "id": "fence_b", "model": "fence_simple", "position": { "x": 23, "y": 0, "z": 14 } },
+    { "id": "fence_c", "model": "fence_gate", "position": { "x": 26, "y": 0, "z": 14 } },
+    { "id": "wheat_1", "model": "crops_wheat_stage_b", "position": { "x": 16, "y": 0, "z": 20 } },
+    { "id": "wheat_2", "model": "crops_wheat_stage_b", "position": { "x": 19, "y": 0, "z": 20 } },
+    { "id": "dirt_1", "model": "crops_dirt_row", "position": { "x": 22, "y": 0, "z": 20 } },
+    { "id": "campfire_a", "model": "campfire_logs", "position": { "x": -4, "y": 0, "z": 16 } },
+    { "id": "tent_a", "model": "tent_small_open", "position": { "x": -8, "y": 0, "z": 18 } },
+    { "id": "barrel_a", "model": "prop_barrel", "position": { "x": -6, "y": 0, "z": 2.5 } },
+    { "id": "crate_a", "model": "prop_crate_wooden", "position": { "x": -5, "y": 0, "z": 3.5 } },
+    { "id": "bed_a", "model": "prop_bed_twin1", "position": { "x": -20, "y": 0, "z": 16 } },
+    { "id": "table_a", "model": "prop_table_large", "position": { "x": -24, "y": 0, "z": 20 } },
+    { "id": "stool_a", "model": "prop_stool", "position": { "x": -22, "y": 0, "z": 22 } },
+    { "id": "anvil_a", "model": "prop_anvil", "position": { "x": -14, "y": 0, "z": 22 } },
+    { "id": "fountain_a", "model": "town_fountain_round", "position": { "x": 12, "y": 0, "z": 22 } },
+    { "id": "stall_a", "model": "town_stall_red", "position": { "x": 0, "y": 0, "z": 22 }, "rotation": { "x": 0, "y": 180, "z": 0 } }
+  ],
+  "scatter": [
+    { "id": "meadow_grass", "area": { "shape": "rect", "center": { "x": 0, "z": -12 }, "size": { "x": 50, "z": 24 } },
+      "models": [ { "id": "grass", "weight": 4 }, { "id": "grass_large", "weight": 2 }, { "id": "flower_yellow_a", "weight": 1 }, { "id": "flower_purple_a", "weight": 1 }, { "id": "plant_flat_short", "weight": 1 } ],
+      "density": 18, "seed": 1, "scale": { "min": 0.8, "max": 1.2 }, "avoid": { "paths": 0.8, "water": 1, "objects": 0.6, "zones": [ "bridge_deck" ] } },
+    { "id": "forest_trees", "area": { "shape": "circle", "center": { "x": -28, "z": 14 }, "radius": 9 },
+      "models": [ { "id": "tree_default", "weight": 2 }, { "id": "tree_oak_dark", "weight": 1 }, { "id": "tree_pine_tall_b", "weight": 2 }, { "id": "tree_small", "weight": 1 } ],
+      "density": 3, "seed": 2, "scale": { "min": 0.85, "max": 1.2 }, "minSpacing": 3, "collide": true, "avoid": { "paths": 1, "water": 2, "objects": 2 } },
+    { "id": "river_bank_stones", "area": { "ref": "river" },
+      "models": [ { "id": "stone_small_a", "weight": 1 }, { "id": "stone_small_c", "weight": 1 }, { "id": "rock_small_b", "weight": 1 } ],
+      "density": 2, "seed": 3, "scale": { "min": 0.8, "max": 1.4 }, "avoid": { "zones": [ "bridge_deck" ] } }
+  ]
+}

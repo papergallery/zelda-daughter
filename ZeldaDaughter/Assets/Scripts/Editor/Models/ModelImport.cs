@@ -13,14 +13,14 @@ namespace ZeldaDaughter.Editor
     {
                 static bool Ours(string path) => path.StartsWith(ModelLook.ModelsRoot, System.StringComparison.Ordinal);
 
-        public override uint GetVersion() => 1u;
+        public override uint GetVersion() => 3u;
 
         void OnPreprocessModel()
         {
             if (!Ours(assetPath)) return;
             var m = (ModelImporter)assetImporter;
             m.useFileScale = false;
-            m.globalScale = 1f;
+            m.globalScale = KitScale(assetPath);
             m.importAnimation = false;
             m.animationType = ModelImporterAnimationType.None;
             m.importCameras = false;
@@ -36,13 +36,26 @@ namespace ZeldaDaughter.Editor
             m.materialLocation = ModelImporterMaterialLocation.InPrefab;
         }
 
+        /// <summary>
+        /// Raw file units → metres, baked at import so every model in the catalog is real-size (scale 1). Measured (D-10): the
+        /// Kenney kits are 10 (Nature) / 100 (Town) units per tile, Quaternius is in centimetres. One tile = 3 m: the hero is a
+        /// 2 m capsule, a Town wall is 3 m high with a ~2.1 m door, a Nature river tile is 3 m wide.
+        /// </summary>
+        public static float KitScale(string path)
+        {
+            if (path.Contains("/KenneyNature/")) return 0.3f;
+            if (path.Contains("/KenneyTown/")) return 0.03f;
+            if (path.Contains("/QuaterniusProps/")) return 0.01f;
+            return 1f;
+        }
+
         void OnPreprocessMaterialDescription(MaterialDescription description, Material material, AnimationClip[] clips)
         {
             if (!Ours(assetPath)) return;
             Color color = Color.white;
             if (description.TryGetProperty("DiffuseColor", out Vector4 v)) color = new Color(v.x, v.y, v.z, 1f);
             Texture map = null;
-            if (description.TryGetProperty("DiffuseColor", out TexturePropertyDescription tex) && tex.texture != null) map = tex.texture;
+            if (description.TryGetProperty("DiffuseColor", out TexturePropertyDescription tex) && tex.texture is Texture2D) map = tex.texture;
             if (map == null) map = FromTrimName(material.name);
             ModelLook.Apply(material, color, map);
         }

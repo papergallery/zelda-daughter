@@ -22,6 +22,14 @@ namespace ZeldaDaughter.Core.Scenes
         public BuildConfig Build { get; set; } = new BuildConfig();
         public SaveConfig Save { get; set; } = new SaveConfig();
         public List<ObjectConfig> Objects { get; set; } = new List<ObjectConfig>();
+        /// <summary>Roads and tracks: ribbons on the ground, terrain "road" by default (D-10).</summary>
+        public List<StripConfig> Paths { get; set; } = new List<StripConfig>();
+        /// <summary>Rivers: ribbons of water, terrain "water" (the hero is slowed) unless a zone with another terrain (a bridge) covers the spot.</summary>
+        public List<StripConfig> Water { get; set; } = new List<StripConfig>();
+        /// <summary>Named regions with tags (predator spawn, wet grass…) and an optional terrain override (mud, bridge deck = road).</summary>
+        public List<ZoneConfig> Zones { get; set; } = new List<ZoneConfig>();
+        /// <summary>Decor scattered over regions, deterministic from the seed.</summary>
+        public List<ScatterConfig> Scatter { get; set; } = new List<ScatterConfig>();
 
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore };
         static readonly Regex IdPattern = new Regex("^[a-z][a-z0-9_]*$");
@@ -48,7 +56,7 @@ namespace ZeldaDaughter.Core.Scenes
         }
 
         /// <summary>Problems as "scene: id: what"; empty when the scene can be built.</summary>
-        public IReadOnlyList<string> Validate(Func<string, bool>? prefabExists = null)
+        public IReadOnlyList<string> Validate(Func<string, bool>? prefabExists = null, ModelCatalog? catalog = null, ICollection<string>? terrains = null)
         {
             var p = new List<string>();
             if (!IdPattern.IsMatch(Name.Replace('-', '_'))) p.Add($"{Name}: name — [a-z0-9_-] с буквы");
@@ -67,11 +75,85 @@ namespace ZeldaDaughter.Core.Scenes
                 if (!IdPattern.IsMatch(o.Id)) p.Add($"{Name}: '{o.Id}' — id только [a-z0-9_] с буквы");
                 if (!ids.Add(o.Id)) p.Add($"{Name}: '{o.Id}' — повтор id");
                 Inside(p, o.Id, o.Position);
-                Thing(p, o.Id, o.Shape, o.Prefab, prefabExists);
+                if (!string.IsNullOrEmpty(o.Model))
+                {
+                    if (!string.IsNullOrEmpty(o.Shape) || !string.IsNullOrEmpty(o.Prefab)) p.Add($"{Name}: '{o.Id}' — model нельзя вместе с shape / prefab");
+                    if (catalog != null && !catalog.Has(o.Model!)) p.Add($"{Name}: '{o.Id}' — модели '{o.Model}' нет в data/models.json");
+                }
+                else Thing(p, o.Id, o.Shape, o.Prefab, prefabExists);
                 Color(p, o.Id, o.Color);
                 if (o.Scale.X <= 0 || o.Scale.Y <= 0 || o.Scale.Z <= 0) p.Add($"{Name}: '{o.Id}' — масштаб > 0");
             }
+            ValidateLayout(p, catalog, terrains);
             return p;
+        }
+
+        void ValidateLayout(List<string> p, ModelCatalog? catalog, ICollection<string>? terrains)
+        {
+            var areaIds = new HashSet<string>();
+            void Id(string id)
+            {
+                if (!IdPattern.IsMatch(id)) p.Add($"{Name}: '{id}' — id только [a-z0-9_] с буквы");
+                else if (!areaIds.Add(id)) p.Add($"{Name}: '{id}' — повтор id среди дорог, воды и зон");
+            }
+            void Terrain(string id, string? t)
+            {
+                if (!string.IsNullOrEmpty(t) && terrains != null && !terrains.Contains(t!)) p.Add($"{Name}: '{id}' — террейна '{t}' нет в data/movement.json");
+            }
+            foreach (var s in Paths)
+            {
+                Id(s.Id);
+                if (s.Kind != "strip") p.Add($"{Name}: '{s.Id}' — путь задаётся points + width");
+                foreach (var e in s.Check()) p.Add($"{Name}: '{s.Id}' — {e}");
+                Color(p, s.Id, s.Color);
+                Terrain(s.Id, s.Terrain);
+            }
+            foreach (var s in Water)
+            {
+                Id(s.Id);
+                if (s.Kind != "strip") p.Add($"{Name}: '{s.Id}' — вода задаётся points + width");
+                foreach (var e in s.Check()) p.Add($"{Name}: '{s.Id}' — {e}");
+                Color(p, s.Id, s.Color);
+                Terrain(s.Id, s.Terrain);
+            }
+            foreach (var z in Zones)
+            {
+                Id(z.Id);
+                foreach (var e in z.Check()) p.Add($"{Name}: '{z.Id}' — {e}");
+                Terrain(z.Id, z.Terrain);
+            }
+            var scatterIds = new HashSet<string>();
+            foreach (var sc in Scatter)
+            {
+                if (!IdPattern.IsMatch(sc.Id)) p.Add($"{Name}: '{sc.Id}' — id только [a-z0-9_] с буквы");
+                else if (!scatterIds.Add(sc.Id)) p.Add($"{Name}: '{sc.Id}' — повтор id россыпи");
+                if (!string.IsNullOrEmpty(sc.Area.Ref))
+                {
+                    if (ResolveArea(sc.Area) == null) p.Add($"{Name}: '{sc.Id}' — area.ref '{sc.Area.Ref}' не найден");
+                }
+                else foreach (var e in sc.Area.Check()) p.Add($"{Name}: '{sc.Id}' — {e}");
+                if (sc.Models.Count == 0) p.Add($"{Name}: '{sc.Id}' — пустой список моделей");
+                foreach (var m in sc.Models)
+                {
+                    if (m.Weight <= 0) p.Add($"{Name}: '{sc.Id}' — вес модели '{m.Id}' > 0");
+                    if (catalog != null && !catalog.Has(m.Id)) p.Add($"{Name}: '{sc.Id}' — модели '{m.Id}' нет в data/models.json");
+                }
+                if (sc.Density <= 0) p.Add($"{Name}: '{sc.Id}' — density > 0 (штук на 100 м²)");
+                if (sc.Scale.Min <= 0 || sc.Scale.Max < sc.Scale.Min) p.Add($"{Name}: '{sc.Id}' — scale: 0 < min ≤ max");
+                if (sc.MaxCount <= 0) p.Add($"{Name}: '{sc.Id}' — maxCount > 0");
+                foreach (var zid in sc.Avoid.Zones)
+                    if (!areaIds.Contains(zid)) p.Add($"{Name}: '{sc.Id}' — avoid.zones: '{zid}' не найден");
+            }
+        }
+
+        /// <summary>The geometry a scatter area stands for: itself, or the path / water / zone it references (null when the reference is dangling).</summary>
+        public Area? ResolveArea(Area a)
+        {
+            if (string.IsNullOrEmpty(a.Ref)) return a;
+            foreach (var s in Paths) if (s.Id == a.Ref) return s;
+            foreach (var s in Water) if (s.Id == a.Ref) return s;
+            foreach (var z in Zones) if (z.Id == a.Ref) return z;
+            return null;
         }
 
         void Inside(List<string> p, string who, V3 pos)
@@ -171,5 +253,67 @@ namespace ZeldaDaughter.Core.Scenes
         public List<string> Tags { get; set; } = new List<string>();
         /// <summary>Item id from data/items.json the hero picks up by tapping this object.</summary>
         public string? Item { get; set; }
+        /// <summary>Model id from data/models.json (instead of shape / prefab).</summary>
+        public string? Model { get; set; }
+        /// <summary>Force the model's collider on / off; null = whatever the catalog says.</summary>
+        public bool? Collide { get; set; }
+    }
+
+    /// <summary>A road or a river: a ribbon along <c>points</c>, <c>width</c> metres wide.</summary>
+    public sealed class StripConfig : Area
+    {
+        public string Id { get; set; } = "";
+        public string? Color { get; set; }
+        /// <summary>Terrain id for the speed rule; empty = "road" for paths, "water" for water.</summary>
+        public string? Terrain { get; set; }
+        public List<string> Tags { get; set; } = new List<string>();
+    }
+
+    public sealed class ZoneConfig : Area
+    {
+        public string Id { get; set; } = "";
+        public List<string> Tags { get; set; } = new List<string>();
+        /// <summary>Terrain override inside the zone (a bridge deck = "road", mud…); empty = geometry only.</summary>
+        public string? Terrain { get; set; }
+    }
+
+    public sealed class ScatterModel
+    {
+        public string Id { get; set; } = "";
+        public float Weight { get; set; } = 1f;
+    }
+
+    public sealed class ScaleRange
+    {
+        public float Min { get; set; } = 1f;
+        public float Max { get; set; } = 1f;
+    }
+
+    /// <summary>How far scattered things keep from other things (metres beyond their edges); null = don't care.</summary>
+    public sealed class AvoidConfig
+    {
+        public float? Paths { get; set; }
+        public float? Water { get; set; }
+        public float? Objects { get; set; }
+        public List<string> Zones { get; set; } = new List<string>();
+        public float ZoneMargin { get; set; }
+    }
+
+    /// <summary>Decor over a region: <c>density</c> items per 100 m², models by weight, positions from <c>seed</c> only.</summary>
+    public sealed class ScatterConfig
+    {
+        public string Id { get; set; } = "";
+        public Area Area { get; set; } = new Area();
+        public List<ScatterModel> Models { get; set; } = new List<ScatterModel>();
+        public float Density { get; set; }
+        public int Seed { get; set; }
+        public ScaleRange Scale { get; set; } = new ScaleRange();
+        public AvoidConfig Avoid { get; set; } = new AvoidConfig();
+        /// <summary>Minimum distance between two scattered items of this entry.</summary>
+        public float MinSpacing { get; set; }
+        /// <summary>Give the items their catalog colliders (trees, rocks); grass and flowers stay walk-through.</summary>
+        public bool Collide { get; set; }
+        public bool RandomYaw { get; set; } = true;
+        public int MaxCount { get; set; } = 3000;
     }
 }

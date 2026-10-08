@@ -23,9 +23,10 @@ namespace ZeldaDaughter.Editor
     /// (docs/scene-config.md). No fixers on top: change the config or this builder. Batchmode:
     /// -executeMethod ZeldaDaughter.Editor.SceneBuilder.BuildAll. Log: "[ZD:Scene] built &lt;name&gt; objects=N hash=…".
     /// </summary>
-    public static class SceneBuilder
+    public static partial class SceneBuilder
     {
         public const string ConfigDir = "../scenes";
+        public const string DataDir = "../data";
         const string ScenesDir = "Assets/Scenes";
         const string MaterialsDir = "Assets/Generated/Materials";
         const string LitShader = "Universal Render Pipeline/Lit";
@@ -74,7 +75,10 @@ namespace ZeldaDaughter.Editor
         {
             GuardEditorState();
             var config = SceneConfig.Parse(File.ReadAllText(configPath));
-            var problems = config.Validate(p => AssetDatabase.LoadAssetAtPath<GameObject>(p) != null);
+            var catalog = LoadCatalog();
+            var terrains = ZeldaDaughter.Core.Data.DataSet.Load(DataDir).Movement.Terrain.Keys.ToList();
+            var problems = config.Validate(p => AssetDatabase.LoadAssetAtPath<GameObject>(p) != null, catalog, terrains).ToList();
+            problems.AddRange(catalog.Validate(p => AssetDatabase.LoadAssetAtPath<GameObject>(p) != null).Where(_ => config.Objects.Any(o => o.Model != null) || config.Scatter.Count > 0));
             if (problems.Count > 0)
             {
                 foreach (var p in problems) Debug.LogError("[ZD:Scene] " + p);
@@ -118,13 +122,16 @@ namespace ZeldaDaughter.Editor
             camGo.AddComponent<AudioListener>();
             var iso = camGo.AddComponent<IsoCamera>();
             iso.Configure(hero.transform, config.Camera.Pitch, config.Camera.Yaw, config.Camera.Distance, config.Camera.FollowSmoothTime);
-            hero.AddComponent<HeroController>().Configure(iso, cam, config.Ground.Terrain);
+            var heroCtl = hero.AddComponent<HeroController>();
+            heroCtl.Configure(iso, cam, config.Ground.Terrain);
+
+            BuildLayout(config, catalog, heroCtl);
 
             var root = new GameObject("Objects").transform;
             var tagged = new List<SceneTags>();
             foreach (var o in config.Objects)
             {
-                var go = Spawn(o.Id, o.Shape, o.Prefab, o.Color);
+                var go = !string.IsNullOrEmpty(o.Model) ? SpawnModel(o.Id, o.Model, catalog, o.Collide ?? true) : Spawn(o.Id, o.Shape, o.Prefab, o.Color);
                 go.transform.SetParent(root, false);
                 go.transform.localPosition = V(o.Position);
                 go.transform.localRotation = Quaternion.Euler(V(o.Rotation));

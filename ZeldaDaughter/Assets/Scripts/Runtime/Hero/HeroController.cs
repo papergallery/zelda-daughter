@@ -23,6 +23,8 @@ namespace ZeldaDaughter.Hero
         [SerializeField] private IsoCamera _iso;
         [SerializeField] private Camera _camera;
         [SerializeField] private string _terrain = "ground";
+        [SerializeField] private TerrainZones _zones;
+        private string _lastTerrain;
 
         private CharacterController _cc;
         private GestureRecognizer _gestures;
@@ -41,6 +43,12 @@ namespace ZeldaDaughter.Hero
             _camera = cam;
             _terrain = terrain;
         }
+
+        /// <summary>Rivers, roads and terrain zones of the scene (D-10); without them the ground terrain of the scene applies everywhere.</summary>
+        public void SetZones(TerrainZones zones) => _zones = zones;
+
+        /// <summary>The terrain id under the hero now.</summary>
+        public string CurrentTerrain => _zones != null ? _zones.At(transform.position) : _terrain;
 
         /// <summary>Tests: a fixed density instead of the device's.</summary>
         public void UseDpi(float dpi)
@@ -131,9 +139,13 @@ namespace ZeldaDaughter.Hero
         {
             var heroOnScreen = _camera.WorldToScreenPoint(transform.position);
             if (_input.IsOnHero(screen, new Vec2(heroOnScreen.x, heroOnScreen.y), _dpi)) return TouchHit.Hero;
-            if (Physics.Raycast(_camera.ScreenPointToRay(new Vector3(screen.X, screen.Y)), out var hit, 500f)
-                && hit.collider.transform.parent != null && hit.collider.transform.parent.name == "Objects")
-                return TouchHit.Object(hit.collider.name);
+            if (Physics.Raycast(_camera.ScreenPointToRay(new Vector3(screen.X, screen.Y)), out var hit, 500f))
+            {
+                // A composite object (a house) has colliders on its parts: the object is the ancestor directly under "Objects".
+                var t = hit.collider.transform;
+                while (t.parent != null && t.parent.name != "Objects") t = t.parent;
+                if (t.parent != null) return TouchHit.Object(t.name);
+            }
             return TouchHit.Ground;
         }
 
@@ -175,7 +187,13 @@ namespace ZeldaDaughter.Hero
             Vector3 horizontal = Vector3.zero;
             if (_intent.IsMoving)
             {
-                float speed = _speed.Speed(_intent.Strength, _terrain, NoModifiers);
+                string terrain = CurrentTerrain;
+                if (terrain != _lastTerrain)
+                {
+                    ZdLog.Info("Move", $"terrain {_lastTerrain ?? "-"} -> {terrain}");
+                    _lastTerrain = terrain;
+                }
+                float speed = _speed.Speed(_intent.Strength, terrain, NoModifiers);
                 horizontal = new Vector3(_intent.Direction.X, 0f, _intent.Direction.Y) * speed * dt;
                 transform.rotation = Quaternion.LookRotation(new Vector3(_intent.Direction.X, 0f, _intent.Direction.Y));
             }

@@ -29,7 +29,7 @@ namespace ZeldaDaughter.Editor
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 if (prefab == null) continue;
                 var go = (GameObject)Object.Instantiate(prefab);
-                go.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+                // The prefab root keeps its own rotation/scale (Quaternius: the mesh node stands the Z-up export up) — do not reset it.
                 var rs = go.GetComponentsInChildren<Renderer>();
                 if (rs.Length == 0) { Object.DestroyImmediate(go); continue; }
                 var b = rs[0].bounds;
