@@ -61,13 +61,14 @@ namespace ZeldaDaughter.Core.Tests
         }
 
         [Fact]
-        public void Lines_have_no_gendered_past_tense_until_the_author_decides()
+        public void The_heroine_speaks_of_herself_in_the_feminine()
         {
-            // docs/for-author.md п. 1: «устал / устала» — wait for the answer; endings -ся/-ла/-л in a first-person past are the tell.
-            var gendered = new System.Text.RegularExpressions.Regex(@"\b\w{2,}(лся|лась|ла|л)\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            var notVerbs = new[] { "вол" }; // nouns that end like a past tense
+            // docs/demo/decisions.md №1: the hero is a young woman. A first-person past tense must be feminine:
+            // "устала", "обожглась" — never "устал", "обжёгся". Masculine endings -л / -лся are the tell.
+            var masculine = new System.Text.RegularExpressions.Regex(@"\b\w{2,}(лся|л)\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var notVerbs = new[] { "вол", "стол", "пол", "угол", "ствол", "котёл", "орёл", "осёл", "пепел", "уголь" }; // nouns that end like a past tense
             var bad = D.Remarks.Topics.SelectMany(t => t.Value.Lines)
-                .Where(l => gendered.Matches(l).Cast<System.Text.RegularExpressions.Match>().Any(m => !notVerbs.Contains(m.Value.ToLowerInvariant())))
+                .Where(l => masculine.Matches(l).Cast<System.Text.RegularExpressions.Match>().Any(m => !notVerbs.Contains(m.Value.ToLowerInvariant())))
                 .ToList();
             Assert.Empty(bad);
         }

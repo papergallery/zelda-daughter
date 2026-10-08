@@ -1,15 +1,15 @@
 {
-  "_source": "project-design.md §4: карта покупается, метки открываются разговорами («спросил жителя про город — появились метки торговцев, кузнеца, достопримечательностей»); без маркеров квестов. Метка = место на сцене: object — id объекта (якоря anchor_* из npcs.json, town_gate / town_square из диалогов, anchor_glade и anchor_bridge — новые, нужны в scenes/region.json, D-10; проверка по сцене — JournalTests.Map_marks_and_quest_objects_exist_in_the_region_scene). Названия — рабочие, тексты D-07.",
+  "_source": "project-design.md §4: карта покупается, метки открываются разговорами («спросил жителя про город — появились метки торговцев, кузнеца, достопримечательностей»); без маркеров квестов. Метка = место на сцене: object — id объекта (якоря anchor_* из npcs.json, town_gate / town_square из диалогов, anchor_glade и anchor_bridge — новые, нужны в scenes/region.json, D-10; проверка по сцене — JournalTests.Map_marks_and_quest_objects_exist_in_the_region_scene). Подписи — D-07: короткие, «от руки» героини, как пишут на полях.",
   "marks": {
-    "town":            { "name": "Город",             "object": "town_gate" },
-    "square":          { "name": "Площадь",           "object": "town_square" },
-    "merchant_shop":   { "name": "Лавка",             "object": "anchor_shop" },
-    "smithy":          { "name": "Кузница",           "object": "anchor_forge" },
-    "tavern":          { "name": "Таверна",           "object": "anchor_tavern_hall" },
-    "herbalist_house": { "name": "Дом травницы",      "object": "anchor_herb_house" },
-    "fountain":        { "name": "Фонтан",            "object": "anchor_fountain" },
-    "peasant_field":   { "name": "Поле и хижина",     "object": "anchor_field" },
-    "glade":           { "name": "Ягодная поляна",    "object": "anchor_glade" },
-    "bridge":          { "name": "Мост через реку",   "object": "anchor_bridge" }
+    "town":            { "name": "Город",            "object": "town_gate" },
+    "square":          { "name": "Площадь",          "object": "town_square" },
+    "merchant_shop":   { "name": "Лавка","object": "anchor_shop" },
+    "smithy":          { "name": "Кузня",            "object": "anchor_forge" },
+    "tavern":          { "name": "Таверна, кровать", "object": "anchor_tavern_hall" },
+    "herbalist_house": { "name": "Травница",         "object": "anchor_herb_house" },
+    "fountain":        { "name": "Фонтан",           "object": "anchor_fountain" },
+    "peasant_field":   { "name": "Поле, хижина",     "object": "anchor_field" },
+    "glade":           { "name": "Ягоды тут",        "object": "anchor_glade" },
+    "bridge":          { "name": "Мост",             "object": "anchor_bridge" }
   }
 }
