@@ -58,7 +58,7 @@ namespace ZeldaDaughter.Editor
         static int Characters()
         {
             var json = Read("characters.json", "characters");
-            string hash = HashOf("characters.json", json);
+            string hash = HashOf("characters.json/poses-1", json); // bump when the builder reads more of the record (a registry stamped by an older builder must rebuild)
             var registry = Ensure<CharacterRegistry>(CharactersPath);
             if (Fresh(registry, hash)) return json.Count;
 
