@@ -38,27 +38,27 @@ MonoBehaviour:
   - trade
   - wound
   _sprites:
-  - {fileID: 0}
-  - {fileID: 21300000, guid: 8767c5590fc81dd46b1006e7abab3517, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 21300000, guid: ff9f6b559fbd0f34eb95723dacfb8e0c, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 21300000, guid: a76a0f9d5523aca44903651a9bbcbf98, type: 3}
-  - {fileID: 0}
-  - {fileID: 21300000, guid: 7775fb41a1541244fbcf720c8a2d8530, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 5175174af35e23f41b7dbd9d990966ca, type: 3}
+  - {fileID: 21300000, guid: 39bca6dda5c560c49b1f3103623de05f, type: 3}
+  - {fileID: 21300000, guid: f728f614ef2356849ae938124799c1f6, type: 3}
+  - {fileID: 21300000, guid: 236345b5b12e90f4eb355f2960435f1b, type: 3}
+  - {fileID: 21300000, guid: faf984c70872fb24f8c592b472372be2, type: 3}
+  - {fileID: 21300000, guid: 9950a2956cfd59b419cc4ec3ed3223b1, type: 3}
+  - {fileID: 21300000, guid: 1bdd6ce5058c3e7459a7a5d0babfe6a8, type: 3}
+  - {fileID: 21300000, guid: 44cea46bb3bd99643a123a55fadde2b8, type: 3}
+  - {fileID: 21300000, guid: a7d29350fa92a6e409bd071a72ba3401, type: 3}
+  - {fileID: 21300000, guid: ee3b930802f76904e9097631792a9b3a, type: 3}
+  - {fileID: 21300000, guid: 9642a0392c9598244b6461c73c2840dc, type: 3}
+  - {fileID: 21300000, guid: f8478543db343ab44a047af7d3da39a6, type: 3}
+  - {fileID: 21300000, guid: 0b18fdab34723d5429e841d0516dd748, type: 3}
+  - {fileID: 21300000, guid: cd21b308597bb53478d011ecd1a1fae9, type: 3}
+  - {fileID: 21300000, guid: 209043bba02dd1d4b98e74b4b2fd21e9, type: 3}
+  - {fileID: 21300000, guid: 28f82b9ed2bf8a94399220acc4569fc0, type: 3}
+  - {fileID: 21300000, guid: 3607e7f9509682c4995ef17ea2c966e4, type: 3}
   - {fileID: 21300000, guid: 32cbbfa034e52e049912707d39e58232, type: 3}
   - {fileID: 21300000, guid: 7775fb41a1541244fbcf720c8a2d8530, type: 3}
   - {fileID: 21300000, guid: 5b022a2443d904d4ba978158b9d64c9b, type: 3}
+  - {fileID: 21300000, guid: 9e35120c7686cb24e9a23ebdd75d9504, type: 3}
+  - {fileID: 21300000, guid: 036387698d98a664db325c24d15abdff, type: 3}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 6ffc5238393eb9b4e91d4a4814e6b16a, type: 3}
