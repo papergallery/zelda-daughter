@@ -8,7 +8,7 @@
     d25_frames.py sheet SHEET.png OUT [--n 8] [--stand 0]
         лист фаз (серый фон, маска keymask рядом): фигура stand — стоит (опора масштаба), остальные — фазы цикла;
         по горизонтали кадры выравниваются по корпусу (центр бёдер), по вертикали — по общей линии земли листа.
-    d25_frames.py metrics DIR [--label L]          # замер готовых кадров DIR/*.png (общий холст)
+    d25_frames.py metrics DIR [--label L] [--stride-m 1.7]   # замер готовых кадров DIR/*.png (общий холст) + проверки LIMITS
     d25_frames.py strip DIR OUT.png [--gif OUT.gif] # склейка на светлом/тёмном + GIF (12 к/с)
 
 Замер (на холсте 320 px/м): «опора» — (1) разброс по X центра корпуса (строки 30–55 % роста), (2) разброс по Y нижней
@@ -226,8 +226,29 @@ def load_dir(d):
     return fs, [np.asarray(Image.open(f).convert('RGBA')).astype(np.float32) / 255 for f in fs]
 
 
-def metrics(d, label=''):
+LIMITS = {  # пороги проверки набора до коммита (D-25 п. 2 и ref2game-review)
+    'hip_x_range_px': 2, 'ground_y_range_px': 2, 'slip_px_max': 2, 'half_iou_min': 0.7, 'limp_asym_max': 0.15, 'seam_ratio_max': 1.5}
+
+
+def feet(s):
+    """Опора кадра (бок, лицом вправо): x точки касания (середина нижних 2 % силуэта), разнос стоп (ширина нижних 6 %)."""
+    rows = np.where(s.any(1))[0]; h = rows[-1] - rows[0]
+    low = s[rows[-1] - max(2, int(0.02 * h)): rows[-1] + 1]
+    band = s[rows[-1] - int(0.06 * h): rows[-1] + 1]
+    xs, bx = np.where(low.any(0))[0], np.where(band.any(0))[0]
+    return float(xs.mean()), float(bx[-1] - bx[0])
+
+
+def metrics(d, label='', stride_m=None):
+    """Замер набора кадров цикла на общем холсте. Кроме опоры и IoU соседних:
+    проскальзывание — опорная стопа в игре должна уходить назад на stride·PPM/N px за кадр (персонаж идёт вперёд с этой
+      скоростью): |Δx + E| по парам опорных кадров одной стопы; фактическая длина цикла — по среднему уходу опоры;
+    чередование ног — IoU силуэтов кадров через полцикла (ноги меняются местами — силуэт сбоку почти тот же; «ходит одна
+      нога» даёт низкий IoU);
+    хромота — асимметрия наибольшего разноса стоп в первом и втором полуцикле;
+    шов цикла — (1 − IoU последнего и первого) к среднему (1 − IoU) соседних внутри цикла."""
     fs, fr = load_dir(d)
+    n = len(fr)
     sils = [silhouette(p) for p in fr]
     hip, low, heights = [], [], []
     for s in sils:
@@ -237,12 +258,34 @@ def metrics(d, label=''):
         hip.append(float(np.mean(np.where(band)[1])))
         low.append(int(rows[-1])); heights.append(int(h))
     med = np.median(low)
-    stance = [l for l in low if l >= med - 3]
-    ious = [iou(sils[i], sils[(i + 1) % len(sils)]) for i in range(len(sils))]
-    res = {'label': label, 'frames': len(fr), 'hip_x_range_px': round(max(hip) - min(hip), 1),
-           'ground_y_range_px': int(max(stance) - min(stance)), 'flight_frames': len(low) - len(stance),
+    st = [l >= med - 3 for l in low]
+    stance = [l for l, x in zip(low, st) if x]
+    ious = [iou(sils[i], sils[(i + 1) % n]) for i in range(n)]
+    res = {'label': label, 'frames': n, 'hip_x_range_px': round(max(hip) - min(hip), 1),
+           'ground_y_range_px': int(max(stance) - min(stance)), 'flight_frames': n - len(stance),
            'iou_adjacent_mean': round(float(np.mean(ious)), 3), 'iou_adjacent_min': round(float(min(ious)), 3),
            'iou_adjacent': [round(x, 3) for x in ious], 'height_px_range': [min(heights), max(heights)]}
+    cx, spread = zip(*[feet(s) for s in sils])
+    back = [cx[(i + 1) % n] - cx[i] for i in range(n) if st[i] and st[(i + 1) % n] and cx[(i + 1) % n] - cx[i] <= 0]
+    if back:
+        res['stance_back_px_per_frame'] = round(-float(np.mean(back)), 1)
+        res['cycle_m_from_feet'] = round(-float(np.mean(back)) * n / PPM, 2)
+        if stride_m:
+            e = stride_m * PPM / n
+            res['slip_px_mean'] = round(float(np.mean([abs(b + e) for b in back])), 1)
+            res['slip_px_max'] = round(float(max(abs(b + e) for b in back)), 1)
+    if n % 2 == 0:
+        res['half_iou_min'] = round(float(min(iou(sils[i], sils[(i + n // 2) % n]) for i in range(n))), 3)
+        a, b = max(spread[:n // 2]), max(spread[n // 2:])
+        res['limp_asym'] = round(abs(a - b) / ((a + b) / 2), 3)
+    inner = [1 - x for x in ious[:-1]]
+    res['seam_ratio'] = round((1 - ious[-1]) / max(1e-6, float(np.mean(inner))), 2)
+    checks = {}
+    for k, lim in LIMITS.items():
+        if k in res:
+            ok = res[k] >= lim if k.endswith('_min') else res[k] <= lim
+            checks[k] = 'ok' if ok else f'НЕТ ({res[k]} vs {lim})'
+    res['checks'] = checks
     (pathlib.Path(d) / 'metrics.json').write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding='utf-8')
     print(json.dumps({k: v for k, v in res.items() if k != 'iou_adjacent'}, ensure_ascii=False))
     return res
@@ -279,11 +322,11 @@ def main():
     v.add_argument('--cycle-height-px', type=float, help='медиана роста кадров цикла, px при 320 px/м (если ролик не со стойки)')
     s = sub.add_parser('sheet'); s.add_argument('sheet'); s.add_argument('out'); s.add_argument('--n', type=int, default=8)
     s.add_argument('--stand', type=int, default=0); s.add_argument('--height-m', type=float, default=1.65); s.add_argument('--label')
-    m = sub.add_parser('metrics'); m.add_argument('dir'); m.add_argument('--label', default='')
+    m = sub.add_parser('metrics'); m.add_argument('dir'); m.add_argument('--label', default=''); m.add_argument('--stride-m', type=float, help='длина цикла в игре, м (characters.json strideMeters)')
     t = sub.add_parser('strip'); t.add_argument('dir'); t.add_argument('png'); t.add_argument('--gif')
     t.add_argument('--k', type=float, default=0.5); t.add_argument('--fps', type=float, default=12)
     a = ap.parse_args()
-    {'video': cmd_video, 'sheet': cmd_sheet, 'metrics': lambda a: metrics(a.dir, a.label), 'strip': cmd_strip}[a.cmd](a)
+    {'video': cmd_video, 'sheet': cmd_sheet, 'metrics': lambda a: metrics(a.dir, a.label, a.stride_m), 'strip': cmd_strip}[a.cmd](a)
 
 
 if __name__ == '__main__':

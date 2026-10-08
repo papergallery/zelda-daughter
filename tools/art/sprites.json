@@ -29,7 +29,7 @@
   "#a49c8c",
   "#6e675c"
  ],
- "style": "Hand-drawn storybook illustration made with a dip pen and watercolor: uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms, muted warm earthy palette of ochre, olive green, umber, rust and dusty red, slightly exaggerated whimsical proportions like the game Don't Starve (a bit large head, thin limbs). Flat even light, no cast shadows, no ground patch, plain flat light grey background (#c8c8c8). No text, no letters, no logos, no watermark, no signature, no frame.",
+ "style": "см. docs/demo/sprites/style-bible.md — блок стиля берётся оттуда (tools/art/style.py), здесь не дублируется",
  "characters": {
   "heroine": {
    "kind": "human",

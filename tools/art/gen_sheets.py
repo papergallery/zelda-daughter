@@ -16,6 +16,9 @@
 """
 import argparse, json, os, pathlib, subprocess, sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).parent))
+import style  # noqa: E402
+
 HERE = pathlib.Path(__file__).parent
 CFG = json.loads((HERE / 'sprites.json').read_text(encoding='utf-8'))
 SEL = json.loads((HERE / 'selection.json').read_text(encoding='utf-8'))
@@ -26,10 +29,7 @@ CAMERA = ("Camera: HIGH ANGLE, the same for every drawing. The viewer stands abo
           "foreshortened toward the feet, and the feet are seen from above.")
 CAMERA_ANIMAL = ("Camera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera "
                  "of an isometric top-down game (Don't Starve): the back and the top of the head are seen from above.")
-STYLE = ("Art style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of "
-         "scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly "
-         "exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform "
-         "light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.")
+STYLE = style.STYLE + ' ' + style.BG_GREY  # единственный источник — docs/demo/sprites/style-bible.md (tools/art/style.py)
 STYLE_REF = ("The reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor "
              "texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, "
              "clothes or backpack.")

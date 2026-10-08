@@ -6,6 +6,26 @@
 - **Ростовка всех персонажей** — `docs/demo/sprites/all.png` (кадр 0 к камере и бок, после D-24). Новую генерацию сверять с ней, а не с листом одного героя.
 - Референсы для запроса: сырой лист самого персонажа (кто это) + лист 1–2 жителей того же пола и возраста (манера). Полный список листов и URL — `docs/demo/sprites/sources.json`.
 
+## Блок стиля для промптов (единственный источник)
+
+Вставляется **дословно** в каждый промпт генерации (персонажи, позы, иконки, растительность, ролики анимации): скрипты берут его отсюда через `tools/art/style.py` (`STYLE`, `BG_GREY`, `BG_GREEN`). Менять стиль — только здесь; другие формулировки в `tools/art/` запрещены.
+
+```style-prompt
+Art style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms and a little paper grain, muted warm earthy palette (ochre, olive green, sage, umber, rust, dusty red, dusty lilac), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows. Do not paint glow, light rays, fire, smoke, mist or water effects into the picture — the game engine draws them. No text, no letters, no numbers, no logos, no watermark, no signature, no frame.
+```
+
+Фон — по назначению, тоже дословно:
+
+```bg-grey
+Plain flat uniform light grey background (#c8c8c8), no ground patch, no soil, nothing under the feet.
+```
+
+```bg-green
+Flat plain uniform bright green chroma-key background (#00B140), no ground, no shadow, nothing else in the frame.
+```
+
+**Не запекать в картинку:** свечение, лучи, огонь, дым, туман, воду, отражения — это эффекты движка (частицы, шейдеры, свет). Факел/костёр в руках и сцене — без пламени на рисунке.
+
 ## Камера и масштаб
 - Игра: ортокамера, наклон 35°, поворот 45°, size 7,5 (`scenes/region.json`); героиня ≈ 1/9 высоты кадра.
 - Рисунок: «HIGH ANGLE ~30°, как в изометрической игре (Don't Starve)» — видны макушка и плечи сверху, стопы сверху (`gen_sheets.CAMERA`).
