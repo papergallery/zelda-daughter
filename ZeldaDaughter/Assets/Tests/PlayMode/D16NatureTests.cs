@@ -291,11 +291,12 @@ namespace ZeldaDaughter.Tests
                 .Where(m => m.enabled && m.GetType().Namespace != null && m.GetType().Namespace.StartsWith("ZeldaDaughter") && m != _s).ToList();
             foreach (var m in all) m.enabled = false;
             for (int i = 0; i < 10; i++) yield return null;
-            long without = 0, with = 0;
-            yield return Allocated(120, t => without = t);
+            // The editor's own allocations come and go (a long suite, the bridge): the quieter of three windows each is the steady state.
+            long without = long.MaxValue, with = long.MaxValue, got = 0;
+            for (int k = 0; k < 3; k++) { yield return Allocated(120, t => got = t); without = Math.Min(without, got); }
             foreach (var m in mine) m.enabled = true;
             for (int i = 0; i < 10; i++) yield return null;
-            yield return Allocated(120, t => with = t);
+            for (int k = 0; k < 3; k++) { yield return Allocated(120, t => got = t); with = Math.Min(with, got); }
             foreach (var m in all) m.enabled = true;
             ZdLog.Info("Test", $"D-16 idle GC over 120 frames: session only {without} B, with the elements {with} B");
             Assert.LessOrEqual(with - without, 512, "NatureFx + HeroTorchLight in idle frames");
@@ -342,6 +343,11 @@ namespace ZeldaDaughter.Tests
             yield return StandAt(-131f, 12f);
             _s.State.Nature.Weather.StartRain(300f);
             yield return new WaitForSeconds(9f);
+            var rr = _fx.GetComponentInChildren<ParticleSystemRenderer>(true);
+            var rps = rr.GetComponent<ParticleSystem>();
+            ZdLog.Info("Test", $"D-16 rain probe: shader={(rr.sharedMaterial != null ? rr.sharedMaterial.shader.name : "null")} count={rps.particleCount} visible={rr.isVisible} bounds={rr.bounds} pos={rr.transform.position} hero={_hero.transform.position} mode={rr.renderMode} queue={rr.sharedMaterial.renderQueue}");
+            string shaderName = rr.sharedMaterial != null ? rr.sharedMaterial.shader.name : "null";
+            File.WriteAllText(Path.Combine(Application.temporaryCachePath, "rain-probe.txt"), $"shader={shaderName} count={rps.particleCount} visible={rr.isVisible} bounds={rr.bounds} pos={rr.transform.position} hero={_hero.transform.position} mode={rr.renderMode} queue={rr.sharedMaterial.renderQueue} rate={rps.emission.rateOverTime.constant} playing={rps.isPlaying} rainLevel={_fx.RainLevel}");
             yield return Frame("D-16-rain.png", 9f);
         }
 

@@ -259,15 +259,16 @@ namespace ZeldaDaughter.World
             main.playOnAwake = false;
             main.loop = true;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate; // far from the origin the default culling pauses it for good (its bounds stay at 0,0,0)
             main.startLifetime = 0.55f;
             main.startSpeed = 0f;
-            main.startSize = 0.11f; // thick: the watercolour pass (after transparents) eats thin lines
-            main.startColor = new Color(0.16f, 0.22f, 0.32f, 0.8f); // ink, not water
+            main.startSize = 0.055f; // thick: the watercolour pass (after transparents) eats thin lines
+            main.startColor = new Color(0.20f, 0.26f, 0.36f, 0.65f); // ink, not water
             main.maxParticles = 2500;
             var vel = ps.velocityOverLifetime;
             vel.enabled = true;
             vel.space = ParticleSystemSimulationSpace.World;
-            vel.x = new ParticleSystem.MinMaxCurve(-7f);
+            vel.x = new ParticleSystem.MinMaxCurve(-5f);
             vel.y = new ParticleSystem.MinMaxCurve(-22f);
             vel.z = new ParticleSystem.MinMaxCurve(0f);
             var shape = ps.shape;
@@ -277,7 +278,7 @@ namespace ZeldaDaughter.World
             em.rateOverTime = 0f;
             var r = root.GetComponent<ParticleSystemRenderer>();
             r.renderMode = ParticleSystemRenderMode.Stretch;
-            r.lengthScale = 13f;
+            r.lengthScale = 12f;
             r.velocityScale = 0f;
             r.sharedMaterial = _rainMat;
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -414,7 +415,7 @@ namespace ZeldaDaughter.World
             var em = _rain.emission;
             if (_rainLevel > 0.001f)
             {
-                em.rateOverTime = 600f * _rainLevel;
+                em.rateOverTime = 700f * _rainLevel;
                 if (!_rain.isPlaying) _rain.Play();
             }
             else if (_rain.isPlaying) _rain.Stop(true, ParticleSystemStopBehavior.StopEmitting);
@@ -648,6 +649,7 @@ namespace ZeldaDaughter.World
             var main = ps.main;
             main.playOnAwake = false;
             main.loop = true;
+            main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
             return ps;
         }
 
