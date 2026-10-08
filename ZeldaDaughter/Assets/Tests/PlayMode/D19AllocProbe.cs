@@ -59,6 +59,47 @@ namespace ZeldaDaughter.Tests
             Debug.Log("[ZD:AllocProbe]\n" + sb);
         }
 
+        /// <summary>D-26b: where the editor's ~300 KB per frame (the baseline with every game component off) comes from: switch off the engine parts one by one, cumulatively.</summary>
+        [UnityTest, Explicit("diagnostic: run by hand, the result is the [ZD:AllocProbe] line in the log")]
+        public IEnumerator Where_the_baseline_comes_from()
+        {
+            TestSaves.UseCleanFolder();
+            Application.runInBackground = true;
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/test-demo.unity", new LoadSceneParameters(LoadSceneMode.Single));
+            yield return null;
+            GameData.Current.Session.RemarkCheckSeconds = 1000f;
+            yield return new WaitForSeconds(1.3f);
+            for (int i = 0; i < 60; i++) yield return null;
+            var sb = new StringBuilder();
+            long x = 0;
+            yield return Measure(60, t => x = t); sb.AppendLine($"all on: {x / 60} B/frame");
+            var game = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Where(m => m.enabled && m.GetType().Namespace != null && m.GetType().Namespace.StartsWith("ZeldaDaughter")).ToList();
+            foreach (var m in game) m.enabled = false;
+            for (int i = 0; i < 5; i++) yield return null;
+            yield return Measure(60, t => x = t); sb.AppendLine($"game components off: {x / 60}");
+            var ps = Object.FindObjectsByType<ParticleSystem>(FindObjectsSortMode.None);
+            foreach (var p in ps) p.gameObject.SetActive(false);
+            for (int i = 0; i < 5; i++) yield return null;
+            yield return Measure(60, t => x = t); sb.AppendLine($"+ {ps.Length} particle systems off: {x / 60}");
+            var canv = Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+            foreach (var c in canv) c.enabled = false;
+            for (int i = 0; i < 5; i++) yield return null;
+            yield return Measure(60, t => x = t); sb.AppendLine($"+ {canv.Length} canvases off: {x / 60}");
+            var lights = Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+            foreach (var l in lights) l.enabled = false;
+            for (int i = 0; i < 5; i++) yield return null;
+            yield return Measure(60, t => x = t); sb.AppendLine($"+ {lights.Length} lights off: {x / 60}");
+            var rs = Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None);
+            foreach (var r in rs) r.enabled = false;
+            for (int i = 0; i < 5; i++) yield return null;
+            yield return Measure(60, t => x = t); sb.AppendLine($"+ {rs.Length} renderers off: {x / 60}");
+            foreach (var c in Object.FindObjectsByType<Camera>(FindObjectsSortMode.None)) c.enabled = false;
+            for (int i = 0; i < 5; i++) yield return null;
+            yield return Measure(60, t => x = t); sb.AppendLine($"+ cameras off: {x / 60}");
+            Debug.Log("[ZD:AllocProbe]\n" + sb);
+        }
+
         /// <summary>D-26b: the exact per-component number. The profiler counter carries the editor's own noise (+-1 MB); here every Update/LateUpdate/FixedUpdate of every ZeldaDaughter component is called once more by hand
         /// and the bytes are counted on this thread (GC.GetAllocatedBytesForCurrentThread) around the call alone.</summary>
         [UnityTest, Explicit("diagnostic: run by hand, the result is the [ZD:AllocProbe] line in the log")]
