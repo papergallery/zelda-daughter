@@ -20,6 +20,7 @@ Shader "Zelda/Toon"
         [Toggle(_ZD_GRADE)] _Grade("Regrade the palette texture (olive / brown)", Float) = 0
         [Toggle(_SPRITELIT)] _SpriteLit("Billboard sprite lighting", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", Float) = 2
+        [HideInInspector] _ZWrite("ZWrite", Float) = 1
     }
 
     SubShader
@@ -47,7 +48,7 @@ Shader "Zelda/Toon"
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
             Cull [_Cull]
-            ZWrite On
+            ZWrite [_ZWrite]
 
             HLSLPROGRAM
             #pragma target 3.5
