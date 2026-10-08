@@ -40,11 +40,14 @@ namespace ZeldaDaughter.Tests
             var sun = Object.FindFirstObjectByType<SunController>();
             _s.State.Clock.SetTime(1, 0.05);
             yield return null;
-            float night = sun.Intensity, nightPitch = sun.Pitch;
+            float night = sun.Intensity, nightPitch = sun.Pitch; var nightTint = sun.Tint;
             _s.State.Clock.SetTime(1, 0.5);
             yield return null;
             float noon = sun.Intensity, noonPitch = sun.Pitch;
-            Assert.Less(night, noon * 0.1f, $"night {night} vs noon {noon}");
+            // D-08: the night light is a dim blue moon (the road and silhouettes must read), not black: clearly darker than noon, and blue.
+            Assert.Less(night, noon * 0.4f, $"night {night} vs noon {noon}");
+            Assert.Greater(night, 0f, "the moon still lights the night");
+            Assert.Greater(nightTint.b, nightTint.r + 0.2f, $"night light is blue: {nightTint}");
             Assert.Less(nightPitch + 20f, noonPitch, $"the sun is low at night ({nightPitch}°) and high at noon ({noonPitch}°)");
         }
 

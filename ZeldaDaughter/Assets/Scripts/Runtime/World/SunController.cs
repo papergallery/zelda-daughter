@@ -41,6 +41,7 @@ namespace ZeldaDaughter.World
 
         /// <summary>Sun elevation angle, degrees (low at night).</summary>
         public float Pitch => _sun != null ? _sun.transform.eulerAngles.x : 0f;
+        public Color Tint => _sun != null ? _sun.color : Color.black;
         public float Intensity => _sun != null ? _sun.intensity : 0f;
 
         public void Configure(Light sun, Vector3 dayRotation, float dayIntensity, Color dayAmbient)
