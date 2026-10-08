@@ -221,7 +221,7 @@
     },
     {
      "x": 60,
-     "z": 11
+     "z": 9
     }
    ],
    "width": 2.4,
@@ -251,7 +251,7 @@
     },
     {
      "x": 78.5,
-     "z": 11
+     "z": 9
     }
    ],
    "width": 2.4,
@@ -5140,19 +5140,6 @@
    ]
   },
   {
-   "id": "tavern_lean_to",
-   "model": "tent_small_open",
-   "position": {
-    "x": 66.8,
-    "y": 0,
-    "z": 15.155
-   },
-   "tags": [
-    "decor",
-    "poi"
-   ]
-  },
-  {
    "id": "bed_tavern",
    "model": "prop_bed_twin1",
    "position": {
@@ -5164,6 +5151,18 @@
    "tags": [
     "bed",
     "poi"
+   ]
+  },
+  {
+   "id": "bed_tavern_lantern",
+   "model": "town_lantern",
+   "position": {
+    "x": 68.6,
+    "y": 0,
+    "z": 14.2
+   },
+   "tags": [
+    "decor"
    ]
   },
   {

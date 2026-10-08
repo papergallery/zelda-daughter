@@ -112,7 +112,7 @@ paths.append(line("trail_glade", [(-88, 1), (-88, -10), (-82, -22), (-76, -34), 
 paths.append(line("trail_stump", [(-72, -43), (-84, -48), (-96, -52), (-104, -56)], 1.4, "#9c8760"))
 paths.append(line("trail_lair", [(-72, -43), (-64, -52), (-56, -60), (-50, -68)], 1.4, "#9c8760"))
 paths.append(line("square_pave", [(62, 0), (82, 0)], 26, "#a39c8a"))
-for name, a, b, w in [("door_tavern", (60, 18.3), (60, 11), 2.4), ("door_smithy", (94, 18.7), (94, 1.5), 2.4), ("door_herb", (78.5, 18.7), (78.5, 11), 2.4),
+for name, a, b, w in [("door_tavern", (60, 18.3), (60, 9), 2.4), ("door_smithy", (94, 18.7), (94, 1.5), 2.4), ("door_herb", (78.5, 18.7), (78.5, 9), 2.4),
                       ("door_shop", (113, 18.7), (113, 1.5), 2.4), ("door_gatehouse", (38.5, 7.2), (38.5, 1.5), 2.2),
                       ("door_house_a", (102.5, 6), (102.5, 1.5), 2.2), ("door_house_b", (108.0, -5), (105.5, -1.5), 2.2),
                       ("door_house_c", (122.5, 6), (122.5, 1.5), 2.2), ("door_hut", (-151.5, 21.2), (-151.5, 14), 2.0)]:
@@ -272,9 +272,9 @@ add("tavern_stool_2", "prop_stool", 61.0, 23.4, 0, ["decor"])
 add("tavern_barrel_1", "prop_barrel", 56.4, 26.2, 0, ["decor"])
 add("tavern_barrel_2", "prop_barrel_holder", 64.2, 21.2, 0, ["decor"])
 add("tavern_bed_inside", "prop_bed_twin2", 56.8, 25.0, 90, ["decor"])
-# кровать для постояльцев — под навесом у входа (крыша над залом закрывает вид; тап по кровати — сон)
-add("tavern_lean_to", "tent_small_open", 66.8, 15.2, 0, ["decor", "poi"])
+# кровать для постояльцев — на крыльце у входа (крыша над залом закрывает вид; тап по кровати — сон)
 add("bed_tavern", "prop_bed_twin1", 66.8, 15.4, 0, ["bed", "poi"], collide=False)
+add("bed_tavern_lantern", "town_lantern", 68.6, 14.2, 0, ["decor"])
 add("tavern_sign", "sign", 62.4, 15.0, 0, ["decor"])
 
 # кузница: большой дом на севере (дверь на юг, к камере), двор перед ним с плавильней и наковальней

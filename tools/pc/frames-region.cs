@@ -11,6 +11,7 @@ F("road-forest", -88, -2, 11f);
 F("forest", -85, -25, 11f);
 F("glade", -72, -45, 11f);
 F("lair", -50, -68, 11f);
+F("forest-deep", -110, -70, 11f);
 F("bridge", 0, 0, 11f);
 F("gate", 35, 0, 11f);
 F("square", 72, 2, 12f);
