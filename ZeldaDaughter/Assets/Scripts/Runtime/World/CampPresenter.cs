@@ -17,7 +17,7 @@ namespace ZeldaDaughter.World
     public sealed class CampPresenter : MonoBehaviour
     {
         private const float LightIntensity = 3f;
-        private const float FlameScale = 2f;
+        private const float FlameScale = 1.9f;
         private static readonly Color FireColor = new Color(1f, 0.62f, 0.3f);
 
         [SerializeField] private GameSession _session;
@@ -217,7 +217,12 @@ namespace ZeldaDaughter.World
             {
                 view.Fx = Instantiate(fxPrefab, go.transform, false);
                 view.Fx.name = "fire";
-                view.Fx.transform.localScale = Vector3.one * FlameScale; // D-21: the pack's flame is ~0.45 m — lost in the lit ground; the concept's is ~1 m
+                // D-21: the pack's flame is ~0.45 m and is lost in the lit ground; the concept's is ~1 m. Only the particles grow (the stone ring of the prefab stays).
+                foreach (var ps in view.Fx.GetComponentsInChildren<ParticleSystem>(true))
+                {
+                    var main = ps.main;
+                    main.startSizeMultiplier *= FlameScale;
+                }
             }
             else
             {
