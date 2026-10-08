@@ -22,16 +22,25 @@ namespace ZeldaDaughter.Editor
 
         static ModelCatalog LoadCatalog() => ModelCatalog.Load(DataDir);
 
-        /// <summary>Roads and rivers as ribbons, zones as tagged areas, the terrain map for the hero, and the scattered decor.</summary>
-        static void BuildLayout(SceneConfig config, ModelCatalog catalog, HeroController hero)
+        /// <summary>
+        /// Roads painted into the ground (D-22b, <see cref="PaintGround"/>; ribbons only in a scene with no painted ground) and rivers as ribbons,
+        /// zones as tagged areas, the terrain map for the hero, and the scattered decor (drawn billboards merged by chunk, models one by one).
+        /// </summary>
+        static void BuildLayout(SceneConfig config, ModelCatalog catalog, HeroController hero, Renderer ground)
         {
+            _vegAtlas = null; // the atlas and its material are read afresh on every build
+            _vegMaterial = null;
+            var all = Scatterer.Generate(config, catalog);
+            bool painted = PaintGround(config, ground, catalog, all);
+            if (all.Any(p => catalog.Get(p.ModelId).IsSprite) || config.Objects.Any(o => o.Model != null && catalog.Has(o.Model) && catalog.Get(o.Model).IsSprite))
+                VegMaterial(config.Name, painted ? ground.sharedMaterial : null);
             var map = TerrainMap.From(config);
             var holder = new GameObject("Terrain");
             var zones = holder.AddComponent<TerrainZones>();
             zones.Configure(map.ToJson());
             hero.SetZones(zones);
 
-            if (config.Paths.Count > 0)
+            if (config.Paths.Count > 0 && !painted)
             {
                 var root = new GameObject("Paths").transform;
                 for (int i = 0; i < config.Paths.Count; i++) // each later path a hair higher, so crossing ribbons don't z-fight
@@ -43,7 +52,11 @@ namespace ZeldaDaughter.Editor
             if (config.Water.Count > 0)
             {
                 var root = new GameObject("Water").transform;
-                foreach (var s in config.Water) Ribbon(root, s, WaterY, string.IsNullOrEmpty(s.Color) ? "#5f8fa3" : s.Color);
+                foreach (var s in config.Water)
+                {
+                    Ribbon(root, s, WaterY, string.IsNullOrEmpty(s.Color) ? "#5f8fa3" : s.Color);
+                    if (painted) root.Find(s.Id).GetComponent<MeshRenderer>().sharedMaterial = _paintedWater; // D-22b: shallow at the bank, deep in the middle
+                }
             }
             if (config.Zones.Count > 0)
             {
@@ -56,7 +69,8 @@ namespace ZeldaDaughter.Editor
                 }
             }
 
-            var placements = Scatterer.Generate(config, catalog);
+            var placements = all.Where(p => !catalog.Get(p.ModelId).IsSprite).ToList();
+            BuildVegetation(config, all.Where(p => catalog.Get(p.ModelId).IsSprite).ToList(), catalog, hero.transform);
             if (placements.Count > 0)
             {
                 var root = new GameObject("Scatter").transform;
@@ -69,23 +83,19 @@ namespace ZeldaDaughter.Editor
                     go.transform.localScale = Vector3.one * p.Scale;
                     foreach (var t in go.GetComponentsInChildren<Transform>()) GameObjectUtility.SetStaticEditorFlags(t.gameObject, StaticEditorFlags.BatchingStatic);
                 }
-                Debug.Log($"[ZD:Scene] scatter {config.Name} placed={placements.Count} digest={Scatterer.Digest(placements)}");
+            }
+            if (all.Count > 0)
+            {
+                Debug.Log($"[ZD:Scene] scatter {config.Name} placed={all.Count} models={placements.Count} digest={Scatterer.Digest(all)}");
             }
         }
 
-        /// <summary>
-        /// D-22: primitives of the config used as ground patches and mist: <c>collide: false</c> removes the collider of a primitive (it only was for models),
-        /// objects tagged <c>ground_patch</c> / <c>mist</c> cast no shadow, patches are batched statically (hundreds of discs of three colours).
-        /// </summary>
+        /// <summary>D-22: <c>collide: false</c> removes the collider of a primitive (it only was for models).</summary>
         static void DressPrimitive(GameObject go, ObjectConfig o)
         {
             if (o.Marker || !string.IsNullOrEmpty(o.Model) || string.IsNullOrEmpty(o.Shape) || o.Shape == "empty") return;
             if (o.Collide == false)
                 foreach (var c in go.GetComponentsInChildren<Collider>()) UnityEngine.Object.DestroyImmediate(c);
-            bool patch = o.Tags.Contains("ground_patch");
-            if (patch || o.Tags.Contains("mist"))
-                foreach (var r in go.GetComponentsInChildren<Renderer>()) r.shadowCastingMode = ShadowCastingMode.Off;
-            if (patch) GameObjectUtility.SetStaticEditorFlags(go, StaticEditorFlags.BatchingStatic);
         }
 
         /// <summary>A model (or a composite of models) as a holder object with the FBX instances inside and simple colliders.</summary>
@@ -100,6 +110,7 @@ namespace ZeldaDaughter.Editor
         static void Assemble(Transform holder, string modelId, ModelCatalog catalog)
         {
             var def = catalog.Get(modelId);
+            if (def.IsSprite) { AssembleCard(holder, def); return; } // D-22b: a drawn billboard
             if (!def.IsComposite)
             {
                 var fbx = AssetDatabase.LoadAssetAtPath<GameObject>(def.Path);

@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: vegetation_region
+  m_Shader: {fileID: 4800000, guid: dc98b94f1d65ec885364132702ae9de5, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ALPHATEST_ON
+  - _SPRITELIT
+  - _VERTEXCOLOR
+  - _ZD_ROOTED
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2450
+  stringTagMap:
+    RenderType: TransparentCutout
+  disabledShaderPasses:
+  - DepthNormals
+  - DepthOnly
+  - SHADOWCASTER
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: d7685603ba2d7606212ecf42538d7d5f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GroundMask:
+        m_Texture: {fileID: 2800000, guid: b9fb792684e8da7429dc292eda502f02, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GroundMask2:
+        m_Texture: {fileID: 2800000, guid: 53797078c4f12d54895b7aa69e4758b0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GroundNoise:
+        m_Texture: {fileID: 2800000, guid: 914919989ec643926cd080b1c75618e2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 1
+    - _Cull: 0
+    - _Cutoff: 0.5
+    - _Grade: 0
+    - _Ground: 0
+    - _Rim: 0
+    - _Rooted: 1
+    - _Softness: 0.12
+    - _SpriteLit: 1
+    - _Steps: 3
+    - _UseVertexColor: 1
+    - _Water: 0
+    - _Wind: 0.035
+    - _ZWrite: 1
+    m_Colors:
+    - _BankColor: {r: 0.30196077, g: 0.34509802, b: 0.26666665, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CobbleDark: {r: 0.5215686, g: 0.5098039, b: 0.47843128, a: 1}
+    - _CobbleLight: {r: 0.6156863, g: 0.6, b: 0.55294114, a: 1}
+    - _FieldColor: {r: 0.47843128, g: 0.39999998, b: 0.31372547, a: 1}
+    - _GrassDark: {r: 0.29411763, g: 0.3607843, b: 0.24313721, a: 1}
+    - _GrassLight: {r: 0.5098039, g: 0.57254905, b: 0.3607843, a: 1}
+    - _GrassMid: {r: 0.3843137, g: 0.4823529, b: 0.31372547, a: 1}
+    - _GroundRect: {r: -180, g: -100, b: 0.0027777778, a: 0.005}
+    - _SandDark: {r: 0.60784316, g: 0.57647055, b: 0.41960782, a: 1}
+    - _SandLight: {r: 0.7254902, g: 0.6784314, b: 0.5254902, a: 1}
+    - _ShadowTint: {r: 0.62, g: 0.62, b: 0.72, a: 1}
+    - _WaterDeep: {r: 0.2705882, g: 0.33725488, b: 0.35294116, a: 1}
+    - _WaterShallow: {r: 0.5568628, g: 0.5882353, b: 0.5411765, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

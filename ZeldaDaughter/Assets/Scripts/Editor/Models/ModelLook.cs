@@ -51,12 +51,30 @@ namespace ZeldaDaughter.Editor
             return shader != null ? shader : Shader.Find(ShaderName);
         }
 
+        /// <summary>
+        /// D-22b: the named flat materials of Kenney Nature get colours picked against the concept (docs/concept/world-b/palette.jpg,
+        /// env-bridge, f1) instead of the general <see cref="Grade"/>, which left the bark terracotta, the planks orange-pink and the pine
+        /// leaves mint (frames D-22-forest, -bridge). Albedo, sRGB; the light and the warm post-pass lift them a little.
+        /// </summary>
+        public static readonly System.Collections.Generic.Dictionary<string, string> NaturePalette = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { "woodBark", "#5e4b3b" }, { "woodBarkDark", "#463a2f" }, { "woodBirch", "#b3ab9a" }, { "woodInner", "#9a8162" },
+            { "wood", "#7b6750" }, { "woodDark", "#56473a" },
+            { "leafsGreen", "#6a7a40" }, { "leafsDark", "#4e5c39" }, { "leafsFall", "#8c7a3c" },
+            { "stone", "#8c8a82" }, { "stoneDark", "#6b6963" },
+            { "grass", "#6c7a43" }, { "dirt", "#7a684c" }, { "dirtDark", "#5c4f3e" }, { "water", "#6f8a86" },
+            { "colorRed", "#8a4c3c" }, { "colorRedDark", "#683c31" }, { "colorYellow", "#bfa257" }, { "colorWhite", "#d6cfbf" },
+            { "colorTan", "#a68f6f" }, { "colorPurple", "#7b6488" }, { "corn", "#b6a05a" },
+        };
+
         /// <summary>Material setup for one imported material; <paramref name="baseMap"/> may be null (flat colour).</summary>
         public static void Apply(Material material, Color color, Texture baseMap)
         {
             var shader = LoadShader();
             if (shader != null) material.shader = shader;
-            material.SetColor("_BaseColor", baseMap != null ? Color.white : Grade(color));
+            Color flat = baseMap == null && NaturePalette.TryGetValue(material.name, out var hex) && ColorUtility.TryParseHtmlString(hex, out var named)
+                ? named : Grade(color);
+            material.SetColor("_BaseColor", baseMap != null ? Color.white : flat);
             if (baseMap != null) material.SetTexture("_BaseMap", baseMap);
             // A palette / trim texture is regraded in the shader by the same rules (the flat colour above is graded here).
             material.SetFloat("_Grade", baseMap != null ? 1f : 0f);
