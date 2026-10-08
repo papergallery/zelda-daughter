@@ -237,6 +237,14 @@ namespace ZeldaDaughter.Core.Data
                     }
                 }
             }
+            if (d.Npcs.WalkSpeed <= 0 || d.Npcs.WalkSpeed > d.Movement.WalkSpeed) problems.Add($"npcs.json: walkSpeed {d.Npcs.WalkSpeed} — должен быть в (0; {d.Movement.WalkSpeed}] (не быстрее героини)");
+            if (d.Elements.Grass.CellSpacing <= 0 || d.Elements.Grass.CellSpacing > d.Elements.Grass.NeighborDistance) problems.Add($"elements.json: grass.cellSpacing {d.Elements.Grass.CellSpacing} — должен быть в (0; neighborDistance {d.Elements.Grass.NeighborDistance}], иначе поле травы не связано");
+            foreach (var kv in d.Quests.Quests)
+            {
+                if (string.IsNullOrEmpty(kv.Value.Thanks)) problems.Add($"quests.json: '{kv.Key}' — нет thanks (узел благодарности получателя)");
+                else if (!d.Dialogues.Npcs.TryGetValue(kv.Value.Receiver, out var rd) || !rd.Nodes.TryGetValue(kv.Value.Thanks, out var tn)) problems.Add($"quests.json: '{kv.Key}' — thanks '{kv.Value.Thanks}' нет в диалоге '{kv.Value.Receiver}'");
+                else if (!tn.End) problems.Add($"quests.json: '{kv.Key}' — узел благодарности '{kv.Value.Thanks}' должен заканчивать разговор (end: true)");
+            }
             foreach (var kv in d.Npcs.Npcs)
             {
                 string who = $"npcs.json: '{kv.Key}'";

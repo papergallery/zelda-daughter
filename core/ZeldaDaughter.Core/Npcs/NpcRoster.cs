@@ -56,6 +56,9 @@ namespace ZeldaDaughter.Core.Npcs
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         }
 
+        /// <summary>Walking speed of a resident, m/s (npcs.json walkSpeed): the view moves her along the route with it.</summary>
+        public float WalkSpeed(string npcId) => Def(npcId) != null ? _s.WalkSpeed : 0f;
+
         public IEnumerable<string> Ids => _s.Npcs.Keys;
         public NpcDef Def(string npcId) => _s.Npcs.TryGetValue(npcId, out var d) ? d : throw new ArgumentException($"npcs.json: no npc '{npcId}'", nameof(npcId));
 

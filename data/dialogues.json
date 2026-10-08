@@ -31,7 +31,8 @@
         "food":   { "line": "Лишней еды нет, сами впроголодь. Ягоду в лесу рви — её там много.", "icons": ["food", "forest", "point"], "replies": [ { "icon": "town", "to": "town" }, { "icon": "danger", "to": "beasts" } ] },
         "town":   { "line": "Город-то? Эвон, по дороге иди. Мост перейдёшь — и там. Не свернёшь.", "icons": ["town", "point"], "gesture": { "type": "point", "target": "town_gate" }, "effects": [ { "type": "mark", "id": "town" }, { "type": "note", "id": "peasant_town" } ], "end": true },
         "beasts": { "line": "В лес одна не суйся. Кабаны там злющие. Палку хоть возьми.", "icons": ["danger", "forest", "hand"], "effects": [ { "type": "note", "id": "peasant_beasts" } ], "end": true },
-        "letter": { "line": "Письмо? Мне?.. От ткачихи, небось. Давай-давай, не томи.", "icons": ["letter", "hand"], "end": true }
+        "letter": { "line": "Письмо? Мне?.. От ткачихи, небось. Давай-давай, не томи.", "icons": ["letter", "hand"], "end": true },
+        "thanks_letter": { "line": "Вот спасибо, дочка. Держи на дорожку, не обижайся.", "icons": ["hand", "coin"], "end": true }
       }
     },
     "guard": {
@@ -91,7 +92,8 @@
         "start":   { "line": "Здравствуй, голубушка. Не здешняя, вижу?", "icons": ["hand", "question"], "replies": [ { "icon": "food", "to": "berries" }, { "icon": "question", "to": "chat" }, { "icon": "hand", "to": "hi" } ] },
         "hi":      { "line": "Ну, ступай. Доброго тебе дня.", "icons": ["hand"], "end": true },
         "chat":    { "line": "Днём я у фонтана, вечером в таверне, как все. Тихо у нас. Скучно даже.", "icons": ["town", "mug"], "effects": [ { "type": "mark", "id": "fountain" } ], "replies": [ { "icon": "food", "to": "berries" }, { "icon": "hand", "to": "hi" } ] },
-        "berries": { "line": "Ягод бы детям к ужину. Пять горстей. За мостом поляна, там их полно. Принесёшь?", "icons": ["food", "bridge", "point"], "gesture": { "type": "point", "target": "anchor_bridge" }, "effects": [ { "type": "mark", "id": "glade" }, { "type": "mark", "id": "bridge" }, { "type": "offer", "id": "berries" } ], "end": true }
+        "berries": { "line": "Ягод бы детям к ужину. Пять горстей. За мостом поляна, там их полно. Принесёшь?", "icons": ["food", "bridge", "point"], "gesture": { "type": "point", "target": "anchor_bridge" }, "effects": [ { "type": "mark", "id": "glade" }, { "type": "mark", "id": "bridge" }, { "type": "offer", "id": "berries" } ], "end": true },
+        "thanks_berries": { "line": "Ох, спасибо! Детям-то радость. Вот, возьми за труды.", "icons": ["food", "hand", "coin"], "end": true }
       }
     },
     "old_man": {
@@ -100,7 +102,8 @@
         "start": { "line": "Эх... В мои-то годы да по лесам бегать...", "icons": ["question", "forest"], "replies": [ { "icon": "question", "to": "lost" }, { "icon": "locket", "to": "seen" }, { "icon": "hand", "to": "hi" } ] },
         "hi":    { "line": "Иди, иди. Молодым всё бегом.", "icons": ["hand"], "end": true },
         "lost":  { "line": "Медальон я потерял. В лесу, у старой коряги. Там жены портрет. Найдёшь — не обижу.", "icons": ["locket", "forest", "point"], "gesture": { "type": "point", "target": "anchor_bridge" }, "effects": [ { "type": "offer", "id": "locket" } ], "end": true },
-        "seen":  { "line": "Медальон? Мой? Ну-ка дай, дочка, дай поглядеть...", "icons": ["locket", "hand"], "end": true }
+        "seen":  { "line": "Медальон? Мой? Ну-ка дай, дочка, дай поглядеть...", "icons": ["locket", "hand"], "end": true },
+        "thanks_locket": { "line": "Он, он самый! Спасибо тебе, дочка. Возьми, не откажи старику.", "icons": ["locket", "hand", "coin"], "end": true }
       }
     },
     "weaver": {

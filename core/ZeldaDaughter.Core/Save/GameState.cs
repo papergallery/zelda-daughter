@@ -182,7 +182,8 @@ namespace ZeldaDaughter.Core.Save
         public Quests Quests { get; }
 
         /// <summary>Starts a talk with an NPC; what its nodes do (marks, notes, requests, coin lessons) is applied to this state as they are reached.</summary>
-        public Conversation Talk(string npcId) => new Conversation(Data.Dialogues, Language, npcId, ApplyEffect);
+        /// <param name="startNode">«start», or a node of the NPC's own (the thanks after a request: <c>QuestResult.Thanks</c>).</param>
+        public Conversation Talk(string npcId, string startNode = "start") => new Conversation(Data.Dialogues, Language, npcId, ApplyEffect, startNode);
 
         void ApplyEffect(DialogueEffect e)
         {

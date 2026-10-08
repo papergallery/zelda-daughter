@@ -11,6 +11,8 @@ namespace ZeldaDaughter.Core.Npcs
     /// <summary>data/npcs.json (D-02). Key = NPC id = the key in dialogues.json (and traders.json for shops).</summary>
     public sealed class NpcSettings
     {
+        /// <summary>How fast residents walk along the roads, m/s (C9): slower than the hero (movement.json walkSpeed).</summary>
+        public float WalkSpeed { get; set; }
         public Dictionary<string, NpcDef> Npcs { get; set; } = new Dictionary<string, NpcDef>();
     }
 

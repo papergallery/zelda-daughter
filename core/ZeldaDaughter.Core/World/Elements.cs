@@ -17,6 +17,8 @@ namespace ZeldaDaughter.Core.World
     public sealed class GrassSettings
     {
         public float NeighborDistance { get; set; }
+        /// <summary>Step of the grid of grass cells over a dry-grass zone, m (C9; <c>GrassCells.Grid</c>): not more than <see cref="NeighborDistance"/>, or the field is not connected.</summary>
+        public float CellSpacing { get; set; }
         public float BurnSeconds { get; set; }
         public float SpreadPerSecond { get; set; }
         public float WindGain { get; set; }

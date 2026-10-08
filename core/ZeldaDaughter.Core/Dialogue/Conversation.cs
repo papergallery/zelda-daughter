@@ -87,14 +87,16 @@ namespace ZeldaDaughter.Core.Dialogue
         readonly Action<DialogueEffect>? _onEffect;
 
         /// <param name="onEffect">Called for each effect of every node reached (including «start»); GameState.Talk wires it to the map, notebook, requests and trade.</param>
-        public Conversation(DialogueSettings data, Comprehension language, string npcId, Action<DialogueEffect>? onEffect = null)
+        /// <param name="startNode">Where the talk begins; «start» by default. A thank-you after a handed-over request begins at its own node (C9).</param>
+        public Conversation(DialogueSettings data, Comprehension language, string npcId, Action<DialogueEffect>? onEffect = null, string startNode = "start")
         {
             _onEffect = onEffect;
             if (data == null) throw new ArgumentNullException(nameof(data));
             _lang = language ?? throw new ArgumentNullException(nameof(language));
             _npc = data.Npcs.TryGetValue(npcId, out var n) ? n : throw new ArgumentException($"dialogues.json: no npc '{npcId}'", nameof(npcId));
             _npcId = npcId;
-            Go("start");
+            if (!_npc.Nodes.ContainsKey(startNode)) throw new ArgumentException($"dialogues.json: '{npcId}' has no node '{startNode}'", nameof(startNode));
+            Go(startNode);
         }
 
         public string NodeId { get; private set; } = "";

@@ -27,6 +27,8 @@ namespace ZeldaDaughter.Core.Journal
         /// <summary>What must be handed to the receiver.</summary>
         public Dictionary<string, int> Need { get; set; } = new Dictionary<string, int>();
         public RewardDef Reward { get; set; } = new RewardDef();
+        /// <summary>Node of the receiver's dialogue (dialogues.json) she says when the request is handed over — the thanks (C9).</summary>
+        public string Thanks { get; set; } = "";
     }
 
     public sealed class RewardDef
@@ -42,8 +44,10 @@ namespace ZeldaDaughter.Core.Journal
     {
         public readonly QuestOutcome Outcome;
         public readonly string? QuestId;
+        /// <summary>On <see cref="QuestOutcome.Done"/>: the dialogue node of the receiver that thanks the hero — <c>g.Talk(receiver, Thanks)</c>. Else null.</summary>
+        public readonly string? Thanks;
 
-        public QuestResult(QuestOutcome outcome, string? questId = null) { Outcome = outcome; QuestId = questId; }
+        public QuestResult(QuestOutcome outcome, string? questId = null, string? thanks = null) { Outcome = outcome; QuestId = questId; Thanks = thanks; }
         public override string ToString() => $"{Outcome} {QuestId}";
     }
 
@@ -112,7 +116,7 @@ namespace ZeldaDaughter.Core.Journal
             _done.Add(id);
             foreach (var m in q.Reward.Marks) _map.Open(m);
             Done?.Invoke(id);
-            return new QuestResult(QuestOutcome.Done, id);
+            return new QuestResult(QuestOutcome.Done, id, string.IsNullOrEmpty(q.Thanks) ? null : q.Thanks);
         }
 
         KeyValuePair<string, QuestDef>? Find(string npcId, string itemId)
