@@ -284,8 +284,9 @@ namespace ZeldaDaughter.Tests
             Assert.Less(_feel.CameraWiden, 1.15f, "…not yet there at 0.25 s");
             yield return new WaitForSeconds(0.45f);
             Assert.AreEqual(1.2f, _feel.CameraWiden, 0.01f);
-            Assert.AreEqual(baseOrtho * 1.2f, cam.orthographicSize, 0.05f);
             float heroH = _hero.GetComponent<HeroView>().Sprite.Card.localScale.y;
+            // the fifth is capped so that she stays a eleventh of the frame (a smaller adult card, D-24b, hits the cap before 1.2)
+            Assert.AreEqual(Mathf.Min(baseOrtho * 1.2f, 11f * heroH / 2f), cam.orthographicSize, 0.05f);
             Assert.GreaterOrEqual(heroH / (2f * cam.orthographicSize), 1f / 11f - 1e-3f, $"the hero is {heroH:0.00} m in a frame {2f * cam.orthographicSize:0.0} m high");
             _s.State.Clock.SetTime(1, 0.5);
             yield return new WaitForSeconds(0.8f);
