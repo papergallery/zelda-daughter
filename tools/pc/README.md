@@ -4,7 +4,7 @@
 
 | Скрипт | Что делает |
 |---|---|
-| `zd-sync.ps1` | клон `C:\dev\zelda` → `origin/master` (`reset --hard`), владелец файлов — пользователь (мост работает от администратора) |
+| `zd-sync.ps1` + `empty-scene.cs` | редактор на пустую сцену (без окна «Reload?»), клон `C:\dev\zelda` → `origin/master` (`reset --hard`), владелец файлов — пользователь (мост работает от администратора) |
 | `zd-refresh.ps1` + `refresh.cs` | `AssetDatabase.Refresh()` — перекомпиляция после изменения файлов |
 | `zd-state.ps1` + `state.cs` | `compiling=… failed=…` — ждать, пока `compiling=False`, прежде чем читать консоль |
 | `zd-check.ps1` | `project/info` (какой редактор ответил) + ошибки и предупреждения консоли |
