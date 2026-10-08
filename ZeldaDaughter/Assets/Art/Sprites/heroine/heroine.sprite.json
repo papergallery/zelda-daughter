@@ -3,12 +3,12 @@
  "ppu": 320,
  "height_m": 1.65,
  "size_px": [
-  850,
-  577
+  790,
+  552
  ],
  "pivot": [
   0.5,
-  0.0052
+  0.0091
  ],
  "side_faces": "right",
  "walk": {
@@ -20,17 +20,7 @@
   "side": [
    0,
    1,
-   2,
-   3,
-   4,
-   5,
-   6,
-   7,
-   8,
-   9,
-   10,
-   11,
-   12
+   2
   ],
   "back": [
    0,
@@ -67,57 +57,27 @@
   }
  },
  "source": {
-  "_d24": "D-24 (2026-10-08): вариант D (круг 2: C читалась подростком) — манера жителей; старый набор D-09 — в истории git (sprite.json source)",
+  "_d24": "D-24b (2026-10-08): вариант G — взрослая (≈ 20 лет), манера D; D читалась ребёнком (независимый критик). Бок — 3 кадра листа: бег D-25 перегенерируется с новой героиней после пополнения Polza. Прежние наборы — в истории git.",
   "sources": [
    {
-    "file": "d24-base-D-0.png",
+    "file": "d24-base-G-0.png",
     "ref": 0,
+    "grey_pockets": true,
     "figs": [
      "front_0",
      "side_0",
      "back_0",
-     null,
-     null,
-     "front_1",
-     "front_2"
-    ],
-    "grey_pockets": true,
-    "skin": {
-     "front_1": [
-      [
-       0.0,
-       0.4,
-       0.34,
-       0.63
-      ]
-     ],
-     "side_1": [
-      [
-       0.12,
-       0.43,
-       0.46,
-       0.7
-      ]
-     ],
-     "side_2": [
-      [
-       0.1,
-       0.43,
-       0.46,
-       0.7
-      ]
-     ]
-    },
-    "deblush": [
-     "front_0",
+     "side_1",
+     "side_2",
      "front_1",
      "front_2"
     ]
    },
    {
-    "file": "d24-poses2-D-0.png",
+    "file": "d24-poses2-G-0.png",
     "ref": 0,
     "target_m": 1.61,
+    "grey_pockets": true,
     "figs": [
      "back_1",
      "back_2",
@@ -127,86 +87,22 @@
      null,
      null,
      null
-    ],
-    "grey_pockets": true
+    ]
    },
    {
-    "file": "d24-poses2-D-0.png",
+    "file": "d24-poses2-G-0.png",
     "ref": 6,
     "match": "front_0",
+    "grey_pockets": true,
     "figs": [
      null,
      null,
-     null,
+     "side_attack_0",
      "side_attack_1",
      "front_pickup_0",
      "front_hurt_0",
      "front_eat_0",
      "side_down_0"
-    ],
-    "grey_pockets": true,
-    "erase": {
-     "front_pickup_0": [
-      [
-       0.4,
-       0.82,
-       0.8,
-       1.0
-      ]
-     ]
-    },
-    "despeck": {
-     "front_pickup_0": [
-      [
-       0.0,
-       0.12,
-       0.4,
-       0.5
-      ]
-     ]
-    },
-    "alpha_floor": {
-     "front_pickup_0": [
-      [
-       0.0,
-       0.62,
-       0.55,
-       0.92
-      ]
-     ]
-    },
-    "deblush": [
-     "front_eat_0",
-     "front_hurt_0"
-    ]
-   },
-   {
-    "file": "d24-attack0-D-0.png",
-    "ref": 0,
-    "match": "side_0",
-    "grey_pockets": true,
-    "figs": [
-     null,
-     "side_attack_0"
-    ]
-   },
-   {
-    "_d25": "D-25: бок — цикл лёгкого бега 12 кадров (Seedance 2 mini 720p 4 с, d25_frames.py video --n 12 --period 25 --align --color-ref side_0); кадры с общего холста ролика, одна группа",
-    "dir": "../d25/heroine-run-side",
-    "group": "run_side",
-    "names": [
-     "side_1",
-     "side_2",
-     "side_3",
-     "side_4",
-     "side_5",
-     "side_6",
-     "side_7",
-     "side_8",
-     "side_9",
-     "side_10",
-     "side_11",
-     "side_12"
     ]
    }
   ],
@@ -215,45 +111,6 @@
    "front_eat_0": "front_1",
    "front_hurt_0": "front_1",
    "front_pickup_0": "front_1"
-  },
-  "canvas_fix": {
-   "front_pickup_0": [
-    {
-     "op": "hair_match",
-     "ref": "front_0",
-     "rect": [
-      0.44,
-      0.36,
-      0.64,
-      0.5
-     ]
-    },
-    {
-     "op": "despeck",
-     "rect": [
-      0.31,
-      0.4,
-      0.47,
-      0.56
-     ],
-     "d": 0.08,
-     "win": 15,
-     "size": 120
-    },
-    {
-     "op": "erase_neutral",
-     "rect": [
-      0.34,
-      0.79,
-      0.5,
-      0.94
-     ]
-    },
-    {
-     "op": "islands",
-     "main_only": true
-    }
-   ]
   }
  }
 }
