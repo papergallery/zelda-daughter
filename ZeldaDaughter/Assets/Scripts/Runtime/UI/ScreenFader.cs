@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using ZeldaDaughter.Core.Combat;
+using ZeldaDaughter.Core.Condition;
+using ZeldaDaughter.Core.Save;
 using ZeldaDaughter.Game;
 
 namespace ZeldaDaughter.UI
@@ -16,7 +19,104 @@ namespace ZeldaDaughter.UI
         private Image _sheet;
         private Coroutine _running;
 
+        // D-11 knockout look (project-design §6): darkness at once-ish, one to three glimpses, the eyes open at the end.
+        public const float KnockoutDarkAlpha = 0.97f, KnockoutGlimpseAlpha = 0.5f;
+        const float KnockoutInSeconds = 0.5f, KnockoutOutSeconds = 0.55f, GlimpseSeconds = 0.6f;
+        private GameState _g;
+        private SessionEvents _events;
+        private bool _knockedOut, _coreDown;
+
         public void Configure(SessionUI ui) => _ui = ui;
+
+        /// <summary>The hero is knocked out now: the screen is dark (glimpses come and go) until she gets up.</summary>
+        public bool InKnockout => _knockedOut;
+
+        /// <summary>Glimpses seen in the current/last knockout (1–3; longer knockouts show more).</summary>
+        public int Glimpses { get; private set; }
+
+        /// <summary>D-11: listens to the hero's knockout on the session bus. Called by the scene builder once.</summary>
+        public void Bind(SessionEvents events)
+        {
+            if (_events != null) return;
+            _events = events;
+            events.StateReady += OnStateReady;
+            events.Condition += OnCondition;
+            events.Enemy += OnEnemy;
+        }
+
+        private void OnDestroy()
+        {
+            if (_events == null) return;
+            _events.StateReady -= OnStateReady;
+            _events.Condition -= OnCondition;
+            _events.Enemy -= OnEnemy;
+        }
+
+        private void OnStateReady(GameState g)
+        {
+            _g = g;
+            _coreDown = g.Condition.IsKnockedOut;
+            if (_coreDown) KnockoutBegin(g.Condition.KnockoutLeft);
+        }
+
+        private void OnCondition(ConditionEvent e)
+        {
+            if (e.Kind == ConditionEventKind.KnockedOut) KnockoutBegin(_g != null ? _g.Condition.KnockoutLeft : 5f);
+            else if (e.Kind == ConditionEventKind.Revived) KnockoutEnd();
+        }
+
+        private void OnEnemy(EnemyNotice n)
+        {
+            if (n.Event.Kind == EnemyEventKind.HeroKnockedOut) KnockoutBegin(_g != null ? _g.Condition.KnockoutLeft : 5f);
+        }
+
+        private void Update()
+        {
+            if (_g == null || _g.Condition.IsKnockedOut == _coreDown) return; // the state changed without an event (a load, a wound)
+            _coreDown = _g.Condition.IsKnockedOut;
+            if (_coreDown) KnockoutBegin(_g.Condition.KnockoutLeft); else KnockoutEnd();
+        }
+
+        /// <summary>The dark of a knockout lasting about <paramref name="seconds"/>: fades in, 1–3 glimpses of the world, then holds dark until <see cref="KnockoutEnd"/>.</summary>
+        public void KnockoutBegin(float seconds)
+        {
+            if (_knockedOut) return;
+            Ensure();
+            Stop();
+            _knockedOut = true;
+            Glimpses = Mathf.Clamp(Mathf.RoundToInt(seconds / 2.5f), 1, 3);
+            _running = StartCoroutine(Wrap(KnockoutRoutine(seconds, Glimpses)));
+            ZdLog.Info("Fader", $"knockout dark glimpses={Glimpses}");
+        }
+
+        /// <summary>She gets up: the eyes open, the dark goes.</summary>
+        public void KnockoutEnd()
+        {
+            if (!_knockedOut) return;
+            Ensure();
+            Stop();
+            _knockedOut = false;
+            _running = StartCoroutine(Wrap(Fade(0f, KnockoutOutSeconds)));
+            ZdLog.Info("Fader", "knockout clear");
+        }
+
+        private IEnumerator KnockoutRoutine(float seconds, int glimpses)
+        {
+            yield return Fade(KnockoutDarkAlpha, KnockoutInSeconds);
+            float spacing = Mathf.Max(GlimpseSeconds + 0.3f, seconds / (glimpses + 1)), t = KnockoutInSeconds;
+            for (int i = 0; i < glimpses; i++)
+            {
+                float wait = spacing * (i + 1) - t;
+                if (wait > 0f) { yield return new WaitForSeconds(wait); t += wait; }
+                yield return Fade(KnockoutGlimpseAlpha, GlimpseSeconds * 0.35f);
+                yield return new WaitForSeconds(GlimpseSeconds * 0.25f);
+                yield return Fade(KnockoutDarkAlpha, GlimpseSeconds * 0.4f);
+                t += GlimpseSeconds;
+            }
+            // dark until she stands (KnockoutEnd stops this routine)
+            Paint(KnockoutDarkAlpha);
+            while (true) yield return null;
+        }
 
         /// <summary>0 clear … 1 black.</summary>
         public float Alpha { get { Ensure(); return _sheet.color.a; } }

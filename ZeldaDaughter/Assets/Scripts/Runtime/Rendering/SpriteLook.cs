@@ -15,6 +15,9 @@ namespace ZeldaDaughter.Rendering
         [SerializeField] private float _shadowWidthMeters = 0.9f;
         [SerializeField, Range(0f, 1f)] private float _shadowAlpha = 0.35f;
         [SerializeField] private float _shadowLift = 0.04f;
+        [SerializeField, Range(1f, 2f)] private float _facingHysteresis = 1.25f;
+        [SerializeField] private float _bobMeters = 0.035f;
+        [SerializeField] private float _lyingLift = 0.12f;
 
         public Material SpriteMaterial => _spriteMaterial != null ? _spriteMaterial : Fallback(ref _runtimeSprite, false);
         public Material ShadowMaterial => _shadowMaterial != null ? _shadowMaterial : Fallback(ref _runtimeShadow, true);
@@ -22,6 +25,12 @@ namespace ZeldaDaughter.Rendering
         public float ShadowWidthMeters => _shadowWidthMeters;
         public float ShadowAlpha => _shadowAlpha;
         public float ShadowLift => _shadowLift;
+        /// <summary>How clearly one axis must win before the figure turns to another view (1 = no hysteresis).</summary>
+        public float FacingHysteresis => _facingHysteresis;
+        /// <summary>Height of the bounce of a step, metres.</summary>
+        public float BobMeters => _bobMeters;
+        /// <summary>A figure lying on the ground is raised this much so it does not sink into it.</summary>
+        public float LyingLift => _lyingLift;
 
         private static Material _runtimeSprite, _runtimeShadow;
 

@@ -13,6 +13,8 @@ namespace ZeldaDaughter.Rendering
         public float Shake;
         /// <summary>Lies on the ground (the «down» frame if the set has one, else the figure turned on its side).</summary>
         public bool Lying;
+        /// <summary>The whole figure is raised off the ground, metres (the bounce of a step, a hop of a blow).</summary>
+        public float Lift;
 
         public static BillboardPose Stand => default;
     }
@@ -63,6 +65,10 @@ namespace ZeldaDaughter.Rendering
         /// <summary>The card, for tests and effects (its rotation faces the camera, its scale is the figure's size).</summary>
         public Transform Card { get { EnsureBuilt(); return _card; } }
         public Camera Camera => _camera;
+        /// <summary>Metres walked per full cycle of frames (of the current set).</summary>
+        public float StrideMeters => Set().StrideMeters;
+        /// <summary>Number of frames in the walking cycle of the facing now (1 when the set is a single picture).</summary>
+        public int FrameCount => Mathf.Max(1, Set().Frames(_facing).Length);
 
         public void Configure(CharacterRegistry registry, SpriteLook look, Camera cam, string characterId)
         {
@@ -92,9 +98,14 @@ namespace ZeldaDaughter.Rendering
             right.y = 0f; forward.y = 0f;
             right.Normalize(); forward.Normalize();
             float x = Vector3.Dot(worldDirection, right), y = Vector3.Dot(worldDirection, forward);
+            // Hysteresis (SpriteLook.FacingHysteresis): the side view is left only when the other axis wins clearly, and entered only when
+            // the sideways axis wins clearly — so a walk along a diagonal does not flicker between the views.
+            float h = Mathf.Max(1f, LookOrDefault().FacingHysteresis);
+            float ax = Mathf.Abs(x), ay = Mathf.Abs(y);
             Facing facing;
             bool mirrored = _mirrored;
-            if (Mathf.Abs(x) > Mathf.Abs(y)) { facing = Facing.Side; mirrored = x < 0f; }
+            bool side = _facing == Facing.Side ? ax * h >= ay : ax > ay * h;
+            if (side) { facing = Facing.Side; mirrored = x < 0f; }
             else facing = y > 0f ? Facing.Back : Facing.Front; // away from the camera shows the back
             if (facing != _facing || mirrored != _mirrored) _dirty = true;
             _facing = facing;
@@ -209,10 +220,10 @@ namespace ZeldaDaughter.Rendering
             _card.rotation = face * tilt;
             _card.localScale = new Vector3(_mirrored ? -w : w, h, 1f);
             // the quad's origin is bottom-centre; move it so the sprite's pivot (the feet) sits on this object's origin
-            var offset = _card.rotation * new Vector3((_mirrored ? -1f : 1f) * (0.5f - pivot.x) * w + shake, -pivot.y * h + (_pose.Lying ? 0.12f : 0f), 0f);
-            _card.position = transform.position + offset;
-
             var look = LookOrDefault();
+            var offset = _card.rotation * new Vector3((_mirrored ? -1f : 1f) * (0.5f - pivot.x) * w + shake, -pivot.y * h + (_pose.Lying ? look.LyingLift : 0f), 0f);
+            _card.position = transform.position + offset + Vector3.up * _pose.Lift;
+
             float sw = look.ShadowWidthMeters, depth = sw * 0.6f;
             _shadow.rotation = Quaternion.Euler(90f, 0f, 0f); // lies flat; the quad's long edge then runs along +Z from its origin
             _shadow.localScale = new Vector3(sw, depth, 1f);
