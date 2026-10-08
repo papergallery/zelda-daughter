@@ -103,7 +103,7 @@ namespace ZeldaDaughter.Rendering
                 var camera = frameData.Get<UniversalCameraData>();
                 if (resources.isActiveTargetBackBuffer) return; // cannot sample the back buffer; requiresIntermediateTexture normally prevents this
 
-                float heightScale = camera.pixelHeight / Mathf.Max(1f, _s.lineReferenceHeight);
+                float heightScale = camera.cameraTargetDescriptor.height / Mathf.Max(1f, _s.lineReferenceHeight);
                 _material.SetVector(LineColor, _s.lineColor);
                 _material.SetVector(LineParams, new Vector4(Mathf.Max(1f, _s.lineWidthPx * heightScale), _s.depthThreshold, _s.normalThreshold, _s.lineWobble));
                 _material.SetVector(WashParams, new Vector4(_s.toneLevels, _s.posterize, _s.bleedPx * heightScale, _s.edgeDarken));
