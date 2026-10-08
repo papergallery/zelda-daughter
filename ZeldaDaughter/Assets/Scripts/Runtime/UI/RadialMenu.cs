@@ -175,11 +175,11 @@ namespace ZeldaDaughter.UI
                 var sprite = _icons != null ? _icons.Get("radial_" + ids[i]) : null;
                 if (sprite != null)
                 {
-                    var icon = UiKit.MakeIcon(s.Root, "Icon", _icons, "radial_" + ids[i], look, PlateSize - 60f);
+                    var icon = UiKit.MakeIcon(s.Root, "Icon", _icons, "radial_" + ids[i], look, PlateSize - 100f);
                     icon.anchorMin = icon.anchorMax = new Vector2(0.5f, 0.5f);
-                    icon.anchoredPosition = new Vector2(0f, 14f);
+                    icon.anchoredPosition = new Vector2(0f, 24f);
                 }
-                var caption = UiKit.MakeText(s.Root, "Caption", look, Caption(ids[i]), look != null ? look.TextNormal : 44f);
+                var caption = UiKit.MakeText(s.Root, "Caption", look, Caption(ids[i]), look != null ? look.TextSmall : 34f, TMPro.TextAlignmentOptions.Bottom);
                 UiKit.Stretch(caption.rectTransform, 8f);
 
                 var button = plate.gameObject.AddComponent<Button>();
