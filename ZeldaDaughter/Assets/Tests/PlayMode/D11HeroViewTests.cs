@@ -502,7 +502,7 @@ namespace ZeldaDaughter.Tests
             yield return new WaitForSeconds(0.45f);
             Texture2D lying = null;
             yield return Shot(t => lying = t);
-            Save(Crop(lying, _hero.transform.position - Vector3.up), "knockout_lying");
+            Save(Crop(lying, _hero.transform.position - Vector3.up + CamRight() * 0.8f), "knockout_lying");
             Object.Destroy(lying);
             float t0 = Time.time;
             bool darkSaved = false, glimpseSaved = false;
