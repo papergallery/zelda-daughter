@@ -19,7 +19,7 @@ namespace ZeldaDaughter.Editor
 
         static partial void AddNature(BuildContext ctx)
         {
-            var rain = NatureMaterial("nature_rain", new Color(0.78f, 0.84f, 0.92f, 0.55f), 0f, 0.45f, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, false);
+            var rain = NatureMaterial("nature_rain", Color.white, 0f, 0.45f, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, false);
             var puff = NatureMaterial("nature_puff", Color.white, 1f, 0.45f, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, false);
             var flame = NatureMaterial("nature_flame", Color.white, 1f, 0.6f, BlendMode.SrcAlpha, BlendMode.One, false);
             var burnt = NatureMaterial("nature_burnt", new Color(0.07f, 0.06f, 0.05f, 0.85f), 1f, 0.5f, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, true);

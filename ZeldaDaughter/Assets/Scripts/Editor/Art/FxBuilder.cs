@@ -22,7 +22,7 @@ namespace ZeldaDaughter.Editor
         {
             new Source { Key = "campfire", Path = Pack + "/_URP Specific/Prefabs/CampFire/Camp Fire Medium URP.prefab", Scale = 1f },
             new Source { Key = "torch_flame", Path = Pack + "/_URP Specific/Prefabs/Torch URP.prefab", Scale = 1f },
-            new Source { Key = "grass_fire", Path = Pack + "/_URP Specific/Prefabs/Fire Small URP.prefab", Scale = 0.7f },
+            new Source { Key = "grass_fire", Path = Pack + "/_URP Specific/Prefabs/Fire Small URP.prefab", Scale = 1.5f },
         };
 
         [MenuItem("Zelda/Art/Build fire prefabs")]

@@ -7,6 +7,7 @@ using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Profiling;
 using UnityEngine.TestTools;
 using ZeldaDaughter.Core.Common;
 using ZeldaDaughter.Core.World;
@@ -266,6 +267,38 @@ namespace ZeldaDaughter.Tests
             yield return null;
             Assert.IsFalse(torchLight.IsOn);
             Assert.AreEqual(0f, torchLight.Intensity, 1e-4f);
+        }
+
+        // ------------------------------------------------------------------ idle frames: what NatureFx and HeroTorchLight allocate
+
+        static IEnumerator Allocated(int frames, Action<long> total)
+        {
+            long sum = 0;
+            using (var rec = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame"))
+                for (int i = 0; i < frames; i++) { yield return null; sum += rec.LastValue; }
+            total(sum);
+        }
+
+        [UnityTest]
+        public IEnumerator Idle_frames_of_the_elements_do_not_allocate()
+        {
+            _s.State.Data.Session.RemarkCheckSeconds = 1000f;
+            yield return new WaitForSeconds(1.0f);
+            for (int i = 0; i < 60; i++) yield return null;
+            var mine = new System.Collections.Generic.HashSet<MonoBehaviour>
+                { _fx, UnityEngine.Object.FindFirstObjectByType<HeroTorchLight>() };
+            var all = UnityEngine.Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Where(m => m.enabled && m.GetType().Namespace != null && m.GetType().Namespace.StartsWith("ZeldaDaughter") && m != _s).ToList();
+            foreach (var m in all) m.enabled = false;
+            for (int i = 0; i < 10; i++) yield return null;
+            long without = 0, with = 0;
+            yield return Allocated(120, t => without = t);
+            foreach (var m in mine) m.enabled = true;
+            for (int i = 0; i < 10; i++) yield return null;
+            yield return Allocated(120, t => with = t);
+            foreach (var m in all) m.enabled = true;
+            ZdLog.Info("Test", $"D-16 idle GC over 120 frames: session only {without} B, with the elements {with} B");
+            Assert.LessOrEqual(with - without, 512, "NatureFx + HeroTorchLight in idle frames");
         }
 
         // ------------------------------------------------------------------ frames (criteria D-16 p. 5): docs/demo/frames/D-16-*.png
