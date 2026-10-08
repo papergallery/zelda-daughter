@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab710ce1c6246b4984577cc6bf82aca5, type: 3}
+  m_Name: TalkIcons
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.IconRegistry
+  _ids:
+  - bridge
+  - coin
+  - danger
+  - ear
+  - fire
+  - food
+  - forest
+  - hammer
+  - hand
+  - herb
+  - hint_hand
+  - letter
+  - locket
+  - map
+  - mug
+  - point
+  - question
+  - radial_bag
+  - radial_map
+  - radial_notebook
+  - sleep
+  - town
+  - trade
+  - wound
+  _sprites:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

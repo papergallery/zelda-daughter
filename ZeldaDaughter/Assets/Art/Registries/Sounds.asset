@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28bc534b17a663bbf01a436921138b55, type: 3}
+  m_Name: Sounds
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Audio.SoundRegistry
+  _sounds:
+  - Id: amb_forest
+    Clips: []
+    Volume: 0.5
+    PitchJitter: 0
+    Spatial: 0
+  - Id: amb_night
+    Clips: []
+    Volume: 0.5
+    PitchJitter: 0
+    Spatial: 0
+  - Id: amb_rain
+    Clips: []
+    Volume: 0.5
+    PitchJitter: 0
+    Spatial: 0
+  - Id: amb_town
+    Clips: []
+    Volume: 0.5
+    PitchJitter: 0
+    Spatial: 0
+  - Id: bard_tavern
+    Clips: []
+    Volume: 0.7
+    PitchJitter: 0
+    Spatial: 1
+  - Id: fire_campfire
+    Clips: []
+    Volume: 0.6
+    PitchJitter: 0
+    Spatial: 1
+  - Id: fire_grass
+    Clips: []
+    Volume: 0.6
+    PitchJitter: 0
+    Spatial: 1
+  - Id: fire_torch
+    Clips: []
+    Volume: 0.6
+    PitchJitter: 0
+    Spatial: 1
+  - Id: hit_blade
+    Clips: []
+    Volume: 0.8
+    PitchJitter: 0.1
+    Spatial: 1
+  - Id: hit_boar
+    Clips: []
+    Volume: 0.8
+    PitchJitter: 0.1
+    Spatial: 1
+  - Id: hit_fists
+    Clips: []
+    Volume: 0.8
+    PitchJitter: 0.1
+    Spatial: 1
+  - Id: hit_hero
+    Clips: []
+    Volume: 0.8
+    PitchJitter: 0.1
+    Spatial: 1
+  - Id: hit_wolf
+    Clips: []
+    Volume: 0.8
+    PitchJitter: 0.1
+    Spatial: 1
+  - Id: step_grass
+    Clips: []
+    Volume: 0.6
+    PitchJitter: 0.08
+    Spatial: 0
+  - Id: step_ground
+    Clips: []
+    Volume: 0.6
+    PitchJitter: 0.08
+    Spatial: 0
+  - Id: step_mud
+    Clips: []
+    Volume: 0.6
+    PitchJitter: 0.08
+    Spatial: 0
+  - Id: step_road
+    Clips: []
+    Volume: 0.6
+    PitchJitter: 0.08
+    Spatial: 0
+  - Id: step_water
+    Clips: []
+    Volume: 0.6
+    PitchJitter: 0.08
+    Spatial: 0

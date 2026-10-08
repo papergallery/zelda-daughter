@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7b1a2205e2e64544b0d855d85a30c89, type: 3}
+  m_Name: SpriteLook
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.SpriteLook
+  _spriteMaterial: {fileID: 2100000, guid: 9caa05fbb9cfe3c419d3196ee2a6f4b9, type: 2}
+  _shadowMaterial: {fileID: 2100000, guid: 9aff5f2638aa8a34793452cebfd72d5e, type: 2}
+  _alphaCutoff: 0.5
+  _shadowWidthMeters: 0.9
+  _shadowAlpha: 0.35
+  _shadowLift: 0.04

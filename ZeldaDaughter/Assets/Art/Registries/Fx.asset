@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3415406ebedd040b19ae9169c9a8dc82, type: 3}
+  m_Name: Fx
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.FxRegistry
+  _ids:
+  - burnt_patch
+  - campfire
+  - grass_fire
+  - placed_antidote
+  - placed_arrowhead
+  - placed_axe
+  - placed_bandage
+  - placed_berries
+  - placed_bone
+  - placed_burn_salve
+  - placed_cloth
+  - placed_cooked_meat
+  - placed_fang
+  - placed_fat
+  - placed_feather
+  - placed_firewood
+  - placed_flint
+  - placed_hammer
+  - placed_healing_herbs
+  - placed_herbs
+  - placed_hide
+  - placed_knife
+  - placed_map
+  - placed_meat
+  - placed_metal
+  - placed_ore
+  - placed_planks
+  - placed_sharpened_stick
+  - placed_short_stick
+  - placed_special_herb
+  - placed_splint
+  - placed_stick
+  - placed_stone
+  - placed_sword
+  - placed_torch
+  - placed_torch_unlit
+  - rain
+  - torch_flame
+  _prefabs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

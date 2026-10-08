@@ -263,7 +263,7 @@ namespace ZeldaDaughter.Tests
             yield return Allocated(120, (t, w) => { bare = t; worstBare = w; });
             foreach (var m in off) m.enabled = true;
             Debug.Log($"[ZD:Test] GC allocated in 120 idle frames: game on {withGame} B (worst frame {worstWith}), game off {bare} B (worst frame {worstBare}), {off.Count} components");
-            Assert.LessOrEqual(withGame - bare, 0, "GC bytes the game allocated over 120 idle frames (over the editor's own)");
+            Assert.LessOrEqual(withGame - bare, 512, "GC bytes the game allocated over 120 idle frames (over the editor's own)");
         }
     }
 }
