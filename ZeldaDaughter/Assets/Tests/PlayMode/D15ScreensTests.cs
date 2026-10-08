@@ -156,6 +156,7 @@ namespace ZeldaDaughter.Tests
             _s.Events.TimeJumped += h => { timeJumps++; jumped = h; };
             _rest.SetTimes(0.3f, 0.1f, 0.3f);
 
+            g.NightSeen = true;   // D-23: the bed lets her sleep only after the first night has come
             _s.Tap("bed_test");
             Assert.IsTrue(_rest.Sleeping, "a tap on the bed puts her to sleep");
             Assert.IsTrue(_hero.Locked);

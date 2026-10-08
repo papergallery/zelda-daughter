@@ -162,6 +162,9 @@ namespace ZeldaDaughter.Core.Tests
             }
             Assert.False(struck);
             Assert.True(D.Enemies.Fire.TorchRadius < D.Enemies.Fire.CampfireRadius, "a torch scares less than a campfire");
+            // the fear is the visible light (D-23): a campfire's light radius, and the torch light of HeroTorchLight (0.75 of it)
+            Assert.Equal(D.Camp.LightRadius, D.Enemies.Fire.CampfireRadius);
+            Assert.Equal(D.Camp.LightRadius * 0.75f, D.Enemies.Fire.TorchRadius, 3);
         }
 
         [Fact]
@@ -196,7 +199,7 @@ namespace ZeldaDaughter.Core.Tests
         public void Fire_data_is_checked()
         {
             var files = Directory.GetFiles(TestPaths.DataRoot, "*.json").ToDictionary(f => Path.GetFileName(f)!, File.ReadAllText);
-            files["enemies.json"] = files["enemies.json"].Replace("\"campfireRadius\": 9.0", "\"campfireRadius\": 5.0");
+            files["enemies.json"] = files["enemies.json"].Replace("\"campfireRadius\": 6.0", "\"campfireRadius\": 3.0");
             var ex = Assert.Throws<DataException>(() => DataSet.Load(n => files[n]));
             Assert.Contains(ex.Problems, p => p.Contains("campfireRadius"));
         }
@@ -290,6 +293,40 @@ namespace ZeldaDaughter.Core.Tests
             long before = GC.GetAllocatedBytesForCurrentThread();
             for (int i = 0; i < 100; i++) g.TickWorld(0.25f, 0.5);
             Assert.True(GC.GetAllocatedBytesForCurrentThread() - before < 2048);
+        }
+
+        // ------------------------------------------------------------------ the first night is not slept through
+
+        [Fact]
+        public void The_first_night_is_marked_when_she_is_awake_in_the_dark_and_is_saved()
+        {
+            var g = Noon();
+            var rep = new StepReport();
+            g.Step(0.1f, 0, RestKind.None, rep);
+            Assert.False(g.NightSeen);
+            g.Clock.SetTime(1, 0.0);
+            g.Step(0.1f, 0, RestKind.None, rep);
+            Assert.True(g.NightSeen);
+            var fresh = new GameState(D);
+            SaveGame.Restore(fresh, SaveGame.Capture(g));
+            Assert.True(fresh.NightSeen);
+            var old = Noon();
+            old.SkipHours(12);   // sleeping through the night does not count
+            Assert.False(old.NightSeen);
+            Assert.Contains(Topics.NotSleepy, Topics.All);
+            Assert.True(D.Remarks.Topics[Topics.NotSleepy].Lines.Count >= 3);
+        }
+
+        [Fact]
+        public void By_the_clock_the_first_night_comes_at_about_eleven_minutes_and_the_round_fits_before_it()
+        {
+            // world.json: start 0.35 of a 1500 s day, the dark (daylight < 0.1) falls on the clock before the demo's end of 20–30 minutes
+            var g = new GameState(D);
+            double seconds = 0;
+            var rep = new StepReport();
+            while (!g.NightSeen && seconds < 1500) { g.Step(1f, 0, RestKind.None, rep); seconds++; }
+            Assert.True(g.NightSeen);
+            Assert.InRange(seconds, 8 * 60, 14 * 60);
         }
 
         // ------------------------------------------------------------------ 5. descriptions

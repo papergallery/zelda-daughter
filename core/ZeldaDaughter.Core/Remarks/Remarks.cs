@@ -35,13 +35,13 @@ namespace ZeldaDaughter.Core.Remarks
         public const string HintWorldUse = "hint_world_use", PlaceInvalid = "place_invalid", NeedFire = "need_fire";
         public const string ButcherNoKnife = "butcher_no_knife", LootEmpty = "loot_empty", UseNothing = "use_nothing";
         /// <summary>D-23: a wolf close by / a wolf runs from the fire / rain / the first purchase / full after a meal / a torch going out.</summary>
-        public const string WolfClose = "wolf_close", WolfFlees = "wolf_flees", Rain = "rain", FirstPurchase = "first_purchase", Sated = "sated", TorchDying = "torch_dying";
+        public const string WolfClose = "wolf_close", WolfFlees = "wolf_flees", Rain = "rain", FirstPurchase = "first_purchase", Sated = "sated", TorchDying = "torch_dying", NotSleepy = "not_sleepy";
 
         public static readonly string[] All =
         {
             HealthHurt, HealthBad, HealthCritical, WoundCut, WoundFracture, WoundBurn, WoundPoison, HungerPeckish, HungerHungry,
             HungerStarving, Overload, NightNoFire, CraftOk, CraftFail, CraftStation, CraftNoRoom, HintWorldUse, PlaceInvalid,
-            NeedFire, ButcherNoKnife, LootEmpty, UseNothing, WolfClose, WolfFlees, Rain, FirstPurchase, Sated, TorchDying,
+            NeedFire, ButcherNoKnife, LootEmpty, UseNothing, WolfClose, WolfFlees, Rain, FirstPurchase, Sated, TorchDying, NotSleepy,
         };
 
         public static string Skill(Stat stat, int tier) => $"skill_{Skills.Key(stat)}_{tier}";

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using ZeldaDaughter.Core.Condition;
+using ZeldaDaughter.Core.Remarks;
 using ZeldaDaughter.Core.Save;
 using ZeldaDaughter.Game;
 using ZeldaDaughter.Hero;
@@ -70,6 +71,13 @@ namespace ZeldaDaughter.World
         {
             if (_g == null || _sleeping || (_windows != null && _windows.AnyOpen)) return;
             if (!ScreenParts.InReach(_session, _g, bed)) { ZdLog.Info("Rest", $"{bed.Id} too_far"); return; }
+            if (!_g.NightSeen)
+            {
+                // D-23: the first night is not to be slept through — she has not yet seen the dark
+                ZdLog.Info("Rest", $"{bed.Id} not_sleepy");
+                _session.Say(Topics.NotSleepy);
+                return;
+            }
             Sleep(bed.Id);
         }
 

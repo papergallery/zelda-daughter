@@ -68,6 +68,7 @@ namespace ZeldaDaughter.Core.Save
             foreach (var kv in g.Nature.Mud.State().OrderBy(x => x.Key, StringComparer.Ordinal))
                 if (kv.Value > 0f) s.Mud[kv.Key] = kv.Value;
             s.TorchLeft = g.Torch.Saved;
+            s.NightSeen = g.NightSeen;
             s.PredatorCounter = g.Nature.Predators.Counter;
             s.PredatorTimer = g.Nature.Predators.Timer;
             s.MapMarks = g.Map.Known.ToList();
@@ -126,6 +127,7 @@ namespace ZeldaDaughter.Core.Save
             g.Nature.Mud.Restore(s.Mud);
             g.Nature.Predators.Restore(s.PredatorCounter, s.PredatorTimer);
             g.Torch.Restore(s.TorchLeft);
+            g.NightSeen = s.NightSeen;
             g.Map.Restore(s.MapMarks);
             g.Notebook.Restore(s.Notes);
             g.Quests.Restore(s.QuestsOffered, s.QuestsDone);
@@ -222,6 +224,7 @@ namespace ZeldaDaughter.Core.Save
             public Dictionary<string, GrassDto> Grass { get; set; } = new Dictionary<string, GrassDto>();
             public Dictionary<string, float> Mud { get; set; } = new Dictionary<string, float>();
             public float TorchLeft { get; set; }
+            public bool NightSeen { get; set; }
             public int PredatorCounter { get; set; }
             public float PredatorTimer { get; set; }
             public List<CarcassDto> Carcasses { get; set; } = new List<CarcassDto>();

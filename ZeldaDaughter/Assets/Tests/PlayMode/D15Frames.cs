@@ -137,6 +137,7 @@ namespace ZeldaDaughter.Tests
             // sleep: the eyes half shut
             yield return StandBy("bed_tavern", -1.5f, -1.5f);
             var rest = Object.FindFirstObjectByType<RestPresenter>();
+            _s.State.NightSeen = true;
             rest.SetTimes(2.0f, 0.2f, 1.0f);
             _s.Tap("bed_tavern");
             Assert.IsTrue(rest.Sleeping);

@@ -143,11 +143,18 @@ namespace ZeldaDaughter.Core.Save
             Clock.Advance(dt, into.ClockEvents);
             Condition.Tick(dt, restOverride != RestKind.None ? restOverride : CurrentRest(), into.ConditionEvents);
             Hunger.Advance(dt);
+            if (!NightSeen && Data.Session.IsNight(Clock.Daylight)) NightSeen = true;
             Combat.Position = HeroPosition;
             Combat.Tick(dt);
             if (walkedMeters > 0f && !Condition.IsKnockedOut)
                 Skills.Apply(SkillEvent.Walked(walkedMeters, Bag.IsOverloaded(Skills.CapacityMultiplier())), into.SkillChanges);
         }
+
+        /// <summary>
+        /// The first real night has come while she was awake (D-23): until then the bed does not let her sleep through it (remarks.json not_sleepy) —
+        /// the demo's first night with its wolves is not to be skipped. Saved.
+        /// </summary>
+        public bool NightSeen { get; set; }
 
         float _scorchCooldown;
 
