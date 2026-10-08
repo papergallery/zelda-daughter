@@ -50,7 +50,33 @@ VARIANTS = {
     'B': (['peasant', 'townswoman'], True, True),
     'C': (['townswoman', 'weaver', 'peasant'], False, False),
     'D': (['weaver', 'townswoman'], 'C', False),  # круг 2: C читалась подростком (критик) — взрослое лицо, тёмные волосы до плеч
+    # D-24b: независимый критик — D читается ребёнком 11–13 лет; рецепт: возраст текстом, пропорции числом, взрослый силуэт
+    'E': (['weaver', 'townswoman'], 'D', False),            # + лист D как референс одежды и манеры
+    'F': (['weaver', 'herbalist', 'townswoman'], False, False),  # без D: одежда только словами (не тянуть детские пропорции)
+    'G': (['weaver', 'herbalist'], 'F', False),  # F взрослее лицом и с головой 1:5 (F: голова 1/4,3 в фас, глаза крупные)
 }
+FACE_G = ("Her FACE must read as a woman in her twenties, like the weaver woman in the first reference: a long narrow oval face, a "
+          "pointed defined chin, visible cheekbones, SMALL narrow almond eyes drawn as short ink strokes (no big round eyes, no large "
+          "irises, no eye highlights), straight eyebrows, no blush, no freckles. Head-to-height 1:5 in every drawing.")
+CLOTHES_F = ("The LAST reference image is the previous sheet of exactly this woman: keep her clothes, belt, backpack over one shoulder, "
+             "hair, slender body, long legs, sneakers and drawing manner, but make her face clearly older and her head a little smaller "
+             "(head-to-height 1:5).")
+
+WHO_EF = ("a young adult woman, about 20 years old, slender, narrow oval face, defined jaw and chin, slight cheekbones, almond-shaped "
+          "eyes (smaller), small mouth — an ordinary person from our modern world who got lost in a medieval fantasy land. Loose wavy "
+          "dark brown hair, shoulder-length, slightly longer. Plain short-sleeved OFF-WHITE cotton t-shirt, half-tucked into faded blue "
+          "jeans with a simple belt; the jeans are rolled up at the ankles and have a small rip on one knee; worn off-white canvas "
+          "sneakers of NORMAL size, no logos; a small olive-green backpack slung over ONE shoulder. Empty hands, no weapons.")
+MANNER_EF = ("Draw her in the same storybook ink-and-watercolor manner as the villagers on the reference sheets: a simplified face "
+             "drawn with a few ink strokes and very little facial shading, the same ink line weight, hatching and watercolor density, "
+             "so that she belongs to the same cast — but her body proportions follow the numbers below, not the villagers' stocky build.")
+PROPS_EF = ("Proportions: head-to-height 1:4.7 (the head is NOT bigger than that), a slender adult body, the figure at most 0.29 of her "
+            "height wide, a visible waist, longer legs; a relaxed confident adult stance, shoulders back, feet parallel (not "
+            "pigeon-toed), normal-sized shoes. NOT a child, NOT a kid, NOT a teen, NOT a schoolgirl, NOT chibi: no round face, no "
+            "chubby cheeks, no oversized head, no oversized shoes, no pigeon-toed feet.")
+CLOTHES_D = ("The LAST reference image is an earlier draft of this same woman: keep her drawing manner, colors and clothes, but there "
+             "she looked like a 12-year-old child — draw her as a grown-up woman of about 20 with the proportions given above, the "
+             "backpack over ONE shoulder and the t-shirt half-tucked with a belt.")
 
 # круг 2 (вариант D): замечания критика к C — лицо подростка, рука без цвета, волосы светлее и короче паспорта, слёзы в позах
 WHO_D = ("a YOUNG ADULT woman of about 24 (clearly a grown-up woman, not a child, not a teenager), an ordinary person from our "
@@ -105,19 +131,32 @@ def villager_url(cid):
 
 def prompt(what, var):
     vil, clothes, push = VARIANTS[var]
-    figs = gs.HEROINE_BASE if what == 'base' else (POSES2_D if var == 'D' else gs.HEROINE_POSES2)
+    figs = gs.HEROINE_BASE if what == 'base' else (POSES2_D if var in ('D', 'E', 'F', 'G') else gs.HEROINE_POSES2)
     lines = [f'Game character sprite sheet for a 2D storybook game: {len(figs)} full-body drawings of ONE and the same person in a single '
              'row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal '
              'ground line:']
     lines += [f'{i + 1}) {f};' for i, f in enumerate(figs)]
-    lines += [gs.CAMERA, 'The person: ' + (WHO_D if var == 'D' else WHO), gs.STYLE, MANNER]
+    if var in ('E', 'F', 'G'):
+        lines += [gs.CAMERA, 'The person: ' + WHO_EF, gs.STYLE, MANNER_EF, PROPS_EF]
+        if var == 'G':
+            lines.append(FACE_G)
+    else:
+        lines += [gs.CAMERA, 'The person: ' + (WHO_D if var == 'D' else WHO), gs.STYLE, MANNER]
     if var == 'D':
         lines.append(ADULT_D)
     if push:
         lines.append(PUSH)
     if what == 'base':
-        lines.append(STYLE_REFS.format(n=len(vil)))
-        if clothes == 'C':
+        st = STYLE_REFS.format(n=len(vil))
+        if var in ('E', 'F', 'G'):  # D-24b: пропорции — числом из промпта, не «коренастые» жители
+            st = st.replace('drawing manner, body proportions, face style', 'drawing manner, face style').replace(
+                ' (an adult of about 1.65 m is drawn as tall as the women there)', ' (she is as tall as the women there)')
+        lines.append(st)
+        if clothes == 'F':
+            lines.append(CLOTHES_F)
+        elif clothes == 'D':
+            lines.append(CLOTHES_D)
+        elif clothes == 'C':
             lines.append(CLOTHES_C)
         elif clothes:
             lines.append(CLOTHES_REF)
@@ -132,8 +171,8 @@ def refs(what, var, base=None):
     vil, clothes, _ = VARIANTS[var]
     if what == 'base':
         r = [villager_url(c) for c in vil]
-        if clothes == 'C':
-            r.append(url_of(pathlib.Path(SEL['_work']) / '../d24/d24-base-C-0.png'))
+        if clothes in ('C', 'D', 'F'):
+            r.append(url_of(pathlib.Path(SEL['_work']) / f'../d24/d24-base-{clothes}-0.png'))
         elif clothes:
             r.append(url_of(pathlib.Path(SEL['_work']) / SEL['heroine']['sources'][0]['file']))
         return r
@@ -141,11 +180,13 @@ def refs(what, var, base=None):
 
 
 # подбородок, % роста от макушки (к камере, бок) — замер глазом по сетке `proportions.py … --grid`, 2026-10-08
-CHINS = {'старая (D-09)': (22.5, 21), 'вар. A': (25, 22.5), 'вар. B': (26, 23.5), 'вар. C': (25.5, 22.5),
+CHINS = {'D (итог D-24)': (25, 22.5), 'вар. E': (23.5, 21), 'вар. F': (23.5, 22), 'вар. G': (21.5, 20), 'итог G': (21.5, 20),
+         'старая (D-09)': (22.5, 21), 'вар. A': (25, 22.5), 'вар. B': (26, 23.5), 'вар. C': (25.5, 22.5),
          'итог D': (25, 22.5), 'townswoman': (22.5, 20.5), 'weaver': (26, 20.5), 'herbalist': (23.5, 21.5)}
 
 
-def lineup(out, old_dir, sheets, villagers=('townswoman', 'weaver', 'herbalist'), k=0.6):
+def lineup(out, old_dir, sheets, villagers=('townswoman', 'weaver', 'herbalist'), k=0.6, old_label='старая (D-09)', final='итог D',
+           faces=False):
     """Ряд «к камере» и ряд «бок» в одном масштабе (320 px/м). Варианты масштабируются по фигуре к камере листа
     (рост 1,65 м по body_top_bottom, как sprite_build build), бок — тем же множителем. Под фигурой: голова/рост (по CHINS,
     красная черта — подбородок) и ширина/рост (80-й перцентиль ширины строк)."""
@@ -161,7 +202,7 @@ def lineup(out, old_dir, sheets, villagers=('townswoman', 'weaver', 'herbalist')
         rows = np.where((im[..., 3] > 0.02).any(1))[0]
         return im[:rows[-1] + 1]
     od = pathlib.Path(old_dir)
-    cols.append(('старая (D-09)', spr(od / 'heroine_front_0.png'), spr(od / 'heroine_side_0.png')))
+    cols.append((old_label, spr(od / 'heroine_front_0.png'), spr(od / 'heroine_side_0.png')))
     for sh in sheets:
         rgba = sb.cutout(pathlib.Path(sh))
         figs = sb.figures(rgba)
@@ -169,7 +210,7 @@ def lineup(out, old_dir, sheets, villagers=('townswoman', 'weaver', 'herbalist')
         t, b = sb.body_top_bottom(f[..., 3])
         s = 1.65 * ppm / (b - t + 1)
         cols.append((pathlib.Path(sh).stem.replace('d24-base-', 'вар. ').replace('-0', ''), sb.scaled(f, s), sb.scaled(sd, s)))
-    cols.append(('итог D', spr(S / 'heroine/heroine_front_0.png'), spr(S / 'heroine/heroine_side_0.png')))
+    cols.append((final, spr(S / 'heroine/heroine_front_0.png'), spr(S / 'heroine/heroine_side_0.png')))
     for c in villagers:
         cols.append((c, spr(S / c / f'{c}_front_0.png'), spr(S / c / f'{c}_side_0.png')))
     try:
@@ -209,6 +250,19 @@ def lineup(out, old_dir, sheets, villagers=('townswoman', 'weaver', 'herbalist')
             dr.multiline_text((x, gy + 4), txt, fill=(40, 30, 20), font=font, spacing=1)
             x += max(c.width, 150) + 30
         rows_img.append(im)
+    if faces:  # D-24b: «ткачиха в фас ↔ героиня в фас» — верх фигур (40 % роста), один масштаб 320 px/м × 1,3
+        fk, cells = 1.3, []
+        for name in ('weaver', final, 'townswoman'):
+            fr = next(c for c in cols if c[0] == name)[1]
+            a = fr[..., 3]; rr = np.where((a > 0.02).any(1))[0]; cc = np.where((a > 0.02).any(0))[0]
+            h = rr[-1] - rr[0]
+            top = sb.to_img(fr[rr[0]:rr[0] + int(0.4 * h), cc[0]:cc[-1] + 1])
+            cells.append((name, top.resize((int(top.width * fk), int(top.height * fk)), Image.Resampling.LANCZOS)))
+        H = max(c.height for _, c in cells) + 30
+        im = Image.new('RGB', (sum(c.width + 40 for _, c in cells) + 40, H), sb.LIGHT); dr = ImageDraw.Draw(im); x = 40
+        for name, c in cells:
+            im.paste(c, (x, 0), c); dr.text((x, H - 24), name + ' — фас', fill=(40, 30, 20), font=font); x += c.width + 40
+        rows_img.append(im)
     W = max(r.width for r in rows_img)
     o = Image.new('RGB', (W, sum(r.height for r in rows_img)), sb.LIGHT)
     y = 0
@@ -229,8 +283,12 @@ def main():
         return
     if sys.argv[1:2] == ['lineup']:
         lineup(sys.argv[2], sys.argv[3], sys.argv[4:]); return
+    if sys.argv[1:2] == ['lineup-b']:  # D-24b: D, варианты, итог G, горожанка и ткачиха + строка лиц
+        lineup(sys.argv[2], sys.argv[3], sys.argv[4:], villagers=('townswoman', 'weaver'), old_label='D (итог D-24)', final='итог G',
+               faces=True); return
     ap.add_argument('cmd', choices=['prompt', 'run']); ap.add_argument('what', choices=['base', 'poses2'])
     ap.add_argument('variants', nargs='+'); ap.add_argument('--base'); ap.add_argument('--tag', default='')
+    ap.add_argument('--res', default='2K', help='2K — 7 ₽, 1K — 4 ₽')
     a = ap.parse_args()
     out = work(); out.mkdir(parents=True, exist_ok=True)
     procs = []
@@ -241,7 +299,7 @@ def main():
         name = f'd24-{a.what}-{v}{a.tag}'
         pf = out / f'{name}.txt'; pf.write_text(p, encoding='utf-8')
         cmd = [sys.executable, str(HERE / 'polza.py'), 'gen', '--model', MODEL, '--out', str(out), '--name', name,
-               '--prompt-file', str(pf), '--ar', '21:9', '--res', '2K']
+               '--prompt-file', str(pf), '--ar', '21:9', '--res', a.res]
         for r in refs(a.what, v, a.base):
             cmd += ['--ref', r]
         procs.append(subprocess.Popen(cmd))

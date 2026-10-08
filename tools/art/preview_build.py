@@ -15,8 +15,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 REG = ROOT / 'ZeldaDaughter/Assets/Art/Registries/characters.json'
 OUT = ROOT / 'docs/demo/sprites/preview'
 SCALE = 0.35
-NOTE = ('Пилот D-25: у героини бок — 12 кадров бега (Seedance 2 mini по кадру 0). Остальное пока старые 3 кадра D-09 — '
-        'для сравнения «до/после».')  # строка под заголовком (правка координатора f41798f4)
+NOTE = ('D-24b: героиня взрослая (вариант G), шаг пока 3 кадра — бег D-25 перегенерируется с новой героиней после пополнения Polza. '
+        'Жители — 3 кадра D-09.')  # строка под заголовком (правка координатора f41798f4)
 
 
 def anims(rec):
