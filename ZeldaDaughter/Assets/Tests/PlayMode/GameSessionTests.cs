@@ -191,7 +191,8 @@ namespace ZeldaDaughter.Tests
         {
             _s.Save("seed");
             string path = _s.SlotPath;
-            string newer = File.ReadAllText(path).Replace("\"Version\": 1", "\"Version\": 99");
+            string newer = System.Text.RegularExpressions.Regex.Replace(File.ReadAllText(path), "\"Version\":\\s*\\d+", "\"Version\": 99");
+            Assert.AreNotEqual(File.ReadAllText(path), newer, "the slot has a Version field to bump");
             File.WriteAllText(path, newer);
             if (File.Exists(path + ".bak")) File.Delete(path + ".bak");
             LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex(@"^\[ZD:Save\] slot refused"));
