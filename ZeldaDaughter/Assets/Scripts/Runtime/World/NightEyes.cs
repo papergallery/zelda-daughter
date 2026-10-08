@@ -85,7 +85,7 @@ namespace ZeldaDaughter.World
         private static Mesh _quad;
         private static readonly int BaseMap = Shader.PropertyToID("_BaseMap");
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
-        private const float FadeSeconds = 0.4f, EyeSize = 0.15f, BlinkLength = 0.16f;
+        private const float FadeSeconds = 0.4f, EyeSize = 0.2f, BlinkLength = 0.16f;
 
         private EnemyView _view;
         private EyesSettings _s;
@@ -149,7 +149,7 @@ namespace ZeldaDaughter.World
             var right = ct.right; right.y = 0f; right.Normalize();
             // in front of the card (toward the camera) so the points are not hidden by it; on the side the wolf looks toward the hero
             var centre = transform.position + Vector3.up * head - ct.forward * 0.3f;
-            var color = new Color(1f, 0.82f, 0.28f, Alpha * blink);
+            var color = new Color(1f, 0.95f, 0.5f, Alpha * blink);
             for (int i = 0; i < 2; i++)
             {
                 float side = i == 0 ? -0.5f : 0.5f;
