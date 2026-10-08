@@ -53,6 +53,8 @@ MonoBehaviour:
   - torch_flame
   _prefabs:
   - {fileID: 0}
+  - {fileID: 1270429533958881552, guid: 78b9a30b9558adb4b9979d9a6408c7b9, type: 3}
+  - {fileID: 1717889698745189992, guid: b728247650fe87d428e1e59e577038a8, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -87,6 +89,4 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 4311345148013123954, guid: 1cc62dbe76dc00343a538b96319831d0, type: 3}
