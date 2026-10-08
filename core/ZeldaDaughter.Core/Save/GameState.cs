@@ -70,6 +70,26 @@ namespace ZeldaDaughter.Core.Save
         /// <summary>Night, no fire in reach and no torch in the bag — the hero may remark on the dark (remarks.json night_no_fire).</summary>
         public bool NightWithoutFire => Data.Session.IsNight(Clock.Daylight) && Bag.Count("torch") == 0 && !Camp.IsLitNear(HeroPosition, Data.Camp.LightRadius);
 
+        /// <summary>
+        /// One frame of the hero's own state (the view's tick, docs/demo/unity-architecture.md §2.3): the clock moves, the wounds tick
+        /// (resting at a lit campfire, or <paramref name="restOverride"/> when it is not <c>None</c> — the tavern), hunger grows, her blows
+        /// follow her position and cool down, and the metres she <paramref name="walkedMeters"/> train endurance (and carrying, when overloaded).
+        /// Needs <c>HeroPosition</c> set for this frame. <paramref name="into"/> is cleared and filled. The world, enemies and NPCs are ticked separately.
+        /// </summary>
+        public void Step(float dt, float walkedMeters, RestKind restOverride, StepReport into)
+        {
+            if (into == null) throw new ArgumentNullException(nameof(into));
+            into.Clear();
+            if (dt <= 0f) return;
+            Clock.Advance(dt, into.ClockEvents);
+            Condition.Tick(dt, restOverride != RestKind.None ? restOverride : CurrentRest(), into.ConditionEvents);
+            Hunger.Advance(dt);
+            Combat.Position = HeroPosition;
+            Combat.Tick(dt);
+            if (walkedMeters > 0f && !Condition.IsKnockedOut)
+                Skills.Apply(SkillEvent.Walked(walkedMeters, Bag.IsOverloaded(Skills.CapacityMultiplier())), into.SkillChanges);
+        }
+
         float _scorchCooldown;
 
         /// <summary>
