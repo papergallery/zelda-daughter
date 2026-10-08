@@ -6,7 +6,7 @@
     # из игры: папки кадров D27Frames (rig/, video/) — кропы 360×420 вокруг героини с кадра 1080×2340
     python3 tools/art/d27_sheets.py game --dir zd-frames-d27 --out docs/demo/frames/D-27-game
 
-Выход: <out>-strip.png (полцикла через кадр, риг сверху, видео снизу), <out>.gif (бок о бок, 30 к/с, ×2 для крупного плана при --zoom).
+Выход: <out>-strip.jpg (полцикла через кадр, риг сверху, видео снизу), <out>.gif (бок о бок, 30 к/с, ×2 для крупного плана при --zoom).
 """
 import argparse, glob, json, math, pathlib, sys
 
@@ -90,8 +90,8 @@ def write(pairs, out, names, a):
         c = Image.new('RGBA', (2 * w + 10, h), BG)
         c.alpha_composite(r, (0, 0))
         c.alpha_composite(v, (w + 10, 0))
-        if z != 1:
-            c = c.resize((c.width * z, c.height * z), Image.LANCZOS)
+        if z != 1 or a.gscale != 1:
+            c = c.resize((round(c.width * z * a.gscale), round(c.height * z * a.gscale)), Image.LANCZOS)
         label(c, f'{names[0]}  |  {names[1]}')
         frames.append(c.convert('RGB'))
     frames[0].save(f'{out}.gif', save_all=True, append_images=frames[1:], duration=int(1000 / a.fps), loop=0)
@@ -103,8 +103,8 @@ def write(pairs, out, names, a):
         s.alpha_composite(r, (i * w, 0))
         s.alpha_composite(v, (i * w, h + 10))
     label(s, f'сверху {names[0]}, снизу {names[1]}; полцикла')
-    s.convert('RGB').save(f'{out}-strip.png')
-    print(f'{out}.gif ({len(frames)} frames), {out}-strip.png')
+    s.convert('RGB').save(f'{out}-strip.jpg', quality=88)
+    print(f'{out}.gif ({len(frames)} frames), {out}-strip.jpg')
 
 
 def main():
@@ -114,6 +114,7 @@ def main():
     g = sub.add_parser('game'); g.add_argument('--dir', required=True); g.add_argument('--out', required=True)
     for p in (c, g):
         p.add_argument('--fps', type=float, default=30); p.add_argument('--zoom', type=int, default=1); p.add_argument('--strip', type=int, default=8)
+        p.add_argument('--gscale', type=float, default=1.0, help='масштаб GIF (размер файла)')
     a = ap.parse_args()
     {'core': core, 'game': game}[a.cmd](a)
 
