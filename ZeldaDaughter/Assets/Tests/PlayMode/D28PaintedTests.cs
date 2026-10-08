@@ -16,7 +16,7 @@ namespace ZeldaDaughter.Tests
     /// <summary>
     /// D-28 (docs/done-criteria/D-28.md п. 4) in scenes/pilot-f1.json as built: painted cards play like the 3D models —
     /// the heroine behind a trunk is covered and in front of it is not, a crown over her dissolves, the rock's collider is the 3D one and stops
-    /// her at its face; a card is out of the shadow pass and its own model stays as a shadow-only stand-in.
+    /// her at its face; a card is out of the shadow pass and its 3D model is not drawn (a contact blob or a shadow-only stand-in).
     /// The look is checked by rendering the game camera twice (heroine shown / hidden) and comparing the pixels at her body.
     /// </summary>
     public class D28PaintedTests
@@ -44,7 +44,7 @@ namespace ZeldaDaughter.Tests
         static Vector3 Forward => new Vector3(1f, 0f, 1f).normalized; // away from the camera (yaw 45) on the ground
 
         [Test]
-        public void Painted_objects_keep_the_3D_collider_and_a_shadow_only_model()
+        public void Painted_objects_keep_the_3D_collider_and_hide_the_model()
         {
             var catalog = ModelCatalog.Load("../data");
             var config = SceneConfig.Parse(System.IO.File.ReadAllText("../scenes/pilot-f1.json"));
@@ -61,7 +61,7 @@ namespace ZeldaDaughter.Tests
                 Assert.AreEqual(b.SizeZ * k, box.size.z, 1e-3f, o.Id);
                 Assert.NotNull(go.transform.Find("painted"), $"{o.Id}: painted card");
                 var model = go.transform.Find("model").GetComponentsInChildren<Renderer>();
-                Assert.IsTrue(model.All(r => r.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly), $"{o.Id}: model is the shadow stand-in");
+                Assert.IsTrue(model.All(r => !r.enabled || r.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly), $"{o.Id}: the 3D model is not drawn (at most a shadow stand-in)");
                 checkedBoxes++;
             }
             Assert.GreaterOrEqual(checkedBoxes, 8);

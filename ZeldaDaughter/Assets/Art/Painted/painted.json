@@ -1303,7 +1303,7 @@
   },
   "road": {
    "texture": "Assets/Art/Painted/ground-road.png",
-   "tile_m": 2.5
+   "tile_m": 1.6
   }
  }
 }

@@ -4,7 +4,7 @@ var d = "C:/dev/zelda-builds/frames/";
 // 0.58 of it from the top (f1: feet at 1045 of 1792). Billboards are turned by their own LateUpdate (as frames-d24); the crown fade gets the
 // heroine's feet; at night the campfire of the scene burns: the particle fire of the game (Fx registry, its own stone ring hidden — the ring is
 // painted) and the point light of CampPresenter (colour, 3, range camp.json lightRadius 6). Logs the heroine's card height in px.
-float size = 7.3f;
+float size = 7.6f; // first frame at 7.3: the drawn heroine ≈ 1/8.7 of the frame → 7.6 for ≈ 1/9
 string info = "";
 System.Func<bool, UnityEngine.Vector3, System.Action<UnityEngine.Camera>> prep = (fire, heroAt) => cam =>
 {
@@ -12,7 +12,7 @@ System.Func<bool, UnityEngine.Vector3, System.Action<UnityEngine.Camera>> prep =
     foreach (var bs in UnityEngine.Object.FindObjectsByType<ZeldaDaughter.Rendering.BillboardSprite>(UnityEngine.FindObjectsSortMode.None)) m.Invoke(bs, null);
     var feet = heroAt - UnityEngine.Vector3.up;
     UnityEngine.Shader.SetGlobalVector("_ZD_HeroPos", new UnityEngine.Vector4(feet.x, feet.y, feet.z, 1f));
-    cam.transform.position += cam.transform.up * (0.08f * 2f * cam.orthographicSize);
+    cam.transform.position += cam.transform.up * (0.03f * 2f * cam.orthographicSize); // first frame: feet at 0.636 with 0.08 → 0.58 like f1
     info = "";
     foreach (var bs in UnityEngine.Object.FindObjectsByType<ZeldaDaughter.Rendering.BillboardSprite>(UnityEngine.FindObjectsSortMode.None))
     {
@@ -26,6 +26,7 @@ System.Func<bool, UnityEngine.Vector3, System.Action<UnityEngine.Camera>> prep =
     var ring = UnityEngine.GameObject.Find("Objects/campfire_spawn").transform.position;
     var reg = UnityEditor.AssetDatabase.LoadAssetAtPath<ZeldaDaughter.World.FxRegistry>("Assets/Art/Registries/Fx.asset");
     var prefab = reg != null ? reg.Get("campfire") : null;
+    info += prefab != null ? " fire=prefab" : " fire=none";
     if (prefab != null)
     {
         var fx = UnityEngine.Object.Instantiate(prefab, ring, UnityEngine.Quaternion.identity);

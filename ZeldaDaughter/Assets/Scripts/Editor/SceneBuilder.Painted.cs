@@ -18,6 +18,8 @@ namespace ZeldaDaughter.Editor
     ///              "models": { "tree_oak": ["tree_big"], "rock_large_a": ["rock_big_a", "rock_mid_a"], … },   // id модели → рисунки (выбор по id)
     ///              "flip": ["rock", "plant"],          // виды, которые можно отражать (свет на рисунке ровный — стиль-библия)
     ///              "fit": ["rock", "prop"],            // виды, ширина рисунка которых = ширина модели на экране (по model-bounds)
+    ///              "shadow": "blob",                   // "model" (по умолчанию) — 3D-модель отбрасывает тень солнца (ShadowsOnly);
+    ///                                                  // "blob" — мягкое пятно под основанием (ref2game: «contact shadows» кодом), модель не рисуется
     ///              "ground": { "meadow": "meadow", "road": "road" } }
     /// </code>
     /// <list type="bullet">
@@ -46,6 +48,8 @@ namespace ZeldaDaughter.Editor
             public Dictionary<string, string[]> Models;
             public HashSet<string> Flip;
             public HashSet<string> Fit;
+            public bool Blob;
+            public HashSet<string> BlobKinds;
             public string AtlasTexture;
             public JObject GroundAtlas;
             public JObject Ground;
@@ -87,6 +91,8 @@ namespace ZeldaDaughter.Editor
                 Sprites = sprites, Models = models,
                 Flip = new HashSet<string>(((JArray)p["flip"] ?? new JArray()).Select(x => (string)x)),
                 Fit = new HashSet<string>(((JArray)p["fit"] ?? new JArray()).Select(x => (string)x)),
+                Blob = (string)p["shadow"] == "blob",
+                BlobKinds = new HashSet<string>(((JArray)p["blobKinds"] ?? new JArray("tree", "rock", "prop")).Select(x => (string)x)),
                 AtlasTexture = (string)atlas["texture"], GroundAtlas = atlas["ground"] as JObject, Ground = p["ground"] as JObject,
             };
         }
@@ -225,10 +231,12 @@ namespace ZeldaDaughter.Editor
                     bool flip = setup.Flip.Contains(s.Kind) && (h >> 12 & 1) == 1;
                     bool solid = t.GetComponent<Collider>() != null;
                     if (holder.name == "Scatter" && !solid) { merge.Add((t.gameObject, spriteId, flip)); continue; }
+                    bool modelShadow = !setup.Blob && (solid || s.Kind == "tree");
                     foreach (var r in t.GetComponentsInChildren<Renderer>())
-                        r.shadowCastingMode = solid || s.Kind == "tree" ? ShadowCastingMode.ShadowsOnly : ShadowCastingMode.Off;
-                    if (!solid && s.Kind != "tree")
-                        foreach (var r in t.GetComponentsInChildren<Renderer>()) r.enabled = false;
+                    {
+                        r.shadowCastingMode = modelShadow ? ShadowCastingMode.ShadowsOnly : ShadowCastingMode.Off;
+                        if (!modelShadow) r.enabled = false;
+                    }
                     var go = new GameObject("painted", typeof(MeshFilter), typeof(MeshRenderer));
                     go.transform.SetParent(t, false);
                     go.transform.rotation = rot;
@@ -242,6 +250,7 @@ namespace ZeldaDaughter.Editor
                     mr.sharedMaterial = cardMat;
                     mr.shadowCastingMode = ShadowCastingMode.Off;
                     mr.receiveShadows = false;
+                    if (setup.Blob && setup.BlobKinds.Contains(s.Kind)) PaintedBlob(t, s.Size.x * go.transform.localScale.x * t.lossyScale.y, rot);
                     cards++;
                 }
             }
@@ -313,6 +322,58 @@ namespace ZeldaDaughter.Editor
         }
 
         static Dictionary<string, string> _scatterModels;
+
+        static Material _paintedBlobMat;
+        static Mesh _paintedQuad;
+
+        /// <summary>
+        /// A soft cool-umber contact shadow under a painted object (ref2game effects: shadows are code, shaped by the footprint): a flat ellipse at the
+        /// root, <paramref name="width"/> × 0.62·width, lying across the screen, transparent, no depth write (the ground and the hero's blob work the same way).
+        /// </summary>
+        static void PaintedBlob(Transform t, float width, Quaternion cardRot)
+        {
+            if (_paintedBlobMat == null)
+            {
+                PaintedFolder();
+                string tex = $"{PaintedGenDir}/blob.png";
+                if (!File.Exists(tex))
+                {
+                    const int N = 128;
+                    var img = new Texture2D(N, N, TextureFormat.RGBA32, false);
+                    for (int y = 0; y < N; y++)
+                        for (int x = 0; x < N; x++)
+                        {
+                            float dx = (x + 0.5f) / N * 2f - 1f, dy = (y + 0.5f) / N * 2f - 1f;
+                            float a = Mathf.Clamp01(1f - Mathf.Sqrt(dx * dx + dy * dy));
+                            img.SetPixel(x, y, new Color(1f, 1f, 1f, a * a * (3f - 2f * a)));
+                        }
+                    img.Apply();
+                    File.WriteAllBytes(tex, img.EncodeToPNG());
+                    UnityEngine.Object.DestroyImmediate(img);
+                    AssetDatabase.ImportAsset(tex);
+                    var ti = (TextureImporter)AssetImporter.GetAtPath(tex);
+                    ti.alphaIsTransparency = true; ti.wrapMode = TextureWrapMode.Clamp; ti.SaveAndReimport();
+                }
+                string path = $"{PaintedGenDir}/blob.mat";
+                _paintedBlobMat = AssetDatabase.LoadAssetAtPath<Material>(path);
+                if (_paintedBlobMat == null) { _paintedBlobMat = ZeldaDaughter.Rendering.SpriteLook.NewShadowMaterial(); AssetDatabase.CreateAsset(_paintedBlobMat, path); }
+                _paintedBlobMat.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(tex));
+                _paintedBlobMat.SetColor("_BaseColor", new Color(0.16f, 0.17f, 0.22f, 0.42f));
+                EditorUtility.SetDirty(_paintedBlobMat);
+                _paintedQuad = Resources.GetBuiltinResource<Mesh>("Quad.fbx");
+            }
+            var go = new GameObject("blob", typeof(MeshFilter), typeof(MeshRenderer));
+            go.transform.SetParent(t, false);
+            go.transform.rotation = Quaternion.Euler(90f, cardRot.eulerAngles.y, 0f);
+            go.transform.position = t.position + Vector3.up * 0.02f;
+            var ls = t.lossyScale.y > 1e-3f ? 1f / t.lossyScale.y : 1f;
+            go.transform.localScale = new Vector3(width * 0.8f * ls, width * 0.5f * ls, 1f);
+            go.GetComponent<MeshFilter>().sharedMesh = _paintedQuad;
+            var mr = go.GetComponent<MeshRenderer>();
+            mr.sharedMaterial = _paintedBlobMat;
+            mr.shadowCastingMode = ShadowCastingMode.Off;
+            mr.receiveShadows = false;
+        }
 
         /// <summary>Width of the model's measured box (model-bounds.json) across the screen, metres, as placed (yaw and scale of the object).</summary>
         static float PaintedScreenWidth(Transform t, Box3 b, Vector3 right)

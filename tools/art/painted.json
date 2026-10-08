@@ -168,7 +168,7 @@
    "pick": 41,
    "ref": [
     "meadow",
-    0.35
+    0.5
    ]
   },
   "ground_meadow": {
@@ -180,7 +180,7 @@
    "pick": 55,
    "ref": [
     "meadow",
-    0.6
+    0.85
    ],
    "tile_m": 4
   },
@@ -193,9 +193,9 @@
    "pick": 61,
    "ref": [
     "road",
-    0.7
+    1.0
    ],
-   "tile_m": 2.5
+   "tile_m": 1.6
   }
  },
  "color_refs": {

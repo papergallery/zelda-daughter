@@ -42,6 +42,8 @@ ROCKS = [('rock_1', 'rock_large_b', 630, 690, 0.42), ('rock_2', 'rock_large_c', 
          ('rock_10', 'rock_small_a', 100, 1655, 0.6), ('rock_11', 'rock_small_a', 180, 885, 0.5), ('rock_12', 'rock_small_flat_a', 240, 330, 0.6),
          ('rock_13', 'rock_large_c', 25, 830, 0.3), ('rock_14', 'rock_small_a', 10, 1300, 0.6), ('rock_15', 'rock_small_flat_a', 530, 330, 0.5),
          ('rock_16', 'rock_small_a', 470, 1150, 0.4)]
+ROCK_K = 0.6  # первый кадр (D-28-pilot-f1, 2026-10-09): камни ≈ в 1,6 раза крупнее, чем на f1
+
 # Дорога: ось по f1 (px снизу вверх), ширина — как на f1 (≈ 190 px поперёк на экране ≈ 2,5 м по земле).
 ROAD = [(-60, 1860), (120, 1450), (290, 1170), (385, 950), (425, 760), (480, 560), (610, 380), (800, 190), (980, 0)]
 
@@ -51,7 +53,7 @@ def build():
     for oid, model, px, py in TREES:
         objects.append(obj(oid, model, px, py))
     for oid, model, px, py, s in ROCKS:
-        objects.append(obj(oid, model, px, py, yaw=0.0, scale=s, tags=('decor', 'rock')))
+        objects.append(obj(oid, model, px, py, yaw=0.0, scale=round(s * ROCK_K, 3), tags=('decor', 'rock')))
     # Бревно у дороги (f1: от (530, 1060) до (790, 900)), длинная ось модели log_large — x: на экране вправо-вверх ≈ как на рисунке.
     objects.append(obj('log_spawn', 'log_large', 660, 985, yaw=0.0, scale=0.8, tags=('decor', 'poi', 'log')))
     # Кольцо костра f1n (на краю дороги), костёр зажигает игра (CampPresenter); рисунок — холодное кольцо, огонь — частицы и свет.
@@ -64,12 +66,8 @@ def build():
              ('tree_12', 'tree_small', 300, -200), ('tree_13', 'tree_oak', 1200, -100)]
     for oid, model, px, py in extra:
         objects.append(obj(oid, model, px, py))
-    # Туман пятнами (как в регионе, D-22): плоские квады, рисует движок.
-    for k, (px, py, w, d) in enumerate([(60, 470, 9, 6), (700, 140, 8, 5)]):
-        x, z = at(px, py)
-        objects.append({'id': f'mist_{k:02d}', 'shape': 'quad', 'position': {'x': x, 'y': 0.45, 'z': z}, 'rotation': {'x': 90, 'y': 45, 'z': 0},
-                        'scale': {'x': w, 'y': d, 'z': 1}, 'color': '#f2ead8', 'collide': False, 'tags': ['decor', 'mist']})
-
+    # Туман (D-22, квады на высоте 0,45 м) в пилот не входит: плоскость тумана режет карточки поперёк (видна линия на стволах и траве) —
+    # для рисованных кусков нужен туман без геометрии (в постпроходе по глубине), бэклог D-28.
     road = [{'x': x, 'z': z} for x, z in (at(px, py) for px, py in ROAD)]
     rect = {'shape': 'rect', 'center': {'x': 0, 'z': 0}, 'size': {'x': 60, 'z': 60}}
     scatter = [
@@ -103,6 +101,7 @@ def build():
                 'flower_yellow_a': ['flower_yellow'], 'flower_purple_a': ['flower_lilac'],
             },
             'flip': ['rock', 'plant'],
+            'shadow': 'blob',
             'fit': ['rock', 'prop'],
             'ground': {'meadow': 'meadow', 'road': 'road'},
         },
