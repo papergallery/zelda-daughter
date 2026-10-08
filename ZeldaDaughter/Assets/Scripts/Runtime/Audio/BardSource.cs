@@ -38,12 +38,13 @@ namespace ZeldaDaughter.Audio
 
         public void Configure(GameSession session, SoundRegistry sounds, float fromHour, float toHour)
         {
-            if (isActiveAndEnabled && _session != null) _session.Events.StateReady -= OnStateReady;
+            bool live = Application.isPlaying && isActiveAndEnabled;
+            if (live && _session != null) _session.Events.StateReady -= OnStateReady;
             _session = session;
             _sounds = sounds;
             _fromHour = fromHour;
             _toHour = toHour;
-            if (isActiveAndEnabled && _session != null) _session.Events.StateReady += OnStateReady;
+            if (live && _session != null) _session.Events.StateReady += OnStateReady;
         }
 
         public bool IsBardHour(float hour) => hour >= _fromHour && hour < _toHour;

@@ -112,13 +112,14 @@ namespace ZeldaDaughter.Audio
 
         public void Configure(GameSession session, HeroController hero, SoundRegistry sounds, SoundZone[] zones)
         {
-            if (isActiveAndEnabled) OnDisable();
+            bool live = Application.isPlaying && isActiveAndEnabled; // the scene builder (edit mode) only stores the references
+            if (live) OnDisable();
             _session = session;
             _hero = hero;
             _sounds = sounds;
             _zones = zones ?? new SoundZone[0];
             _built = false;
-            if (isActiveAndEnabled) OnEnable();
+            if (live) OnEnable();
         }
 
         /// <summary>For tests and tools: the places can be replaced after the scene is built.</summary>
