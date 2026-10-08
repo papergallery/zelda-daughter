@@ -287,17 +287,97 @@ def alpha_floor(p, rect, lo=0.6):
     return p
 
 
-def hair_match(p, ref):
-    """Цвет волос кадра (тёмные тёплые пиксели) — к среднему и разбросу волос кадра ref."""
-    def hm(q):
+def hair_match(p, ref, rect=None):
+    """Цвет волос кадра (тёмные тёплые пиксели; rect — доли холста, где волосы) — к среднему и разбросу волос кадра ref."""
+    def hm(q, lim=0.45):
         rgb = q[..., :3]; lum = rgb.mean(-1)
-        return (rgb[..., 0] - rgb[..., 2] > 0.06) & (lum < 0.45) & (lum > 0.08) & (q[..., 3] > 0.5)
-    m, r = hm(p), hm(ref)
+        return (rgb[..., 0] - rgb[..., 2] > 0.06) & (lum < lim) & (lum > 0.06) & (q[..., 3] > 0.5)
+    m, r = hm(p, 0.6 if rect else 0.45), hm(ref)
+    if rect:
+        h, w = p.shape[:2]
+        box = np.zeros((h, w), bool); box[int(rect[1] * h):int(rect[3] * h), int(rect[0] * w):int(rect[2] * w)] = True
+        m &= box
     out = p.copy()
     for c in range(3):
         a, b = p[..., c][m], ref[..., c][r]
         out[..., c] = np.where(m, np.clip((p[..., c] - a.mean()) / (a.std() + 1e-6) * b.std() + b.mean(), 0, 1), p[..., c])
     return out
+
+
+def _lab(rgb):
+    """sRGB 0..1 → CIE Lab (D65), для замера ΔE средних по маскам."""
+    c = np.where(rgb > 0.04045, ((rgb + 0.055) / 1.055) ** 2.4, rgb / 12.92)
+    m = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]])
+    xyz = c @ m.T / np.array([0.95047, 1.0, 1.08883])
+    f = np.where(xyz > 0.008856, np.cbrt(xyz), 7.787 * xyz + 16 / 116)
+    return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], -1)
+
+
+def cloth_masks(p):
+    """Маски одежды и кожи кадра героини: джинсы (синее красного), кожа (r > g > b, насыщенная), футболка (светлая
+    малонасыщенная); тёмные линии туши — ни в одну."""
+    rgb, a = p[..., :3], p[..., 3] > 0.5
+    sat, lum = rgb.max(-1) - rgb.min(-1), rgb.mean(-1)
+    jeans = a & (rgb[..., 2] > rgb[..., 0] + 0.02) & (lum > 0.25)
+    skin = a & (rgb[..., 0] > rgb[..., 1]) & (rgb[..., 1] > rgb[..., 2]) & (rgb[..., 0] - rgb[..., 2] > 0.15) & (sat > 0.15) & (lum > 0.42) & (lum < 0.9)
+    shirt = a & ~jeans & (sat < 0.15) & (lum > 0.55)
+    return {'shirt': shirt, 'skin': skin, 'jeans': jeans}
+
+
+def mask_match(p, ref, report=None):
+    """D-24: цвет кадра к ref по маскам (футболка, кожа, джинсы): среднее и разброс по каналам внутри маски, мягкая кромка
+    маски. Печатает ΔE (Lab) средних до/после."""
+    out = p.copy()
+    mp, mr = cloth_masks(p), cloth_masks(ref)
+    for k in mp:
+        a, b = p[..., :3][mp[k]], ref[..., :3][mr[k]]
+        if len(a) < 50 or len(b) < 50:
+            continue
+        new = np.clip((p[..., :3] - a.mean(0)) / (a.std(0) + 1e-6) * b.std(0) + b.mean(0), 0, 1)
+        w = ndimage.gaussian_filter(mp[k].astype(np.float32), 1.0)[..., None]
+        out[..., :3] = out[..., :3] * (1 - w) + new * w
+        if report is not None:
+            d0 = float(np.linalg.norm(_lab(a.mean(0)) - _lab(b.mean(0))))
+            d1 = float(np.linalg.norm(_lab(out[..., :3][mp[k]].mean(0)) - _lab(b.mean(0))))
+            report.append(f'{k}: ΔE {d0:.1f} → {d1:.1f}')
+    return out
+
+
+def canvas_fix(c, ops):
+    """Правки на готовом холсте (доли холста): despeck — светлые крапинки → медиана; islands — оторванные куски альфы
+    меньше frac площади фигуры; alpha_floor — полупрозрачный след."""
+    for op in ops:
+        if op['op'] == 'despeck':
+            c = despeck(c, op['rect'], d=op.get('d', 0.10), size=op.get('size', 60))
+        elif op['op'] == 'alpha_floor':
+            c = alpha_floor(c, op['rect'], op.get('lo', 0.6))
+        elif op['op'] == 'islands':
+            al = c[..., 3]
+            lab, n = ndimage.label(al > 0.05, structure=np.ones((3, 3)))
+            if n > 1:
+                sizes = ndimage.sum(np.ones_like(al), lab, index=np.arange(1, n + 1))
+                small = np.zeros(n + 1, bool); small[1:] = sizes < op.get('frac', 0.001) * sizes.max()
+                c = c.copy(); c[..., 3] = np.where(small[lab], 0, al)
+        elif op['op'] == 'erase':
+            h, w = c.shape[:2]
+            r = op['rect']; y0, y1, x0, x1 = int(r[1] * h), int(r[3] * h), int(r[0] * w), int(r[2] * w)
+            sub = erase(c[y0:y1, x0:x1], [0, 0, 1, 1])
+            c = c.copy(); c[y0:y1, x0:x1] = sub
+        elif op['op'] == 'erase_neutral':  # нейтрально-серое (не джинсы: синее; не кеды: теплее), связанное с фоном
+            h, w = c.shape[:2]
+            r = op['rect']; y0, y1, x0, x1 = int(r[1] * h), int(r[3] * h), int(r[0] * w), int(r[2] * w)
+            rgb, al = c[..., :3], c[..., 3]
+            neutral = (np.abs(rgb[..., 0] - rgb[..., 2]) < 0.035) & (rgb.max(-1) - rgb.min(-1) < 0.08) & (rgb.mean(-1) > 0.4) & (al > 0)
+            box = np.zeros(al.shape, bool); box[y0:y1, x0:x1] = True
+            cand = neutral & box
+            lab, n = ndimage.label(cand)
+            if n:
+                touch = np.unique(lab[ndimage.binary_dilation(al <= 0.05, iterations=2) & cand])
+                gone = np.isin(lab, touch[touch > 0])
+                c = c.copy(); c[..., 3] = np.where(gone, 0, al)
+        elif op['op'] == 'hair_match':
+            c = hair_match(c, op['ref_frame'], op.get('rect'))
+    return c
 
 
 def width80(a):
@@ -459,6 +539,10 @@ def cmd_build(cid):
         frames[name] = color_match(frames[name], frames[ref])
     for name, ref in sel.get('post_hair_match', {}).items():  # цвет волос — под кадр ref
         frames[name] = hair_match(frames[name], frames[ref])
+    for name, ref in sel.get('post_mask_match', {}).items():  # цвет по маскам одежды и кожи — под кадр ref
+        rep = []
+        frames[name] = mask_match(frames[name], frames[ref], rep)
+        print(cid, name, '→', ref, '; '.join(rep))
     # общий холст и pivot (лежачие позы — по центру рамки)
     pad = 8
     info = {}
@@ -491,6 +575,10 @@ def cmd_build(cid):
         fx, _, bb = info[name]
         canvas = Image.new('RGBA', (W, H), (0, 0, 0, 0))
         canvas.alpha_composite(to_img(frames[name]), (int(round(px - fx)), py - bb))
+        if name in sel.get('canvas_fix', {}):  # правки на готовом холсте (доли холста)
+            ops = [dict(o, ref_frame=np.asarray(placed[o['ref']]).astype(np.float32) / 255) if o['op'] == 'hair_match' else o
+                   for o in sel['canvas_fix'][name]]
+            canvas = to_img(canvas_fix(np.asarray(canvas).astype(np.float32) / 255, ops))
         canvas.save(outdir / f'{cid}_{name}.png', optimize=True)
         placed[name] = canvas
     walk = {v: sorted(int(n.split('_')[1]) for n in frames if n.count('_') == 1 and n.startswith(v + '_')) for v in VIEWS}

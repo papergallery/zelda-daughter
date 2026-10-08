@@ -148,8 +148,8 @@
     "erase": {
      "front_pickup_0": [
       [
-       0.38,
-       0.8,
+       0.4,
+       0.82,
        0.8,
        1.0
       ]
@@ -210,11 +210,44 @@
     ]
    }
   ],
-  "post_color_match": {
+  "post_mask_match": {
    "front_0": "front_1"
   },
-  "post_hair_match": {
-   "front_pickup_0": "front_0"
+  "canvas_fix": {
+   "front_pickup_0": [
+    {
+     "op": "hair_match",
+     "ref": "front_0",
+     "rect": [
+      0.44,
+      0.36,
+      0.64,
+      0.5
+     ]
+    },
+    {
+     "op": "despeck",
+     "rect": [
+      0.36,
+      0.46,
+      0.46,
+      0.54
+     ]
+    },
+    {
+     "op": "erase_neutral",
+     "rect": [
+      0.34,
+      0.79,
+      0.5,
+      0.94
+     ]
+    },
+    {
+     "op": "islands",
+     "frac": 0.001
+    }
+   ]
   }
  }
 }
