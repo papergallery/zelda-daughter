@@ -401,7 +401,7 @@ namespace ZeldaDaughter.Tests
             SetHour(11.5);
             var oldMan = View("old_man");
             var at = oldMan.transform.position;
-            _hero.Teleport(at + new Vector3(-2.4f, 1f, -2.4f), 45f);
+            _hero.Teleport(at + new Vector3(3f, 1f, -1.5f), 45f);
             yield return new WaitForSeconds(1.2f);
             yield return Capture("square-day");
 
@@ -411,7 +411,7 @@ namespace ZeldaDaughter.Tests
 
             yield return Load("region");
             SetHour(11.5);
-            _hero.Teleport(View("old_man").transform.position + new Vector3(-2.4f, 1f, -2.4f), 45f);
+            _hero.Teleport(View("old_man").transform.position + new Vector3(3f, 1f, -1.5f), 45f);
             _s.State.Language.Restore(0.8f);
             yield return new WaitForSeconds(1.2f);
             _s.Tap("npc_old_man");
