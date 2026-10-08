@@ -403,14 +403,34 @@ namespace ZeldaDaughter.Tests
         static string FramesDir => Path.GetFullPath(Path.Combine(Application.dataPath, "../../docs/demo/frames"));
         static double Now => Time.realtimeSinceStartupAsDouble;
 
+        /// <summary>The game camera and the UI rendered into a 1080×2340 texture (the editor's own screenshot call returns nothing while the Game view is not shown): the overlay canvas goes to camera space for the shot.</summary>
         IEnumerator Shot(string name)
         {
             yield return new WaitForEndOfFrame();
-            var tex = ScreenCapture.CaptureScreenshotAsTexture();
-            int w = tex.width, h = tex.height;
+            var cam = Camera.main;
+            var canvas = Object.FindFirstObjectByType<SessionUI>().Canvas;
+            var mode = canvas.renderMode;
+            var rt = new RenderTexture(1080, 2340, 24);
+            var prevTarget = cam.targetTexture;
+            Debug.Log($"[ZD:Frame] screen {Screen.width}x{Screen.height}");
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = cam;
+            canvas.planeDistance = cam.nearClipPlane + 1f;
+            cam.targetTexture = rt;
+            Canvas.ForceUpdateCanvases();
+            cam.Render();
+            RenderTexture.active = rt;
+            var tex = new Texture2D(1080, 2340, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, 1080, 2340), 0, 0);
+            tex.Apply();
+            RenderTexture.active = null;
+            cam.targetTexture = prevTarget;
+            canvas.renderMode = mode;
             if (Directory.Exists(FramesDir)) File.WriteAllBytes(Path.Combine(FramesDir, name + ".png"), tex.EncodeToPNG());
             Object.Destroy(tex);
-            Debug.Log($"[ZD:Frame] {name} {w}x{h}");
+            rt.Release();
+            Object.Destroy(rt);
+            Debug.Log($"[ZD:Frame] {name} written");
         }
 
         [UnityTest]
