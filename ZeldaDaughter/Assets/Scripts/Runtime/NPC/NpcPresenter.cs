@@ -171,9 +171,99 @@ namespace ZeldaDaughter.NPC
             var way = new List<Vector3>(road.Count + 1);
             for (int i = 0; i < road.Count; i++) way.Add(road[i]);
             way[way.Count - 1] = dest; // the last point of the road is the anchor; the tavern ring moves it a little
+            int onRoad = way.Count;
+            AvoidBlocking(way); // a fountain or a cart on the road: she walks round it
             if (v.Hidden) v.Place(road[0], false);
             v.Walk(way, _g.Npcs.WalkSpeed(c.NpcId), sleep);
-            ZdLog.Info("Npc", $"{c.NpcId} walks {c.FromAnchor} → {c.ToAnchor} ({c.Activity}) {way.Count} points");
+            ZdLog.Info("Npc", $"{c.NpcId} walks {c.FromAnchor} → {c.ToAnchor} ({c.Activity}) {onRoad} points{(way.Count > onRoad ? $" +{way.Count - onRoad} round obstacles" : "")}");
+        }
+
+        // ------------------------------------------------------------------ round obstacles
+
+        private const float ClearRadius = 0.2f;   // how wide a resident is when she is checked against walls and props
+        private const float DetourMargin = 0.6f;  // how far from an obstacle's box she keeps when she goes round it
+
+        /// <summary>
+        /// The roads of the core are lines on a plan; a fountain or a cart may stand on one. Every leg of the walk is swept with a ball against
+        /// the scene's blocking colliders; a blocked leg is bent round the corners of the box in the way (shorter side), and the new legs are
+        /// swept again. Doors are not walls: the road goes through them and the ball is small enough to pass.
+        /// </summary>
+        private static void AvoidBlocking(List<Vector3> way)
+        {
+            int mask = LayerMask.GetMask("Blocking");
+            if (mask == 0) return;
+            for (int i = 0; i + 1 < way.Count && way.Count < 300; i++)
+                for (int guard = 0; guard < 6 && Bend(way, i, mask); guard++) { }
+        }
+
+        private static bool Bend(List<Vector3> way, int i, int mask)
+        {
+            Vector3 a = way[i], b = way[i + 1];
+            var d = b - a;
+            d.y = 0f;
+            float len = d.magnitude;
+            if (len < 0.1f) return false;
+            if (!Physics.SphereCast(a + Vector3.up * 0.6f, ClearRadius, d / len, out var hit, len, mask, QueryTriggerInteraction.Ignore)) return false;
+
+            var box = hit.collider.bounds;
+            float x0 = box.min.x - DetourMargin, x1 = box.max.x + DetourMargin, z0 = box.min.z - DetourMargin, z1 = box.max.z + DetourMargin;
+            if (Inside(x0, x1, z0, z1, a) || Inside(x0, x1, z0, z1, b)) return false; // she starts or ends right by it: nothing to bend round
+            var corners = new[] { new Vector3(x0, a.y, z0), new Vector3(x1, a.y, z0), new Vector3(x1, a.y, z1), new Vector3(x0, a.y, z1) };
+
+            List<Vector3> best = null;
+            float bestLength = float.MaxValue;
+            for (int k = 0; k < 4; k++)
+            {
+                if (Free(x0, x1, z0, z1, a, corners[k]) && Free(x0, x1, z0, z1, corners[k], b))
+                    Consider(ref best, ref bestLength, a, b, corners[k]);
+                var next = corners[(k + 1) % 4];
+                if (Free(x0, x1, z0, z1, a, corners[k]) && Free(x0, x1, z0, z1, next, b))
+                    Consider(ref best, ref bestLength, a, b, corners[k], next);
+            }
+            if (best == null) return false;
+            way.InsertRange(i + 1, best);
+            return true;
+        }
+
+        private static void Consider(ref List<Vector3> best, ref float bestLength, Vector3 a, Vector3 b, params Vector3[] via)
+        {
+            float length = 0f;
+            var from = a;
+            foreach (var p in via)
+            {
+                if (Physics.CheckSphere(p + Vector3.up * 0.6f, ClearRadius, LayerMask.GetMask("Blocking"), QueryTriggerInteraction.Ignore)) return; // the corner is inside something else
+                length += Vector3.Distance(from, p);
+                from = p;
+            }
+            length += Vector3.Distance(from, b);
+            if (length >= bestLength) return;
+            bestLength = length;
+            best = new List<Vector3>(via);
+        }
+
+        private static bool Inside(float x0, float x1, float z0, float z1, Vector3 p) => p.x > x0 && p.x < x1 && p.z > z0 && p.z < z1;
+
+        /// <summary>The leg p→q does not cut the inside of the rectangle (slab test on the ground plane).</summary>
+        private static bool Free(float x0, float x1, float z0, float z1, Vector3 p, Vector3 q)
+        {
+            const float Eps = 0.02f;
+            x0 += Eps; x1 -= Eps; z0 += Eps; z1 -= Eps;
+            float t0 = 0f, t1 = 1f;
+            float dx = q.x - p.x, dz = q.z - p.z;
+            if (!Clip(-dx, p.x - x0, ref t0, ref t1)) return true;
+            if (!Clip(dx, x1 - p.x, ref t0, ref t1)) return true;
+            if (!Clip(-dz, p.z - z0, ref t0, ref t1)) return true;
+            if (!Clip(dz, z1 - p.z, ref t0, ref t1)) return true;
+            return t0 >= t1; // an empty overlap: it only touches
+        }
+
+        private static bool Clip(float p, float q, ref float t0, ref float t1)
+        {
+            if (Mathf.Abs(p) < 1e-6f) return q >= 0f;
+            float r = q / p;
+            if (p < 0f) { if (r > t1) return false; if (r > t0) t0 = r; }
+            else { if (r < t0) return false; if (r < t1) t1 = r; }
+            return true;
         }
 
         // ------------------------------------------------------------------ talk

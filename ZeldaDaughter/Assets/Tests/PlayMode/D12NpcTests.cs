@@ -207,6 +207,18 @@ namespace ZeldaDaughter.Tests
 
             var blocking = LayerMask.GetMask("Blocking");
             var tavern = Anchor("anchor_tavern_hall");
+            var walkway = new List<Vector3> { merchant.transform.position };
+            walkway.AddRange(merchant.Waypoints);
+            // what she walks is the road of the core, bent only round things standing on it
+            int bent = 0;
+            for (int i = 1; i < walkway.Count - 1; i++)
+            {
+                if (DistanceToPolyline(walkway[i], road) <= 0.3f) continue;
+                bent++;
+                Assert.Greater(Physics.OverlapSphere(walkway[i], 1.6f, blocking).Length, 0, $"waypoint {walkway[i]} is off the road and not by an obstacle");
+            }
+            Debug.Log($"[ZD:Test] merchant walkway {walkway.Count} points, {bent} round obstacles");
+
             float worst = 0f, walked = 0f, simStart = Time.time;
             var last = merchant.transform.position;
             float limit = Time.realtimeSinceStartup + 150f;
@@ -217,13 +229,12 @@ namespace ZeldaDaughter.Tests
                 last = p;
                 var hits = Physics.OverlapSphere(p + Vector3.up * 0.6f, 0.15f, blocking);
                 Assert.AreEqual(0, hits.Length, $"through a wall at {p}: {string.Join(", ", hits.Select(h => h.transform.root == h.transform ? h.name : h.transform.parent.name + "/" + h.name))}");
-                if (Flat(p, tavern) > NpcPresenter.TavernRingMeters + 0.6f) worst = Mathf.Max(worst, DistanceToPolyline(p, road));
+                worst = Mathf.Max(worst, DistanceToPolyline(p, walkway));
                 yield return null;
             }
             Assert.IsFalse(merchant.IsWalking, "she got there");
-            Assert.LessOrEqual(worst, 0.3f, "she keeps to the road");
+            Assert.LessOrEqual(worst, 0.05f, "she walks her waypoints");
             Assert.AreEqual(NpcPresenter.TavernRingMeters, Flat(merchant.transform.position, tavern), 0.1f);
-            float speed = walked / (Time.time - simStart);
             float pace = _s.State.Npcs.WalkSpeed("merchant");
             Assert.That(speed, Is.InRange(pace * 0.5f, pace * 1.25f), "at about the pace of npcs.json (long frames are clamped, so never faster)");
         }
