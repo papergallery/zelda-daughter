@@ -29,7 +29,8 @@ namespace ZeldaDaughter.World
             new Color(1.00f, 0.84f, 0.62f), new Color(1.00f, 0.96f, 0.88f),
         };
         private static readonly float[] IntensityShare = { 0.35f, 0.50f, 0.80f, 0.95f, 1f };
-        private static readonly float[] Pitch_ = { 14f, 8f, 18f, 30f, 1f }; // last = the scene's day pitch (see Apply)
+        // D-22b: higher sooner (concept f1: a morning of short soft shadows; research §В.4 — 50–55° in the morning), never a long low rake by day.
+        private static readonly float[] Pitch_ = { 14f, 12f, 34f, 50f, 1f }; // last = the scene's day pitch (see Apply)
         private static readonly Color NightAmbient = new Color(0.30f, 0.36f, 0.58f);
         private static readonly Color MorningAmbientTint = new Color(1.10f, 0.95f, 0.92f);
         private static readonly Color EveningAmbientTint = new Color(1.10f, 0.88f, 0.90f);
@@ -39,7 +40,7 @@ namespace ZeldaDaughter.World
         private static readonly Color EveningFog = new Color(0.82f, 0.58f, 0.46f);
         private const float FogStartDay = 34f, FogEndDay = 78f, FogStartNight = 26f, FogEndNight = 56f;
 
-        private const float ShadowStrength = 0.8f;
+        private const float ShadowStrength = 0.62f; // D-22b: shadows are a cool wash, never black
         private static readonly int NightId = Shader.PropertyToID("_ZD_Night");
 
         /// <summary>Sun elevation angle, degrees (low at night).</summary>

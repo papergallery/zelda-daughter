@@ -1,0 +1,47 @@
+{
+ "_source": "D-22b: листы растительности (tools/art/veg_build.py gen)",
+ "sheets": {
+  "veg-grass-0.png": {
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219502067826823169",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_2364342767fe900a.png",
+   "usage": {
+    "output_units": 1,
+    "cost_rub": 7,
+    "cost": 7
+   },
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "ref": "лист героини D-09 (https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png) — только стиль, линия, палитра и ракурс; data-URL (локальный файл) шлюз с 2026-10-08 отвергает: «File type not supported»",
+   "prompt": "Game sprite sheet for a 2D storybook game: 6 separate clumps of meadow grass in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every clump rooted on one invisible horizontal ground line, each one a separate cut-out game sprite:\n1) a soft low round tuft of fine grass, wider than tall\n2) a tall upright clump of long narrow grass blades with a few seed heads\n3) a clump of broad arching leaves fanning out\n4) a dry straw-yellow tuft of grass mixed with a few green blades\n5) a small low sprig of grass with clover leaves\n6) a wide bushy clump of mixed grass, darker sage green at the base and lighter yellow-green at the tips\n\nCamera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve) — each plant is seen from the side and a little from above.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor, thin uneven sepia-olive ink outlines, loose transparent watercolor washes, a little paper grain, muted warm earthy palette (olive, sage, ochre yellow, dusty lilac, umber). Flat even light, no cast shadows, NO ground patch or soil under the plants, plain flat uniform light grey background (#c8c8c8). No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\n\nThe reference image shows the game's heroine (a person about 1.65 m tall) drawn in the game's style. Use it ONLY for the art style, ink line, watercolor texture, palette and camera angle; draw NO people. Scale: a grass clump is knee high to such a person."
+  },
+  "veg-flowers-0.png": {
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219502435098169345",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_89ddca701964a724.png",
+   "usage": {
+    "output_units": 1,
+    "cost_rub": 7,
+    "cost": 7
+   },
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "ref": "лист героини D-09 (https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png) — только стиль, линия, палитра и ракурс; data-URL (локальный файл) шлюз с 2026-10-08 отвергает: «File type not supported»",
+   "prompt": "Game sprite sheet for a 2D storybook game: 7 separate wild plants in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every plant rooted on one invisible horizontal ground line, each one a separate cut-out game sprite:\n1) a small clump of grass with several little yellow buttercup flowers on thin stems\n2) a taller clump of grass with a spray of small ochre-yellow flowers\n3) a clump of grass with small dusty lilac-purple flower spikes\n4) a low clump of leaves with a few pale violet five-petal flowers\n5) a small round leafy shrub, olive green with darker shading, knee high\n6) a wider low leafy bush with a few tiny white blossoms\n7) a dense round bush of dark sage green leaves, a bit taller than the others\n\nCamera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve) — each plant is seen from the side and a little from above.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor, thin uneven sepia-olive ink outlines, loose transparent watercolor washes, a little paper grain, muted warm earthy palette (olive, sage, ochre yellow, dusty lilac, umber). Flat even light, no cast shadows, NO ground patch or soil under the plants, plain flat uniform light grey background (#c8c8c8). No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\n\nThe reference image shows the game's heroine (a person about 1.65 m tall) drawn in the game's style. Use it ONLY for the art style, ink line, watercolor texture, palette and camera angle; draw NO people. Scale: a grass clump is knee high to such a person."
+  },
+  "veg-water-0.png": {
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219502704425701377",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_f2b82fdccfb9b2fd.png",
+   "usage": {
+    "output_units": 1,
+    "cost_rub": 7,
+    "cost": 7
+   },
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "ref": "лист героини D-09 (https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png) — только стиль, линия, палитра и ракурс; data-URL (локальный файл) шлюз с 2026-10-08 отвергает: «File type not supported»",
+   "prompt": "Game sprite sheet for a 2D storybook game: 6 separate waterside plants in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every plant rooted on one invisible horizontal ground line, each one a separate cut-out game sprite:\n1) a tall clump of reeds with thin straight stalks and long narrow leaves, olive and straw colored\n2) a clump of cattails (bulrush) with brown velvety heads on tall stalks\n3) a lower clump of sedge grass bending to one side\n4) a fern with several arching fronds\n5) a small fern, low and wide\n6) a clump of tall dry straw-yellow grass with feathery seed plumes\n\nCamera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve) — each plant is seen from the side and a little from above.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor, thin uneven sepia-olive ink outlines, loose transparent watercolor washes, a little paper grain, muted warm earthy palette (olive, sage, ochre yellow, dusty lilac, umber). Flat even light, no cast shadows, NO ground patch or soil under the plants, plain flat uniform light grey background (#c8c8c8). No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\n\nThe reference image shows the game's heroine (a person about 1.65 m tall) drawn in the game's style. Use it ONLY for the art style, ink line, watercolor texture, palette and camera angle; draw NO people. Scale: a grass clump is knee high to such a person."
+  }
+ }
+}

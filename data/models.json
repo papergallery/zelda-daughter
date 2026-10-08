@@ -1,5 +1,5 @@
 {
- "_source": "tools/gen-models.py (D-10): id из имени файла (nature — без префикса, town_, prop_), коллайдеры и теги — правила в скрипте; размеры — data/model-bounds.json (замер в Unity). Модули: Kenney Nature Kit 2.1, Fantasy Town Kit 2.0, Quaternius Fantasy Props (все CC0, лицензии рядом с FBX). Масштаб запечён при импорте (метры, клетка 3 м) — ModelImport.KitScale.",
+ "_source": "tools/gen-models.py (D-10): id из имени файла (nature — без префикса, town_, prop_), коллайдеры и теги — правила в скрипте; размеры — data/model-bounds.json (замер в Unity). Модули: Kenney Nature Kit 2.1, Fantasy Town Kit 2.0, Quaternius Fantasy Props (все CC0, лицензии рядом с FBX). Масштаб запечён при импорте (метры, клетка 3 м) — ModelImport.KitScale. veg_* — акварельные billboard-спрайты D-22b (Assets/Art/Vegetation, tools/art/veg_build.py).",
  "models": {
   "bed": {
    "path": "Assets/Art/Models/KenneyNature/bed.fbx",
@@ -5007,6 +5007,272 @@
    },
    "tags": [
     "building"
+   ]
+  },
+  "veg_cattail": {
+   "sprite": "cattail",
+   "size": [
+    0.67,
+    1.4
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "reed"
+   ]
+  },
+  "veg_clover": {
+   "sprite": "clover",
+   "size": [
+    0.275,
+    0.32
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "grass"
+   ]
+  },
+  "veg_fern_a": {
+   "sprite": "fern_a",
+   "size": [
+    0.725,
+    0.8
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "fern"
+   ]
+  },
+  "veg_fern_b": {
+   "sprite": "fern_b",
+   "size": [
+    0.555,
+    0.4
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "fern"
+   ]
+  },
+  "veg_flower_purple_a": {
+   "sprite": "flower_purple_a",
+   "size": [
+    0.37,
+    0.6
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "flower"
+   ]
+  },
+  "veg_flower_purple_b": {
+   "sprite": "flower_purple_b",
+   "size": [
+    0.33,
+    0.3
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "flower"
+   ]
+  },
+  "veg_flower_yellow_a": {
+   "sprite": "flower_yellow_a",
+   "size": [
+    0.34,
+    0.45
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "flower"
+   ]
+  },
+  "veg_flower_yellow_b": {
+   "sprite": "flower_yellow_b",
+   "size": [
+    0.445,
+    0.7
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "flower"
+   ]
+  },
+  "veg_grass_dry": {
+   "sprite": "grass_dry",
+   "size": [
+    0.495,
+    0.65
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "grass"
+   ]
+  },
+  "veg_grass_leaf": {
+   "sprite": "grass_leaf",
+   "size": [
+    0.585,
+    0.6
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "grass"
+   ]
+  },
+  "veg_grass_plume": {
+   "sprite": "grass_plume",
+   "size": [
+    0.625,
+    1.1
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "grass"
+   ]
+  },
+  "veg_grass_tall": {
+   "sprite": "grass_tall",
+   "size": [
+    0.485,
+    0.9
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "grass"
+   ]
+  },
+  "veg_grass_tuft": {
+   "sprite": "grass_tuft",
+   "size": [
+    0.5,
+    0.45
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "grass"
+   ]
+  },
+  "veg_grass_wide": {
+   "sprite": "grass_wide",
+   "size": [
+    0.71,
+    0.75
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "grass"
+   ]
+  },
+  "veg_reed": {
+   "sprite": "reed",
+   "size": [
+    0.745,
+    1.4
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "reed"
+   ]
+  },
+  "veg_sedge": {
+   "sprite": "sedge",
+   "size": [
+    0.61,
+    0.65
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "grass"
+   ]
+  },
+  "veg_shrub_a": {
+   "sprite": "shrub_a",
+   "size": [
+    0.56,
+    0.75
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "shrub"
+   ]
+  },
+  "veg_shrub_b": {
+   "sprite": "shrub_b",
+   "size": [
+    0.775,
+    0.6
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "shrub"
+   ]
+  },
+  "veg_shrub_c": {
+   "sprite": "shrub_c",
+   "size": [
+    0.705,
+    0.9
+   ],
+   "collider": {
+    "kind": "none"
+   },
+   "tags": [
+    "vegetation",
+    "shrub"
    ]
   }
  }

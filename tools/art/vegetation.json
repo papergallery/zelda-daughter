@@ -1,0 +1,129 @@
+{
+ "_source": "D-22b: растительность-billboard и акварельные текстуры земли региона (tools/art/veg_build.py). Промпты — sheets[*].prompt (+ style/camera ниже); отбор фигур и рост в метрах — sheets[*].figs; ppm — пикселей на метр в атласе.",
+ "model": "openai/gpt-image-2.5-flare",
+ "ppm": 200,
+ "ref": "лист героини D-09 (https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png) — только стиль, линия, палитра и ракурс; data-URL (локальный файл) шлюз с 2026-10-08 отвергает: «File type not supported»",
+ "style": "см. docs/demo/sprites/style-bible.md — блок стиля берётся оттуда (tools/art/style.py), здесь не дублируется",
+ "plants": "Plants are drawn with thinner ink lines than characters; NO ground patch or soil under the plants.",
+ "camera": "Camera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve) — each plant is seen from the side and a little from above.",
+ "refnote": "The reference image shows the game's heroine (a person about 1.65 m tall) drawn in the game's style. Use it ONLY for the art style, ink line, watercolor texture, palette and camera angle; draw NO people. Scale: a grass clump is knee high to such a person.",
+ "sheets": {
+  "grass": {
+   "ar": "16:9",
+   "res": "2K",
+   "prompt": "Game sprite sheet for a 2D storybook game: 6 separate clumps of meadow grass in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every clump rooted on one invisible horizontal ground line, each one a separate cut-out game sprite:\n1) a soft low round tuft of fine grass, wider than tall\n2) a tall upright clump of long narrow grass blades with a few seed heads\n3) a clump of broad arching leaves fanning out\n4) a dry straw-yellow tuft of grass mixed with a few green blades\n5) a small low sprig of grass with clover leaves\n6) a wide bushy clump of mixed grass, darker sage green at the base and lighter yellow-green at the tips",
+   "figs": [
+    [
+     "grass_tuft",
+     0.45,
+     "grass"
+    ],
+    [
+     "grass_tall",
+     0.9,
+     "grass"
+    ],
+    [
+     "grass_leaf",
+     0.6,
+     "grass"
+    ],
+    [
+     "grass_dry",
+     0.65,
+     "grass"
+    ],
+    [
+     "clover",
+     0.32,
+     "grass"
+    ],
+    [
+     "grass_wide",
+     0.75,
+     "grass"
+    ]
+   ]
+  },
+  "flowers": {
+   "ar": "16:9",
+   "res": "2K",
+   "prompt": "Game sprite sheet for a 2D storybook game: 7 separate wild plants in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every plant rooted on one invisible horizontal ground line, each one a separate cut-out game sprite:\n1) a small clump of grass with several little yellow buttercup flowers on thin stems\n2) a taller clump of grass with a spray of small ochre-yellow flowers\n3) a clump of grass with small dusty lilac-purple flower spikes\n4) a low clump of leaves with a few pale violet five-petal flowers\n5) a small round leafy shrub, olive green with darker shading, knee high\n6) a wider low leafy bush with a few tiny white blossoms\n7) a dense round bush of dark sage green leaves, a bit taller than the others",
+   "figs": [
+    [
+     "flower_yellow_a",
+     0.45,
+     "flower"
+    ],
+    [
+     "flower_yellow_b",
+     0.7,
+     "flower"
+    ],
+    [
+     "flower_purple_a",
+     0.6,
+     "flower"
+    ],
+    [
+     "flower_purple_b",
+     0.3,
+     "flower"
+    ],
+    [
+     "shrub_a",
+     0.75,
+     "shrub"
+    ],
+    [
+     "shrub_b",
+     0.6,
+     "shrub"
+    ],
+    [
+     "shrub_c",
+     0.9,
+     "shrub"
+    ]
+   ]
+  },
+  "water": {
+   "ar": "16:9",
+   "res": "2K",
+   "prompt": "Game sprite sheet for a 2D storybook game: 6 separate waterside plants in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every plant rooted on one invisible horizontal ground line, each one a separate cut-out game sprite:\n1) a tall clump of reeds with thin straight stalks and long narrow leaves, olive and straw colored\n2) a clump of cattails (bulrush) with brown velvety heads on tall stalks\n3) a lower clump of sedge grass bending to one side\n4) a fern with several arching fronds\n5) a small fern, low and wide\n6) a clump of tall dry straw-yellow grass with feathery seed plumes",
+   "figs": [
+    [
+     "reed",
+     1.4,
+     "reed"
+    ],
+    [
+     "cattail",
+     1.4,
+     "reed"
+    ],
+    [
+     "sedge",
+     0.65,
+     "grass"
+    ],
+    [
+     "fern_a",
+     0.8,
+     "fern"
+    ],
+    [
+     "fern_b",
+     0.4,
+     "fern"
+    ],
+    [
+     "grass_plume",
+     1.1,
+     "grass"
+    ]
+   ]
+  }
+ },
+ "ref_url": "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+}

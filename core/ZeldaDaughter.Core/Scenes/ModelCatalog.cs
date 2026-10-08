@@ -36,7 +36,14 @@ namespace ZeldaDaughter.Core.Scenes
         public List<ModelPart> Parts { get; set; } = new List<ModelPart>();
         public ColliderDef Collider { get; set; } = new ColliderDef();
         public List<string> Tags { get; set; } = new List<string>();
+        /// <summary>
+        /// D-22b: id of a drawn billboard in the vegetation atlas (Assets/Art/Vegetation/vegetation.json) instead of an FBX: a card facing the
+        /// camera, <see cref="Size"/> [width, height] metres, base at the bottom middle. No collider.
+        /// </summary>
+        public string? Sprite { get; set; }
+        public float[]? Size { get; set; }
         public bool IsComposite => Parts.Count > 0;
+        public bool IsSprite => !string.IsNullOrEmpty(Sprite);
     }
 
     /// <summary>Measured box of an imported model: centre and size in metres.</summary>
@@ -96,7 +103,13 @@ namespace ZeldaDaughter.Core.Scenes
             if (depth > 4) throw new InvalidOperationException($"Model '{id}': composite nesting too deep (cycle?)");
             var m = Get(id);
             Box3 box;
-            if (!m.IsComposite)
+            if (m.IsSprite)
+            {
+                // a card: as wide as drawn, a thin slab deep (what it covers on the ground for avoidance), as tall as drawn
+                float w = m.Size != null && m.Size.Length == 2 ? m.Size[0] : 0f, h = m.Size != null && m.Size.Length == 2 ? m.Size[1] : 0f;
+                box = new Box3(-w / 2f, 0f, -w / 4f, w / 2f, h, w / 4f);
+            }
+            else if (!m.IsComposite)
             {
                 if (!_bounds.TryGetValue(m.Path, out box)) throw new InvalidOperationException($"Model '{id}': no measured bounds for {m.Path} — run Zelda → Models → Measure bounds");
             }
@@ -134,7 +147,10 @@ namespace ZeldaDaughter.Core.Scenes
                 var id = kv.Key;
                 var m = kv.Value;
                 if (!System.Text.RegularExpressions.Regex.IsMatch(id, "^[a-z][a-z0-9_]*$")) p.Add($"models: '{id}' — id только [a-z0-9_] с буквы");
-                if (string.IsNullOrEmpty(m.Path) == !m.IsComposite) p.Add($"models: '{id}' — нужен ровно один из path / parts");
+                int sourceCount = (string.IsNullOrEmpty(m.Path) ? 0 : 1) + (m.IsComposite ? 1 : 0) + (m.IsSprite ? 1 : 0);
+                if (sourceCount != 1) p.Add($"models: '{id}' — нужен ровно один из path / parts / sprite");
+                if (m.IsSprite && (m.Size == null || m.Size.Length != 2 || m.Size[0] <= 0 || m.Size[1] <= 0)) p.Add($"models: '{id}' — у спрайта size [ширина, высота] > 0");
+                if (m.IsSprite && m.Collider.Kind != "none") p.Add($"models: '{id}' — спрайт без коллайдера (collider none)");
                 if (!kinds.Contains(m.Collider.Kind)) p.Add($"models: '{id}' — неизвестный collider '{m.Collider.Kind}'");
                 if (m.Collider.Kind == "parts" && !m.IsComposite) p.Add($"models: '{id}' — collider parts только у составной модели");
                 if (m.Collider.Shrink <= 0 || m.Collider.Shrink > 1) p.Add($"models: '{id}' — shrink в (0; 1]");

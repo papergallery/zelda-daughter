@@ -141,7 +141,7 @@ namespace ZeldaDaughter.Editor
             var heroCtl = hero.AddComponent<HeroController>();
             heroCtl.Configure(iso, cam, config.Ground.Terrain);
 
-            BuildLayout(config, catalog, heroCtl);
+            BuildLayout(config, catalog, heroCtl, ground.GetComponent<Renderer>());
 
             var root = new GameObject("Objects").transform;
             var tagged = new List<SceneTags>();
@@ -154,6 +154,7 @@ namespace ZeldaDaughter.Editor
                 go.transform.localPosition = V(o.Position);
                 go.transform.localRotation = Quaternion.Euler(V(o.Rotation));
                 go.transform.localScale = V(o.Scale);
+                if (!string.IsNullOrEmpty(o.Model) && catalog.Get(o.Model).IsSprite) FaceCards(go, config.Camera); // D-22b
                 var tags = go.AddComponent<SceneTags>();
                 tags.Configure(o.Id, o.Tags.ToArray(), o.Item, o.Enemy, o.Station);
                 tagged.Add(tags);

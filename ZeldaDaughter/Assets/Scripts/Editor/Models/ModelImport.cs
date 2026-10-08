@@ -13,7 +13,7 @@ namespace ZeldaDaughter.Editor
     {
                 static bool Ours(string path) => path.StartsWith(ModelLook.ModelsRoot, System.StringComparison.Ordinal);
 
-        public override uint GetVersion() => 10u;
+        public override uint GetVersion() => 11u; // 11: D-22b named Kenney Nature palette (ModelLook.NaturePalette)
 
         void OnPreprocessModel()
         {
