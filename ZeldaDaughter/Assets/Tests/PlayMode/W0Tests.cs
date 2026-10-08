@@ -260,8 +260,9 @@ namespace ZeldaDaughter.Tests
             long s0 = ScriptPhaseAlloc.Total;
             for (int i = 0; i < 20; i++) yield return null;
             long got = ScriptPhaseAlloc.Total - s0;
-            ScriptPhaseAlloc.Stop();
             Object.Destroy(go);
+            ScriptPhaseAlloc.Stop();
+            Debug.Log($"[ZD:Test] script phases wrapped {ScriptPhaseAlloc.Wrapped}, begin calls {ScriptPhaseAlloc.Calls}, bytes {got}");
             Assert.GreaterOrEqual(got, 20 * 100, "20 frames x a 100-byte array in Update");
         }
 

@@ -25,6 +25,7 @@ namespace ZeldaDaughter.Tests
         public static void Start()
         {
             if (_on) return;
+            Wrapped = 0;
             _saved = PlayerLoop.GetCurrentPlayerLoop();
             var loop = PlayerLoop.GetCurrentPlayerLoop();
             Wrap(ref loop, typeof(Update.ScriptRunBehaviourUpdate));
@@ -32,6 +33,7 @@ namespace ZeldaDaughter.Tests
             Wrap(ref loop, typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate));
             PlayerLoop.SetPlayerLoop(loop);
             Total = 0;
+            Calls = 0;
             _on = true;
         }
 
@@ -45,7 +47,10 @@ namespace ZeldaDaughter.Tests
         private struct Begin { }
         private struct End { }
 
-        private static void OnBegin() { _begin = GC.GetAllocatedBytesForCurrentThread(); }
+        public static int Calls { get; private set; }
+        public static int Wrapped { get; private set; }
+
+        private static void OnBegin() { Calls++; _begin = GC.GetAllocatedBytesForCurrentThread(); }
         private static void OnEnd() { Total += GC.GetAllocatedBytesForCurrentThread() - _begin; }
 
         private static void Wrap(ref PlayerLoopSystem root, Type phase)
@@ -63,6 +68,7 @@ namespace ZeldaDaughter.Tests
                     list.Insert(i, new PlayerLoopSystem { type = typeof(Begin), updateDelegate = OnBegin });
                     phases[p].subSystemList = list.ToArray();
                     root.subSystemList = phases;
+                    Wrapped++;
                     return;
                 }
             }
