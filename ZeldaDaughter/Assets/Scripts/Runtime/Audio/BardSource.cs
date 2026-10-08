@@ -7,8 +7,8 @@ namespace ZeldaDaughter.Audio
     /// <summary>
     /// D-17: the only music of the game (project-design.md §9) — the bard in the tavern, from <see cref="FromHour"/> to <see cref="ToHour"/> (evening),
     /// heard only near the tavern (a spatial source: full at <c>MinDistance</c>, gone at <c>MaxDistance</c>) and fading in and out; by day it is
-    /// silent. One AudioSource, made once. Sound <c>bard_tavern</c> of the registry; without a clip (the library has no lute, the April tracks have
-    /// no confirmed licence — docs/demo/backlog.md) it is silence and one line in the log.
+    /// silent. One AudioSource, made once. Sound <c>bard_tavern</c> of the registry — several tunes (D-17b, generated, Assets/Art/Audio/Generated/bard):
+    /// when one comes round to its start the bard goes on to the next. Without a clip it is silence and one line in the log.
     /// </summary>
     public sealed class BardSource : MonoBehaviour
     {
@@ -23,7 +23,8 @@ namespace ZeldaDaughter.Audio
         [SerializeField] private AudioSource _source;
 
         private GameState _g;
-        private float _level;
+        private float _level, _lastTime;
+        private int _tune = -1;
         private bool _reported;
 
         public float FromHour => _fromHour;
@@ -35,6 +36,8 @@ namespace ZeldaDaughter.Audio
         /// <summary>The source is making sound right now.</summary>
         public bool Playing => _source != null && _source.isPlaying && _source.volume > 0.001f;
         public AudioSource Source => _source;
+        /// <summary>How many times the bard has started a tune (the first one of the evening counts).</summary>
+        public int TunesStarted { get; private set; }
 
         public void Configure(GameSession session, SoundRegistry sounds, float fromHour, float toHour)
         {
@@ -44,6 +47,9 @@ namespace ZeldaDaughter.Audio
             _sounds = sounds;
             _fromHour = fromHour;
             _toHour = toHour;
+            _tune = -1;
+            if (_source != null) { _source.Stop(); _source.clip = null; } // another registry: its own tunes
+            _level = 0f;
             if (live && _session != null) _session.Events.StateReady += OnStateReady;
         }
 
@@ -86,11 +92,7 @@ namespace ZeldaDaughter.Audio
                 }
                 return;
             }
-            if (_source.clip == null)
-            {
-                _source.clip = def.Clips[Random.Range(0, def.Clips.Length)];
-                _source.loop = true;
-            }
+            if (_source.clip == null) NextTune(def, false);
             _level = Mathf.MoveTowards(_level, Evening ? 1f : 0f, Time.unscaledDeltaTime / FadeSeconds);
             _source.volume = _level * def.Volume;
             if (_level > 0.002f)
@@ -98,14 +100,33 @@ namespace ZeldaDaughter.Audio
                 if (!_source.isPlaying)
                 {
                     _source.Play();
-                    ZdLog.Info("Audio", "bard plays");
+                    TunesStarted++;
+                    _lastTime = 0f;
+                    ZdLog.Info("Audio", $"bard plays {_source.clip.name}");
                 }
+                else if (def.Clips.Length > 1 && _source.time + 0.05f < _lastTime) NextTune(def, true); // came round to the start: the next tune
+                _lastTime = _source.time;
             }
             else if (_source.isPlaying)
             {
                 _source.Stop();
+                NextTune(def, false); // the next evening — another tune
                 ZdLog.Info("Audio", "bard stops");
             }
+        }
+
+        /// <summary>The next tune in turn (a random first one); <paramref name="play"/> — straight on, the source is looping the old one.</summary>
+        private void NextTune(SoundDef def, bool play)
+        {
+            int n = def.Clips.Length;
+            _tune = _tune < 0 ? Random.Range(0, n) : (_tune + 1) % n;
+            _source.clip = def.Clips[_tune];
+            _source.loop = true; // one tune alone loops; with several Update moves on when it comes round
+            _lastTime = 0f;
+            if (!play) return;
+            _source.Play();
+            TunesStarted++;
+            ZdLog.Info("Audio", $"bard next {_source.clip.name}");
         }
     }
 }

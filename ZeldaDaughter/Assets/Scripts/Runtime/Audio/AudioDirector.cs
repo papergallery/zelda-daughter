@@ -67,9 +67,11 @@ namespace ZeldaDaughter.Audio
     /// <item>Steps: <c>HeroStep</c> from HeroView, the surface under the foot — a <c>stone</c>/<c>wood</c> zone, else the terrain of the hero (<c>grass</c>, <c>road</c>, <c>mud</c>, <c>water</c>…).</item>
     /// <item>Actions: hero's hands, blows, the beast's windup, looting, trading, windows (paper), sleep.</item>
     /// <item>Fire: the nearest lit campfires (3 voices) and the hero's torch.</item>
+    /// <item>Night calls: in the wild at night, now a wolf howling, now an owl, from somewhere far around, every 25…60 seconds.</item>
     /// </list>
-    /// A sound with no clip (the purchased files are not in the project, or the library has none — wolf, bard) is silence; one warning for a sound
-    /// that is not in the registry at all, one line when the whole registry is empty.
+    /// A sound with no clip (the purchased files are not in the project) is silence; one warning for a sound that is not in the registry at all,
+    /// one line when the whole registry is empty. The wolf, the bard, the wooden steps and the night are generated clips of our own in
+    /// Assets/Art/Audio/Generated (D-17b, in git).
     /// </summary>
     public sealed class AudioDirector : MonoBehaviour
     {
@@ -96,7 +98,7 @@ namespace ZeldaDaughter.Audio
         private readonly int[] _fireOrder = new int[FireVoices];
 
         private GameState _g;
-        private float _fireTimer, _townTimer, _lastGrassFire = -10f;
+        private float _fireTimer, _townTimer, _nightTimer = 20f, _lastGrassFire = -10f;
         private bool _built, _anyClip;
 
         // what the last things were — read by the tests and the log
@@ -373,7 +375,7 @@ namespace ZeldaDaughter.Audio
             switch (n.Event.Kind)
             {
                 case EnemyEventKind.WindupStarted: Play("windup_" + DefOf(n.EnemyId), EnemyPoint(n.EnemyId)); break;
-                case EnemyEventKind.Struck: Play("hit_hero", HeroPoint); break;
+                case EnemyEventKind.Struck: Play("strike_" + DefOf(n.EnemyId), EnemyPoint(n.EnemyId)); Play("hit_hero", HeroPoint); break;
                 case EnemyEventKind.Dodged: Play("hit_miss", EnemyPoint(n.EnemyId)); break;
                 case EnemyEventKind.Died: Play("hit_" + DefOf(n.EnemyId), EnemyPoint(n.EnemyId), 1f, 0f, StrideDedupSeconds); break;
             }
@@ -424,6 +426,7 @@ namespace ZeldaDaughter.Audio
             _fireTimer -= dt;
             if (_fireTimer <= 0f) { _fireTimer = FireRefreshSeconds; RefreshFires(p); }
             TickTown(dt, town, daylight);
+            TickNight(dt, town, daylight);
         }
 
         private void RefreshFires(Vector3 hero)
@@ -475,6 +478,23 @@ namespace ZeldaDaughter.Audio
             s.transform.position = at;
             s.volume = def.Volume * scale;
             if (!s.isPlaying) s.Play();
+        }
+
+        private static readonly string[] NightShots = { "amb_night_wolf", "amb_night_owl" };
+
+        /// <summary>Whether the night calls (wolf, owl) are heard: dark enough and not in the town.</summary>
+        public static bool NightCalls(float town, float daylight) => town < 0.5f && AmbientMix.Day(daylight) < 0.2f;
+
+        /// <summary>In the wild at night: a wolf howling or an owl, far around (18…30 m), every 25…60 seconds.</summary>
+        private void TickNight(float dt, float town, float daylight)
+        {
+            if (!NightCalls(town, daylight)) return;
+            _nightTimer -= dt;
+            if (_nightTimer > 0f) return;
+            _nightTimer = UnityEngine.Random.Range(25f, 60f);
+            var dir = UnityEngine.Random.insideUnitCircle.normalized;
+            var at = HeroPoint + new Vector3(dir.x, 0f, dir.y) * UnityEngine.Random.Range(18f, 30f);
+            Play(NightShots[UnityEngine.Random.Range(0, NightShots.Length)], at);
         }
 
         private static readonly string[] TownShots = { "amb_town_smith", "amb_town_cart", "amb_town_life" };

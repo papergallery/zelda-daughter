@@ -1,0 +1,129 @@
+{
+ "_source": "D-17b, 2026-10-08: запросы к Polza (POST /media) — модель и input как отправлены; ответы (mp3) не в git, итог — tools/audio/d17b-generated.py → ZeldaDaughter/Assets/Art/Audio/Generated. Взятое помечено used.",
+ "requests": {
+  "fx_amb_night_crickets": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "Night ambience in a meadow near a forest: many crickets chirping continuously, gentle and calm, steady texture, soft distant breeze, no birds, no music, seamless loop",
+     "soundLoop": true
+    }
+   },
+   "used": "amb_night_crickets_loop (оба варианта, склейка)"
+  },
+  "fx_amb_night_owl": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "A tawny owl hooting at night in a forest, two or three calls with pauses, natural distant outdoor recording, soft reverb, no music, no other animals"
+    }
+   },
+   "used": "owl_01/02"
+  },
+  "fx_step_wood": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "Single footsteps of a person in leather boots walking slowly on old wooden bridge planks, hollow wooden thuds with slight creak, clearly separated individual steps with pauses between them, dry, no music"
+    }
+   },
+   "used": "step_wood_01..06 (вариант 1, нарезка)"
+  },
+  "fx_wolf_bite": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "A wild wolf lunges and bites: short aggressive snarl followed by a sharp snap of jaws, quick and violent, 1-2 seconds, dry close recording, no music"
+    }
+   },
+   "used": "не взят: визг, не волк"
+  },
+  "fx_wolf_bite2": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "Field recording of a large real dog attacking: deep chest snarl then a quick hard snap of teeth, close microphone, realistic animal foley, about 1.5 seconds, no screaming, no human voice, no music"
+    }
+   },
+   "used": "wolf_bite_01/02, wolf_growl_02 (вариант 2; первый — лай собаки)"
+  },
+  "fx_wolf_growl": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "Close-up deep menacing growl of a wild wolf about to attack, low rumbling snarl with bared teeth, 2-3 seconds, dry natural recording, no music"
+    }
+   },
+   "used": "wolf_growl_01, _03 (вариант 1; второй — «человеческий» рык)"
+  },
+  "fx_wolf_howl": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "A single lone wild wolf howling in the distance at night in a forest, long mournful rising and falling howl, natural outdoor recording, slight distant reverb, no music, no other animals"
+    }
+   },
+   "used": "wolf_howl_01/02"
+  },
+  "fx_wolf_yelp": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "A wild wolf is hit and yelps in pain, short sharp canine yelp and whimper, 1 second, dry close recording, no music"
+    }
+   },
+   "used": "не взят: крик человека"
+  },
+  "fx_wolf_yelp2": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "Field recording of a large real dog yelping once in pain, short canine yip and a brief whine, realistic animal foley, close microphone, about 1 second, no human voice, no music"
+    }
+   },
+   "used": "wolf_yelp_01 (вариант 1)"
+  },
+  "fx_wolf_yelp3": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "Realistic wildlife recording: a large grey wolf is struck during a fight and gives one short, low, rough pained yelp that turns into an angry snarl. Deep chest, gritty, wild animal, close microphone, about 1.5 seconds, no high squeal, no human voice, no music"
+    }
+   },
+   "used": "не взят: крик человека / вой"
+  },
+  "lyria1": {
+   "request": {
+    "model": "google/lyria-3-pro-preview",
+    "input": {
+     "prompt": "Instrumental only, no vocals, no singing. A cheerful medieval tavern folk tune played by a wandering bard: solo lute and cittern leading, a wooden flute answering, light frame drum and a tambourine keeping a gentle dance beat. Warm, intimate, acoustic, small wooden room, human and slightly imperfect, like a village evening. Not epic, no orchestra, no choir, no synths. About 90 seconds, steady tempo, ends with a soft natural fade."
+    }
+   },
+   "used": "не взят: вокальная фраза на 1:19"
+  },
+  "suno1": {
+   "request": {
+    "model": "suno/generate",
+    "input": {
+     "prompt": "Cheerful medieval tavern folk dance played by a wandering bard: solo lute and cittern leading, wooden flute answering, light frame drum and tambourine. Warm, intimate, acoustic, small wooden room, village evening. Not epic, no orchestra, no choir, no synths.",
+     "instrumental": true
+    }
+   },
+   "used": "bard_merry_oakbeam_revel (вариант 1 из 2; второй — вокал на 1:54)"
+  },
+  "suno2": {
+   "request": {
+    "model": "suno/generate",
+    "input": {
+     "customMode": true,
+     "instrumental": true,
+     "title": "Embers at the Inn",
+     "duration": 110,
+     "style": "instrumental medieval folk ballad, solo lute fingerpicking, cittern, soft wooden flute, very light frame drum, slow and pensive, warm, melancholic but gentle, late evening by the hearth, intimate acoustic, no vocals, not epic, no orchestra, no choir",
+     "prompt": "[Instrumental]\nA wandering bard plays a slow, thoughtful tune by the tavern fire late in the evening. Solo lute leads, a soft wooden flute answers. Ends with a gentle ring-out."
+    }
+   },
+   "used": "bard_pensive_embers_a/_b (оба варианта)"
+  }
+ }
+}

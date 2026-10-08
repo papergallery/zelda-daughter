@@ -11,7 +11,8 @@ namespace ZeldaDaughter.Editor
     /// D-17: the Audio object on Game — <see cref="AudioDirector"/> with the places of the scene that sound (town, field, river by the config;
     /// the square's stone and the bridge's and tavern's wood for the footsteps) and the bard at the tavern's bar. The places come from the config
     /// (docs/demo/unity-architecture.md §5), no numbers here but the fades. Also sets the import of the purchased clips named by
-    /// sounds.json (Vorbis; long loops streamed; spatial ones mono) — that changes only .meta files under Assets/ThirdParty, which is not in git.
+    /// sounds.json (Vorbis; long loops and the bard streamed; spatial ones mono) — .meta files under Assets/ThirdParty (not in git) and of our generated
+    /// clips in Assets/Art/Audio/Generated (in git, D-17b).
     /// </summary>
     public static partial class SceneBuilder
     {
@@ -81,7 +82,8 @@ namespace ZeldaDaughter.Editor
             int changed = 0;
             foreach (var def in registry.Sounds)
             {
-                bool loop = def.Id.StartsWith("amb_", System.StringComparison.Ordinal) && !def.Spatial || def.Id.StartsWith("fire_", System.StringComparison.Ordinal);
+                bool loop = def.Id.StartsWith("amb_", System.StringComparison.Ordinal) && !def.Spatial || def.Id.StartsWith("fire_", System.StringComparison.Ordinal)
+                    || def.Id.StartsWith("bard_", System.StringComparison.Ordinal); // the bard's tunes (1–3 min) are streamed too
                 foreach (var clip in def.Clips)
                 {
                     if (clip == null) continue;

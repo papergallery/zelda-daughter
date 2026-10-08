@@ -23,7 +23,7 @@ namespace ZeldaDaughter.Tests
     /// </summary>
     public class D17AudioTests
     {
-        static readonly string[] Silent = { "hit_wolf", "windup_wolf", "bard_tavern" }; // the library has no such sound (docs/demo/backlog.md)
+        static readonly string[] Silent = { "bard_tavern" }; // a bard without a tune by default — the tests of the bard give him one
 
         GameSession _s;
         HeroController _hero;
@@ -209,7 +209,7 @@ namespace ZeldaDaughter.Tests
         [UnityTest]
         public IEnumerator The_bard_plays_in_the_evening_and_is_silent_by_day()
         {
-            _reg = SyntheticRegistry("hit_wolf", "windup_wolf"); // this one has a lute
+            _reg = SyntheticRegistry(); // this one has a lute
             _bard.Configure(_s, _reg, 17f, 23f);
             _s.State.Clock.SetTime(1, 0.5); // noon
             yield return new WaitForSeconds(0.5f);
@@ -227,6 +227,46 @@ namespace ZeldaDaughter.Tests
             _s.State.Clock.SetTime(1, 0.5);
             yield return new WaitForSeconds(2.6f);
             Assert.IsFalse(_bard.Playing, "and stops with the day");
+        }
+
+        [UnityTest]
+        public IEnumerator The_bard_goes_on_to_the_next_tune_when_one_comes_round()
+        {
+            _reg = SyntheticRegistry(); // two 1-second "tunes"
+            _bard.Configure(_s, _reg, 17f, 23f);
+            _s.State.Clock.SetTime(1, 19.0 / 24.0);
+            yield return new WaitForSeconds(0.3f);
+            Assert.IsTrue(_bard.Playing);
+            var first = _bard.Source.clip;
+            int started = _bard.TunesStarted;
+            yield return new WaitForSeconds(1.6f);
+            Assert.IsTrue(_bard.Playing, "no pause between the tunes");
+            Assert.Greater(_bard.TunesStarted, started, "the next tune began");
+            Assert.AreNotSame(first, _bard.Source.clip, "another tune");
+        }
+
+        [Test]
+        public void The_registry_has_our_own_wolf_bard_wood_and_night()
+        {
+            // D-17b: generated clips in Assets/Art/Audio/Generated are in git — present with or without the purchased files
+            var real = Object.FindFirstObjectByType<ArtAssets>().Sounds;
+            foreach (var id in new[] { "bard_tavern", "windup_wolf", "strike_wolf", "hit_wolf", "amb_night_wolf", "amb_night_owl", "amb_night", "step_wood" })
+            {
+                var def = real.Sounds.FirstOrDefault(d => d.Id == id);
+                Assert.NotNull(def, id);
+                Assert.Greater(def.Clips.Length, 0, $"{id} has clips (Assets/Art/Audio/Generated)");
+                Assert.IsTrue(def.Clips.All(c => c != null && c.length > 0.2f), $"{id}: every clip loads");
+            }
+            Assert.GreaterOrEqual(real.Sounds.First(d => d.Id == "bard_tavern").Clips.Length, 2, "a few tunes, not one");
+            Assert.Greater(real.Sounds.First(d => d.Id == "bard_tavern").Clips.Min(c => c.length), 60f, "the tunes are a minute or more");
+        }
+
+        [Test]
+        public void Wolves_and_owls_are_heard_at_night_in_the_wild_only()
+        {
+            Assert.IsTrue(AudioDirector.NightCalls(0f, 0.02f), "night, the wild");
+            Assert.IsFalse(AudioDirector.NightCalls(0f, 1f), "by day — no");
+            Assert.IsFalse(AudioDirector.NightCalls(1f, 0.02f), "in the town — no");
         }
 
         [UnityTest]
@@ -261,9 +301,14 @@ namespace ZeldaDaughter.Tests
             _s.Events.RaiseEnemy(new EnemyNotice("spawn_boar", new EnemyEvent(EnemyEventKind.WindupStarted)));
             Assert.AreEqual(1, _dir.PlayedCount("windup_boar"));
             _s.Events.RaiseEnemy(new EnemyNotice("wolf_1", new EnemyEvent(EnemyEventKind.WindupStarted)));
-            Assert.AreEqual(0, _dir.PlayedCount("windup_wolf"), "the library has no wolf: silence, no error");
+            Assert.AreEqual(1, _dir.PlayedCount("windup_wolf"), "the wolf growls before the lunge");
             _s.Events.RaiseEnemy(new EnemyNotice("spawn_boar", new EnemyEvent(EnemyEventKind.Struck, 2f)));
             Assert.AreEqual(1, _dir.PlayedCount("hit_hero"));
+            Assert.AreEqual(1, _dir.PlayedCount("strike_boar"), "the beast's own sound of its blow");
+            _s.Events.RaiseEnemy(new EnemyNotice("wolf_1", new EnemyEvent(EnemyEventKind.Struck, 2f)));
+            Assert.AreEqual(1, _dir.PlayedCount("strike_wolf"), "the wolf bites");
+            _s.Events.RaiseHeroStruck("wolf_1", new StrikeResult(StrikeOutcome.Hit, 1f));
+            Assert.AreEqual(1, _dir.PlayedCount("hit_wolf"), "the wolf yelps");
 
             _s.Events.RaiseWindowOpened("inventory");
             Assert.AreEqual(1, _dir.PlayedCount("ui_paper"));
