@@ -33,7 +33,11 @@ namespace ZeldaDaughter.Editor
             if (config.Paths.Count > 0)
             {
                 var root = new GameObject("Paths").transform;
-                foreach (var s in config.Paths) Ribbon(root, s, PathY, string.IsNullOrEmpty(s.Color) ? "#b09a6e" : s.Color);
+                for (int i = 0; i < config.Paths.Count; i++) // each later path a hair higher, so crossing ribbons don't z-fight
+                {
+                    var s = config.Paths[i];
+                    Ribbon(root, s, PathY + 0.004f * i, string.IsNullOrEmpty(s.Color) ? "#b09a6e" : s.Color);
+                }
             }
             if (config.Water.Count > 0)
             {

@@ -80,6 +80,10 @@ namespace ZeldaDaughter.Core.Scenes
                     if (!string.IsNullOrEmpty(o.Shape) || !string.IsNullOrEmpty(o.Prefab)) p.Add($"{Name}: '{o.Id}' — model нельзя вместе с shape / prefab");
                     if (catalog != null && !catalog.Has(o.Model!)) p.Add($"{Name}: '{o.Id}' — модели '{o.Model}' нет в data/models.json");
                 }
+                else if (o.Marker)
+                {
+                    if (!string.IsNullOrEmpty(o.Shape) || !string.IsNullOrEmpty(o.Prefab)) p.Add($"{Name}: '{o.Id}' — marker нельзя вместе с shape / prefab");
+                }
                 else Thing(p, o.Id, o.Shape, o.Prefab, prefabExists);
                 Color(p, o.Id, o.Color);
                 if (o.Scale.X <= 0 || o.Scale.Y <= 0 || o.Scale.Z <= 0) p.Add($"{Name}: '{o.Id}' — масштаб > 0");
@@ -257,6 +261,8 @@ namespace ZeldaDaughter.Core.Scenes
         public string? Model { get; set; }
         /// <summary>Force the model's collider on / off; null = whatever the catalog says.</summary>
         public bool? Collide { get; set; }
+        /// <summary>An invisible point without a model: anchors of NPC schedules, spawn points, predator zones (D-10). Only an id, a place and tags.</summary>
+        public bool Marker { get; set; }
     }
 
     /// <summary>A road or a river: a ribbon along <c>points</c>, <c>width</c> metres wide.</summary>

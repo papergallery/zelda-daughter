@@ -23,7 +23,7 @@ namespace ZeldaDaughter.Tests
         IEnumerator LoadScene()
         {
             Application.runInBackground = true;
-            yield return SceneManager.LoadSceneAsync("prologue-grey");
+            yield return UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/prologue-grey.unity", new LoadSceneParameters(LoadSceneMode.Single)); // not in the player build since D-10 (region is the first scene)
             yield return null;
             _s = Object.FindFirstObjectByType<GameSession>();
             _hero = Object.FindFirstObjectByType<HeroController>();

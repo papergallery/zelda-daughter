@@ -131,7 +131,8 @@ namespace ZeldaDaughter.Editor
             var tagged = new List<SceneTags>();
             foreach (var o in config.Objects)
             {
-                var go = !string.IsNullOrEmpty(o.Model) ? SpawnModel(o.Id, o.Model, catalog, o.Collide ?? true) : Spawn(o.Id, o.Shape, o.Prefab, o.Color);
+                var go = o.Marker ? new GameObject(o.Id)
+                    : !string.IsNullOrEmpty(o.Model) ? SpawnModel(o.Id, o.Model, catalog, o.Collide ?? true) : Spawn(o.Id, o.Shape, o.Prefab, o.Color);
                 go.transform.SetParent(root, false);
                 go.transform.localPosition = V(o.Position);
                 go.transform.localRotation = Quaternion.Euler(V(o.Rotation));

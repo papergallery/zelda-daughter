@@ -51,3 +51,11 @@
 - Зоны в сцене — объекты `Zones/<id>` с `ZoneArea` (id, теги, геометрия). Пути и вода — ленты без коллайдера; предметы `model` — под `Objects/<id>` (тап по составной модели находит объект по предку).
 - Обратная совместимость: у `prologue-grey` и `g1-capsule` новых секций нет — собираются как раньше (тест `Old_scenes_keep_working…`).
 - Пробная сцена `scenes/models-test.json` (`build.include: false`): дом, хижина, мост, деревья, камни, забор, поле, реквизит, три россыпи.
+
+## Стартовый регион `scenes/region.json` (D-10)
+
+Генерируется `python3 tools/gen-region.py` (правим скрипт, не JSON). Первая сцена сборки (`build.order: 0`), слот `slot`; серый пролог `prologue-grey` — `include: false` (тестовая сцена, грузится в PlayMode-тестах по пути `Assets/Scenes/prologue-grey.unity`).
+
+- **Маркер** — объект без модели: `{ "id": "anchor_gate", "marker": true, "position": {...}, "tags": [...] }`. Пустой `GameObject` с `SceneTags`; для якорей расписаний, точек спавна, центров зон. Одновременно `marker` и `model`/`shape`/`prefab` — ошибка.
+- **Дома** — составные модели; дверь задана в `tools/gen-region.py` (`DOORS`), дом ставится по двери и стороне, куда она смотрит.
+- **Теги:** `poi` — точка интереса вдоль главной дороги `road_main` (тест: соседние ≤ 15 с × скорость шага, от старта и до конца дороги тоже); `poi_side` — в стороне от дороги (поляна, логово, коряга); `anchor` — якорь расписания (`data/npcs.json`); `npc` — NPC (капсулы-заглушки до D-12; id `npc_<ключ>` как в `data/dialogues.json`); `pickup` + `item`; `enemy_spawn` + `enemy_<id>` — точка спавна врага (кабан — `spawn_boar`); `predator_zone` — центры зон ночных волков `zone_wolves_forest`/`zone_wolves_river` (радиус — `zoneRadius` в `data/night.json`); `grass_cell` — клетка сухой травы (D-06, `grass_cell_NN`, модель `grass_large`, шаг 1,5 м); зоны с тегом `mud` — грязь после дождя (без `terrain`: замедление включает ядро по дождю); `bed` — кровать (тап — сон); `station` + `smelter`/`anvil` — станки кузницы (`data/recipes.json` `station`); `campfire` + `rest_point` — костёр на спавне; `gate`, `fountain`, `shop`.
