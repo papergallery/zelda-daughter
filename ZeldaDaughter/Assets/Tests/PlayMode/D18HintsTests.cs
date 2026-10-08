@@ -98,7 +98,7 @@ namespace ZeldaDaughter.Tests
 
             _s.Tap("pickup_cloth_1");
             yield return null;
-            Assert.IsNull(_hints.ShownHint);
+            Assert.AreNotEqual("tap", _hints.ShownHint, "the tap hint is done (the cloth is in the bag, so the next hint, long press, may follow)");
         }
 
         [UnityTest]
