@@ -179,6 +179,13 @@ namespace ZeldaDaughter.Tests
                 string path = ps.name; for (var t = ps.transform.parent; t != null; t = t.parent) path = t.name + "/" + path;
                 if (!path.Contains("fire") && !path.Contains("placed")) continue;
                 Debug.Log($"[ZD:Frame] ps {path} playing={ps.isPlaying} count={ps.particleCount} pos={ps.transform.position} shader={(r != null && r.sharedMaterial != null ? r.sharedMaterial.shader.name : "-")} queue={(r != null && r.sharedMaterial != null ? r.sharedMaterial.renderQueue : 0)} mode={(r != null ? r.renderMode.ToString() : "-")} size={ps.main.startSize.constant:0.00} layer={ps.gameObject.layer}");
+                if (r != null && r.sharedMaterial != null)
+                {
+                    var m = r.sharedMaterial;
+                    var ps0 = new ParticleSystem.Particle[4]; int n = ps.GetParticles(ps0);
+                    string pc = n > 0 ? $"{ps0[0].GetCurrentColor(ps)} size={ps0[0].GetCurrentSize(ps):0.00} life={ps0[0].remainingLifetime:0.00}" : "-";
+                    Debug.Log($"[ZD:Frame] psmat {ps.name} tex={(m.mainTexture != null ? m.mainTexture.name : "none")} base={(m.HasProperty("_BaseColor") ? m.GetColor("_BaseColor").ToString() : "-")} src={(m.HasProperty("_SrcBlend") ? m.GetFloat("_SrcBlend") : -1)} dst={(m.HasProperty("_DstBlend") ? m.GetFloat("_DstBlend") : -1)} p0={pc} startCol={ps.main.startColor.color} sheet={ps.textureSheetAnimation.enabled} sort={r.sortingFudge}");
+                }
             }
             Debug.Log($"[ZD:Frame] F1n daylight={g.Clock.Daylight:0.00} fires={g.Camp.Campfires.Count}");
             yield return Shot("D-21-F1n");
