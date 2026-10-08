@@ -14,3 +14,13 @@ if SECRET_TEXT.search(added) or any(s in added for s in known_secrets()):
     print("pre-commit (R0-05): в индексе секрет — токен, ключ или пароль. Репозиторий публичный (ADR-0006); "
           "уберите его из файла и из индекса.", file=sys.stderr)
     sys.exit(1)
+
+# ADR-0004: purchased Asset Store content never goes to the public repo, even with `git add -f`.
+names = subprocess.run(["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR"],
+                       capture_output=True, text=True).stdout.splitlines()
+bought = [n for n in names if "/Assets/ThirdParty/" in n or n.endswith("/Assets/ThirdParty.meta")]
+if bought:
+    print("pre-commit (ADR-0004): в индексе купленные ассеты — " + ", ".join(bought[:5]) +
+          ". Им место только на ПК (Assets/ThirdParty в .gitignore); уберите из индекса: git rm --cached -r <путь>.",
+          file=sys.stderr)
+    sys.exit(1)
