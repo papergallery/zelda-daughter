@@ -2,9 +2,10 @@
  "_source": "D-09: отобранные генерации. Файлы — в рабочей папке ($ZD_ART_WORK или _work): <name>.png + .mask.png (BiRefNet) + .json (модель, промпт, URL результата). sources[0] — base-лист: фигура ref имеет рост height_m из sprites.json; у остальных листов фигура ref приводится к росту кадра match базового листа. figs — имена кадров фигур слева направо: <view>_<frame> (шаг, 0 — стоит) или <view>_<pose>_<frame>; null — пропустить. flip — кадры, отражённые по горизонтали (исправить сторону предмета или фазу шага); erase — прямоугольники (доли рамки фигуры), где стираются нейтрально-серые пиксели (обрывки фона, тени); color_match — выровнять оттенок под кадр базового листа. target_m — рост опорной фигуры листа в метрах явно; match_by: width — подгонка по ширине фигуры; post_color_match — оттенок кадра под кадр с другого листа.",
  "_work": "/tmp/claude-1002/-var-www-html-Zelda-s-daughter/4cfb0226-a852-4ebb-8ca3-382c8ca9c989/scratchpad/d09/sel",
  "heroine": {
+  "_d24": "D-24 (2026-10-08): вариант D (круг 2: C читалась подростком) — манера жителей; старый набор D-09 — в истории git (sprite.json source)",
   "sources": [
    {
-    "file": "heroine-base-a-0.png",
+    "file": "d24-base-D-0.png",
     "ref": 0,
     "figs": [
      "front_0",
@@ -15,14 +16,43 @@
      "front_1",
      "front_2"
     ],
-    "flip": [
+    "grey_pockets": true,
+    "skin": {
+     "front_1": [
+      [
+       0.0,
+       0.4,
+       0.34,
+       0.63
+      ]
+     ],
+     "side_1": [
+      [
+       0.12,
+       0.43,
+       0.46,
+       0.7
+      ]
+     ],
+     "side_2": [
+      [
+       0.1,
+       0.43,
+       0.46,
+       0.7
+      ]
+     ]
+    },
+    "deblush": [
+     "front_0",
+     "front_1",
      "front_2"
     ]
    },
    {
-    "file": "heroine-poses2-a-0.png",
+    "file": "d24-poses2-D-0.png",
     "ref": 0,
-    "target_m": 1.62,
+    "target_m": 1.61,
     "figs": [
      "back_1",
      "back_2",
@@ -32,26 +62,75 @@
      null,
      null,
      null
-    ]
+    ],
+    "grey_pockets": true
    },
    {
-    "file": "heroine-poses2-a-0.png",
+    "file": "d24-poses2-D-0.png",
     "ref": 6,
     "match": "front_0",
     "figs": [
      null,
      null,
-     "side_attack_0",
+     null,
      "side_attack_1",
      "front_pickup_0",
      "front_hurt_0",
      "front_eat_0",
      "side_down_0"
+    ],
+    "grey_pockets": true,
+    "erase": {
+     "front_pickup_0": [
+      [
+       0.38,
+       0.8,
+       0.8,
+       1.0
+      ]
+     ]
+    },
+    "despeck": {
+     "front_pickup_0": [
+      [
+       0.0,
+       0.12,
+       0.4,
+       0.5
+      ]
+     ]
+    },
+    "alpha_floor": {
+     "front_pickup_0": [
+      [
+       0.0,
+       0.62,
+       0.55,
+       0.92
+      ]
+     ]
+    },
+    "deblush": [
+     "front_eat_0",
+     "front_hurt_0"
+    ]
+   },
+   {
+    "file": "d24-attack0-D-0.png",
+    "ref": 0,
+    "match": "side_0",
+    "grey_pockets": true,
+    "figs": [
+     null,
+     "side_attack_0"
     ]
    }
   ],
   "post_color_match": {
-   "back_0": "back_1"
+   "front_0": "front_1"
+  },
+  "post_hair_match": {
+   "front_pickup_0": "front_0"
   }
  },
  "wolf": {

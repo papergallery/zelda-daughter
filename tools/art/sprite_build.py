@@ -35,6 +35,7 @@ DOCS = pathlib.Path(_OUT) / 'docs' if _OUT else ROOT / 'docs/demo/sprites'
 VIEWS = ['front', 'side', 'back']
 KEY_BAND, KEY_LO, KEY_HI, HALO_HI = 5, 0.03, 0.16, 0.16  # полоса кромки (px) и порог ключа по фону (доли 0..1 RGB)
 LIGHT, DARK = (239, 231, 214), (42, 36, 32)
+INK_RING = 0.35  # D-24: дыра в силуэте — окно фона, только если её кольцо ≥ 35 % туши
 
 
 def work_dir():
@@ -81,6 +82,21 @@ def cutout(png: pathlib.Path) -> np.ndarray:
         gone = np.isin(hl, touch[touch > 0])
         a = np.where(ndimage.binary_dilation(gone, iterations=1) & ~core, np.minimum(a, key * 0.5), a)
         a = np.where(gone, 0, a)
+    # D-24: дыры внутри силуэта без туши по краю — не окна фона, а светлые пятна акварели на ткани (бледные джинсы,
+    # кеды цвета фона): настоящее окно (между прядями, рукой и телом) обведено тушью (доля тёмного кольца 0,5–0,97),
+    # пятно на ткани — нет (0–0,23). Пятну возвращается непрозрачность.
+    holes = ndimage.binary_fill_holes(a > 0.5) & (a < 0.5)
+    hl, hn = ndimage.label(holes)
+    if hn:
+        luma = img.mean(-1)
+        for k, sl in enumerate(ndimage.find_objects(hl)):
+            y0, y1 = max(sl[0].start - 6, 0), sl[0].stop + 6
+            x0, x1 = max(sl[1].start - 6, 0), sl[1].stop + 6
+            m = hl[y0:y1, x0:x1] == k + 1
+            ring = ndimage.binary_dilation(m, iterations=4) & ~ndimage.binary_dilation(m, iterations=1)
+            if ring.any() and (luma[y0:y1, x0:x1][ring] < 0.3).mean() < INK_RING:
+                a[y0:y1, x0:x1] = np.where(ndimage.binary_dilation(m, iterations=1), 1.0, a[y0:y1, x0:x1])
+                core[y0:y1, x0:x1] |= m
     safe = np.maximum(a, 0.08)[..., None]
     fg = np.clip((img - (1 - a[..., None]) * bg) / safe, 0, 1)
     fg = np.where(core[..., None], img, fg)  # в глубине фигуры — исходный цвет
@@ -175,6 +191,113 @@ def erase(p, e):
             if inr[m].all():
                 p[..., 3][m] = 0
     return p
+
+
+def grey_pockets(p, zone=0.3):
+    """D-24: серые «карманы» фона между завитками волос (модель рисует их темнее фона — ключ их не снимает): в верхней
+    zone фигуры нейтральные серые пиксели рядом с волосами (тёмно-рыжие) → прозрачные. Ткань ниже головы не трогается."""
+    a = p[..., 3]
+    rows = np.where((a > 0.5).any(axis=1))[0]
+    y1 = rows[0] + int(zone * (rows[-1] - rows[0]))
+    rgb = p[:y1, :, :3]
+    sat, lum = rgb.max(-1) - rgb.min(-1), rgb.mean(-1)
+    hair = ndimage.binary_dilation((rgb[..., 0] - rgb[..., 2] > 0.12) & (lum < 0.5) & (a[:y1] > 0.5), iterations=6)
+    grey = (sat < 0.09) & (lum > 0.33) & (lum < 0.9) & (a[:y1] > 0.05) & hair
+    p = p.copy()
+    rim = ndimage.binary_dilation(grey, iterations=2) & ~grey & (sat < 0.15) & (lum > 0.3)  # светлая кайма вокруг кармана
+    p[:y1, :, 3] = np.where(grey | rim, 0, a[:y1])
+    # мелкие светлые блики внутри волос (модель рисует золотистые точки — на тёмном фоне мерцают): пятна до 40 px, заметно
+    # светлее волос вокруг (локальная медиана 9×9) и окружённые волосами — цвет медианы
+    hm = ((rgb[..., 0] - rgb[..., 2] > 0.08) & (lum < 0.5) & (a[:y1] > 0.5)).astype(np.float32)
+    frac = ndimage.uniform_filter(hm, 11)
+    med = np.dstack([ndimage.median_filter(rgb[..., c], size=9) for c in range(3)])
+    sp = (lum > med.mean(-1) + 0.12) & (frac > 0.55) & (p[:y1, :, 3] > 0.5)
+    lab, n = ndimage.label(sp)
+    if n:
+        sizes = ndimage.sum(sp, lab, index=np.arange(1, n + 1))
+        small = np.zeros(n + 1, bool); small[1:] = sizes <= 40
+        sp = ndimage.binary_dilation(small[lab], iterations=1) & (frac > 0.4)
+        p[:y1, :, :3] = np.where(sp[..., None], med, p[:y1, :, :3])
+    return p
+
+
+def skin_fix(p, rect):
+    """D-24: «гипсовая» рука — модель оставила кисть/предплечье почти без цвета. В прямоугольнике (доли рамки фигуры)
+    бледные тёплые/нейтральные пиксели (не туши, не джинсы) перекрашиваются в цвет кожи этого же кадра с их светлотой."""
+    h, w = p.shape[:2]
+    y0, y1, x0, x1 = int(rect[1] * h), int(rect[3] * h), int(rect[0] * w), int(rect[2] * w)
+    rgb, a = p[..., :3], p[..., 3]
+    sat, lum = rgb.max(-1) - rgb.min(-1), rgb.mean(-1)
+    skin = (rgb[..., 0] > rgb[..., 1]) & (rgb[..., 1] > rgb[..., 2]) & (sat > 0.2) & (lum > 0.45) & (lum < 0.85) & (a > 0.9)
+    ref = np.median(rgb[skin], axis=0)
+    p = p.copy()
+    r = rgb[y0:y1, x0:x1]
+    s, l = sat[y0:y1, x0:x1], lum[y0:y1, x0:x1]
+    pale = (s < 0.24) & (l > 0.4) & (r[..., 2] <= r[..., 0] + 0.01) & (a[y0:y1, x0:x1] > 0.3)
+    wgt = (np.clip((0.24 - s) / 0.1, 0, 1) * np.clip((l - 0.4) / 0.1, 0, 1) * pale)[..., None]
+    tgt = np.clip(ref[None, None, :] * (l / ref.mean())[..., None], 0, 1)
+    p[y0:y1, x0:x1, :3] = r * (1 - wgt) + tgt * wgt
+    return p
+
+
+def deblush(p, k=0.55, zone=0.32):
+    """D-24: румяные круги на щеках (критик: «анфас моложе профиля») — в верхней zone фигуры кожа, заметно краснее медианы
+    кожи кадра, сводится к медиане на долю k (светлота сохраняется). Волосы (тёмные) и туши не задеваются."""
+    a = p[..., 3]
+    rows = np.where((a > 0.5).any(axis=1))[0]
+    y1 = rows[0] + int(zone * (rows[-1] - rows[0]))
+    rgb = p[..., :3]
+    sat, lum = rgb.max(-1) - rgb.min(-1), rgb.mean(-1)
+    skin = (rgb[..., 0] > rgb[..., 1]) & (rgb[..., 1] > rgb[..., 2]) & (sat > 0.2) & (lum > 0.45) & (lum < 0.85) & (a > 0.9)
+    ref = np.median(rgb[skin], axis=0)
+    red = (rgb[..., 0] - rgb[..., 1]) - (ref[0] - ref[1])
+    m = (red > 0.04) & (lum > 0.4) & (a > 0.5) & (rgb[..., 0] > rgb[..., 2] + 0.1)
+    m[y1:] = False
+    w = (np.clip((red - 0.04) / 0.08, 0, 1) * k * m)[..., None]
+    tgt = np.clip(ref[None, None, :] * (lum / ref.mean())[..., None], 0, 1)
+    p = p.copy()
+    p[..., :3] = rgb * (1 - w) + tgt * w
+    return p
+
+
+def despeck(p, rect, d=0.12, size=40):
+    """Мелкие светлые пятна (≤ size px), светлее локальной медианы 9×9 на d, в прямоугольнике (доли рамки) — цвет медианы."""
+    h, w = p.shape[:2]
+    y0, y1, x0, x1 = int(rect[1] * h), int(rect[3] * h), int(rect[0] * w), int(rect[2] * w)
+    p = p.copy()
+    rgb = p[y0:y1, x0:x1, :3]
+    med = np.dstack([ndimage.median_filter(rgb[..., c], size=9) for c in range(3)])
+    sp = (rgb.mean(-1) > med.mean(-1) + d) & (p[y0:y1, x0:x1, 3] > 0.5)
+    lab, n = ndimage.label(sp)
+    if n:
+        sizes = ndimage.sum(sp, lab, index=np.arange(1, n + 1))
+        small = np.zeros(n + 1, bool); small[1:] = sizes <= size
+        sp = ndimage.binary_dilation(small[lab], iterations=1)
+        p[y0:y1, x0:x1, :3] = np.where(sp[..., None], med, rgb)
+    return p
+
+
+def alpha_floor(p, rect, lo=0.6):
+    """Полупрозрачный след (остаток тени/фона) в прямоугольнике: альфа < lo → 0."""
+    h, w = p.shape[:2]
+    y0, y1, x0, x1 = int(rect[1] * h), int(rect[3] * h), int(rect[0] * w), int(rect[2] * w)
+    p = p.copy()
+    a = p[y0:y1, x0:x1, 3]
+    p[y0:y1, x0:x1, 3] = np.where(a < lo, 0, a)
+    return p
+
+
+def hair_match(p, ref):
+    """Цвет волос кадра (тёмные тёплые пиксели) — к среднему и разбросу волос кадра ref."""
+    def hm(q):
+        rgb = q[..., :3]; lum = rgb.mean(-1)
+        return (rgb[..., 0] - rgb[..., 2] > 0.06) & (lum < 0.45) & (lum > 0.08) & (q[..., 3] > 0.5)
+    m, r = hm(p), hm(ref)
+    out = p.copy()
+    for c in range(3):
+        a, b = p[..., c][m], ref[..., c][r]
+        out[..., c] = np.where(m, np.clip((p[..., c] - a.mean()) / (a.std() + 1e-6) * b.std() + b.mean(), 0, 1), p[..., c])
+    return out
 
 
 def width80(a):
@@ -302,8 +425,18 @@ def cmd_build(cid):
             if not name or k >= len(crops):
                 continue
             p = crops[k][:, ::-1].copy() if name in src.get('flip', []) else crops[k]
+            for rect in src.get('skin', {}).get(name, []):  # перекрасить бледную руку в цвет кожи кадра
+                p = skin_fix(p, rect)
             for e in src.get('erase', {}).get(name, []):  # зачистка артефакта в прямоугольнике (доли рамки фигуры)
                 p = erase(p, e)
+            for rect in src.get('despeck', {}).get(name, []):
+                p = despeck(p, rect)
+            for rect in src.get('alpha_floor', {}).get(name, []):
+                p = alpha_floor(p, rect)
+            if name in src.get('deblush', []):
+                p = deblush(p)
+            if src.get('grey_pockets') and 'down' not in name:
+                p = grey_pockets(p)
             if src.get('color_match'):  # выровнять оттенок под кадр базового листа (среднее и разброс по каналам)
                 p = color_match(p, frames[src['color_match']])
             frames[name] = palette_soft(scaled(p, s), CFG['palette_mix'])
@@ -313,6 +446,8 @@ def cmd_build(cid):
             print(cid, 'scale', round(s, 3))
     for name, ref in sel.get('post_color_match', {}).items():  # выровнять оттенок кадра под кадр с другого листа
         frames[name] = color_match(frames[name], frames[ref])
+    for name, ref in sel.get('post_hair_match', {}).items():  # цвет волос — под кадр ref
+        frames[name] = hair_match(frames[name], frames[ref])
     # общий холст и pivot (лежачие позы — по центру рамки)
     pad = 8
     info = {}
@@ -445,6 +580,8 @@ def cmd_registry(*ids):
         old = d['characters'].get(cid, {})
         rec['pixelsPerMeter'] = meta['ppu']
         rec['strideMeters'] = old.get('strideMeters', 0.8)
+        for k, v in old.items():  # прочие поля (poses — D-11/D-12, …) не терять
+            rec.setdefault(k, v)
         d['characters'][cid] = rec
     lines = ',\n'.join(f'    {json.dumps(k)}: {json.dumps(v, ensure_ascii=False)}' for k, v in sorted(d['characters'].items()))
     head = ''.join(f'  {json.dumps(k)}: {json.dumps(v, ensure_ascii=False)},\n' for k, v in d.items() if k != 'characters')

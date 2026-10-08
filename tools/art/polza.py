@@ -6,6 +6,7 @@
     polza.py balance
     polza.py models [подстрока]
     polza.py gen --model M --out DIR --name N --prompt-file P [--ref a.png ...] [--ar 3:2] [--res 2K] [--raw]
+    polza.py video --model M --out DIR --name N --prompt-file P --image first.png [--ar 2:3] [--res 720p] [--dur 3] [--extra '{}']
 
 Выход: DIR/<name>-<k>.png и DIR/<name>-<k>.json (модель, промпт, референсы, размер, цена/время, если шлюз их вернул).
 """
@@ -58,6 +59,57 @@ def images_of(res):
     return out
 
 
+def strip(o):
+    if isinstance(o, dict):
+        return {k: (f'<{len(v)} chars>' if isinstance(v, str) and len(v) > 300 else strip(v)) for k, v in o.items()}
+    if isinstance(o, list):
+        return [strip(v) for v in o]
+    return o
+
+
+def video(a):
+    """Ролик: тело запроса — {model, input: {prompt, images, aspect_ratio, resolution, duration, …}} (формат /media, как у
+    картинок); ответ — data[0].url (mp4). Длительность — строкой (шлюз отвергает число)."""
+    prompt = a.prompt or a.prompt_file.read_text(encoding='utf-8').strip()
+    inp = {'prompt': prompt, 'aspect_ratio': a.ar, 'resolution': a.res, 'duration': str(a.dur)}  # шлюз: duration — строка
+    if a.image:
+        inp['images'] = [r if r.startswith('http') else data_url(r) for r in a.image]
+    inp.update(json.loads(a.extra))
+    body = {'model': a.model, 'input': inp}
+    t0 = time.time()
+    for attempt in range(8):
+        res = call('POST', '/media', body)
+        if res.get('_http_error') not in (429, 502, 503):
+            break
+        time.sleep(20 + 15 * attempt)
+    rid = res.get('requestId') or res.get('id')
+    print('submit', json.dumps(strip(res), ensure_ascii=False)[:1500], flush=True)
+    while rid and not res.get('data') and res.get('status') not in ('failed', 'error', 'cancelled'):
+        if time.time() - t0 > 1500:
+            print('TIMEOUT', rid); sys.exit(4)
+        time.sleep(8)
+        res = call('GET', f'/media/{rid}')
+    dt = time.time() - t0
+    print('result', json.dumps(strip(res), ensure_ascii=False)[:2000])
+    items = res.get('data') or []
+    if isinstance(items, dict):
+        items = [items]
+    a.out.mkdir(parents=True, exist_ok=True)
+    for k, it in enumerate(items):
+        url = it.get('url') if isinstance(it, dict) else it
+        if not url:
+            continue
+        dst = a.out / f'{a.name}-{k}.mp4'
+        dst.write_bytes(fetch(url))
+        meta = {'model': a.model, 'prompt': prompt, 'images': [i if i.startswith('http') else str(i) for i in a.image],
+                'input': {k2: v for k2, v in inp.items() if k2 not in ('prompt', 'images')}, 'seconds': round(dt, 1),
+                'usage': res.get('usage'), 'request': rid, 'url': url}
+        dst.with_suffix('.json').write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding='utf-8')
+        print(dst, f'({dt:.0f}s)', 'usage', json.dumps(res.get('usage'))[:200])
+    if not items:
+        sys.exit(2)
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
@@ -71,6 +123,11 @@ def main():
     g.add_argument('--n', type=int, default=1)
     g.add_argument('--extra', default='{}', help='доп. поля запроса JSON (quality, aspect_ratio, …)')
     g.add_argument('--raw', action='store_true', help='напечатать ответ без картинок (отладка формата)')
+    v = sub.add_parser('video', help='D-25: ролик image-to-video (первый кадр — --image)')
+    v.add_argument('--model', required=True); v.add_argument('--out', required=True, type=pathlib.Path); v.add_argument('--name', required=True)
+    v.add_argument('--prompt'); v.add_argument('--prompt-file', type=pathlib.Path); v.add_argument('--image', action='append', default=[])
+    v.add_argument('--ar', default='2:3'); v.add_argument('--res', default='720p'); v.add_argument('--dur', default='3')
+    v.add_argument('--extra', default='{}')
     f = sub.add_parser('fetch', help='забрать готовый запрос по requestId'); f.add_argument('rid'); f.add_argument('dst', type=pathlib.Path)
     a = ap.parse_args()
     if a.cmd == 'balance':
@@ -88,6 +145,8 @@ def main():
         from PIL import Image
         Image.open(BytesIO(images_of(res)[0])).convert('RGB').save(a.dst)
         print(a.dst, json.dumps(res.get('usage')), (res.get('data') or [{}])[0].get('url')); return
+    if a.cmd == 'video':
+        video(a); return
     prompt = a.prompt or a.prompt_file.read_text(encoding='utf-8').strip()
     inp = {'prompt': prompt, 'aspect_ratio': a.ar, 'image_resolution': a.res}
     if not a.model.startswith('openai/'):
@@ -97,9 +156,9 @@ def main():
     inp.update(json.loads(a.extra))
     body = {'model': a.model, 'input': inp}  # /media: параметры модели — в input (через /images/generations размер и разрешение терялись)
     t0 = time.time()
-    for attempt in range(8):  # 429 — лимит шлюза (другие агенты тоже генерируют): ждать и повторить
+    for attempt in range(8):  # 429 — лимит шлюза (другие агенты тоже генерируют), 502/503 — шлюз занят: ждать и повторить
         res = call('POST', '/media', body)
-        if res.get('_http_error') != 429:
+        if res.get('_http_error') not in (429, 502, 503):
             break
         time.sleep(20 + 15 * attempt)
     rid = res.get('requestId') or res.get('id')
