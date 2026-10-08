@@ -326,6 +326,21 @@
    ],
    "prompt": "Game character sprite sheet for a 2D storybook game: 4 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a middle-aged weaver woman of a small medieval town: sharp attentive face, dark hair in a bun, mustard-yellow linen dress with sleeves pushed up, a dark red wool overdress, a skein of wool yarn hanging over her shoulder and a wooden shuttle tucked in her belt, leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
   },
+  "mix-a-0.png": {
+   "character": "weaver",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219393567661363201",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_d7cc07a86bf92336.png",
+   "cost_rub": 4,
+   "aspect_ratio": "16:9",
+   "image_resolution": "1K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_b6d97dbe62bd5c28.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_3439438fd82d902d.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_892c58af14b7d32c.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: two separate full-body drawings of two DIFFERENT people standing in a single row with a wide empty gap between them, nothing overlapping, both feet on one horizontal ground line, the same scale (an adult about 1.65 m tall):\n1) on the left: the young woman from the first reference image (white t-shirt, rolled-up blue jeans, off-white sneakers, messy shoulder-length dark brown hair), standing still, BACK VIEW seen from behind, arms relaxed, her small OLIVE-GREEN canvas backpack on both shoulders exactly as in the reference;\n2) on the right: the weaver woman from the third reference image (dark hair in a bun, mustard-yellow dress under a dark red overdress, a wooden shuttle at her belt) standing still, FRONT VIEW facing the viewer, arms relaxed, with a big skein of white wool yarn hanging over her right shoulder exactly as in the reference.\nCamera: HIGH ANGLE, the same for both: looking down at about 30 degrees like an isometric top-down game (Don't Starve), top of the head and shoulders seen from above, feet seen from above.\nArt style exactly as the reference images: dip pen ink outlines, loose watercolor washes, muted warm palette. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no frame."
+  },
   "old_man-base-a-0.png": {
    "character": "old_man",
    "model": "openai/gpt-image-2.5-flare",

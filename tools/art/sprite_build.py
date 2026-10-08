@@ -33,7 +33,7 @@ _OUT = os.environ.get('ZD_ART_OUT')  # для проверки скрипта: �
 ASSETS = pathlib.Path(_OUT) / 'Sprites' if _OUT else ROOT / 'ZeldaDaughter/Assets/Art/Sprites'
 DOCS = pathlib.Path(_OUT) / 'docs' if _OUT else ROOT / 'docs/demo/sprites'
 VIEWS = ['front', 'side', 'back']
-KEY_BAND, KEY_LO, KEY_HI = 5, 0.03, 0.16  # полоса кромки (px) и порог ключа по фону (доли 0..1 RGB)
+KEY_BAND, KEY_LO, KEY_HI, HALO_HI = 5, 0.03, 0.16, 0.16  # полоса кромки (px) и порог ключа по фону (доли 0..1 RGB)
 LIGHT, DARK = (239, 231, 214), (42, 36, 32)
 
 
@@ -70,6 +70,17 @@ def cutout(png: pathlib.Path) -> np.ndarray:
         edge |= ndimage.binary_dilation(big[lab], iterations=2)
         core &= ~edge
     a = np.where(edge, a * key, a)
+    # светлый ореол: GPT Image рисует вокруг фигур чуть более светлый серый (на 0,05–0,12 светлее фона); нейтральные
+    # светлые пиксели, связанные с внешним фоном, — прочь (белая футболка и седые волосы внутри контура туши не задеты)
+    rgbmax, rgbmin = img.max(-1), img.min(-1)
+    lum, bl = img.mean(-1), float(bg.mean())
+    halo = (a > 0) & (rgbmax - rgbmin < 0.07) & (lum > bl + 0.012) & (lum < bl + HALO_HI)
+    hl, hn = ndimage.label(halo)
+    if hn:
+        touch = np.unique(hl[ndimage.binary_dilation(a <= 0.05, iterations=1) & halo])
+        gone = np.isin(hl, touch[touch > 0])
+        a = np.where(ndimage.binary_dilation(gone, iterations=1) & ~core, np.minimum(a, key * 0.5), a)
+        a = np.where(gone, 0, a)
     safe = np.maximum(a, 0.08)[..., None]
     fg = np.clip((img - (1 - a[..., None]) * bg) / safe, 0, 1)
     fg = np.where(core[..., None], img, fg)  # в глубине фигуры — исходный цвет
@@ -137,6 +148,40 @@ def body_top_bottom(a: np.ndarray):
     return int(top), int(rows[-1])
 
 
+def erase(p, e):
+    """[x0, y0, x1, y1] — стереть серые/светлые малонасыщенные пиксели, связанные с внешним фоном (тень, обрывок фона);
+    {"rect": [...], "keep": "saturated"} — в прямоугольнике оставить только насыщенную ткань/кожу и 2 px контура вокруг.
+    После — убрать крошки (связные куски < 150 px целиком внутри прямоугольника)."""
+    rect, keep = (e['rect'], e.get('keep')) if isinstance(e, dict) else (e, None)
+    h, w = p.shape[:2]
+    y0, y1, x0, x1 = int(rect[1] * h), int(rect[3] * h), int(rect[0] * w), int(rect[2] * w)
+    p = p.copy()
+    inr = np.zeros((h, w), bool); inr[y0:y1, x0:x1] = True
+    sat, lum, a = p[..., :3].max(-1) - p[..., :3].min(-1), p[..., :3].mean(-1), p[..., 3]
+    if keep == 'saturated':
+        cloth = ndimage.binary_fill_holes((sat >= 0.16) & (lum < 0.62) & (a > 0.5))  # шнурки и блики внутри — свои
+        p[..., 3] = np.where(inr & ~ndimage.binary_dilation(cloth, iterations=2), 0, a)
+    else:
+        cand = inr & ((sat < 0.09) | ((lum > 0.58) & (sat < 0.16))) & (a > 0)
+        lab, n = ndimage.label(cand)
+        if n:
+            touch = np.unique(lab[ndimage.binary_dilation(a <= 0.05, iterations=1) & cand])
+            p[..., 3] = np.where(np.isin(lab, touch[touch > 0]), 0, a)
+    lab, n = ndimage.label(p[..., 3] > 0.1)
+    if n:
+        sizes = ndimage.sum(np.ones((h, w)), lab, index=np.arange(1, n + 1))
+        for k in np.where(sizes < 150)[0]:
+            m = lab == k + 1
+            if inr[m].all():
+                p[..., 3][m] = 0
+    return p
+
+
+def width80(a):
+    w = (a > 0.5).sum(axis=1)
+    return float(np.percentile(w[w > 0], 80))
+
+
 def feet_x(a: np.ndarray, top: int, bottom: int) -> float:
     band = a[max(bottom - int(0.04 * (bottom - top)), 0):bottom + 1] > 0.5
     xs = np.where(band.any(axis=0))[0]
@@ -157,6 +202,15 @@ def scaled(rgba: np.ndarray, s: float) -> np.ndarray:
     al = out[..., 3:4]
     out[..., :3] = np.where(al > 1e-3, out[..., :3] / np.maximum(al, 1e-3), 0)
     return np.clip(out, 0, 1)
+
+
+def color_match(p, ref):
+    m, r = p[..., 3] > 0.5, ref[..., 3] > 0.5
+    out = p.copy()
+    for c in range(3):
+        a, b = p[..., c][m], ref[..., c][r]
+        out[..., c] = np.clip((p[..., c] - a.mean()) / (a.std() + 1e-6) * b.std() + b.mean(), 0, 1)
+    return out
 
 
 # ---------- палитра ----------
@@ -237,17 +291,28 @@ def cmd_build(cid):
         if n == 0:
             target = ch['height_m'] * ppm
         else:
-            target = body[src.get('match', 'front_0')]
+            m = src.get('match', 'front_0')
+            target = body.get(m, ch['height_m'] * ppm)  # кадра нет (взят с другого листа) — рост из паспорта
+            if 'target_m' in src:  # рост опорной фигуры задан явно, м
+                target = src['target_m'] * ppm
         s = target / (b - t + 1)
+        if n and src.get('match_by') == 'width':  # другой наклон камеры: подгонять по ширине фигуры, а не по росту
+            s = width80(frames[src['match']][..., 3]) / width80(crops[src['ref']][..., 3])
         for k, name in enumerate(src['figs']):
             if not name or k >= len(crops):
                 continue
             p = crops[k][:, ::-1].copy() if name in src.get('flip', []) else crops[k]
+            for e in src.get('erase', {}).get(name, []):  # зачистка артефакта в прямоугольнике (доли рамки фигуры)
+                p = erase(p, e)
+            if src.get('color_match'):  # выровнять оттенок под кадр базового листа (среднее и разброс по каналам)
+                p = color_match(p, frames[src['color_match']])
             frames[name] = palette_soft(scaled(p, s), CFG['palette_mix'])
             tt, bb = body_top_bottom(frames[name][..., 3])
             body[name] = bb - tt + 1
         if n == 0:
             print(cid, 'scale', round(s, 3))
+    for name, ref in sel.get('post_color_match', {}).items():  # выровнять оттенок кадра под кадр с другого листа
+        frames[name] = color_match(frames[name], frames[ref])
     # общий холст и pivot (лежачие позы — по центру рамки)
     pad = 8
     info = {}

@@ -1,14 +1,14 @@
 {
  "id": "wolf",
  "ppu": 320,
- "height_m": 0.95,
+ "height_m": 1.05,
  "size_px": [
-  724,
-  444
+  800,
+  489
  ],
  "pivot": [
   0.5,
-  0.0045
+  0.0041
  ],
  "side_faces": "right",
  "walk": {

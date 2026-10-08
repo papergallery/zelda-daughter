@@ -115,7 +115,7 @@
   },
   "wolf": {
    "kind": "animal",
-   "height_m": 0.95,
+   "height_m": 1.05,
    "walk": true,
    "who": "a grey wolf: lean and rangy, shaggy grey-brown fur with lighter belly and muzzle, pointed ears up, yellow eyes, long legs, bushy tail held low, mouth closed."
   }

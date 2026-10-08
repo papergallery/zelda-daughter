@@ -3,8 +3,8 @@
  "ppu": 320,
  "height_m": 0.95,
  "size_px": [
-  536,
-  426
+  540,
+  427
  ],
  "pivot": [
   0.5,
@@ -73,7 +73,8 @@
     "figs": [
      "side_2",
      "side_dead_0"
-    ]
+    ],
+    "color_match": "side_0"
    }
   ]
  }

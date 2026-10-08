@@ -3,12 +3,12 @@
  "ppu": 320,
  "height_m": 1.65,
  "size_px": [
-  936,
-  615
+  938,
+  583
  ],
  "pivot": [
   0.5,
-  0.0049
+  0.0051
  ],
  "side_faces": "right",
  "walk": {
@@ -69,6 +69,24 @@
      "side_2",
      "front_1",
      "front_2"
+    ],
+    "flip": [
+     "front_2"
+    ]
+   },
+   {
+    "file": "heroine-poses2-a-0.png",
+    "ref": 0,
+    "target_m": 1.62,
+    "figs": [
+     "back_1",
+     "back_2",
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ]
    },
    {
@@ -76,8 +94,8 @@
     "ref": 6,
     "match": "front_0",
     "figs": [
-     "back_1",
-     "back_2",
+     null,
+     null,
      "side_attack_0",
      "side_attack_1",
      "front_pickup_0",
@@ -86,6 +104,9 @@
      "side_down_0"
     ]
    }
-  ]
+  ],
+  "post_color_match": {
+   "back_0": "back_1"
+  }
  }
 }

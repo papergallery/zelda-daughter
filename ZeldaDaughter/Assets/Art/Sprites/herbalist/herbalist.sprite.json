@@ -4,7 +4,7 @@
  "height_m": 1.62,
  "size_px": [
   330,
-  535
+  536
  ],
  "pivot": [
   0.5,
@@ -40,6 +40,9 @@
      "back_0",
      "side_1",
      "side_2"
+    ],
+    "flip": [
+     "back_0"
     ]
    },
    {
@@ -49,6 +52,10 @@
     "figs": [
      "front_1",
      "front_2",
+     "back_1",
+     "back_2"
+    ],
+    "flip": [
      "back_1",
      "back_2"
     ]
