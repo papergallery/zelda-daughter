@@ -28,9 +28,9 @@ namespace ZeldaDaughter.World
             new Color(0.50f, 0.60f, 0.95f), new Color(0.90f, 0.42f, 0.35f), new Color(1.00f, 0.58f, 0.28f),
             new Color(1.00f, 0.84f, 0.62f), new Color(1.00f, 0.96f, 0.88f),
         };
-        private static readonly float[] IntensityShare = { 0.30f, 0.50f, 0.80f, 0.95f, 1f };
+        private static readonly float[] IntensityShare = { 0.35f, 0.50f, 0.80f, 0.95f, 1f };
         private static readonly float[] Pitch_ = { 24f, 10f, 22f, 40f, 1f }; // last = the scene's day pitch (see Apply)
-        private static readonly Color NightAmbient = new Color(0.22f, 0.27f, 0.44f);
+        private static readonly Color NightAmbient = new Color(0.30f, 0.36f, 0.58f);
         private static readonly Color MorningAmbientTint = new Color(1.10f, 0.95f, 0.92f);
         private static readonly Color EveningAmbientTint = new Color(1.10f, 0.88f, 0.90f);
         private static readonly Color NightFog = new Color(0.12f, 0.16f, 0.28f);

@@ -15,7 +15,7 @@ namespace ZeldaDaughter.Rendering
 
         [Header("Pen line")]
         [Tooltip("Line width in pixels of a 2340-px-high screen; scaled with the screen height so a phone and a frame look alike.")]
-        [Range(0.5f, 6f)] public float lineWidthPx = 2.2f;
+        [Range(0.5f, 6f)] public float lineWidthPx = 3.2f;
         public float lineReferenceHeight = 2340f;
         public Color lineColor = new Color(0.20f, 0.12f, 0.07f, 0.92f);
         [Tooltip("Depth jump (second difference, metres) that makes a line.")]
@@ -36,7 +36,7 @@ namespace ZeldaDaughter.Rendering
         [Tooltip("Size of the paper texture tile in screen pixels.")]
         [Range(128f, 1024f)] public float paperTilePx = 420f;
         [Range(0f, 0.5f)] public float grain = 0.16f;
-        [Range(0f, 0.5f)] public float blotch = 0.14f;
+        [Range(0f, 0.5f)] public float blotch = 0.10f;
         [Tooltip("1 = the picture's own colours, less = more of the paper shows through (lifted shadows).")]
         [Range(0.5f, 1f)] public float pigment = 0.9f;
 

@@ -134,7 +134,7 @@ Shader "Zelda/Toon"
                 {
                     Light l = GetAdditionalLight(li, i.positionWS);
                     half atten = l.distanceAttenuation * l.shadowAttenuation;
-                    half ring = lerp(atten, Ramp(atten), 0.6h);
+                    half ring = lerp(atten, Ramp(atten), 0.4h);
                     half nd = dot(n, l.direction) * 0.5h + 0.5h;
                     light += l.color * (Ramp(nd) * ring);
                 }

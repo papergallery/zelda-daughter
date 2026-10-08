@@ -17,8 +17,9 @@ namespace ZeldaDaughter.Editor
         public static Color Grade(Color c)
         {
             float grey = c.r * 0.3f + c.g * 0.59f + c.b * 0.11f;
-            var muted = new Color(Mathf.Lerp(c.r, grey, 0.25f), Mathf.Lerp(c.g, grey, 0.25f), Mathf.Lerp(c.b, grey, 0.25f), c.a);
-            return new Color(muted.r * 1.05f, muted.g * 1.0f, muted.b * 0.92f, c.a);
+            float k = 0.55f; // D-08: Kenney's greens are teal; keep 55 % of the chroma, then warm (less blue) — olive, not mint
+            var muted = new Color(Mathf.Lerp(grey, c.r, k), Mathf.Lerp(grey, c.g, k), Mathf.Lerp(grey, c.b, k), c.a);
+            return new Color(muted.r * 1.08f, muted.g * 1.0f, muted.b * 0.78f, c.a);
         }
 
         /// <summary>The toon shader; loaded by path because an importer can run before the shader is registered under its name.</summary>
