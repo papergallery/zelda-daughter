@@ -160,7 +160,7 @@ namespace ZeldaDaughter.Tests
             var g = s.State;
             g.Bag.Add("firewood", 2); g.Bag.Add("flint");
 
-            g.Clock.SetTime(1, 0.30);
+            g.Clock.SetTime(1, 0.22);
             yield return new WaitForSeconds(1f);
             Debug.Log($"[ZD:Frame] F1 daylight={g.Clock.Daylight:0.00} hero={hero.transform.position}");
             yield return Shot("D-21-F1");
@@ -172,6 +172,14 @@ namespace ZeldaDaughter.Tests
             s.Events.RaiseUsedOnWorld(placed.Object.Id, used);
             g.Clock.SetTime(1, 0.0);
             yield return new WaitForSeconds(1.5f);
+            foreach (var ps in Object.FindObjectsByType<ParticleSystem>(FindObjectsSortMode.None))
+            {
+                var r = ps.GetComponent<ParticleSystemRenderer>();
+                if (!ps.transform.root.name.Contains("placed") && ps.transform.parent == null) { }
+                string path = ps.name; for (var t = ps.transform.parent; t != null; t = t.parent) path = t.name + "/" + path;
+                if (!path.Contains("fire") && !path.Contains("placed")) continue;
+                Debug.Log($"[ZD:Frame] ps {path} playing={ps.isPlaying} count={ps.particleCount} pos={ps.transform.position} shader={(r != null && r.sharedMaterial != null ? r.sharedMaterial.shader.name : "-")} queue={(r != null && r.sharedMaterial != null ? r.sharedMaterial.renderQueue : 0)} mode={(r != null ? r.renderMode.ToString() : "-")} size={ps.main.startSize.constant:0.00} layer={ps.gameObject.layer}");
+            }
             Debug.Log($"[ZD:Frame] F1n daylight={g.Clock.Daylight:0.00} fires={g.Camp.Campfires.Count}");
             yield return Shot("D-21-F1n");
         }

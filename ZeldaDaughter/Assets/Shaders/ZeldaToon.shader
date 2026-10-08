@@ -105,12 +105,12 @@ Shader "Zelda/Toon"
                 half h = hsv.x, s = hsv.y, v = hsv.z;
                 half green = smoothstep(0.16h, 0.22h, h) * (1.0h - smoothstep(0.45h, 0.55h, h));
                 h = lerp(h, 0.21h, green * 0.7h);
-                s *= lerp(1.0h, 0.85h, green);
-                v *= lerp(1.0h, 0.95h, green);
+                s *= lerp(1.0h, 0.62h, green);
+                v *= lerp(1.0h, 0.80h, green);
                 half wood = smoothstep(0.04h, 0.06h, h) * (1.0h - smoothstep(0.10h, 0.13h, h)) * smoothstep(0.30h, 0.50h, s);
                 h = lerp(h, 0.075h, wood * 0.5h);
-                s *= lerp(1.0h, 0.6h, wood);
-                v *= lerp(1.0h, 0.68h, wood);
+                s *= lerp(1.0h, 0.5h, wood);
+                v *= lerp(1.0h, 0.55h, wood);
                 c = HsvToRgb(half3(h, s, v));
                 return c * half3(1.05h, 1.0h, 0.86h);
             }
@@ -168,7 +168,7 @@ Shader "Zelda/Toon"
                 {
                     Light l = GetAdditionalLight(li, i.positionWS);
                     half atten = l.distanceAttenuation * l.shadowAttenuation;
-                    half ring = lerp(atten, Ramp(atten), 0.4h);
+                    half ring = lerp(atten, Ramp(atten), 0.12h); // D-21: a soft glow, not a hard disc
                     half nd = dot(n, l.direction) * 0.5h + 0.5h;
                     #if defined(_SPRITELIT)
                     nd = 1.0h; // a card faces the fire from any side
