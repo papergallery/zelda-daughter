@@ -21,7 +21,7 @@ namespace ZeldaDaughter.Core.Save
     public static class SaveGame
     {
         /// <summary>1 → 2 (D-01): Killed (killed enemies) and KnockoutLeft are added; both default to empty/0, so version 1 still loads.
-        /// 2 → 3 (D-03): trade state (coins taught, barter deals, stock sold, buyback shelves) — absent in older saves, so they load as «nothing traded».</summary>
+        /// 2 → 3 (D-03, D-04): map marks, notebook entries, requests, trade state (coins taught, barter deals, stock sold, buyback shelves) — absent in older saves, so they load as «nothing traded».</summary>
         public const int Version = 3;
 
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings
@@ -55,6 +55,10 @@ namespace ZeldaDaughter.Core.Save
             s.HintsDone = g.Hints.Done.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Picked = g.Picked.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Killed = g.Killed.OrderBy(x => x, StringComparer.Ordinal).ToList();
+            s.MapMarks = g.Map.Known.ToList();
+            s.Notes = g.Notebook.Entries.Select(e => e.Id).ToList();
+            s.QuestsOffered = g.Quests.OfferedIds.ToList();
+            s.QuestsDone = g.Quests.DoneIds.ToList();
             s.CoinsTaught = g.Trade.Taught;
             s.BarterDeals = g.Trade.BarterDeals;
             s.StockSold = Sorted(g.Trade.SoldState);
@@ -94,6 +98,9 @@ namespace ZeldaDaughter.Core.Save
             foreach (var p in s.Picked) g.Picked.Add(p);
             g.Killed.Clear();
             foreach (var k in s.Killed) g.Killed.Add(k);
+            g.Map.Restore(s.MapMarks);
+            g.Notebook.Restore(s.Notes);
+            g.Quests.Restore(s.QuestsOffered, s.QuestsDone);
             g.Trade.Restore(s.CoinsTaught, s.BarterDeals, s.StockSold, s.Buyback);
         }
 
@@ -174,6 +181,10 @@ namespace ZeldaDaughter.Core.Save
             public List<string> HintsDone { get; set; } = new List<string>();
             public List<string> Picked { get; set; } = new List<string>();
             public List<string> Killed { get; set; } = new List<string>();
+            public List<string> MapMarks { get; set; } = new List<string>();
+            public List<string> Notes { get; set; } = new List<string>();
+            public List<string> QuestsOffered { get; set; } = new List<string>();
+            public List<string> QuestsDone { get; set; } = new List<string>();
             public bool CoinsTaught { get; set; }
             public int BarterDeals { get; set; }
             public Dictionary<string, Dictionary<string, int>> StockSold { get; set; } = new Dictionary<string, Dictionary<string, int>>();

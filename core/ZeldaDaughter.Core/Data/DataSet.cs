@@ -10,6 +10,7 @@ using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Dialogue;
 using ZeldaDaughter.Core.Economy;
 using ZeldaDaughter.Core.Input;
+using ZeldaDaughter.Core.Journal;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
 using ZeldaDaughter.Core.Remarks;
@@ -71,6 +72,9 @@ namespace ZeldaDaughter.Core.Data
         public EnemySettings Enemies { get; private set; } = new EnemySettings();
         public NpcSettings Npcs { get; private set; } = new NpcSettings();
         public TraderSettings Traders { get; private set; } = new TraderSettings();
+        public MapSettings Map { get; private set; } = new MapSettings();
+        public NotebookSettings Notebook { get; private set; } = new NotebookSettings();
+        public QuestSettings Quests { get; private set; } = new QuestSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -102,6 +106,9 @@ namespace ZeldaDaughter.Core.Data
                 Enemies = Read<EnemySettings>(read, "enemies.json", problems),
                 Npcs = Read<NpcSettings>(read, "npcs.json", problems),
                 Traders = Read<TraderSettings>(read, "traders.json", problems),
+                Map = Read<MapSettings>(read, "map.json", problems),
+                Notebook = Read<NotebookSettings>(read, "notebook.json", problems),
+                Quests = Read<QuestSettings>(read, "quests.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);
@@ -197,6 +204,18 @@ namespace ZeldaDaughter.Core.Data
                     }
                     foreach (var icon in node.Value.Icons)
                         if (!d.Dialogues.Icons.Contains(icon)) problems.Add($"dialogues.json: {npc.Key}.{node.Key} — иконка '{icon}' не в списке");
+                    foreach (var e in node.Value.Effects)
+                    {
+                        string at = $"dialogues.json: {npc.Key}.{node.Key} — эффект {e.Type} '{e.Id}'";
+                        switch (e.Type)
+                        {
+                            case "mark": if (!d.Map.Marks.ContainsKey(e.Id)) problems.Add(at + " — нет в map.json"); break;
+                            case "note": if (!d.Notebook.Entries.ContainsKey(e.Id)) problems.Add(at + " — нет в notebook.json"); break;
+                            case "offer": if (!d.Quests.Quests.ContainsKey(e.Id)) problems.Add(at + " — нет в quests.json"); break;
+                            case "teach_coins": break;
+                            default: problems.Add(at + $" — неизвестный тип ({string.Join(" | ", DialogueEffect.Types)})"); break;
+                        }
+                    }
                 }
             }
             foreach (var kv in d.Npcs.Npcs)
@@ -250,6 +269,33 @@ namespace ZeldaDaughter.Core.Data
                     else if (sd.Value <= 0 || sd.Kind == "currency") problems.Add($"{who}: stock '{st.Item}' — без ценности или деньги");
                     if (st.Count != null && st.Count < 1) problems.Add($"{who}: stock '{st.Item}' — count < 1");
                 }
+            }
+            foreach (var kv in d.Map.Marks)
+            {
+                if (string.IsNullOrEmpty(kv.Value.Name)) problems.Add($"map.json: '{kv.Key}' — нет названия");
+                if (!IdPattern.IsMatch(kv.Value.Object)) problems.Add($"map.json: '{kv.Key}' — object '{kv.Value.Object}' (id объекта сцены)");
+            }
+            foreach (var kv in d.Notebook.Entries)
+            {
+                if (string.IsNullOrEmpty(kv.Value.Text)) problems.Add($"notebook.json: '{kv.Key}' — пустой текст");
+                if (!string.IsNullOrEmpty(kv.Value.Who) && !d.Npcs.Npcs.ContainsKey(kv.Value.Who)) problems.Add($"notebook.json: '{kv.Key}' — who '{kv.Value.Who}' нет в npcs.json");
+            }
+            foreach (var kv in d.Quests.Quests)
+            {
+                string who = $"quests.json: {kv.Key}";
+                var q = kv.Value;
+                if (!d.Npcs.Npcs.ContainsKey(q.Giver)) problems.Add($"{who} — giver '{q.Giver}' нет в npcs.json");
+                if (!d.Npcs.Npcs.ContainsKey(q.Receiver)) problems.Add($"{who} — receiver '{q.Receiver}' нет в npcs.json");
+                if (!d.Notebook.Entries.ContainsKey(q.Note)) problems.Add($"{who} — note '{q.Note}' нет в notebook.json");
+                if (q.Need.Count == 0) problems.Add($"{who} — пустое need");
+                foreach (var set in new[] { ("handOut", q.HandOut), ("need", q.Need), ("reward.items", q.Reward.Items) })
+                    foreach (var it in set.Item2)
+                    {
+                        if (!byId.ContainsKey(it.Key)) problems.Add($"{who}: {set.Item1} '{it.Key}' — нет в items.json");
+                        if (it.Value < 1) problems.Add($"{who}: {set.Item1} '{it.Key}' — количество < 1");
+                    }
+                foreach (var m in q.Reward.Marks) if (!d.Map.Marks.ContainsKey(m)) problems.Add($"{who}: reward mark '{m}' — нет в map.json");
+                foreach (var h in q.HandOut) if (!q.Need.ContainsKey(h.Key)) problems.Add($"{who}: handOut '{h.Key}' не нужен в need — отдавать нечего");
             }
             var pairs = recipes.Field.GroupBy(r => string.CompareOrdinal(r.A, r.B) <= 0 ? r.A + "|" + r.B : r.B + "|" + r.A).Where(g => g.Count() > 1);
             foreach (var g in pairs) problems.Add($"recipes.json: пара {g.Key.Replace("|", " + ")} — два рецепта");

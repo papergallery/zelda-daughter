@@ -26,6 +26,16 @@ namespace ZeldaDaughter.Core.Dialogue
         public List<DialogueReply> Replies { get; set; } = new List<DialogueReply>();
         public Gesture? Gesture { get; set; }
         public bool End { get; set; }
+        /// <summary>What reaching this node does in the world (D-04): runs each time the node is entered; the effects are idempotent.</summary>
+        public List<DialogueEffect> Effects { get; set; } = new List<DialogueEffect>();
+    }
+
+    /// <summary>mark (open a map mark) | note (write a notebook entry) | offer (a resident asks for something: a request) | teach_coins (someone explains coins — only after a first barter).</summary>
+    public sealed class DialogueEffect
+    {
+        public static readonly string[] Types = { "mark", "note", "offer", "teach_coins" };
+        public string Type { get; set; } = "";
+        public string Id { get; set; } = "";
     }
 
     public sealed class DialogueReply
@@ -74,9 +84,12 @@ namespace ZeldaDaughter.Core.Dialogue
         readonly NpcDialogue _npc;
         readonly Comprehension _lang;
         readonly string _npcId;
+        readonly Action<DialogueEffect>? _onEffect;
 
-        public Conversation(DialogueSettings data, Comprehension language, string npcId)
+        /// <param name="onEffect">Called for each effect of every node reached (including «start»); GameState.Talk wires it to the map, notebook, requests and trade.</param>
+        public Conversation(DialogueSettings data, Comprehension language, string npcId, Action<DialogueEffect>? onEffect = null)
         {
+            _onEffect = onEffect;
             if (data == null) throw new ArgumentNullException(nameof(data));
             _lang = language ?? throw new ArgumentNullException(nameof(language));
             _npc = data.Npcs.TryGetValue(npcId, out var n) ? n : throw new ArgumentException($"dialogues.json: no npc '{npcId}'", nameof(npcId));
@@ -113,6 +126,8 @@ namespace ZeldaDaughter.Core.Dialogue
         {
             NodeId = node;
             _lang.Heard(_npcId, node);
+            if (_onEffect != null)
+                foreach (var e in _npc.Nodes[node].Effects) _onEffect(e);
         }
     }
 }

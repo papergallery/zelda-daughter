@@ -5,7 +5,9 @@ using ZeldaDaughter.Core.Combat;
 using ZeldaDaughter.Core.Common;
 using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Data;
+using ZeldaDaughter.Core.Dialogue;
 using ZeldaDaughter.Core.Economy;
+using ZeldaDaughter.Core.Journal;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
 using ZeldaDaughter.Core.Npcs;
@@ -33,6 +35,9 @@ namespace ZeldaDaughter.Core.Save
             // endurance and hunger scale recovery wherever it happens (natural regeneration, food) — D-01
             Condition.HealScale = () => Skills.HealMultiplier() * Hunger.Multiplier;
             Trade = new Trade(data.Traders, data.Items, Bag, Npcs.IsShopOpen, Language);
+            Map = new MapKnowledge(data.Map, () => Bag.Count(MapKnowledge.MapItem) > 0);
+            Notebook = new Notebook(data.Notebook);
+            Quests = new Quests(data.Quests, Bag, Notebook, Map);
             Combat = new HeroCombat(data.Weapons, Skills, Condition, Hunger, Bag);
         }
 
@@ -49,6 +54,26 @@ namespace ZeldaDaughter.Core.Save
         public NpcRoster Npcs { get; }
         /// <summary>Barter and coins with the shop NPCs (D-03); a shop deals only while its NPC is at the counter.</summary>
         public Trade Trade { get; }
+        /// <summary>Marks learned by talking; shown only while the hero holds a map (D-04).</summary>
+        public MapKnowledge Map { get; }
+        /// <summary>The hero's notes (§5) — no statuses.</summary>
+        public Notebook Notebook { get; }
+        /// <summary>Requests of residents; <c>Give(npc, item)</c> on a drag of an item onto an NPC.</summary>
+        public Quests Quests { get; }
+
+        /// <summary>Starts a talk with an NPC; what its nodes do (marks, notes, requests, coin lessons) is applied to this state as they are reached.</summary>
+        public Conversation Talk(string npcId) => new Conversation(Data.Dialogues, Language, npcId, ApplyEffect);
+
+        void ApplyEffect(DialogueEffect e)
+        {
+            switch (e.Type)
+            {
+                case "mark": Map.Open(e.Id); break;
+                case "note": Notebook.Add(e.Id); break;
+                case "offer": Quests.Offer(e.Id); break;
+                case "teach_coins": Trade.TeachCoins(); break;
+            }
+        }
         /// <summary>The hero's side of a fight, wired to this state's skills, wounds, hunger and bag (view sets <c>Position</c>).</summary>
         public HeroCombat Combat { get; }
 

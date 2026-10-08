@@ -1,5 +1,5 @@
 {
-  "_source": "project-design.md §2 «Пролог» (крестьянин — жесты и иконки, показывает направление к городу), §3 этап 1 (кракозябры + иконки, герой отвечает иконками, провалы коммуникации). Тексты — сырьё апрельского DialogueTreeBuilder.cs, D-02: узлы-заглушки для остальных NPC региона (расписание и торговцы ссылаются на существующих), настоящие диалоги — D-07. Переписаны: без рода героя (docs/for-author.md п. 1), направление — жестом на объект, а не «на север» (в апреле расходилось с раскладкой).",
+  "_source": "project-design.md §2 «Пролог» (крестьянин — жесты и иконки, показывает направление к городу), §3 этап 1 (кракозябры + иконки, герой отвечает иконками, провалы коммуникации). Тексты — сырьё апрельского DialogueTreeBuilder.cs, D-02/D-04: диалоги остальных NPC региона — каркас с эффектами (mark / note / offer / teach_coins: метки карты, записи блокнота, поручения, урок монет); настоящие тексты по этапам языка — D-07 (content-writer). Переписаны: без рода героя (docs/for-author.md п. 1), направление — жестом на объект, а не «на север» (в апреле расходилось с раскладкой).",
   "icons": ["question", "town", "point", "food", "danger", "hand", "map", "coin", "sleep"],
   "npcs": {
     "peasant": {
@@ -8,23 +8,75 @@
         "start": { "line": "Эй! Издалека, видать? Одежда-то чудная.", "icons": ["question"], "replies": [ { "icon": "town", "to": "town" }, { "icon": "food", "to": "food" }, { "icon": "question", "to": "who" } ] },
         "who":   { "line": "Не разберу тебя. Говори толком.", "icons": ["question", "hand"], "replies": [ { "icon": "town", "to": "town" }, { "icon": "food", "to": "food" } ] },
         "food":  { "line": "Еды лишней нет, сам впроголодь. В городе купишь.", "icons": ["food", "town"], "replies": [ { "icon": "town", "to": "town" } ] },
-        "town":  { "line": "Город? Вон он, за холмом. По дороге иди, не свернёшь.", "icons": ["town", "point"], "gesture": { "type": "point", "target": "town_gate" }, "end": true }
+        "town":  { "line": "Город? Вон он, за холмом. По дороге иди, не свернёшь.", "icons": ["town", "point"], "gesture": { "type": "point", "target": "town_gate" }, "effects": [ { "type": "mark", "id": "town" }, { "type": "note", "id": "peasant_town" } ], "end": true }
       }
     },
     "guard": {
       "name": "Стражник",
       "nodes": {
-        "start": { "line": "Стой! Куда идёшь?", "icons": ["hand", "question"], "replies": [ { "icon": "town", "to": "pass" }, { "icon": "question", "to": "huh" } ] },
+        "start": { "line": "Стой! Куда идёшь?", "icons": ["hand", "question"], "replies": [ { "icon": "town", "to": "pass" }, { "icon": "danger", "to": "danger" }, { "icon": "question", "to": "huh" } ] },
+        "danger": { "line": "В лесу кабаны, ночью волки. Огня они боятся — запомни.", "icons": ["danger", "hand"], "effects": [ { "type": "note", "id": "guard_warning" } ], "end": true },
         "huh":   { "line": "Чего? По-людски говори.", "icons": ["question"], "replies": [ { "icon": "town", "to": "pass" } ] },
-        "pass":  { "line": "Проходи. И без глупостей.", "icons": ["point", "danger"], "gesture": { "type": "point", "target": "town_square" }, "end": true }
+        "pass":  { "line": "Проходи. И без глупостей.", "icons": ["point", "danger"], "gesture": { "type": "point", "target": "town_square" }, "effects": [ { "type": "mark", "id": "square" } ], "end": true }
       }
     },
-    "merchant": { "name": "Торговец", "nodes": { "start": { "line": "Заходи, посмотри. Что-нибудь нужно?", "icons": ["hand", "coin"], "end": true } } },
-    "smith": { "name": "Кузнец", "nodes": { "start": { "line": "Железо любит терпение.", "icons": ["hand", "danger"], "end": true } } },
-    "barkeep": { "name": "Хозяин таверны", "nodes": { "start": { "line": "Присаживайся. Поесть? Поспать?", "icons": ["food", "sleep"], "end": true } } },
-    "herbalist": { "name": "Травница", "nodes": { "start": { "line": "Раны? Травы? Скажи, что болит.", "icons": ["hand", "food"], "end": true } } },
-    "townswoman": { "name": "Горожанка", "nodes": { "start": { "line": "Доброго дня.", "icons": ["question"], "end": true } } },
-    "old_man": { "name": "Старик", "nodes": { "start": { "line": "Эх, молодость...", "icons": ["question"], "end": true } } },
-    "weaver": { "name": "Ткачиха", "nodes": { "start": { "line": "Не мешай, считаю нити.", "icons": ["hand"], "end": true } } }
+    "merchant": {
+      "name": "Торговец",
+      "nodes": {
+        "start": { "line": "Заходи, посмотри. Что-нибудь нужно?", "icons": ["hand", "coin"], "replies": [{ "icon": "coin", "to": "coins" }, { "icon": "map", "to": "map" }, { "icon": "town", "to": "town" }] },
+        "coins": { "line": "Монеты — вот эти кругляши. Ими тут платят; вещами тоже возьму.", "icons": ["coin", "hand"], "effects": [{ "type": "teach_coins" }, { "type": "note", "id": "merchant_coins" }], "end": true },
+        "map": { "line": "Карта есть, у меня. Подробностей не жди — их люди расскажут.", "icons": ["map", "point"], "effects": [{ "type": "note", "id": "merchant_map" }], "end": true },
+        "town": { "line": "Кузнец у стены, травница за площадью, таверна на площади.", "icons": ["town", "point"], "gesture": { "type": "point", "target": "town_square" }, "effects": [{ "type": "mark", "id": "merchant_shop" }, { "type": "mark", "id": "square" }, { "type": "mark", "id": "smithy" }, { "type": "mark", "id": "herbalist_house" }, { "type": "mark", "id": "tavern" }, { "type": "mark", "id": "fountain" }, { "type": "note", "id": "merchant_town" }], "end": true }
+      }
+    },
+    "smith": {
+      "name": "Кузнец",
+      "nodes": {
+        "start": { "line": "Железо любит терпение.", "icons": ["hand", "danger"], "replies": [{ "icon": "hand", "to": "forge" }, { "icon": "question", "to": "hm" }] },
+        "hm": { "line": "Ну?", "icons": ["question"], "replies": [{ "icon": "hand", "to": "forge" }] },
+        "forge": { "line": "Руду — в плавильню, металл — на наковальню. Палка с металлом — меч, короткая — нож.", "icons": ["hand", "point"], "effects": [{ "type": "mark", "id": "smithy" }, { "type": "note", "id": "smith_forge" }], "end": true }
+      }
+    },
+    "barkeep": {
+      "name": "Хозяин таверны",
+      "nodes": {
+        "start": { "line": "Присаживайся. Поесть? Поспать?", "icons": ["food", "sleep"], "replies": [{ "icon": "sleep", "to": "bed" }, { "icon": "food", "to": "food" }, { "icon": "question", "to": "rumors" }] },
+        "bed": { "line": "Кровать наверху. Выспишься — раны подживут.", "icons": ["sleep", "point"], "effects": [{ "type": "mark", "id": "tavern" }, { "type": "note", "id": "barkeep_bed" }], "end": true },
+        "food": { "line": "Каша, мясо на углях. Монетой или чем богата.", "icons": ["food", "coin"], "end": true },
+        "rumors": { "line": "Болтают, в лесу кабаны озверели, а за рекой — волки.", "icons": ["danger", "question"], "effects": [{ "type": "note", "id": "barkeep_rumors" }], "end": true }
+      }
+    },
+    "herbalist": {
+      "name": "Травница",
+      "nodes": {
+        "start": { "line": "Раны? Травы? Скажи, что болит.", "icons": ["hand", "food"], "replies": [{ "icon": "hand", "to": "heal" }, { "icon": "food", "to": "herbs" }] },
+        "heal": { "line": "Ткань с травами — бинт. Бинт с палкой — шина. Особая трава с жиром — мазь от ожогов.", "icons": ["hand", "food"], "effects": [{ "type": "mark", "id": "herbalist_house" }, { "type": "note", "id": "herbalist_recipes" }], "end": true },
+        "herbs": { "line": "Ягоды, травы — приноси. Заплачу или обменяю.", "icons": ["food", "coin"], "end": true }
+      }
+    },
+    "townswoman": {
+      "name": "Горожанка",
+      "nodes": {
+        "start": { "line": "Доброго дня.", "icons": ["question"], "replies": [{ "icon": "food", "to": "berries" }, { "icon": "hand", "to": "hi" }] },
+        "hi": { "line": "Всего доброго.", "icons": ["hand"], "end": true },
+        "berries": { "line": "Ягод бы к столу. Пять горстей, с поляны за рекой. Принесёшь?", "icons": ["food", "point"], "effects": [{ "type": "mark", "id": "glade" }, { "type": "mark", "id": "bridge" }, { "type": "offer", "id": "berries" }], "end": true }
+      }
+    },
+    "old_man": {
+      "name": "Старик",
+      "nodes": {
+        "start": { "line": "Эх, молодость...", "icons": ["question"], "replies": [{ "icon": "question", "to": "lost" }, { "icon": "hand", "to": "hi" }] },
+        "hi": { "line": "Иди с миром.", "icons": ["hand"], "end": true },
+        "lost": { "line": "Медальон я потерял. В лесу, у коряги. Найдёшь — не обижу.", "icons": ["danger", "point"], "effects": [{ "type": "offer", "id": "locket" }], "end": true }
+      }
+    },
+    "weaver": {
+      "name": "Ткачиха",
+      "nodes": {
+        "start": { "line": "Не мешай, считаю нити.", "icons": ["hand"], "replies": [{ "icon": "hand", "to": "letter" }, { "icon": "question", "to": "hi" }] },
+        "hi": { "line": "Занята я.", "icons": ["hand"], "end": true },
+        "letter": { "line": "Письмо крестьянину у поля. Снесёшь? Мне некогда.", "icons": ["hand", "point"], "gesture": { "type": "point", "target": "anchor_field" }, "effects": [{ "type": "mark", "id": "peasant_field" }, { "type": "offer", "id": "letter" }], "end": true }
+      }
+    }
   }
 }
