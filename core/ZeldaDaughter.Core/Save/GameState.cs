@@ -160,6 +160,27 @@ namespace ZeldaDaughter.Core.Save
                 case "teach_coins": Trade.TeachCoins(); break;
             }
         }
+        /// <summary>
+        /// The weapon the hero strikes with: the strongest one in the bag (by <c>damage</c>, a tie goes to the smaller id), else <c>fists</c>.
+        /// Anything in <c>weapons.json</c> that is in the bag counts. No allocation.
+        /// </summary>
+        public string WeaponInHand
+        {
+            get
+            {
+                string best = WeaponSettings.Fists;
+                float bestDamage = float.NegativeInfinity;
+                var stacks = Bag.Stacks;
+                for (int i = 0; i < stacks.Count; i++)
+                {
+                    string id = stacks[i].ItemId;
+                    if (id == WeaponSettings.Fists || !Data.Weapons.Weapons.TryGetValue(id, out var w)) continue;
+                    if (w.Damage > bestDamage || (w.Damage == bestDamage && string.CompareOrdinal(id, best) < 0)) { best = id; bestDamage = w.Damage; }
+                }
+                return best;
+            }
+        }
+
         /// <summary>The hero's side of a fight, wired to this state's skills, wounds, hunger and bag (view sets <c>Position</c>).</summary>
         public HeroCombat Combat { get; }
 
