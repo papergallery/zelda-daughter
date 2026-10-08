@@ -64,6 +64,12 @@ namespace ZeldaDaughter.Core.Combat
         public bool IsCarcass => State == EnemyState.Dead;
         public float WoundSeverity(WoundType t) => _wounds[(int)t];
 
+        /// <summary>Seconds in the current state (always counts up, also in a stagger); starts over on every state change. For the view's animation (C6).</summary>
+        public float StateSeconds { get; private set; }
+
+        /// <summary>0..1 through the windup (the readable swing), 0 in any other state. The blow lands when it reaches 1. For the view (C6).</summary>
+        public float WindupProgress => State != EnemyState.Windup ? 0f : Math.Min(1f, StateSeconds / WindupSeconds);
+
         /// <summary>Windup length actually used: data value, never below the minimum.</summary>
         public float WindupSeconds => Math.Max(Def.Windup, _s.MinWindup);
 
@@ -92,6 +98,7 @@ namespace ZeldaDaughter.Core.Combat
             float stun = Math.Max(stunSeconds, damage >= Def.StaggerShare * Def.Hp ? Def.StaggerSeconds : 0f);
             if (stun > 0f)
             {
+                if (State != EnemyState.Staggered) StateSeconds = 0f;
                 _timer = State == EnemyState.Staggered ? Math.Max(_timer, stun) : stun;
                 State = EnemyState.Staggered;
                 ev.Add(new EnemyEvent(EnemyEventKind.Staggered, damage));
@@ -134,6 +141,7 @@ namespace ZeldaDaughter.Core.Combat
             Bleed(dt, ev);
             if (IsCarcass) return;
 
+            StateSeconds += dt;
             _timer += State == EnemyState.Staggered ? -dt : dt;
             switch (State)
             {
@@ -244,7 +252,7 @@ namespace ZeldaDaughter.Core.Combat
             ev.Add(new EnemyEvent(EnemyEventKind.LostInterest));
         }
 
-        void Enter(EnemyState s) { State = s; _timer = 0; }
+        void Enter(EnemyState s) { State = s; _timer = 0; StateSeconds = 0; }
 
         /// <summary>
         /// The view's verdict on a spot (a wall, a house, deep water): true — the enemy cannot stand there. A step into such a spot is
