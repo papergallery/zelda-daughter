@@ -20,8 +20,9 @@ namespace ZeldaDaughter.Core.Save
 
     public static class SaveGame
     {
-        /// <summary>1 → 2 (D-01): Killed (killed enemies) and KnockoutLeft are added; both default to empty/0, so version 1 still loads.</summary>
-        public const int Version = 2;
+        /// <summary>1 → 2 (D-01): Killed (killed enemies) and KnockoutLeft are added; both default to empty/0, so version 1 still loads.
+        /// 2 → 3 (D-03): trade state (coins taught, barter deals, stock sold, buyback shelves) — absent in older saves, so they load as «nothing traded».</summary>
+        public const int Version = 3;
 
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings
         {
@@ -54,7 +55,22 @@ namespace ZeldaDaughter.Core.Save
             s.HintsDone = g.Hints.Done.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Picked = g.Picked.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Killed = g.Killed.OrderBy(x => x, StringComparer.Ordinal).ToList();
+            s.CoinsTaught = g.Trade.Taught;
+            s.BarterDeals = g.Trade.BarterDeals;
+            s.StockSold = Sorted(g.Trade.SoldState);
+            s.Buyback = Sorted(g.Trade.BuybackState);
             return JsonConvert.SerializeObject(s, Json);
+        }
+
+        static Dictionary<string, Dictionary<string, int>> Sorted(IReadOnlyDictionary<string, Dictionary<string, int>> d)
+        {
+            var r = new Dictionary<string, Dictionary<string, int>>();
+            foreach (var t in d.OrderBy(x => x.Key, StringComparer.Ordinal))
+            {
+                if (t.Value.Count == 0) continue;
+                r[t.Key] = t.Value.OrderBy(x => x.Key, StringComparer.Ordinal).ToDictionary(x => x.Key, x => x.Value);
+            }
+            return r;
         }
 
         /// <summary>Restores into a fresh state. Throws <see cref="InvalidDataException"/> for a save from a newer game.</summary>
@@ -78,6 +94,7 @@ namespace ZeldaDaughter.Core.Save
             foreach (var p in s.Picked) g.Picked.Add(p);
             g.Killed.Clear();
             foreach (var k in s.Killed) g.Killed.Add(k);
+            g.Trade.Restore(s.CoinsTaught, s.BarterDeals, s.StockSold, s.Buyback);
         }
 
         /// <summary>
@@ -157,6 +174,10 @@ namespace ZeldaDaughter.Core.Save
             public List<string> HintsDone { get; set; } = new List<string>();
             public List<string> Picked { get; set; } = new List<string>();
             public List<string> Killed { get; set; } = new List<string>();
+            public bool CoinsTaught { get; set; }
+            public int BarterDeals { get; set; }
+            public Dictionary<string, Dictionary<string, int>> StockSold { get; set; } = new Dictionary<string, Dictionary<string, int>>();
+            public Dictionary<string, Dictionary<string, int>> Buyback { get; set; } = new Dictionary<string, Dictionary<string, int>>();
         }
 
         sealed class StackDto

@@ -5,6 +5,7 @@ using ZeldaDaughter.Core.Combat;
 using ZeldaDaughter.Core.Common;
 using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Data;
+using ZeldaDaughter.Core.Economy;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
 using ZeldaDaughter.Core.Npcs;
@@ -31,6 +32,7 @@ namespace ZeldaDaughter.Core.Save
             Npcs = new NpcRoster(data.Npcs, Clock);
             // endurance and hunger scale recovery wherever it happens (natural regeneration, food) — D-01
             Condition.HealScale = () => Skills.HealMultiplier() * Hunger.Multiplier;
+            Trade = new Trade(data.Traders, data.Items, Bag, Npcs.IsShopOpen, Language);
             Combat = new HeroCombat(data.Weapons, Skills, Condition, Hunger, Bag);
         }
 
@@ -45,6 +47,8 @@ namespace ZeldaDaughter.Core.Save
         public Hints Hints { get; }
         /// <summary>Where the NPCs are by the clock (D-02). Nothing to save: the slot is a function of the time.</summary>
         public NpcRoster Npcs { get; }
+        /// <summary>Barter and coins with the shop NPCs (D-03); a shop deals only while its NPC is at the counter.</summary>
+        public Trade Trade { get; }
         /// <summary>The hero's side of a fight, wired to this state's skills, wounds, hunger and bag (view sets <c>Position</c>).</summary>
         public HeroCombat Combat { get; }
 

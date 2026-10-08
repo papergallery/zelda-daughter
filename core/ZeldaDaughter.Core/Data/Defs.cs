@@ -15,6 +15,8 @@ namespace ZeldaDaughter.Core.Data
         /// <summary>The hero's line on pick-up.</summary>
         public string Pickup { get; set; } = "";
         public bool Placeable { get; set; }
+        /// <summary>Hidden worth in coins (§2); 0 — not for trade (quest things). Each trader scales it (traders.json).</summary>
+        public int Value { get; set; }
     }
 
     /// <summary>Field craft: drag one item onto another, in any order (§7).</summary>

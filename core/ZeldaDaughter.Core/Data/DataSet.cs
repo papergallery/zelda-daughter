@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using ZeldaDaughter.Core.Combat;
 using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Dialogue;
+using ZeldaDaughter.Core.Economy;
 using ZeldaDaughter.Core.Input;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
@@ -46,7 +47,8 @@ namespace ZeldaDaughter.Core.Data
     /// <summary>All of data/*.json, loaded and cross-checked once (C-05, ADR-0008). Unity reads the same files.</summary>
     public sealed class DataSet
     {
-        static readonly string[] ItemKinds = { "material", "tool", "weapon", "food", "medicine" };
+        static readonly string[] ItemKinds = { "material", "tool", "weapon", "food", "medicine", "currency", "quest" };
+        public const string CoinItem = "coin";
         static readonly Regex IdPattern = new Regex("^[a-z][a-z0-9_]*$");
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings
         {
@@ -68,6 +70,7 @@ namespace ZeldaDaughter.Core.Data
         public WeaponSettings Weapons { get; private set; } = new WeaponSettings();
         public EnemySettings Enemies { get; private set; } = new EnemySettings();
         public NpcSettings Npcs { get; private set; } = new NpcSettings();
+        public TraderSettings Traders { get; private set; } = new TraderSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -98,6 +101,7 @@ namespace ZeldaDaughter.Core.Data
                 Weapons = Read<WeaponSettings>(read, "weapons.json", problems),
                 Enemies = Read<EnemySettings>(read, "enemies.json", problems),
                 Npcs = Read<NpcSettings>(read, "npcs.json", problems),
+                Traders = Read<TraderSettings>(read, "traders.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);
@@ -111,6 +115,7 @@ namespace ZeldaDaughter.Core.Data
                 else byId[it.Id] = it;
                 if (it.Weight < 0) problems.Add($"items.json: '{it.Id}' — отрицательный вес");
                 if (it.Stack < 1) problems.Add($"items.json: '{it.Id}' — stack < 1");
+                if (it.Value < 0) problems.Add($"items.json: '{it.Id}' — отрицательная ценность");
                 if (Array.IndexOf(ItemKinds, it.Kind) < 0) problems.Add($"items.json: '{it.Id}' — неизвестный вид '{it.Kind}' ({string.Join(" | ", ItemKinds)})");
                 if (it.Kind == "weapon" && !d.Weapons.Weapons.ContainsKey(it.Id)) problems.Add($"items.json: '{it.Id}' — оружие без записи в weapons.json");
             }
@@ -213,6 +218,38 @@ namespace ZeldaDaughter.Core.Data
                     else if (act == NpcActivity.Trade && !kv.Value.Shop) problems.Add($"{who} — торгует, а shop: false");
                 }
                 if (sched.Count > 0 && !sleeps) problems.Add($"{who} — в расписании нет сна (§2: ночью спят)");
+            }
+            if (!byId.TryGetValue(CoinItem, out var coin) || coin.Kind != "currency" || coin.Value != 1) problems.Add($"items.json: нет '{CoinItem}' с kind currency и value 1 (монета — единица ценности)");
+            if (d.Traders.BuyShare <= 0 || d.Traders.BuyShare > 1) problems.Add("traders.json: buyShare должен быть в (0; 1]");
+            if (d.Traders.SellMarkup < 1) problems.Add("traders.json: sellMarkup должен быть ≥ 1");
+            foreach (var kv in d.Npcs.Npcs)
+                if (kv.Value.Shop != d.Traders.Traders.ContainsKey(kv.Key)) problems.Add($"traders.json: '{kv.Key}' — shop: {kv.Value.Shop.ToString().ToLowerInvariant()} в npcs.json, а торговца {(kv.Value.Shop ? "нет" : "не должно быть")}");
+            foreach (var tk in d.Traders.Traders.Keys)
+                if (!d.Npcs.Npcs.ContainsKey(tk)) problems.Add($"traders.json: '{tk}' — нет в npcs.json");
+            foreach (var kv in d.Traders.Traders)
+            {
+                string who = $"traders.json: {kv.Key}";
+                float best = kv.Value.DefaultBuy;
+                if (kv.Value.DefaultBuy < 0) problems.Add($"{who} — defaultBuy < 0");
+                foreach (var b in kv.Value.Buys)
+                {
+                    if (!byId.ContainsKey(b.Key)) problems.Add($"{who}: buys '{b.Key}' — нет в items.json");
+                    if (b.Value < 0) problems.Add($"{who}: buys '{b.Key}' — множитель < 0");
+                    best = Math.Max(best, b.Value);
+                }
+                foreach (var b in kv.Value.BuysKinds)
+                {
+                    if (Array.IndexOf(ItemKinds, b.Key) < 0) problems.Add($"{who}: buysKinds '{b.Key}' — неизвестный вид");
+                    if (b.Value < 0) problems.Add($"{who}: buysKinds '{b.Key}' — множитель < 0");
+                    best = Math.Max(best, b.Value);
+                }
+                if (d.Traders.BuyShare * best >= d.Traders.SellMarkup) problems.Add($"{who} — buyShare × {best} ≥ sellMarkup: на круге торговцев можно заработать");
+                foreach (var st in kv.Value.Stock)
+                {
+                    if (!byId.TryGetValue(st.Item, out var sd)) problems.Add($"{who}: stock '{st.Item}' — нет в items.json");
+                    else if (sd.Value <= 0 || sd.Kind == "currency") problems.Add($"{who}: stock '{st.Item}' — без ценности или деньги");
+                    if (st.Count != null && st.Count < 1) problems.Add($"{who}: stock '{st.Item}' — count < 1");
+                }
             }
             var pairs = recipes.Field.GroupBy(r => string.CompareOrdinal(r.A, r.B) <= 0 ? r.A + "|" + r.B : r.B + "|" + r.A).Where(g => g.Count() > 1);
             foreach (var g in pairs) problems.Add($"recipes.json: пара {g.Key.Replace("|", " + ")} — два рецепта");
