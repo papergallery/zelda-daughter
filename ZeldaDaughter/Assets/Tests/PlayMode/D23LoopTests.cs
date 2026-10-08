@@ -239,7 +239,10 @@ namespace ZeldaDaughter.Tests
 
             // the long press itself: a finger down on cell 0, held still for longPressSeconds
             drag.PointerDown(0, bag.CellScreenPosition(0));
-            yield return new WaitForSeconds((float)g.Data.Input.LongPressSeconds + 0.4f);
+            var held = bag.CellScreenPosition(0);
+            float heldUntil = Time.unscaledTime + (float)g.Data.Input.LongPressSeconds + 0.3f;
+            while (Time.unscaledTime < heldUntil) { drag.Poll(held, true); yield return null; }
+            drag.Poll(held, true);
             string expected = g.Data.Items[g.Bag.Stacks[0].ItemId].Description;
             Assert.IsNotNull(bag.InfoText, "a held finger asks «what is this?»");
             StringAssert.Contains(expected, bag.InfoText);
