@@ -58,6 +58,7 @@ namespace ZeldaDaughter.Tests
         IEnumerator Walk(Vector3 dir, float meters, float speed = 1.6f)
         {
             var cc = _hero.GetComponent<CharacterController>();
+            cc.minMoveDistance = 0f; // a slow step at a high frame rate is under the default 1 mm and would be dropped
             dir.y = 0f;
             dir.Normalize();
             float left = meters;
@@ -133,7 +134,6 @@ namespace ZeldaDaughter.Tests
             Assert.AreEqual(0, _sprite.FrameIndex, "standing: the first frame");
             yield return Walk(CamRight(), 0.5f, 0.7f); yield return Settle(1);  // 0.5 m slowly
             int slow = _sprite.FrameIndex;
-            Debug.Log($"[ZD:Test] frame fast={fast} slow={slow} walking={_view.Walking} steps={_view.Steps} pos={_hero.transform.position}");
             Assert.AreEqual(fast, slow, "the same path — the same frame, whatever the speed");
             Assert.Greater(fast, 0, "half a metre of a 0.8 m stride is past the first frame");
 
@@ -323,6 +323,8 @@ namespace ZeldaDaughter.Tests
             var downs = new List<bool>();
             _s.Events.HeroDown += downs.Add;
             _s.State.Condition.Damage(10000f); // the core's knockout; the view reads it from the state
+            yield return null;
+            yield return null;
             float t0 = Time.time;
             bool wentDark = false, lay = false, locked = false;
             int dips = 0;
