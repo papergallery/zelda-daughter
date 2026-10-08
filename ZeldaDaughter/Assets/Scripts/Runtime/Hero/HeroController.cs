@@ -32,6 +32,7 @@ namespace ZeldaDaughter.Hero
         private MoveIntent _intent = MoveIntent.None;
         private float _verticalSpeed;
         private float _moved;
+        private readonly List<RaycastResult> _uiHits = new List<RaycastResult>();
         private static readonly IReadOnlyList<float> NoModifiers = new float[0];
 
         public void Configure(IsoCamera iso, Camera cam, string terrain)
@@ -61,6 +62,8 @@ namespace ZeldaDaughter.Hero
             transform.SetPositionAndRotation(position, Quaternion.Euler(0f, facingDegrees, 0f));
             _cc.enabled = true;
             _intent = MoveIntent.None;
+            _verticalSpeed = 0f;
+            if (_iso != null) _iso.SnapToTarget(); // the camera must not glide from the old place
         }
 
         /// <summary>A touch over UI (reply buttons) belongs to the UI, not to walking.</summary>
@@ -68,9 +71,9 @@ namespace ZeldaDaughter.Hero
         {
             var es = EventSystem.current;
             if (es == null) return false;
-            var hits = new List<RaycastResult>();
-            es.RaycastAll(new PointerEventData(es) { position = new Vector2(screen.X, screen.Y) }, hits);
-            return hits.Count > 0;
+            _uiHits.Clear();
+            es.RaycastAll(new PointerEventData(es) { position = new Vector2(screen.X, screen.Y) }, _uiHits);
+            return _uiHits.Count > 0;
         }
 
         private void Awake()
@@ -105,15 +108,22 @@ namespace ZeldaDaughter.Hero
             {
                 var phase = Map(t.phase);
                 if (phase == null) continue;
-                var pos = new Vec2(t.screenPosition.x, t.screenPosition.y);
-                if (phase == CoreTouchPhase.Began && IsOverUI(pos)) continue;
-                Feed(new TouchSample(t.finger.index, phase.Value, t.time, pos, phase == CoreTouchPhase.Began ? HitAt(pos) : default));
+                OnTouch(t.finger.index, phase.Value, t.time, new Vec2(t.screenPosition.x, t.screenPosition.y));
             }
             Handle(_gestures.Tick(Time.realtimeSinceStartupAsDouble));
             Move(Time.deltaTime);
         }
 
-        /// <summary>One touch sample (from the device or a test).</summary>
+        /// <summary>One touch from the device (Update) or a test: a touch that begins over UI belongs to the UI and is dropped.
+        /// Returns whether the hero's gestures got it.</summary>
+        public bool OnTouch(int finger, CoreTouchPhase phase, double time, Vec2 pos)
+        {
+            if (phase == CoreTouchPhase.Began && IsOverUI(pos)) return false;
+            Feed(new TouchSample(finger, phase, time, pos, phase == CoreTouchPhase.Began ? HitAt(pos) : default));
+            return true;
+        }
+
+        /// <summary>One touch sample (already filtered).</summary>
         public void Feed(TouchSample sample) => Handle(_gestures.Feed(sample));
 
         /// <summary>What a touch at this screen point lands on: the hero by its screen projection, else what the ray hits.</summary>

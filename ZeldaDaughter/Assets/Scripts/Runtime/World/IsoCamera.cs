@@ -38,6 +38,7 @@ namespace ZeldaDaughter.World
         public void SnapToTarget()
         {
             transform.rotation = Quaternion.Euler(_pitch, _yaw, 0f);
+            _velocity = Vector3.zero;
             if (_target != null) transform.position = Desired();
         }
 

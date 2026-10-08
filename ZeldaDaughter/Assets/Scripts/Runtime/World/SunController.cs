@@ -17,6 +17,8 @@ namespace ZeldaDaughter.World
         private const float LowSunPitch = 5f;
         private const float NightIntensityShare = 0.03f;
 
+        /// <summary>Sun elevation angle, degrees (low at night).</summary>
+        public float Pitch => _sun != null ? _sun.transform.eulerAngles.x : 0f;
         public float Intensity => _sun != null ? _sun.intensity : 0f;
 
         public void Configure(Light sun, Vector3 dayRotation, float dayIntensity, Color dayAmbient)

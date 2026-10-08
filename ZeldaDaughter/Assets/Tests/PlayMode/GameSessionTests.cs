@@ -20,12 +20,6 @@ namespace ZeldaDaughter.Tests
         GameSession _s;
         HeroController _hero;
 
-        static void ClearSlot()
-        {
-            foreach (var f in new[] { GameSession.SlotPath, GameSession.SlotPath + ".bak", GameSession.SlotPath + ".tmp" })
-                if (File.Exists(f)) File.Delete(f);
-        }
-
         IEnumerator LoadScene()
         {
             Application.runInBackground = true;
@@ -37,8 +31,8 @@ namespace ZeldaDaughter.Tests
             _hero.UseDpi(160f);
         }
 
-        [UnitySetUp] public IEnumerator SetUp() { ClearSlot(); yield return LoadScene(); }
-        [TearDown] public void TearDown() => ClearSlot();
+        [UnitySetUp] public IEnumerator SetUp() { TestSaves.UseCleanFolder(); yield return LoadScene(); }
+        [TearDown] public void TearDown() => TestSaves.Clear();
 
         [UnityTest]
         public IEnumerator Clock_drives_the_sun()
@@ -46,11 +40,12 @@ namespace ZeldaDaughter.Tests
             var sun = Object.FindFirstObjectByType<SunController>();
             _s.State.Clock.SetTime(1, 0.05);
             yield return null;
-            float night = sun.Intensity;
+            float night = sun.Intensity, nightPitch = sun.Pitch;
             _s.State.Clock.SetTime(1, 0.5);
             yield return null;
-            float noon = sun.Intensity;
+            float noon = sun.Intensity, noonPitch = sun.Pitch;
             Assert.Less(night, noon * 0.1f, $"night {night} vs noon {noon}");
+            Assert.Less(nightPitch + 20f, noonPitch, $"the sun is low at night ({nightPitch}°) and high at noon ({noonPitch}°)");
         }
 
         [UnityTest]
@@ -125,32 +120,85 @@ namespace ZeldaDaughter.Tests
             yield return null; // layout
             var b = _s.UI.ReplyButtons[0].GetComponent<RectTransform>();
             Vector3 c = b.position;
-            Assert.IsTrue(_hero.IsOverUI(new Vec2(c.x, c.y)), "a reply button is under the finger");
-            Assert.IsFalse(_hero.IsOverUI(new Vec2(Screen.width * 0.5f, Screen.height * 0.4f)), "open ground is not UI");
+            var onButton = new Vec2(c.x, c.y);
+            Assert.IsTrue(_hero.IsOverUI(onButton), "a reply button is under the finger");
+            var ground = new Vec2(Screen.width * 0.5f, Screen.height * 0.4f);
+            Assert.IsFalse(_hero.IsOverUI(ground), "open ground is not UI");
+
+            // The same path as Update takes: a touch beginning over a button never reaches the hero's gestures.
+            var where = _hero.transform.position;
+            double Now() => Time.realtimeSinceStartupAsDouble;
+            Assert.IsFalse(_hero.OnTouch(0, TouchPhase.Began, Now(), onButton), "the button takes the touch");
+            _hero.OnTouch(0, TouchPhase.Moved, Now(), new Vec2(onButton.X + 120f, onButton.Y + 120f));
+            for (int i = 0; i < 20; i++)
+            {
+                _hero.OnTouch(0, TouchPhase.Stationary, Now(), new Vec2(onButton.X + 120f, onButton.Y + 120f));
+                yield return null;
+            }
+            _hero.OnTouch(0, TouchPhase.Ended, Now(), new Vec2(onButton.X + 120f, onButton.Y + 120f));
+            Assert.IsFalse(_hero.IsMoving, "a drag that began on a button does not walk the hero");
+            Assert.Less(Vector3.Distance(_hero.transform.position, where), 0.05f, "the hero stayed put");
+
+            // Control: the same drag from open ground does start walking.
+            Assert.IsTrue(_hero.OnTouch(0, TouchPhase.Began, Now(), ground), "open ground gives the touch to the hero");
+            _hero.OnTouch(0, TouchPhase.Moved, Now(), new Vec2(ground.X + 60f, ground.Y + 60f));
+            yield return null;
+            Assert.IsTrue(_hero.IsMoving, "control: the drag from open ground walks");
+            _hero.OnTouch(0, TouchPhase.Ended, Now(), new Vec2(ground.X + 60f, ground.Y + 60f));
         }
 
         [UnityTest]
-        public IEnumerator Save_and_load_bring_back_place_time_and_knowledge()
+        public IEnumerator Save_and_load_bring_back_place_time_inventory_and_knowledge()
         {
+            var spawn = _hero.transform.position;
             var h = Camera.main.WorldToScreenPoint(_hero.transform.position);
             var o = new Vec2(h.x, h.y - 250f);
             _hero.Feed(new TouchSample(0, TouchPhase.Began, Time.realtimeSinceStartupAsDouble, o, TouchHit.Ground));
             _hero.Feed(new TouchSample(0, TouchPhase.Moved, Time.realtimeSinceStartupAsDouble, new Vec2(o.X + 28, o.Y + 28), default));
-            float end = Time.time + 1.5f;
+            float end = Time.time + 3f;
             while (Time.time < end) { _hero.Feed(new TouchSample(0, TouchPhase.Stationary, Time.realtimeSinceStartupAsDouble, new Vec2(o.X + 28, o.Y + 28), default)); yield return null; }
             _hero.Feed(new TouchSample(0, TouchPhase.Ended, Time.realtimeSinceStartupAsDouble, new Vec2(o.X + 28, o.Y + 28), default));
             yield return null;
-            _s.State.Language.Heard("peasant", "start");
-            yield return null;
             var where = _hero.transform.position;
-            double t = _s.State.Clock.TimeOfDay;
+            Assert.Greater(Vector3.Distance(where, spawn), 2f, "the hero walked away from the spawn before saving");
+            _s.Tap("pickup_stick");
+            _s.State.Language.Heard("peasant", "start");
+            _s.State.Clock.SetTime(3, 0.4321);
+            yield return null;
             float lang = _s.State.Language.Understanding;
+            Assert.Greater(lang, 0f);
             LogAssert.Expect(LogType.Log, "[ZD:Save] saved test");
             _s.Save("test");
+
+            // The file itself holds exactly what was set (the live clock moves on a little every frame).
+            var onDisk = new Core.Save.GameState(_s.State.Data);
+            Core.Save.SaveGame.Restore(onDisk, File.ReadAllText(_s.SlotPath));
+            Assert.AreEqual(3, onDisk.Clock.Day);
+            Assert.AreEqual(0.4321, onDisk.Clock.TimeOfDay, 0.0005);
+            Assert.AreEqual(1, onDisk.Bag.Count("stick"));
+
             yield return LoadScene();
             Assert.Less(Vector3.Distance(_hero.transform.position, where), 0.2f, "same place");
-            Assert.AreEqual(t, _s.State.Clock.TimeOfDay, 0.01);
+            Assert.Greater(Vector3.Distance(_hero.transform.position, spawn), 2f, "not back at the spawn");
+            Assert.AreEqual(3, _s.State.Clock.Day);
+            Assert.AreEqual(0.4321, _s.State.Clock.TimeOfDay, 0.002);
+            Assert.AreEqual(1, _s.State.Bag.Count("stick"), "inventory came back");
             Assert.AreEqual(lang, _s.State.Language.Understanding, 1e-4);
+        }
+
+        [UnityTest]
+        public IEnumerator A_newer_save_is_refused_and_left_alone()
+        {
+            _s.Save("seed");
+            string path = _s.SlotPath;
+            string newer = File.ReadAllText(path).Replace("\"Version\": 1", "\"Version\": 99");
+            File.WriteAllText(path, newer);
+            if (File.Exists(path + ".bak")) File.Delete(path + ".bak");
+            LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex(@"^\[ZD:Save\] slot refused"));
+            yield return LoadScene();
+            LogAssert.Expect(LogType.Warning, new System.Text.RegularExpressions.Regex(@"^\[ZD:Save\] not saved"));
+            _s.Save("again"); // logs a warning, writes nothing
+            Assert.AreEqual(newer, File.ReadAllText(path), "the newer game's save is untouched");
         }
     }
 }

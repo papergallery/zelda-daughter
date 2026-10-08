@@ -70,5 +70,40 @@ namespace ZeldaDaughter.Core.Tests
             }
             finally { Directory.Delete(dir, true); }
         }
+
+        static string TempSlot(out string dir)
+        {
+            dir = Path.Combine(Path.GetTempPath(), "zd-save-" + System.Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            return Path.Combine(dir, "slot.json");
+        }
+
+        [Fact]
+        public void Load_reports_no_save_loaded_and_rejected()
+        {
+            string slot = TempSlot(out var dir);
+            try
+            {
+                var g = new GameState(D);
+                Assert.Equal(LoadOutcome.NoSave, SaveGame.Load(g, slot, out _));
+                SaveGame.WriteAtomic(slot, SaveGame.Capture(Played()));
+                var g2 = new GameState(D);
+                Assert.Equal(LoadOutcome.Loaded, SaveGame.Load(g2, slot, out _));
+                Assert.Equal(11, g2.Bag.Count("stick"));
+
+                // newer game: refused, the file stays untouched
+                string newer = SaveGame.Capture(new GameState(D)).Replace($"\"Version\": {SaveGame.Version}", "\"Version\": 99");
+                File.WriteAllText(slot, newer);
+                File.Delete(slot + ".bak");
+                Assert.Equal(LoadOutcome.Rejected, SaveGame.Load(new GameState(D), slot, out var why));
+                Assert.Contains("newer", why);
+                Assert.Equal(newer, File.ReadAllText(slot));
+
+                // broken with no backup: refused, not "no save"
+                File.WriteAllText(slot, "{ broken");
+                Assert.Equal(LoadOutcome.Rejected, SaveGame.Load(new GameState(D), slot, out _));
+            }
+            finally { Directory.Delete(dir, true); }
+        }
     }
 }

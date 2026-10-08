@@ -17,6 +17,7 @@ namespace ZeldaDaughter.Tests
         public IEnumerator Walking_the_road_reaches_the_peasant_in_about_fifteen_seconds()
         {
             Application.runInBackground = true;
+            TestSaves.UseCleanFolder();
             yield return SceneManager.LoadSceneAsync("prologue-grey");
             yield return null;
             var hero = Object.FindFirstObjectByType<HeroController>();
@@ -43,5 +44,7 @@ namespace ZeldaDaughter.Tests
             Debug.Log($"[ZD:Test] prologue spawn→peasant {took:0.0}s");
             Assert.That(took, Is.InRange(11f, 17f), "§2: ~15 s of walking to the field");
         }
+
+        [TearDown] public void TearDown() => TestSaves.Clear();
     }
 }

@@ -33,6 +33,13 @@ namespace ZeldaDaughter.Core.Data
         public float RemarkBubbleSeconds { get; set; }
         public float NpcBubbleSeconds { get; set; }
         public float RemarkCheckSeconds { get; set; }
+        /// <summary>Metres within which a tappable thing (item, NPC) shows the «tappable_nearby» hint.</summary>
+        public float TappableHintRadius { get; set; }
+        /// <summary>Daylight (0..1) below which the hero counts it as night for her remarks.</summary>
+        public float NightDaylightBelow { get; set; }
+
+        public bool IsNear(float distance) => distance < TappableHintRadius;
+        public bool IsNight(float daylight) => daylight < NightDaylightBelow;
     }
 
     /// <summary>All of data/*.json, loaded and cross-checked once (C-05, ADR-0008). Unity reads the same files.</summary>
@@ -143,6 +150,8 @@ namespace ZeldaDaughter.Core.Data
                 if (!string.IsNullOrEmpty(w.Wound) && w.ParsedWound == null) problems.Add($"weapons.json: '{kv.Key}' — неизвестная рана '{w.Wound}'");
                 if (w.Severity < 0 || w.Severity > 1) problems.Add($"weapons.json: '{kv.Key}' — тяжесть раны вне 0..1");
             }
+            if (d.Session.TappableHintRadius <= 0) problems.Add("session.json: tappableHintRadius должен быть > 0");
+            if (d.Session.NightDaylightBelow <= 0 || d.Session.NightDaylightBelow > 1) problems.Add("session.json: nightDaylightBelow должен быть в (0; 1]");
             foreach (var kv in d.Enemies.Enemies)
             {
                 var e = kv.Value;

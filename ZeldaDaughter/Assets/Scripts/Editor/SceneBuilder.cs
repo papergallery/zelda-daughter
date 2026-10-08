@@ -33,13 +33,46 @@ namespace ZeldaDaughter.Editor
         [MenuItem("Zelda/Scenes/Build all from config")]
         public static void BuildAll()
         {
+            GuardEditorState();
+            var before = SceneManager.GetActiveScene().path;
+            var configs = new List<SceneConfig>();
             foreach (var path in Directory.GetFiles(ConfigDir, "*.json").OrderBy(p => p, StringComparer.Ordinal))
-                Build(path);
+            {
+                if (Build(path) != null) configs.Add(SceneConfig.Parse(File.ReadAllText(path)));
+            }
+            ApplyBuildSettings(configs);
+            // The builder replaced whatever was open; put the author's scene back.
+            if (!string.IsNullOrEmpty(before) && File.Exists(before)) EditorSceneManager.OpenScene(before, OpenSceneMode.Single);
+        }
+
+        /// <summary>
+        /// EditorBuildSettings.scenes is rebuilt whole from the configs (build.include / build.order), never appended to:
+        /// the first scene is the one the player build starts in.
+        /// </summary>
+        static void ApplyBuildSettings(List<SceneConfig> configs)
+        {
+            var names = SceneConfig.BuildList(configs);
+            EditorBuildSettings.scenes = names.Select(n => new EditorBuildSettingsScene($"{ScenesDir}/{n}.unity", true)).ToArray();
+            Debug.Log("[ZD:Scene] build order: " + string.Join(" → ", names));
+        }
+
+        /// <summary>The builder opens scenes in place of the current one — refuse rather than lose the author's edits.</summary>
+        public static void GuardEditorState()
+        {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new InvalidOperationException("[ZD:Scene] the editor is in Play Mode — stop it first");
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var sc = SceneManager.GetSceneAt(i);
+                if (sc.isDirty)
+                    throw new InvalidOperationException($"[ZD:Scene] '{(string.IsNullOrEmpty(sc.name) ? "untitled" : sc.name)}' has unsaved changes — save or revert it first");
+            }
         }
 
         /// <summary>Returns the content hash, or null when the config has problems (logged as errors).</summary>
         public static string Build(string configPath)
         {
+            GuardEditorState();
             var config = SceneConfig.Parse(File.ReadAllText(configPath));
             var problems = config.Validate(p => AssetDatabase.LoadAssetAtPath<GameObject>(p) != null);
             if (problems.Count > 0)
@@ -109,14 +142,13 @@ namespace ZeldaDaughter.Editor
             uiGo.transform.SetParent(game.transform, false);
             var ui = uiGo.AddComponent<SessionUI>();
             ui.Configure(cam);
-            game.AddComponent<GameSession>().Configure(hero.GetComponent<HeroController>(), sunCtl, ui, config.Name, tagged.ToArray());
+            game.AddComponent<GameSession>().Configure(hero.GetComponent<HeroController>(), sunCtl, ui, config.Name, tagged.ToArray(), config.Save.Slot);
             var es = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             es.transform.SetParent(game.transform, false);
 
             if (!AssetDatabase.IsValidFolder(ScenesDir)) AssetDatabase.CreateFolder("Assets", "Scenes");
             string scenePath = $"{ScenesDir}/{config.Name}.unity";
             EditorSceneManager.SaveScene(scene, scenePath);
-            AddToBuild(scenePath);
             string hash = ContentHash(scene, out int count);
             Debug.Log($"[ZD:Scene] built {config.Name} objects={count} hash={hash}");
             return hash;
@@ -162,14 +194,6 @@ namespace ZeldaDaughter.Editor
             mat.SetColor("_BaseColor", ColorOf(hex));
             AssetDatabase.CreateAsset(mat, path);
             return mat;
-        }
-
-        static void AddToBuild(string scenePath)
-        {
-            var list = EditorBuildSettings.scenes.ToList();
-            if (list.Any(s => s.path == scenePath)) return;
-            list.Add(new EditorBuildSettingsScene(scenePath, true));
-            EditorBuildSettings.scenes = list.ToArray();
         }
 
         /// <summary>Names, transforms and component types of every object — the same config gives the same hash.</summary>

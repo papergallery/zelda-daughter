@@ -16,6 +16,8 @@ namespace ZeldaDaughter.Core.Save
     /// written atomically (temp file → replace, the previous kept as .bak). When to save — exit, zone change, every N
     /// minutes — is the game's call (V-11). April: no version, non-atomic, half the state missing.
     /// </summary>
+    public enum LoadOutcome { NoSave, Loaded, Rejected }
+
     public static class SaveGame
     {
         public const int Version = 1;
@@ -71,6 +73,32 @@ namespace ZeldaDaughter.Core.Save
             g.Hints.Restore(s.HintsDone);
             g.Picked.Clear();
             foreach (var p in s.Picked) g.Picked.Add(p);
+        }
+
+        /// <summary>
+        /// Reads the slot into <paramref name="g"/>. <see cref="LoadOutcome.Rejected"/> — a save exists but must not be
+        /// used (newer game, broken with no readable backup): the caller must not overwrite the slot this session.
+        /// </summary>
+        public static LoadOutcome Load(GameState g, string path, out string? problem)
+        {
+            problem = null;
+            string? text = ReadSlot(path);
+            if (text == null)
+            {
+                if (!File.Exists(path) && !File.Exists(path + ".bak")) return LoadOutcome.NoSave;
+                problem = "slot and backup are unreadable";
+                return LoadOutcome.Rejected;
+            }
+            try
+            {
+                Restore(g, text);
+                return LoadOutcome.Loaded;
+            }
+            catch (Exception e) when (e is InvalidDataException || e is JsonException || e is ArgumentException || e is InvalidOperationException)
+            {
+                problem = e.Message;
+                return LoadOutcome.Rejected;
+            }
         }
 
         /// <summary>Write so that a crash mid-write never leaves a broken slot: temp → replace; the old one stays as .bak.</summary>

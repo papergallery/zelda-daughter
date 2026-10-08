@@ -19,6 +19,8 @@ namespace ZeldaDaughter.Core.Scenes
         public AmbientConfig Ambient { get; set; } = new AmbientConfig();
         public CameraConfig Camera { get; set; } = new CameraConfig();
         public HeroConfig Hero { get; set; } = new HeroConfig();
+        public BuildConfig Build { get; set; } = new BuildConfig();
+        public SaveConfig Save { get; set; } = new SaveConfig();
         public List<ObjectConfig> Objects { get; set; } = new List<ObjectConfig>();
 
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore };
@@ -27,6 +29,23 @@ namespace ZeldaDaughter.Core.Scenes
         static readonly HashSet<string> Shapes = new HashSet<string> { "cube", "sphere", "capsule", "cylinder", "plane", "quad" };
 
         public static SceneConfig Parse(string json) => JsonConvert.DeserializeObject<SceneConfig>(json, Json) ?? new SceneConfig();
+
+        /// <summary>
+        /// Scene names for the player build, in build order (first = the one the game starts in): included scenes sorted by
+        /// <c>build.order</c>. Throws when two included scenes share an order — the order must be explicit.
+        /// </summary>
+        public static IReadOnlyList<string> BuildList(IEnumerable<SceneConfig> configs)
+        {
+            var included = new List<SceneConfig>();
+            foreach (var c in configs) if (c.Build.Include) included.Add(c);
+            included.Sort((a, b) => a.Build.Order != b.Build.Order ? a.Build.Order.CompareTo(b.Build.Order) : string.CompareOrdinal(a.Name, b.Name));
+            for (int i = 1; i < included.Count; i++)
+                if (included[i].Build.Order == included[i - 1].Build.Order)
+                    throw new InvalidOperationException($"scenes {included[i - 1].Name} and {included[i].Name} have the same build.order {included[i].Build.Order}");
+            var names = new List<string>();
+            foreach (var c in included) names.Add(c.Name);
+            return names;
+        }
 
         /// <summary>Problems as "scene: id: what"; empty when the scene can be built.</summary>
         public IReadOnlyList<string> Validate(Func<string, bool>? prefabExists = null)
@@ -73,6 +92,19 @@ namespace ZeldaDaughter.Core.Scenes
         {
             if (!string.IsNullOrEmpty(c) && !ColorPattern.IsMatch(c)) p.Add($"{Name}: '{who}' — цвет '{c}' не #rrggbb");
         }
+    }
+
+    /// <summary>Does the scene go into the player build, and where in the order (0 = the first scene the game opens).</summary>
+    public sealed class BuildConfig
+    {
+        public bool Include { get; set; } = true;
+        public int Order { get; set; } = 1000;
+    }
+
+    /// <summary>Where this scene saves. An empty slot means saving is off (test scenes) — they never touch the player's slot.</summary>
+    public sealed class SaveConfig
+    {
+        public string? Slot { get; set; }
     }
 
     public struct V3

@@ -26,6 +26,7 @@ namespace ZeldaDaughter.Game
         [SerializeField] private string _zone;
         [SerializeField] private SceneTags[] _objects = new SceneTags[0];
         [SerializeField] private int _seed = 20261008;
+        [SerializeField] private string _slot; // file name of the save slot; empty — this scene does not save (test scenes)
 
         private GameState _state;
         private Remarks _remarks;
@@ -36,13 +37,27 @@ namespace ZeldaDaughter.Game
         private Conversation _talk;
         private string _talkNpc;
         private Transform _talkNpcTransform;
+        private bool _saveLocked; // the slot holds a save we refused to load: never overwrite it this session
 
         public GameState State => _state;
         public SessionUI UI => _ui;
-        public static string SlotPath => Path.Combine(Application.persistentDataPath, "slot.json");
 
-        public void Configure(HeroController hero, SunController sun, SessionUI ui, string zone, SceneTags[] objects)
+        /// <summary>Tests only: a folder for save slots instead of persistentDataPath, so tests never touch the real save.
+        /// Reset on every Play Mode start.</summary>
+        public static string SaveRootOverride { get; set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => SaveRootOverride = null;
+
+        public static string SaveRoot => SaveRootOverride ?? Application.persistentDataPath;
+        public static string SlotPathFor(string slot) => Path.Combine(SaveRoot, slot + ".json");
+
+        /// <summary>This session's slot file, or null when the scene does not save.</summary>
+        public string SlotPath => string.IsNullOrEmpty(_slot) ? null : SlotPathFor(_slot);
+
+        public void Configure(HeroController hero, SunController sun, SessionUI ui, string zone, SceneTags[] objects, string slot)
         {
+            _slot = slot;
             _hero = hero;
             _sun = sun;
             _ui = ui;
@@ -78,8 +93,6 @@ namespace ZeldaDaughter.Game
             _state.HeroHeight = p.y;
             _state.HeroFacingDegrees = _hero.transform.eulerAngles.y;
 
-            _state.Hints.Set("tappable_nearby", _objects.Any(o => o != null && o.gameObject.activeSelf && (o.Item != null || o.Has("npc"))
-                                                               && Vector3.Distance(o.transform.position, p) < 8f));
             _state.Hints.Set("has_item", _state.Bag.UsedSlots > 0);
             var hint = _state.Hints.Visible;
             _ui.ShowHint(hint != null ? _state.Hints.TextOf(hint) : null);
@@ -88,8 +101,9 @@ namespace ZeldaDaughter.Game
             if (_remarkCheckLeft <= 0)
             {
                 _remarkCheckLeft = data.Session.RemarkCheckSeconds;
+                _state.Hints.Set("tappable_nearby", TappableNearby(p));
                 bool overloaded = _state.Bag.IsOverloaded(_state.Skills.CapacityMultiplier());
-                var topics = _remarks.ConditionTopics(_state.Condition, _state.Hunger, overloaded, _state.Clock.Daylight < 0.1f);
+                var topics = _remarks.ConditionTopics(_state.Condition, _state.Hunger, overloaded, data.Session.IsNight(_state.Clock.Daylight));
                 if (topics.Count > 0) Say(topics[0]);
             }
 
@@ -99,6 +113,18 @@ namespace ZeldaDaughter.Game
                 _autosaveLeft = data.Session.AutosaveSeconds;
                 Save("timer");
             }
+        }
+
+        private bool TappableNearby(Vector3 heroPos)
+        {
+            var session = _state.Data.Session;
+            for (int i = 0; i < _objects.Length; i++)
+            {
+                var o = _objects[i];
+                if (o == null || !o.gameObject.activeSelf || (o.Item == null && !o.Has("npc"))) continue;
+                if (session.IsNear(Vector3.Distance(o.transform.position, heroPos))) return true;
+            }
+            return false;
         }
 
         private void OnApplicationPause(bool paused) { if (paused) Save("pause"); }
@@ -187,23 +213,52 @@ namespace ZeldaDaughter.Game
             ZdLog.Info("Remark", $"{topic}: {line}");
         }
 
-        /// <summary>One save slot, written atomically (core SaveGame).</summary>
+        /// <summary>One save slot, written atomically (core SaveGame). Never throws: a failed write is logged.</summary>
         public void Save(string reason)
         {
-            SaveGame.WriteAtomic(SlotPath, SaveGame.Capture(_state));
-            ZdLog.Info("Save", $"saved {reason}");
+            string path = SlotPath;
+            if (path == null) return;
+            if (_saveLocked) { ZdLog.Warn("Save", $"not saved ({reason}): the slot holds a save this game could not load"); return; }
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                SaveGame.WriteAtomic(path, SaveGame.Capture(_state));
+                ZdLog.Info("Save", $"saved {reason}");
+            }
+            catch (System.Exception e)
+            {
+                ZdLog.Error("Save", $"write failed ({reason}): {e.GetType().Name}: {e.Message}");
+            }
         }
 
         private void Load()
         {
-            var text = SaveGame.ReadSlot(SlotPath);
-            if (text == null) return;
-            SaveGame.Restore(_state, text);
+            string path = SlotPath;
+            if (path == null) return;
+            try
+            {
+                var outcome = SaveGame.Load(_state, path, out var problem);
+                if (outcome == LoadOutcome.NoSave) return;
+                if (outcome == LoadOutcome.Rejected) { Refuse(problem); return; }
+            }
+            catch (System.Exception e)
+            {
+                Refuse($"{e.GetType().Name}: {e.Message}");
+                return;
+            }
             foreach (var id in _state.Picked) if (_byId.TryGetValue(id, out var o)) o.gameObject.SetActive(false);
             if (_state.Zone == _zone)
                 _hero.Teleport(new Vector3(_state.HeroPosition.X, _state.HeroHeight, _state.HeroPosition.Y), _state.HeroFacingDegrees);
             _state.Zone = _zone;
             ZdLog.Info("Save", $"loaded day={_state.Clock.Day} t={_state.Clock.TimeOfDay:0.000}");
+        }
+
+        /// <summary>A save exists but cannot be used: play from a fresh state and leave the slot alone.</summary>
+        private void Refuse(string problem)
+        {
+            _saveLocked = true;
+            _state = new GameState(GameData.Current) { Zone = _zone };
+            ZdLog.Error("Save", $"slot refused, playing without saving: {problem}");
         }
     }
 }

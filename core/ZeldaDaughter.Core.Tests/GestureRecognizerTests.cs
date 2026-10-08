@@ -173,5 +173,13 @@ namespace ZeldaDaughter.Core.Tests
             var ev = r.Feed(new TouchSample(0, TouchPhase.Canceled, 0.2, new Vec2(40, 0), default)).ToList();
             Assert.Single(ev, e => e.Kind == GestureKind.SwipeEnded);
         }
+
+        [Fact]
+        public void Idle_tick_allocates_nothing()
+        {
+            var r = New();
+            Assert.Same(r.Tick(1.0), r.Tick(2.0));
+            Assert.Empty(r.Tick(3.0));
+        }
     }
 }

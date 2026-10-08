@@ -1,6 +1,8 @@
 {
   "_source": "T-04/T-05: сцена ворот G1 — капсула идёт по свайпу. Камера — апрель IsometricCamera.cs (орто, наклон 35°, поворот 45°, дистанция 20, размер 8); формат объектов — апрель region_startmeadow.json.",
   "name": "g1-capsule",
+  "build": { "include": false, "order": 1000 },
+  "save": { "slot": "" },
   "ground": { "sizeX": 40, "sizeZ": 40, "color": "#7d8a5c", "terrain": "grass" },
   "light": { "rotation": { "x": 50, "y": -30, "z": 0 }, "color": "#fff1dc", "intensity": 1.1, "shadows": "hard" },
   "ambient": { "color": "#9aa0a8" },

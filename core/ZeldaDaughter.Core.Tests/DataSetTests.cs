@@ -90,5 +90,25 @@ namespace ZeldaDaughter.Core.Tests
             Assert.Contains(e.Problems, p => p.Contains("enemies.json") && p.Contains("'wolf'") && p.Contains("замах"));
             Assert.Contains(e.Problems, p => p.Contains("enemies.json") && p.Contains("'boar'") && p.Contains("бега"));
         }
+
+        [Fact]
+        public void Session_rules_come_from_data()
+        {
+            var s = DataSet.Load(TestPaths.DataRoot).Session;
+            Assert.True(s.TappableHintRadius > 0);
+            Assert.True(s.IsNear(s.TappableHintRadius - 0.1f));
+            Assert.False(s.IsNear(s.TappableHintRadius + 0.1f));
+            Assert.True(s.IsNight(s.NightDaylightBelow - 0.01f));
+            Assert.False(s.IsNight(s.NightDaylightBelow + 0.01f));
+        }
+
+        [Fact]
+        public void Session_with_a_bad_radius_is_named()
+        {
+            var files = RealFiles();
+            files["session.json"] = files["session.json"].Replace("\"tappableHintRadius\"", "\"tappableHintRadius_\"");
+            var ex = Assert.Throws<DataException>(() => LoadWith(files));
+            Assert.Contains(ex.Problems, p => p.Contains("session.json"));
+        }
     }
 }

@@ -71,5 +71,39 @@ namespace ZeldaDaughter.Core.Tests
             Assert.Contains(p, x => x.Contains("missing.prefab"));
             Assert.Contains(p, x => x.Contains("'c'") && x.Contains("цвет"));
         }
+
+        static SceneConfig Cfg(string name, bool include, int order) =>
+            SceneConfig.Parse($"{{\"name\":\"{name}\",\"build\":{{\"include\":{(include ? "true" : "false")},\"order\":{order}}}}}");
+
+        [Fact]
+        public void Build_list_is_ordered_by_config_and_skips_excluded_scenes()
+        {
+            var list = SceneConfig.BuildList(new[] { Cfg("b", true, 2), Cfg("test", false, 0), Cfg("a", true, 0), Cfg("c", true, 1) });
+            Assert.Equal(new[] { "a", "c", "b" }, list);
+        }
+
+        [Fact]
+        public void Build_list_refuses_two_scenes_with_the_same_order()
+        {
+            Assert.Throws<System.InvalidOperationException>(() => SceneConfig.BuildList(new[] { Cfg("a", true, 0), Cfg("b", true, 0) }));
+        }
+
+        [Fact]
+        public void Real_build_list_starts_with_the_prologue_and_has_no_test_capsule()
+        {
+            var all = Directory.GetFiles(ScenesDir, "*.json").Select(f => SceneConfig.Parse(File.ReadAllText(f)));
+            var list = SceneConfig.BuildList(all);
+            Assert.Equal("prologue-grey", list[0]);
+            Assert.DoesNotContain("g1-capsule", list);
+        }
+
+        [Fact]
+        public void Test_capsule_does_not_save_and_the_prologue_has_a_slot()
+        {
+            var g1 = SceneConfig.Parse(File.ReadAllText(Path.Combine(ScenesDir, "g1-capsule.json")));
+            var pro = SceneConfig.Parse(File.ReadAllText(Path.Combine(ScenesDir, "prologue-grey.json")));
+            Assert.True(string.IsNullOrEmpty(g1.Save.Slot));
+            Assert.False(string.IsNullOrEmpty(pro.Save.Slot));
+        }
     }
 }

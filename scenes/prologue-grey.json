@@ -1,6 +1,8 @@
 {
  "_source": "T-09: серый пролог — раскладка §2 «Пролог» примитивами до выбора стиля. Черновик — апрельский region_startmeadow.json (спавн с костром у бревна на западе, дорога на восток, ферма, город ≈ +14…27), поправлен под §2: поле с крестьянином ≈ 37 м от спавна (≈ 15 с ходьбы при 2,5 м/с, data/movement.json; в апреле ≈ 30 м), ворота города ≈ 70 м. Id town_gate, town_square — цели жестов data/dialogues.json.",
  "name": "prologue-grey",
+ "build": { "include": true, "order": 0 },
+ "save": { "slot": "slot" },
  "ground": {
   "sizeX": 140,
   "sizeZ": 60,

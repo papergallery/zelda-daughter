@@ -1,7 +1,9 @@
 {
-  "_source": "T-10: игровая сессия. Автосохранение — §6 «каждые N минут» (апрель SaveManager — 120 с); время облачков — оценка для заглушки вида, вид — Р2.",
+  "_source": "T-10: игровая сессия. Автосохранение — §6 «каждые N минут» (апрель SaveManager — 120 с); время облачков — оценка для заглушки вида, вид — Р2. Радиус подсказки «можно тапнуть» — 8 м (было константой в GameSession, T-10: ~3 шага героя при 2,5 м/с, data/movement.json; оценка для заглушки). Ночь для реплик героя — освещённость < 0,1 (то же значение было в GameSession; на кривой рассвета WorldClock — первая десятая рассвета).",
   "autosaveSeconds": 120,
   "remarkBubbleSeconds": 3.5,
   "npcBubbleSeconds": 8,
-  "remarkCheckSeconds": 1.0
+  "remarkCheckSeconds": 1.0,
+  "tappableHintRadius": 8,
+  "nightDaylightBelow": 0.1
 }

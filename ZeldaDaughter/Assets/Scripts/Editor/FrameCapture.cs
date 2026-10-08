@@ -2,6 +2,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using ZeldaDaughter.World;
 
 namespace ZeldaDaughter.Editor
@@ -15,31 +16,49 @@ namespace ZeldaDaughter.Editor
     {
         public static string Capture(string scenePath, string pngPath, float daylight, int width = 1080, int height = 2340)
         {
-            EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
-            var sun = Object.FindFirstObjectByType<SunController>();
-            if (sun != null) sun.Apply(daylight);
-            var cam = Camera.main;
-            var iso = cam.GetComponent<IsoCamera>();
-            if (iso != null) iso.SnapToTarget();
-            var rt = new RenderTexture(width, height, 24);
-            var prevTarget = cam.targetTexture;
-            float prevAspect = cam.aspect;
-            cam.targetTexture = rt;
-            cam.aspect = (float)width / height;
-            cam.Render();
-            RenderTexture.active = rt;
-            var tex = new Texture2D(width, height, TextureFormat.RGB24, false);
-            tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-            tex.Apply();
-            RenderTexture.active = null;
-            cam.targetTexture = prevTarget;
-            cam.aspect = prevAspect;
-            Directory.CreateDirectory(Path.GetDirectoryName(pngPath));
-            File.WriteAllBytes(pngPath, tex.EncodeToPNG());
-            Object.DestroyImmediate(tex);
-            rt.Release();
-            // Reopen from disk: the sun change above must not be saved into the scene.
-            EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new System.InvalidOperationException("[ZD:Frame] the editor is in Play Mode — stop it first");
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+                if (SceneManager.GetSceneAt(i).isDirty)
+                    throw new System.InvalidOperationException($"[ZD:Frame] '{SceneManager.GetSceneAt(i).name}' has unsaved changes — save or revert it first");
+
+            string previous = SceneManager.GetActiveScene().path; // reopened at the end; empty for an untitled scene
+            RenderTexture rt = null;
+            Texture2D tex = null;
+            Camera cam = null;
+            RenderTexture prevTarget = null;
+            float prevAspect = 0f;
+            try
+            {
+                EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+                var sun = Object.FindFirstObjectByType<SunController>();
+                if (sun != null) sun.Apply(daylight);
+                cam = Camera.main;
+                var iso = cam.GetComponent<IsoCamera>();
+                if (iso != null) iso.SnapToTarget();
+                rt = new RenderTexture(width, height, 24);
+                prevTarget = cam.targetTexture;
+                prevAspect = cam.aspect;
+                cam.targetTexture = rt;
+                cam.aspect = (float)width / height;
+                cam.Render();
+                RenderTexture.active = rt;
+                tex = new Texture2D(width, height, TextureFormat.RGB24, false);
+                tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                tex.Apply();
+                Directory.CreateDirectory(Path.GetDirectoryName(pngPath));
+                File.WriteAllBytes(pngPath, tex.EncodeToPNG());
+            }
+            finally
+            {
+                RenderTexture.active = null;
+                if (cam != null) { cam.targetTexture = prevTarget; cam.aspect = prevAspect; }
+                if (tex != null) Object.DestroyImmediate(tex);
+                if (rt != null) { rt.Release(); Object.DestroyImmediate(rt); }
+                // Reopen from disk: the sun change above must not be saved into the scene — and the author gets their scene back.
+                if (string.IsNullOrEmpty(previous)) EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                else EditorSceneManager.OpenScene(previous, OpenSceneMode.Single);
+            }
             string line = $"[ZD:Frame] {Path.GetFileNameWithoutExtension(scenePath)} daylight={daylight:0.00} → {pngPath}";
             Debug.Log(line);
             return line;

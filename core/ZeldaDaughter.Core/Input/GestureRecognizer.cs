@@ -92,15 +92,21 @@ namespace ZeldaDaughter.Core.Input
         /// <summary>Advance time without a new sample (a finger held still produces none on most devices).</summary>
         public IReadOnlyList<GestureEvent> Tick(double time)
         {
+            if (!LongPressDue(time)) return NoEvents; // the usual frame: nothing allocated
             var events = new List<GestureEvent>(1);
             CheckLongPress(time, events);
             return events;
         }
 
+        static readonly GestureEvent[] NoEvents = new GestureEvent[0];
+
+        bool LongPressDue(double time) =>
+            _state == State.Pending && _hit.Kind == TouchHitKind.Hero && time - _startTime >= _s.LongPressSeconds
+            && (_last - _start).Length <= _threshold;
+
         void CheckLongPress(double time, List<GestureEvent> events)
         {
-            if (_state == State.Pending && _hit.Kind == TouchHitKind.Hero && time - _startTime >= _s.LongPressSeconds
-                && (_last - _start).Length <= _threshold)
+            if (LongPressDue(time))
             {
                 _state = State.LongPressed;
                 events.Add(new GestureEvent(GestureKind.LongPressOnHero, time, _start));
