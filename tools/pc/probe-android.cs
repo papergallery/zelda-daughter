@@ -1,0 +1,1 @@
+return "android supported=" + UnityEditor.BuildPipeline.IsBuildTargetSupported(UnityEditor.BuildTargetGroup.Android, UnityEditor.BuildTarget.Android) + " active=" + UnityEditor.EditorUserBuildSettings.activeBuildTarget;

@@ -15,6 +15,9 @@ namespace ZeldaDaughter.Editor
     {
         static string OutRoot => Path.GetFullPath(Path.Combine("..", "..", "zelda-builds"));
 
+        /// <summary>D-19: both release builds in one command (Windows, then the Android APK, IL2CPP ARM64 by ProjectSetup); one [ZD:Build] line each.</summary>
+        public static string ReleaseAll() => WindowsRelease() + "\n" + AndroidRelease();
+
         public static string WindowsRelease() => Build(BuildTarget.StandaloneWindows64, false);
         public static string WindowsDebug() => Build(BuildTarget.StandaloneWindows64, true);
         public static string AndroidRelease() => Build(BuildTarget.Android, false);
@@ -23,16 +26,21 @@ namespace ZeldaDaughter.Editor
         /// <summary>Release build of the grey prologue only — for the author to try with a mouse (drag = finger).</summary>
         public static string WindowsPlaytest() => Build(BuildTarget.StandaloneWindows64, false, new[] { "Assets/Scenes/prologue-grey.unity" }, "playtest");
 
+        /// <summary>D-19: a release build (no Development flag, so no profiler socket and no firewall window) with ZD_DEBUG — only for PerfProbe (`-zd-perf-seconds N`). Never shipped.</summary>
+        public static string WindowsPerf() => Build(BuildTarget.StandaloneWindows64, false, null, "perf", true);
+
         public static string Build(BuildTarget target, bool debug) => Build(target, debug, null, null);
 
-        public static string Build(BuildTarget target, bool debug, string[] scenes, string folder)
+        public static string Build(BuildTarget target, bool debug, string[] scenes, string folder) => Build(target, debug, scenes, folder, false);
+
+        public static string Build(BuildTarget target, bool debug, string[] scenes, string folder, bool perfDefine)
         {
             DataSync.Sync();
             // Scenes are built from config as their own step (SceneBuilder.BuildAll) and committed: rebuilding here would give
             // every build new fileIDs in the .unity files and a dirty working copy (2026-10-08).
             var missing = EditorBuildSettings.scenes.Where(sc => sc.enabled && !File.Exists(sc.path)).Select(sc => sc.path).ToArray();
             if (missing.Length > 0) throw new InvalidOperationException("[ZD:Build] scenes missing — run SceneBuilder.BuildAll: " + string.Join(", ", missing));
-            string kind = debug ? "debug" : "release";
+            string kind = debug ? "debug" : perfDefine ? "perf" : "release";
             string dir = Path.Combine(OutRoot, folder ?? $"{target}-{kind}");
             string file = target == BuildTarget.Android ? "ZeldaDaughter.apk" : "ZeldaDaughter.exe";
             var options = new BuildPlayerOptions
@@ -42,7 +50,7 @@ namespace ZeldaDaughter.Editor
                 target = target,
                 targetGroup = BuildPipeline.GetBuildTargetGroup(target),
                 options = debug ? BuildOptions.Development : BuildOptions.None,
-                extraScriptingDefines = debug ? new[] { "ZD_DEBUG" } : Array.Empty<string>(),
+                extraScriptingDefines = debug || perfDefine ? new[] { "ZD_DEBUG" } : Array.Empty<string>(),
             };
             var report = BuildPipeline.BuildPlayer(options);
             var s = report.summary;

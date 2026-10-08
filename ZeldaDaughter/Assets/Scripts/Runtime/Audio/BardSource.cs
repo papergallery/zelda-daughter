@@ -75,7 +75,12 @@ namespace ZeldaDaughter.Audio
         private SoundDef Def()
         {
             if (_sounds == null) return null;
-            foreach (var d in _sounds.Sounds) if (d != null && d.Id == "bard_tavern") return d;
+            var list = _sounds.Sounds;
+            for (int i = 0; i < list.Count; i++) // not foreach: the enumerator of an IReadOnlyList is boxed — 32 B every frame (found by D19AllocProbe, 2026-10-08)
+            {
+                var d = list[i];
+                if (d != null && d.Id == "bard_tavern") return d;
+            }
             return null;
         }
 

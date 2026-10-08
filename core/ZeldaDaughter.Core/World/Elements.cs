@@ -184,7 +184,11 @@ namespace ZeldaDaughter.Core.World
         }
 
         /// <summary>0 dry … 1 deep mud; 0 for an unknown zone.</summary>
-        public float Level(string zoneId) => _zones.Find(z => z.Id == zoneId)?.Level ?? 0f;
+        public float Level(string zoneId)
+        {
+            for (int i = 0; i < _zones.Count; i++) if (_zones[i].Id == zoneId) return _zones[i].Level; // a loop, not Find(lambda): the view asks every 0.25 s in rain and a closure allocates (D-19)
+            return 0f;
+        }
 
         /// <summary>Walking-speed multiplier at a point (1 outside every zone; the worst of the zones it lies in).</summary>
         public float SpeedAt(Vec2 position)

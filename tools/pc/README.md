@@ -16,6 +16,9 @@
 | `zd-reload.ps1` | нажать «Reload» в окне Unity «scene modified externally» (Win32 `BM_CLICK`) — вызывается из `zd-sync` |
 | `zd-run.ps1 <файл.cs>` | `execute_code` с таймаутом 15 мин (сборки): `build-win-release.cs`, `build-win-debug.cs` |
 | `zd-types.ps1` | есть ли типы (`PerfProbe`, …) в `ZeldaDaughter.dll` сборок release/debug |
+| `build-release-all.cs`, `build-win-perf.cs`, `switch-win.cs` | D-19: Windows release + Android APK одной командой; сборка для замера (релиз + `ZD_DEBUG`); вернуть платформу редактора на Windows |
+| `zd-perf.ps1`, `zd-run-release.ps1` | замер плеера 60 с в окне 1080×2340 (`[ZD:Perf] summary`); релиз 60 с — ошибки журнала. Запускать отсоединённо (`Start-Process powershell …`), `exec` живёт 60 с |
+| `unstick.cs`, `probe-time.cs`, `probe-data.cs`, `probe-android.cs` | снять зависшее задание тестов; состояние времени/данных/платформы в Play |
 | `zd-player.ps1 [-exe <путь>]` | Windows-плеер 15 с без окна (по умолчанию отладочный), строки `[ZD:*]` из журнала |
 
 **Модальные окна глушат мост.** Редактор молчит («ping not answered», `TimeoutError`) — почти всегда окно в Unity. Посмотреть — скриншот **только окна Unity** (UI Automation `BoundingRectangle`, не весь экран: там терминалы автора), удалить после. «Scene modified externally» — `zd-reload.ps1`. Запуск отладочного плеера вызывает окно брандмауэра Windows (порт профайлера) — оно системное, мостом не закрывается: не запускать debug-плеер без нужды, в записке автору — «нажмите Отменить».

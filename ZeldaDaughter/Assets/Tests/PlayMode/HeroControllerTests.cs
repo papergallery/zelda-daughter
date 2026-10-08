@@ -21,6 +21,7 @@ namespace ZeldaDaughter.Tests
         public IEnumerator Load()
         {
             Application.runInBackground = true; // the editor is driven through the bridge, often without focus
+            TestSaves.UseCleanFolder();
             // g1-capsule is a test scene: it is not in the player build, so it is loaded by path (and it does not save).
             yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/g1-capsule.unity", new LoadSceneParameters(LoadSceneMode.Single));
             yield return null;

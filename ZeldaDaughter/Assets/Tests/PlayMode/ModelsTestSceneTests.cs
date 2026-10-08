@@ -21,6 +21,7 @@ namespace ZeldaDaughter.Tests
         public IEnumerator Load()
         {
             Application.runInBackground = true;
+            TestSaves.UseCleanFolder();
             yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/models-test.unity", new LoadSceneParameters(LoadSceneMode.Single));
             yield return null;
             _hero = Object.FindFirstObjectByType<HeroController>();
