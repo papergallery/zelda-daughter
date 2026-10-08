@@ -160,7 +160,7 @@ namespace ZeldaDaughter.Tests
             var g = s.State;
             g.Bag.Add("firewood", 2); g.Bag.Add("flint");
 
-            g.Clock.SetTime(1, 0.22);
+            g.Clock.SetTime(1, 0.27);
             yield return new WaitForSeconds(1f);
             Debug.Log($"[ZD:Frame] F1 daylight={g.Clock.Daylight:0.00} hero={hero.transform.position}");
             yield return Shot("D-21-F1");
@@ -182,6 +182,11 @@ namespace ZeldaDaughter.Tests
             }
             Debug.Log($"[ZD:Frame] F1n daylight={g.Clock.Daylight:0.00} fires={g.Camp.Campfires.Count}");
             yield return Shot("D-21-F1n");
+            var look = AssetDatabase.LoadAssetAtPath<WatercolorSettings>("Assets/Settings/WatercolorLook.asset");
+            look.enabled = false; // the same frame without the wash: is the flame drawn at all?
+            yield return null;
+            yield return Shot("D-21-F1n-noeffect");
+            look.enabled = true;
         }
     }
 }
