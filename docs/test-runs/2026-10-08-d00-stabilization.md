@@ -1,0 +1,9 @@
+# 2026-10-08 · D-00 стабилизация Unity-слоя
+
+- Редактор `ZeldaDaughter` (`projectRoot` = C:/dev/zelda/ZeldaDaughter, Unity 6000.3.24f1), клон на коммите `65ed9cee`. Ядро: `dotnet test` **149/149** (было 141 + тесты порядка сцен, слота, `Load`, тика жестов, правил сессии), `tools/check.sh` — `CHECK OK`.
+- `zd-refresh` → `compiling=False failed=False` → `zd-check`: 0 ошибок, 0 предупреждений.
+- Сцены: `[ZD:Scene] built g1-capsule objects=13 hash=9e8a8b50ddf2` и `built prologue-grey objects=43 hash=10cd348ea018` — дважды одинаково. `[ZD:Scene] build order: prologue-grey` — в сборку входит только пролог, он нулевой; `EditorBuildSettings.asset` без `g1-capsule`.
+- PlayMode **14 из 14** (задание `308ffabfde264845b584737742ea6799`, 60 с): 5 (T-05) + 1 (T-09) + 8 (`GameSessionTests`: добавлен `A_newer_save_is_refused_and_left_alone`; `Save_and_load…` теперь проверяет уход от спавна > 2 м, день и время точно по файлу слота, инвентарь; `Reply_buttons…` — касание над кнопкой возвращает `false` из `HeroController.OnTouch` и не двигает героя, контроль с земли двигает; `Clock_drives_the_sun` — ещё и наклон солнца).
+- Тесты сохраняют в `Application.temporaryCachePath/zd-test-saves` (`GameSession.SaveRootOverride`, сбрасывается при каждом старте Play Mode); `g1-capsule` не сохраняется вовсе и загружается тестами по пути (`EditorSceneManager.LoadSceneAsyncInPlayMode`), т.к. в сборку не входит.
+- `zd-apply`: `enterPlayModeOptions=False`, `[ZD:Setup] OK`. Изменено Unity: обе `.unity`, `EditorBuildSettings.asset` — забраны на сервер (LF).
+- Не проверено: `FrameCapture` и защита «грязной сцены» в `SceneBuilder` вживую (исключение при несохранённых правках не вызывалось; возврат прежней сцены не наблюдался — код компилируется, `zd-build` отработал на чистом редакторе); запись сохранения на телефоне.
