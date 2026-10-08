@@ -87,7 +87,7 @@ namespace ZeldaDaughter.World
         private static readonly int ColorId = Shader.PropertyToID("_Color");
         private static Material _dotMaterial;
         private static Texture2D _dot;
-        private const float FadeSeconds = 0.4f, EyeSize = 0.2f, BlinkLength = 0.16f;
+        private const float FadeSeconds = 0.4f, EyeSize = 0.1f, BlinkLength = 0.16f;
 
         private EnemyView _view;
         private EyesSettings _s;
@@ -162,7 +162,7 @@ namespace ZeldaDaughter.World
             var cam = _view.Sprite != null && _view.Sprite.Camera != null ? _view.Sprite.Camera : Camera.main;
             if (cam == null) return;
             var ct = cam.transform;
-            float head = Mathf.Max(0.35f, _view.Sprite.Card.localScale.y * 0.62f);
+            float head = Mathf.Max(0.35f, _view.Sprite.Card.localScale.y * 0.62f) + 0.15f;
             var right = ct.right; right.y = 0f; right.Normalize();
             // in front of the card (toward the camera) so the points are not hidden by it; on the side the wolf looks toward the hero
             var centre = transform.position + Vector3.up * head - ct.forward * 0.3f;
