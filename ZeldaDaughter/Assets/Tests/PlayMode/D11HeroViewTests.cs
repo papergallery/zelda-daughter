@@ -438,7 +438,7 @@ namespace ZeldaDaughter.Tests
             Assert.Less(Mathf.Abs(shadow.transform.eulerAngles.x - 90f), 0.1f, "lying flat on the ground");
             Assert.NotNull(_sprite.CurrentSprite);
             foreach (var r in _hero.GetComponentsInChildren<MeshRenderer>(true))
-                if (r.transform != card.transform && r.transform != shadow.transform) Assert.IsFalse(r.enabled, "the capsule is not drawn: " + r.name + " (" + r.GetType().Name + ", under " + r.transform.parent.name + ")");
+                if (r.transform != card.transform && r.transform != shadow.transform) Assert.IsFalse(r.enabled, "the capsule is not drawn: " + r.name + " (" + r.GetType().Name + ", under " + (r.transform.parent != null ? r.transform.parent.name : "-") + ")");
             // the picture is not stretched: the card has the proportions of the PNG and shows the whole of it (a Tight sprite's textureRect is the trimmed box)
             var cur = _sprite.CurrentSprite;
             var sc = _sprite.Card.localScale;
