@@ -76,6 +76,22 @@ namespace ZeldaDaughter.Core.Movement
             return Math.Max(total, _s.MinTotalMultiplier);
         }
 
+        /// <summary>Terrain × one already combined (and clamped) factor — <c>GameState.SpeedMultiplier</c>; no enumerator.</summary>
+        public float Multiplier(string terrain, float modifier)
+        {
+            if (!_s.Terrain.TryGetValue(terrain, out float total))
+                throw new ArgumentException($"Unknown terrain '{terrain}' — add it to data/movement.json", nameof(terrain));
+            return Math.Max(total * modifier, _s.MinTotalMultiplier);
+        }
+
+        public float Speed(float strength, string terrain, float modifier) => BaseSpeed(strength) * Multiplier(terrain, modifier);
+
+        public Vec2 Step(Vec2 position, MoveIntent intent, string terrain, float modifier, float dt)
+        {
+            if (!intent.IsMoving || dt <= 0f) return position;
+            return position + intent.Direction * (Speed(intent.Strength, terrain, modifier) * dt);
+        }
+
         public float Speed(float strength, string terrain, IEnumerable<float> modifiers) => BaseSpeed(strength) * Multiplier(terrain, modifiers);
 
         /// <summary>New ground position after dt seconds.</summary>

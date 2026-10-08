@@ -90,12 +90,23 @@ namespace ZeldaDaughter.Core.Combat
     /// <summary>Enum fields in data are names only: a number ("1") or a list ("Cut,Burn") is not a name (D-01).</summary>
     static class EnumNames
     {
+        static class Names<T> where T : struct, Enum
+        {
+            // built once: a lookup per frame (enemy wound effects, schedule slots) must not allocate (C8)
+            public static readonly Dictionary<string, T> Map = Build();
+
+            static Dictionary<string, T> Build()
+            {
+                var m = new Dictionary<string, T>(StringComparer.OrdinalIgnoreCase);
+                foreach (var n in Enum.GetNames(typeof(T))) m[n] = (T)Enum.Parse(typeof(T), n);
+                return m;
+            }
+        }
+
         public static T? Parse<T>(string name) where T : struct, Enum
         {
             if (string.IsNullOrEmpty(name)) return null;
-            foreach (var n in Enum.GetNames(typeof(T)))
-                if (string.Equals(n, name, StringComparison.OrdinalIgnoreCase)) return (T)Enum.Parse(typeof(T), n);
-            return null;
+            return Names<T>.Map.TryGetValue(name, out var v) ? v : (T?)null;
         }
     }
 

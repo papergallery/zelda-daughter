@@ -99,10 +99,21 @@ namespace ZeldaDaughter.Core.Combat
             return ev;
         }
 
+        static readonly EnemyEvent[] NoEvents = new EnemyEvent[0];
+        readonly List<EnemyEvent> _scratch = new List<EnemyEvent>(2);
+
+        /// <remarks>Nothing happened — a shared empty list (no allocation in an ordinary frame, C8).</remarks>
         public IReadOnlyList<EnemyEvent> Tick(float dt, HeroCombat hero, float roll)
         {
-            var ev = new List<EnemyEvent>(2);
-            if (IsCarcass || dt <= 0) return ev;
+            _scratch.Clear();
+            Tick(dt, hero, roll, _scratch);
+            return _scratch.Count == 0 ? NoEvents : _scratch.ToArray();
+        }
+
+        /// <summary>Same, appending the events to <paramref name="ev"/> (not cleared).</summary>
+        public void Tick(float dt, HeroCombat hero, float roll, List<EnemyEvent> ev)
+        {
+            if (IsCarcass || dt <= 0) return;
             bool down = hero.Condition.IsKnockedOut;
             Vec2 toHero = hero.Position - Position;
             float dist = toHero.Length;
@@ -121,7 +132,7 @@ namespace ZeldaDaughter.Core.Combat
             }
 
             Bleed(dt, ev);
-            if (IsCarcass) return ev;
+            if (IsCarcass) return;
 
             _timer += State == EnemyState.Staggered ? -dt : dt;
             switch (State)
@@ -168,7 +179,7 @@ namespace ZeldaDaughter.Core.Combat
                     if (_timer <= 0) Enter(_aggro ? EnemyState.Chase : EnemyState.Idle);
                     break;
             }
-            return ev;
+            return;
         }
 
         void Land(HeroCombat hero, List<EnemyEvent> ev)

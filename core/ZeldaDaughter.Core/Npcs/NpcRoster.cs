@@ -85,19 +85,21 @@ namespace ZeldaDaughter.Core.Npcs
         /// </summary>
         public IReadOnlyList<NpcChange> Sync()
         {
-            var changes = new List<NpcChange>();
+            List<NpcChange>? changes = null;
             foreach (var id in _s.Npcs.Keys)
             {
                 var now = Slot(id);
                 if (_last.TryGetValue(id, out var was))
                 {
                     if (was.Equals(now)) continue;
-                    changes.Add(new NpcChange(id, was.Anchor, now.Anchor, now.Activity, was.Activity));
+                    (changes ??= new List<NpcChange>()).Add(new NpcChange(id, was.Anchor, now.Anchor, now.Activity, was.Activity));
                 }
-                else changes.Add(new NpcChange(id, null, now.Anchor, now.Activity, null));
+                else (changes ??= new List<NpcChange>()).Add(new NpcChange(id, null, now.Anchor, now.Activity, null));
                 _last[id] = now;
             }
-            return changes;
+            return changes ?? (IReadOnlyList<NpcChange>)NoChanges;   // nothing moved: a shared empty list (C8)
         }
+
+        static readonly NpcChange[] NoChanges = new NpcChange[0];
     }
 }

@@ -105,6 +105,7 @@ namespace ZeldaDaughter.Core.World
 
         public IReadOnlyList<PlacedObject> Objects => _objects;
         public IReadOnlyList<Campfire> Campfires => _fires;
+        static readonly WorldEvent[] NoEvents = new WorldEvent[0];
         internal int Counter => _counter;
 
         /// <param name="validSurface">The view's verdict on the spot (a wall is not ground): false — the hero remarks and the item stays.</param>
@@ -169,13 +170,18 @@ namespace ZeldaDaughter.Core.World
             return new UseResult(UseOutcome.NoRecipe, topic: Topics.CraftFail);
         }
 
-        public bool IsLitNear(Vec2 position, float radius) => _fires.Any(f => f.IsLit && (f.Position - position).Length <= radius);
+        public bool IsLitNear(Vec2 position, float radius)
+        {
+            for (int i = 0; i < _fires.Count; i++)
+                if (_fires[i].IsLit && (_fires[i].Position - position).Length <= radius) return true;
+            return false;
+        }
 
         /// <summary>Campfires burn down (faster in the rain); the ones that went out are removed and reported.</summary>
         public IReadOnlyList<WorldEvent> Tick(float dt, bool raining)
         {
-            var events = new List<WorldEvent>();
-            if (dt <= 0f) return events;
+            List<WorldEvent>? events = null;
+            if (dt <= 0f) return NoEvents;
             float rate = raining ? _s.RainBurnFactor : 1f;
             for (int i = _fires.Count - 1; i >= 0; i--)
             {
@@ -184,10 +190,10 @@ namespace ZeldaDaughter.Core.World
                 if (f.BurnLeft <= 0f)
                 {
                     _fires.RemoveAt(i);
-                    events.Insert(0, new WorldEvent(WorldEventKind.CampfireBurntOut, f.Id, f.Position));
+                    (events ??= new List<WorldEvent>()).Insert(0, new WorldEvent(WorldEventKind.CampfireBurntOut, f.Id, f.Position));
                 }
             }
-            return events;
+            return events ?? (IReadOnlyList<WorldEvent>)NoEvents;   // nothing burnt out: a shared empty list (C8)
         }
 
         public void Restore(int counter, IEnumerable<PlacedObject>? objects, IEnumerable<Campfire>? fires)

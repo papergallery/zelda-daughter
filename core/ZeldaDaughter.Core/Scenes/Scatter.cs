@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using ZeldaDaughter.Core.Common;
 
 namespace ZeldaDaughter.Core.Scenes
 {
@@ -29,23 +30,6 @@ namespace ZeldaDaughter.Core.Scenes
         const float EdgeMargin = 1f;
         const int TriesPerItem = 30;
 
-        sealed class Rng
-        {
-            ulong _s;
-            public Rng(int seed) { _s = unchecked((ulong)(uint)seed * 0x9E3779B97F4A7C15UL + 0x1234567UL); }
-            public ulong Next()
-            {
-                unchecked
-                {
-                    _s += 0x9E3779B97F4A7C15UL;
-                    ulong z = _s;
-                    z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9UL;
-                    z = (z ^ (z >> 27)) * 0x94D049BB133111EBUL;
-                    return z ^ (z >> 31);
-                }
-            }
-            public float Float() => (float)((Next() >> 40) / (double)(1UL << 24));
-        }
 
         /// <summary>Oriented rectangle on the ground that a built thing covers.</summary>
         readonly struct Footprint
@@ -84,7 +68,7 @@ namespace ZeldaDaughter.Core.Scenes
                 int want = Math.Min(sc.MaxCount, (int)Math.Round(area.SquareMetres() * sc.Density / 100f));
                 float totalWeight = 0f;
                 foreach (var m in sc.Models) totalWeight += m.Weight;
-                var rng = new Rng(sc.Seed);
+                var rng = new SplitMix64(sc.Seed);
                 var cells = new Dictionary<(int, int), List<(float X, float Z)>>();
                 float cell = Math.Max(sc.MinSpacing, 0.5f);
                 int placed = 0, tries = 0, maxTries = Math.Max(want * TriesPerItem, 1);

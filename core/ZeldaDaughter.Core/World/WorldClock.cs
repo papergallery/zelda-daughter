@@ -79,16 +79,29 @@ namespace ZeldaDaughter.Core.World
         }
 
         /// <summary>Advance by real seconds; returns every phase change and new day crossed, in order.</summary>
-        public IReadOnlyList<ClockEvent> Advance(double realSeconds) => AdvanceDays(realSeconds / _s.DayLengthSeconds);
+        /// <remarks>Nothing happened — a shared empty list (no allocation in an ordinary frame, C8).</remarks>
+        public IReadOnlyList<ClockEvent> Advance(double realSeconds) => AdvanceDays(realSeconds / _s.DayLengthSeconds, null);
+
+        /// <summary>Same, appending the events to <paramref name="into"/> (the list is not cleared) — no allocation at all.</summary>
+        public void Advance(double realSeconds, List<ClockEvent> into)
+        {
+            if (into == null) throw new ArgumentNullException(nameof(into));
+            AdvanceDays(realSeconds / _s.DayLengthSeconds, into);
+        }
 
         /// <summary>Skip game hours (sleep, knockout).</summary>
-        public IReadOnlyList<ClockEvent> SkipHours(double hours) => AdvanceDays(hours / 24.0);
+        public IReadOnlyList<ClockEvent> SkipHours(double hours) => AdvanceDays(hours / 24.0, null);
 
-        IReadOnlyList<ClockEvent> AdvanceDays(double days)
+        double[]? _boundsCache;
+        double[] _bounds => _boundsCache ??= new[] { _s.DawnStart, _s.DayStart, _s.DuskStart, _s.NightStart, 1.0 };
+
+        static readonly ClockEvent[] NoEvents = new ClockEvent[0];
+
+        IReadOnlyList<ClockEvent> AdvanceDays(double days, List<ClockEvent>? into)
         {
-            var events = new List<ClockEvent>();
-            if (days <= 0) return events;
-            double[] bounds = { _s.DawnStart, _s.DayStart, _s.DuskStart, _s.NightStart, 1.0 };
+            var events = into;
+            if (days <= 0) return events ?? (IReadOnlyList<ClockEvent>)NoEvents;
+            var bounds = _bounds;
             while (days > 0)
             {
                 double next = 1.0;
@@ -106,15 +119,15 @@ namespace ZeldaDaughter.Core.World
                 {
                     Day++;
                     TimeOfDay = 0.0;
-                    events.Add(new ClockEvent(ClockEventKind.NewDay, Day, Phase));
+                    (events ??= new List<ClockEvent>()).Add(new ClockEvent(ClockEventKind.NewDay, Day, Phase));
                 }
                 else
                 {
                     TimeOfDay = next;
                 }
-                if (Phase != before) events.Add(new ClockEvent(ClockEventKind.PhaseChanged, Day, Phase));
+                if (Phase != before) (events ??= new List<ClockEvent>()).Add(new ClockEvent(ClockEventKind.PhaseChanged, Day, Phase));
             }
-            return events;
+            return events ?? (IReadOnlyList<ClockEvent>)NoEvents;
         }
     }
 }

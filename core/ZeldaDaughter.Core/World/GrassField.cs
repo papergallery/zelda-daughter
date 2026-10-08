@@ -29,6 +29,9 @@ namespace ZeldaDaughter.Core.World
         readonly RainSettings _rain;
         readonly Wind _wind;
         readonly List<Cell> _cells = new List<Cell>();
+        // scratch lists of Tick, reused so that a frame allocates nothing (C8)
+        readonly List<int> _burnOut = new List<int>();
+        readonly List<int> _catches = new List<int>();
         readonly Dictionary<string, int> _index = new Dictionary<string, int>(StringComparer.Ordinal);
         readonly Dictionary<string, (GrassState state, float timer)> _pending = new Dictionary<string, (GrassState, float)>(StringComparer.Ordinal);
 
@@ -92,8 +95,8 @@ namespace ZeldaDaughter.Core.World
         internal void Tick(float dt, double roll, bool raining, float rainElapsed, IReadOnlyList<Campfire> fires, List<WorldEvent> events)
         {
             if (dt <= 0f) return;
-            var burnOut = new List<int>();
-            var catches = new SortedSet<int>();
+            var burnOut = _burnOut; burnOut.Clear();
+            var catches = _catches; catches.Clear();
             for (int i = 0; i < _cells.Count; i++)
             {
                 var c = _cells[i];
@@ -123,13 +126,17 @@ namespace ZeldaDaughter.Core.World
                     if (_cells[i].State == GrassState.Dry && (_cells[i].Position - fires[f].Position).Length <= _s.CampfireSparkRadius && Rolls.At(roll, 1000003 + i, f) < sparkP)
                         catches.Add(i);
             }
-            foreach (int i in burnOut)
+            for (int b = 0; b < burnOut.Count; b++)
             {
+                int i = burnOut[b];
                 _cells[i].State = GrassState.Burnt;
                 events.Add(new WorldEvent(WorldEventKind.GrassBurnedOut, _cells[i].Id, _cells[i].Position));
             }
-            foreach (int j in catches)
+            catches.Sort();   // in cell order (events must be deterministic); duplicates are skipped below
+            for (int k = 0; k < catches.Count; k++)
             {
+                int j = catches[k];
+                if (k > 0 && catches[k - 1] == j) continue;
                 if (_cells[j].State != GrassState.Dry) continue;
                 Light(_cells[j]);
                 events.Add(new WorldEvent(WorldEventKind.GrassIgnited, _cells[j].Id, _cells[j].Position));

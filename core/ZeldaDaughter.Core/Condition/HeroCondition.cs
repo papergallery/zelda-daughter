@@ -151,10 +151,21 @@ namespace ZeldaDaughter.Core.Condition
             if (!IsKnockedOut && amount > 0) Hp = Math.Min(_s.MaxHp, Hp + amount * Scale);
         }
 
+        static readonly ConditionEvent[] NoEvents = new ConditionEvent[0];
+        readonly List<ConditionEvent> _scratch = new List<ConditionEvent>(2);
+
+        /// <remarks>Nothing happened — a shared empty list (no allocation in an ordinary frame, C8).</remarks>
         public IReadOnlyList<ConditionEvent> Tick(float dt, RestKind rest)
         {
-            var ev = new List<ConditionEvent>();
-            if (dt <= 0) return ev;
+            _scratch.Clear();
+            Tick(dt, rest, _scratch);
+            return _scratch.Count == 0 ? NoEvents : _scratch.ToArray();
+        }
+
+        /// <summary>Same, appending the events to <paramref name="into"/> (not cleared).</summary>
+        public void Tick(float dt, RestKind rest, List<ConditionEvent> ev)
+        {
+            if (dt <= 0) return;
             if (IsKnockedOut)
             {
                 _knockoutLeft -= dt;
@@ -164,7 +175,7 @@ namespace ZeldaDaughter.Core.Condition
                     Hp = _s.MaxHp * _s.ReviveHpFraction;
                     ev.Add(new ConditionEvent(ConditionEventKind.Revived));
                 }
-                return ev;
+                return;
             }
 
             float restK = rest == RestKind.None ? 1f : _s.RestMultiplier;
@@ -181,7 +192,7 @@ namespace ZeldaDaughter.Core.Condition
             if (drain > 0) Hp -= drain * dt;
             else Hp = Math.Min(_s.MaxHp, Hp + _s.NaturalHpRegenPerSecond * restK * Scale * dt);
             if (Hp <= 0) KnockOut(ev);
-            return ev;
+            return;
         }
 
         /// <summary>Apply a medicine item (bandage, splint, burn_salve, antidote). False if nothing to treat.</summary>

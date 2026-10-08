@@ -10,6 +10,7 @@ using ZeldaDaughter.Core.Economy;
 using ZeldaDaughter.Core.Journal;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
+using ZeldaDaughter.Core.Movement;
 using ZeldaDaughter.Core.Loot;
 using ZeldaDaughter.Core.Npcs;
 using ZeldaDaughter.Core.Onboarding;
@@ -77,10 +78,13 @@ namespace ZeldaDaughter.Core.Save
         /// </summary>
         public IReadOnlyList<WorldEvent> TickWorld(float dt, double roll)
         {
-            var events = new List<WorldEvent>();
-            if (dt <= 0f) return events;
-            Nature.Tick(dt, roll, Camp.Campfires, HeroPosition, Clock.Daylight, p => Camp.IsLitNear(p, Data.Camp.LightRadius), events);
-            events.AddRange(Camp.Tick(dt, Nature.Weather.IsRaining));
+            var events = _worldEvents;
+            events.Clear();
+            if (dt <= 0f) return NoWorldEvents;
+            _inLight ??= p => Camp.IsLitNear(p, Data.Camp.LightRadius);   // one delegate for good: a frame allocates nothing (C8)
+            Nature.Tick(dt, roll, Camp.Campfires, HeroPosition, Clock.Daylight, _inLight, events);
+            var burnt = Camp.Tick(dt, Nature.Weather.IsRaining);
+            for (int i = 0; i < burnt.Count; i++) events.Add(burnt[i]);
             _scorchCooldown = Math.Max(0f, _scorchCooldown - dt);
             if (_scorchCooldown <= 0f && Nature.Grass.BurningNear(HeroPosition, Data.Elements.Grass.BurnRadius))
             {
@@ -88,8 +92,12 @@ namespace ZeldaDaughter.Core.Save
                 _scorchCooldown = Data.Elements.Grass.ScorchCooldownSeconds;
                 events.Add(new WorldEvent(WorldEventKind.HeroScorched, "", HeroPosition));
             }
-            return events;
+            return events.Count == 0 ? NoWorldEvents : events.ToArray();   // a quiet frame: the shared empty list
         }
+
+        static readonly WorldEvent[] NoWorldEvents = new WorldEvent[0];
+        readonly List<WorldEvent> _worldEvents = new List<WorldEvent>(8);
+        Func<Vec2, bool>? _inLight;
 
         /// <summary>A burning torch in the bag sets a dry grass cell alight. False without a torch or on ground that cannot burn.</summary>
         public bool IgniteGrass(string cellId) => Bag.Count("torch") > 0 && Nature.Grass.Has(cellId) && Nature.Grass.Ignite(cellId);
@@ -147,13 +155,35 @@ namespace ZeldaDaughter.Core.Save
         /// <summary>Enemies the hero killed — they do not come back after a load. Living enemies are not saved: they return to their spawn (D-01 decision).</summary>
         public HashSet<string> Killed { get; } = new HashSet<string>(StringComparer.Ordinal);
 
-        /// <summary>Walking-speed multipliers for <c>SpeedModel</c>: wounds (limp), bag load, hunger.</summary>
+        /// <summary>
+        /// The product of <see cref="SpeedModifiers"/>, every factor clamped as <c>SpeedModel</c> clamps it: wounds, bag load, hunger, mud.
+        /// No enumerator, no allocation — the view reads it every frame (C8). Pass to <c>SpeedModel.Step(…, float modifier, …)</c>.
+        /// </summary>
+        public float SpeedMultiplier
+        {
+            get
+            {
+                var m = Data.Movement;
+                return Clamp(Condition.SpeedMultiplier, m) * Clamp(Bag.SpeedMultiplier(Skills.CapacityMultiplier()), m)
+                     * Clamp(Hunger.Multiplier, m) * Clamp(Nature.Mud.SpeedAt(HeroPosition), m);
+            }
+        }
+
+        static float Clamp(float v, MovementSettings m) => Math.Max(m.MultiplierMin, Math.Min(m.MultiplierMax, v));
+
+        readonly float[] _modifiers = new float[4];
+
+        /// <summary>
+        /// Walking-speed multipliers for <c>SpeedModel</c>: wounds (limp), bag load, hunger, mud. The same array every call, refreshed
+        /// in place (no iterator, no allocation): use it at once, do not keep it.
+        /// </summary>
         public IEnumerable<float> SpeedModifiers()
         {
-            yield return Condition.SpeedMultiplier;
-            yield return Bag.SpeedMultiplier(Skills.CapacityMultiplier());
-            yield return Hunger.Multiplier;
-            yield return Nature.Mud.SpeedAt(HeroPosition);
+            _modifiers[0] = Condition.SpeedMultiplier;
+            _modifiers[1] = Bag.SpeedMultiplier(Skills.CapacityMultiplier());
+            _modifiers[2] = Hunger.Multiplier;
+            _modifiers[3] = Nature.Mud.SpeedAt(HeroPosition);
+            return _modifiers;
         }
 
         /// <summary>Drag food onto the hero: hunger drops, health rises by the food's heal × recovery scale. Not food — nothing happens.</summary>

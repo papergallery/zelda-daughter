@@ -87,9 +87,20 @@ namespace ZeldaDaughter.Core.Progression
             return Math.Min(g, max - value);
         }
 
+        static readonly SkillChange[] NoChanges = new SkillChange[0];
+        readonly List<SkillChange> _scratch = new List<SkillChange>(3);
+
+        /// <remarks>Nothing grew — a shared empty list (no allocation in an ordinary frame, C8).</remarks>
         public IReadOnlyList<SkillChange> Apply(SkillEvent e)
         {
-            var changes = new List<SkillChange>(3);
+            _scratch.Clear();
+            Apply(e, _scratch);
+            return _scratch.Count == 0 ? NoChanges : _scratch.ToArray();
+        }
+
+        /// <summary>Same, appending the changes to <paramref name="changes"/> (not cleared).</summary>
+        public void Apply(SkillEvent e, List<SkillChange> changes)
+        {
             var xp = _s.Experience;
             switch (e.Kind)
             {
@@ -113,7 +124,6 @@ namespace ZeldaDaughter.Core.Progression
                     foreach (Stat s in Enum.GetValues(typeof(Stat))) Grow(s, Curve(s).Victory, changes);
                     break;
             }
-            return changes;
         }
 
         float Units(ref float acc, float meters)
@@ -166,8 +176,20 @@ namespace ZeldaDaughter.Core.Progression
         StatCurve Curve(Stat s) => _s.Stats.TryGetValue(Key(s), out var c) ? c : throw new InvalidOperationException($"skills.json: no stat '{Key(s)}'");
         WeaponCurve WeaponCurveOf(WeaponClass w) => _s.Weapons.TryGetValue(Key(w), out var c) ? c : throw new InvalidOperationException($"skills.json: no weapon '{Key(w)}'");
 
-        public static string Key(Stat s) => s == Stat.CarryCapacity ? "carry_capacity" : s.ToString().ToLowerInvariant();
-        public static string Key(WeaponClass w) => w.ToString().ToLowerInvariant();
+        // cached: a lookup per frame (walking trains endurance) must not allocate (C8)
+        static readonly string[] StatKeys = BuildKeys<Stat>(s => s == Stat.CarryCapacity ? "carry_capacity" : s.ToString().ToLowerInvariant());
+        static readonly string[] WeaponKeys = BuildKeys<WeaponClass>(w => w.ToString().ToLowerInvariant());
+
+        static string[] BuildKeys<T>(Func<T, string> key) where T : struct, Enum
+        {
+            var values = (T[])Enum.GetValues(typeof(T));
+            var keys = new string[values.Length];
+            for (int i = 0; i < values.Length; i++) keys[Convert.ToInt32(values[i])] = key(values[i]);
+            return keys;
+        }
+
+        public static string Key(Stat s) => StatKeys[(int)s];
+        public static string Key(WeaponClass w) => WeaponKeys[(int)w];
 
         /// <summary>For save/load (C-13).</summary>
         public void Restore(IReadOnlyDictionary<string, float> stats, IReadOnlyDictionary<string, float> weapons)
