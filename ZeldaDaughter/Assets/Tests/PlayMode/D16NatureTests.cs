@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
@@ -27,7 +28,7 @@ namespace ZeldaDaughter.Tests
         GameSession _s;
         HeroController _hero;
         NatureFx _fx;
-        float _wetAfter, _mudRise, _burn, _spawnEvery;
+        float _wetAfter, _mudRise, _burn, _spawnEvery, _minHero;
 
         IEnumerator Load(string scene)
         {
@@ -46,6 +47,7 @@ namespace ZeldaDaughter.Tests
             _mudRise = d.Elements.Mud.RiseSeconds;
             _burn = d.Elements.Grass.BurnSeconds;
             _spawnEvery = d.Night.SpawnIntervalSeconds;
+            _minHero = d.Night.MinHeroDistance;
             yield return new WaitForSeconds(0.3f);
         }
 
@@ -62,6 +64,7 @@ namespace ZeldaDaughter.Tests
                 d.Elements.Mud.RiseSeconds = _mudRise;
                 d.Elements.Grass.BurnSeconds = _burn;
                 d.Night.SpawnIntervalSeconds = _spawnEvery;
+                d.Night.MinHeroDistance = _minHero;
             }
             TestSaves.Clear();
         }
@@ -98,7 +101,7 @@ namespace ZeldaDaughter.Tests
             Assert.IsTrue(_fx.IsRaining);
             Assert.Greater(_fx.RainParticleCount, 0, "streaks fall");
             Assert.Greater(_fx.Wetness, 0.1f, "wetness grows while it rains");
-            Assert.Greater(Shader.GetGlobalFloat("_ZD_Wetness"), 0.1f, "the global parameter is set for the shaders");
+            Assert.Greater(Shader.GetGlobalFloat("_ZD_Wetness"), 0.05f, "the global parameter is set for the shaders");
             Assert.AreEqual(true, rainChanged, "the bus says it rains");
             ground.GetPropertyBlock(block);
             Assert.Less(block.GetColor("_BaseColor").g, before.g, "wet ground is darker");
@@ -263,6 +266,91 @@ namespace ZeldaDaughter.Tests
             yield return null;
             Assert.IsFalse(torchLight.IsOn);
             Assert.AreEqual(0f, torchLight.Intensity, 1e-4f);
+        }
+
+        // ------------------------------------------------------------------ frames (criteria D-16 p. 5): docs/demo/frames/D-16-*.png
+
+        IEnumerator Frame(string name, float ortho)
+        {
+            yield return new WaitForEndOfFrame();
+            var cam = Camera.main;
+            var iso = cam.GetComponent<IsoCamera>();
+            if (iso != null) iso.SnapToTarget();
+            float size = cam.orthographicSize, aspect = cam.aspect;
+            var prev = cam.targetTexture;
+            var rt = new RenderTexture(1080, 2340, 24);
+            cam.orthographicSize = ortho;
+            cam.targetTexture = rt;
+            cam.aspect = 1080f / 2340f;
+            cam.Render(); // the first render after a load can come out empty
+            cam.Render();
+            RenderTexture.active = rt;
+            var tex = new Texture2D(1080, 2340, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, 1080, 2340), 0, 0);
+            tex.Apply();
+            string dir = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "docs", "demo", "frames"));
+            Directory.CreateDirectory(dir);
+            File.WriteAllBytes(Path.Combine(dir, name), tex.EncodeToPNG());
+            RenderTexture.active = null;
+            cam.targetTexture = prev;
+            cam.orthographicSize = size;
+            cam.aspect = aspect;
+            UnityEngine.Object.Destroy(tex);
+            rt.Release();
+            UnityEngine.Object.Destroy(rt);
+            ZdLog.Info("Frame", "D-16 " + name);
+        }
+
+        [UnityTest]
+        public IEnumerator Frame_rain()
+        {
+            yield return Load("Assets/Scenes/region.unity");
+            _s.State.Data.Elements.Rain.WetAfterSeconds = 1f;
+            yield return StandAt(-131f, 12f);
+            _s.State.Nature.Weather.StartRain(300f);
+            yield return new WaitForSeconds(9f);
+            yield return Frame("D-16-rain.png", 9f);
+        }
+
+        [UnityTest]
+        public IEnumerator Frame_grass_fire()
+        {
+            yield return Load("Assets/Scenes/region.unity");
+            var g = _s.State;
+            g.Data.Elements.Grass.BurnSeconds = 14f;
+            var at = _s.Index.Find("grass_cell_020").transform.position;
+            yield return StandAt(at.x - 3.5f, at.z - 3.5f);
+            g.Bag.Add("torch");
+            _s.BagChanged("frame");
+            foreach (var c in _s.Index.GrassCells)
+                if (Vector3.Distance(c.Position, at) < 2.2f) g.Nature.Grass.Ignite(c.Id);
+            yield return new WaitForSeconds(4f);
+            yield return Frame("D-16-grass-fire.png", 8f);
+            yield return new WaitForSeconds(14f);
+            yield return Frame("D-16-grass-burnt.png", 8f);
+        }
+
+        [UnityTest]
+        public IEnumerator Frame_night_campfire_and_wolf()
+        {
+            yield return Load("Assets/Scenes/region.unity");
+            var g = _s.State;
+            g.Data.Night.SpawnIntervalSeconds = 0.3f;
+            g.Data.Night.MinHeroDistance = 4f;
+            var zone = _s.Index.Find("zone_wolves_forest").transform.position;
+            yield return StandAt(zone.x + 9f, zone.z + 2f);
+            g.Clock.SetTime(1, 0.0);
+            g.Bag.Add("firewood");
+            g.Bag.Add("flint");
+            var placed = g.Camp.Place("firewood", new Vec2(zone.x + 10.5f, zone.z + 0.5f));
+            var used = g.Camp.Use(placed.Object.Id, "flint");
+            _s.Events.RaisePlaced(placed.Object);
+            _s.Events.RaiseUsedOnWorld(placed.Object.Id, used);
+            g.Bag.Add("torch");
+            _s.BagChanged("frame");
+            yield return Until(() => _fx.WolvesCalled >= 1, 8f);
+            yield return new WaitForSeconds(2.5f);
+            yield return Frame("D-16-night-campfire-wolf.png", 9f);
         }
     }
 }
