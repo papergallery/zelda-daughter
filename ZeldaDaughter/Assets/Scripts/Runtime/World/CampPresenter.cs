@@ -221,7 +221,7 @@ namespace ZeldaDaughter.World
                 foreach (var ps in view.Fx.GetComponentsInChildren<ParticleSystem>(true))
                 {
                     var main = ps.main;
-                    main.startSizeMultiplier *= FlameScale;
+                    main.startSizeMultiplier *= ps.name == "Fire" ? FlameScale * 1.6f : FlameScale;
                 }
             }
             else
