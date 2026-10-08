@@ -27,6 +27,7 @@ namespace ZeldaDaughter.Tests
         public IEnumerator Load()
         {
             Application.runInBackground = true;
+            TestSaves.UseCleanFolder(); // the region saves its own slot: a previous run must not put her at the east end
             _config = SceneConfig.Parse(File.ReadAllText(Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "scenes", "region.json"))));
             yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/region.unity", new LoadSceneParameters(LoadSceneMode.Single));
             yield return null;
@@ -35,6 +36,8 @@ namespace ZeldaDaughter.Tests
             _hero.UseDpi(160f);
             yield return new WaitForSeconds(0.5f);
         }
+
+        [TearDown] public void TearDown() => TestSaves.Clear();
 
         /// <summary>One continuous swipe whose direction is re-aimed every frame at the next point; the loop ends when <paramref name="done"/> says so.</summary>
         IEnumerator Steer(System.Func<Vector2> target, System.Func<bool> done, float timeout, System.Action onFrame = null)
