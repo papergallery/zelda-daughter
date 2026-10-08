@@ -461,7 +461,6 @@ namespace ZeldaDaughter.Tests
             Debug.Log($"[ZD:Frame] night daylight={g.Clock.Daylight:0.00} fires={g.Camp.Campfires.Count}");
             yield return Shot("D-14-campfire-night");
 
-            UnityEditor.PlayModeWindow.UseDefaultRenderingResolution();
         }
     }
 }
