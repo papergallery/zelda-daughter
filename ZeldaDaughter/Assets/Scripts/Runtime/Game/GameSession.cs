@@ -86,7 +86,7 @@ namespace ZeldaDaughter.Game
             _state.Clock.Advance(dt);
             _state.Condition.Tick(dt, RestKind.None);
             _state.Hunger.Advance(dt);
-            if (_sun != null) _sun.Apply(_state.Clock.Daylight);
+            if (_sun != null) _sun.Apply(_state.Clock.Daylight, _state.Clock.TimeOfDay >= 0.5);
 
             var p = _hero.transform.position;
             _state.HeroPosition = new Vec2(p.x, p.z);

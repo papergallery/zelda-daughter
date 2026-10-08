@@ -3,8 +3,11 @@ using UnityEngine;
 namespace ZeldaDaughter.World
 {
     /// <summary>
-    /// The sun follows the core's daylight share (WorldClock.Daylight). Placeholder look until R2-05 (light by style):
-    /// night ambient and the low sun angle are constants here on purpose — R2-05 replaces this with data of the chosen style.
+    /// Light of the day (D-08), driven by the core's daylight share (WorldClock.Daylight, 0 night … 1 day) and by whether it is
+    /// the evening ramp or the morning one (the same share, different colours): morning — rosy gold → white; day — warm white;
+    /// evening — white → orange → dusk purple; night — a blue moon that is dim but never black, so the road and silhouettes read.
+    /// Also ambient, fog (linear by eye depth — the toon shader reads it) and the camera background follow. The constants are
+    /// the look, not balance; they are judged on the reference frames docs/demo/frames/D-08-*.png.
     /// </summary>
     public sealed class SunController : MonoBehaviour
     {
@@ -12,10 +15,29 @@ namespace ZeldaDaughter.World
         [SerializeField] private Vector3 _dayRotation = new Vector3(50f, -30f, 0f);
         [SerializeField] private float _dayIntensity = 1f;
         [SerializeField] private Color _dayAmbient = Color.gray;
+        [SerializeField] private Camera _camera;
 
-        private static readonly Color NightAmbient = new Color(0.10f, 0.13f, 0.21f);
-        private const float LowSunPitch = 5f;
-        private const float NightIntensityShare = 0.03f;
+        // Stops at daylight 0, 0.15, 0.4, 0.7, 1.
+        private static readonly Color[] MorningSun =
+        {
+            new Color(0.50f, 0.60f, 0.95f), new Color(1.00f, 0.62f, 0.42f), new Color(1.00f, 0.78f, 0.55f),
+            new Color(1.00f, 0.92f, 0.78f), new Color(1.00f, 0.96f, 0.88f),
+        };
+        private static readonly Color[] EveningSun =
+        {
+            new Color(0.50f, 0.60f, 0.95f), new Color(0.90f, 0.42f, 0.35f), new Color(1.00f, 0.58f, 0.28f),
+            new Color(1.00f, 0.84f, 0.62f), new Color(1.00f, 0.96f, 0.88f),
+        };
+        private static readonly float[] IntensityShare = { 0.30f, 0.50f, 0.80f, 0.95f, 1f };
+        private static readonly float[] Pitch_ = { 24f, 10f, 22f, 40f, 1f }; // last = the scene's day pitch (see Apply)
+        private static readonly Color NightAmbient = new Color(0.22f, 0.27f, 0.44f);
+        private static readonly Color MorningAmbientTint = new Color(1.10f, 0.95f, 0.92f);
+        private static readonly Color EveningAmbientTint = new Color(1.10f, 0.88f, 0.90f);
+        private static readonly Color NightFog = new Color(0.12f, 0.16f, 0.28f);
+        private static readonly Color DayFog = new Color(0.80f, 0.76f, 0.64f);
+        private static readonly Color MorningFog = new Color(0.88f, 0.74f, 0.64f);
+        private static readonly Color EveningFog = new Color(0.82f, 0.58f, 0.46f);
+        private const float FogStartDay = 34f, FogEndDay = 78f, FogStartNight = 26f, FogEndNight = 56f;
 
         /// <summary>Sun elevation angle, degrees (low at night).</summary>
         public float Pitch => _sun != null ? _sun.transform.eulerAngles.x : 0f;
@@ -29,13 +51,62 @@ namespace ZeldaDaughter.World
             _dayAmbient = dayAmbient;
         }
 
-        public void Apply(float daylight)
+        /// <summary>The camera whose background follows the fog colour (set by the scene builder).</summary>
+        public void SetCamera(Camera camera) => _camera = camera;
+
+        public void Apply(float daylight) => Apply(daylight, false);
+
+        /// <param name="evening">true on the way down (dusk), false on the way up (dawn) — colours differ, the share does not.</param>
+        public void Apply(float daylight, bool evening)
         {
             if (_sun == null) return;
-            daylight = Mathf.Clamp01(daylight);
-            _sun.intensity = _dayIntensity * Mathf.Lerp(NightIntensityShare, 1f, daylight);
-            _sun.transform.rotation = Quaternion.Euler(Mathf.Lerp(LowSunPitch, _dayRotation.x, daylight), _dayRotation.y, _dayRotation.z);
-            RenderSettings.ambientLight = Color.Lerp(NightAmbient, _dayAmbient, daylight);
+            float d = Mathf.Clamp01(daylight);
+            var sunColors = evening ? EveningSun : MorningSun;
+
+            _sun.color = Sample(sunColors, d);
+            _sun.intensity = _dayIntensity * SampleF(IntensityShare, d);
+            float dayPitch = _dayRotation.x;
+            _sun.transform.rotation = Quaternion.Euler(PitchAt(d, dayPitch), _dayRotation.y, _dayRotation.z);
+
+            float bell = 4f * d * (1f - d); // 0 at night and noon, 1 in the middle of dawn / dusk
+            var tint = Color.Lerp(Color.white, evening ? EveningAmbientTint : MorningAmbientTint, bell);
+            var ambient = Color.Lerp(NightAmbient, _dayAmbient, Mathf.SmoothStep(0f, 1f, d));
+            RenderSettings.ambientLight = new Color(ambient.r * tint.r, ambient.g * tint.g, ambient.b * tint.b);
+
+            var twilightFog = evening ? EveningFog : MorningFog;
+            var fog = Color.Lerp(Color.Lerp(NightFog, twilightFog, Mathf.Clamp01(d * 4f)), DayFog, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((d - 0.5f) * 2f)));
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = fog;
+            RenderSettings.fogStartDistance = Mathf.Lerp(FogStartNight, FogStartDay, d);
+            RenderSettings.fogEndDistance = Mathf.Lerp(FogEndNight, FogEndDay, d);
+            if (_camera != null) _camera.backgroundColor = fog;
+        }
+
+        private static float PitchAt(float d, float dayPitch)
+        {
+            int i = 0;
+            while (i < 3 && d > StopAt[i + 1]) i++;
+            float a = Pitch_[i];
+            float b = i + 1 == 4 ? dayPitch : Pitch_[i + 1]; // the last stop is the scene's own day pitch
+            return Mathf.Lerp(a, b, Mathf.InverseLerp(StopAt[i], StopAt[i + 1], d));
+        }
+
+        // Stops are at 0, 0.15, 0.4, 0.7, 1 — uneven on purpose (the interesting colours live near the horizon).
+        private static readonly float[] StopAt = { 0f, 0.15f, 0.4f, 0.7f, 1f };
+
+        private static Color Sample(Color[] stops, float d)
+        {
+            int i = 0;
+            while (i < 3 && d > StopAt[i + 1]) i++;
+            return Color.Lerp(stops[i], stops[i + 1], Mathf.InverseLerp(StopAt[i], StopAt[i + 1], d));
+        }
+
+        private static float SampleF(float[] stops, float d)
+        {
+            int i = 0;
+            while (i < 3 && d > StopAt[i + 1]) i++;
+            return Mathf.Lerp(stops[i], stops[i + 1], Mathf.InverseLerp(StopAt[i], StopAt[i + 1], d));
         }
     }
 }

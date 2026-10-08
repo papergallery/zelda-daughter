@@ -20,8 +20,9 @@ namespace ZeldaDaughter.Editor
         /// <summary>
         /// As above, from a given place: the hero is put at <paramref name="heroAt"/> (the camera follows; the change is not saved)
         /// and the orthographic size can be widened (0 = the scene's own) — frames of the places of a region (D-10).
+        /// <paramref name="prepare"/> runs on the opened scene just before the render (the scene is reopened from disk afterwards).
         /// </summary>
-        public static string Capture(string scenePath, string pngPath, float daylight, Vector3? heroAt, float orthoSize, int width = 1080, int height = 2340)
+        public static string Capture(string scenePath, string pngPath, float daylight, Vector3? heroAt, float orthoSize, int width = 1080, int height = 2340, System.Action<Camera> prepare = null)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
                 throw new System.InvalidOperationException("[ZD:Frame] the editor is in Play Mode — stop it first");
@@ -45,6 +46,7 @@ namespace ZeldaDaughter.Editor
                 if (orthoSize > 0f && cam.orthographic) cam.orthographicSize = orthoSize;
                 var iso = cam.GetComponent<IsoCamera>();
                 if (iso != null) iso.SnapToTarget();
+                prepare?.Invoke(cam); // D-08: scene dressing for a reference frame (a fire light, a probe sprite); never saved
                 rt = new RenderTexture(width, height, 24);
                 prevTarget = cam.targetTexture;
                 prevAspect = cam.aspect;

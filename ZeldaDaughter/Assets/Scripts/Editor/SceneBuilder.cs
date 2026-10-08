@@ -29,7 +29,7 @@ namespace ZeldaDaughter.Editor
         public const string DataDir = "../data";
         const string ScenesDir = "Assets/Scenes";
         const string MaterialsDir = "Assets/Generated/Materials";
-        const string LitShader = "Universal Render Pipeline/Lit";
+        const string LitShader = ModelLook.ShaderName; // D-08: the toon material everywhere
 
         [MenuItem("Zelda/Scenes/Build all from config")]
         public static void BuildAll()
@@ -145,6 +145,7 @@ namespace ZeldaDaughter.Editor
             var game = new GameObject("Game");
             var sunCtl = game.AddComponent<SunController>();
             sunCtl.Configure(sun, V(config.Light.Rotation), config.Light.Intensity, ColorOf(config.Ambient.Color));
+            sunCtl.SetCamera(cam);
             var uiGo = new GameObject("UI");
             uiGo.transform.SetParent(game.transform, false);
             var ui = uiGo.AddComponent<SessionUI>();
@@ -197,7 +198,8 @@ namespace ZeldaDaughter.Editor
             if (mat != null) return mat;
             if (!AssetDatabase.IsValidFolder("Assets/Generated")) AssetDatabase.CreateFolder("Assets", "Generated");
             if (!AssetDatabase.IsValidFolder(MaterialsDir)) AssetDatabase.CreateFolder("Assets/Generated", "Materials");
-            mat = new Material(Shader.Find(LitShader));
+            mat = new Material(ModelLook.LoadShader());
+            ModelLook.Style(mat);
             mat.SetColor("_BaseColor", ColorOf(hex));
             AssetDatabase.CreateAsset(mat, path);
             return mat;

@@ -3,13 +3,15 @@ using UnityEngine;
 namespace ZeldaDaughter.Editor
 {
     /// <summary>
-    /// D-10: the one place that decides what the imported CC0 models look like. D-08 swaps <see cref="ShaderName"/> (toon)
-    /// and <see cref="Grade"/> here and reimports Assets/Art/Models — nothing else mentions a shader for models.
+    /// D-10: the one place that decides what the imported CC0 models look like. D-08: the shader is the toon shader
+    /// (Assets/Shaders/ZeldaToon.shader); change <see cref="Grade"/> or the step settings here and bump ModelImport.GetVersion
+    /// to reimport Assets/Art/Models — nothing else mentions a shader for models.
     /// </summary>
     public static class ModelLook
     {
         public const string ModelsRoot = "Assets/Art/Models/";
-        public const string ShaderName = "Universal Render Pipeline/Lit";
+        public const string ShaderName = "Zelda/Toon";
+        public const string ShaderPath = "Assets/Shaders/ZeldaToon.shader";
 
         /// <summary>Muted warm palette (project-design.md): pull colours a little towards grey and warm them. Kenney's raw greens are teal.</summary>
         public static Color Grade(Color c)
@@ -19,19 +21,29 @@ namespace ZeldaDaughter.Editor
             return new Color(muted.r * 1.05f, muted.g * 1.0f, muted.b * 0.92f, c.a);
         }
 
+        /// <summary>The toon shader; loaded by path because an importer can run before the shader is registered under its name.</summary>
+        public static Shader LoadShader()
+        {
+            var shader = UnityEditor.AssetDatabase.LoadAssetAtPath<Shader>(ShaderPath);
+            return shader != null ? shader : Shader.Find(ShaderName);
+        }
+
         /// <summary>Material setup for one imported material; <paramref name="baseMap"/> may be null (flat colour).</summary>
         public static void Apply(Material material, Color color, Texture baseMap)
         {
-            var shader = Shader.Find(ShaderName);
+            var shader = LoadShader();
             if (shader != null) material.shader = shader;
             material.SetColor("_BaseColor", baseMap != null ? Color.white : Grade(color));
             if (baseMap != null) material.SetTexture("_BaseMap", baseMap);
-            material.SetFloat("_Smoothness", 0.05f);
-            material.SetFloat("_Metallic", 0f);
-            material.SetFloat("_SpecularHighlights", 0f);
-            material.SetFloat("_EnvironmentReflections", 0f);
-            material.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
-            material.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
+            Style(material);
+        }
+
+        /// <summary>The look numbers shared by every toon material: 3 light steps, soft border, warm shadow.</summary>
+        public static void Style(Material material)
+        {
+            material.SetFloat("_Steps", 3f);
+            material.SetFloat("_Softness", 0.07f);
+            material.SetColor("_ShadowTint", new Color(0.66f, 0.52f, 0.52f, 1f));
         }
     }
 }

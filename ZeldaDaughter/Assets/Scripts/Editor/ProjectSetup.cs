@@ -75,6 +75,7 @@ namespace ZeldaDaughter.Editor
             }
             QualitySettings.SetQualityLevel(current, false);
             AssetDatabase.SaveAssets();
+            LookSetup.Apply(); // D-08: the watercolour Renderer Feature on this renderer
             Debug.Log("[ZD:Setup] applied");
             Report();
         }
@@ -104,6 +105,7 @@ namespace ZeldaDaughter.Editor
             Check("lights.colorTemperature", GraphicsSettings.lightsUseColorTemperature, true);
             Check("quality.antiAliasing", QualitySettings.antiAliasing, 0);
             var asset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(PipelinePath);
+            Check("look.feature", LookSetup.IsWired(), true);
             Check("pipeline.asset", asset != null, true);
             Check("pipeline.default", GraphicsSettings.defaultRenderPipeline == asset && asset != null, true);
             if (asset != null)
