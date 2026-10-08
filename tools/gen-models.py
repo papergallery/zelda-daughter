@@ -165,8 +165,16 @@ def main():
         if mid in models:
             sys.exit(f"duplicate model id {mid}")
         models[mid] = c
+    # D-22b: растительность — billboard-спрайты из атласа (tools/art/veg_build.py), id veg_<имя>, размер в метрах из атласа
+    veg = os.path.join(ROOT, "ZeldaDaughter/Assets/Art/Vegetation/vegetation.json")
+    if os.path.exists(veg):
+        for sid, sp in sorted(json.load(open(veg, encoding="utf-8"))["sprites"].items()):
+            mid = "veg_" + sid
+            if mid in models:
+                sys.exit(f"duplicate model id {mid}")
+            models[mid] = {"sprite": sid, "size": sp["size_m"], "collider": coll("none"), "tags": ["vegetation", sp["kind"]]}
     out = {
-        "_source": "tools/gen-models.py (D-10): id из имени файла (nature — без префикса, town_, prop_), коллайдеры и теги — правила в скрипте; размеры — data/model-bounds.json (замер в Unity). Модули: Kenney Nature Kit 2.1, Fantasy Town Kit 2.0, Quaternius Fantasy Props (все CC0, лицензии рядом с FBX). Масштаб запечён при импорте (метры, клетка 3 м) — ModelImport.KitScale.",
+        "_source": "tools/gen-models.py (D-10): id из имени файла (nature — без префикса, town_, prop_), коллайдеры и теги — правила в скрипте; размеры — data/model-bounds.json (замер в Unity). Модули: Kenney Nature Kit 2.1, Fantasy Town Kit 2.0, Quaternius Fantasy Props (все CC0, лицензии рядом с FBX). Масштаб запечён при импорте (метры, клетка 3 м) — ModelImport.KitScale. veg_* — акварельные billboard-спрайты D-22b (Assets/Art/Vegetation, tools/art/veg_build.py).",
         "models": models,
     }
     with open(os.path.join(ROOT, "data", "models.json"), "w", encoding="utf-8") as fh:

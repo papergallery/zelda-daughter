@@ -93,7 +93,7 @@ def house(id_, model, door_x, door_z, face, tags=None):
     return cx, cz
 
 
-CAMERA_SIZE = 6.3  # D-22: героиня (спрайт 1,7 м, на экране ×cos 35°) ≈ 1/9 высоты кадра: 1,39 м / (2 × 6,3 м) = 1/9,1; было 8 (≈ 1/11,5)
+CAMERA_SIZE = 7.5  # D-22b: карточка героини повёрнута к камере целиком (BillboardSprite), на экране — полные 1,67 м: 1,67 / (2 × 7,5) = 1/9; при 6,3 было 1/7,5
 
 paths, water, zones, scatter = [], [], [], []
 
@@ -112,12 +112,12 @@ def line(id_, pts, width, color, terrain=None):
 # ---------------------------------------------------------------- дороги и вода
 ROAD = [(-172, 0), (-150, 1.5), (-131, 0.5), (-110, -1), (-90, 1.5), (-70, 0), (-50, -2.5), (-30, -1), (-12, 0), (12, 0), (28, 0.5), (36, 0),
         (58, 0), (66, 0), (67.76, -4.24), (72, -6), (76.24, -4.24), (78, 0), (86, 0), (110, 0), (150, 0)]  # D-22: на площади дорога идёт южной дугой вокруг фонтана (R 6 м)
-paths.append(line("road_main", ROAD, 3, "#b09a6e"))
+paths.append(line("road_main", ROAD, 2.4, "#b09a6e"))  # D-22b: 2,4 м (концепт f1: дорога ≈ 4 ширины героини; было 3)
 paths.append(line("trail_glade", [(-88, 1), (-88, -10), (-82, -22), (-76, -34), (-72, -43)], 1.8, "#a38e66"))
 paths.append(line("trail_stump", [(-72, -43), (-84, -48), (-96, -52), (-104, -56)], 1.4, "#9c8760"))
 paths.append(line("trail_lair", [(-72, -43), (-64, -52), (-56, -60), (-52.5, -64.5)], 1.4, "#9c8760"))
 # D-22: вторая (северная) дуга кольца вокруг фонтана; мощёная площадь — пятна «cobble» ниже (не полоса через фонтан)
-paths.append(line("square_ring_n", [(66, 0), (67.76, 4.24), (72, 6), (76.24, 4.24), (78, 0)], 3, "#b09a6e"))
+paths.append(line("square_ring_n", [(66, 0), (67.76, 4.24), (72, 6), (76.24, 4.24), (78, 0)], 2.4, "#b09a6e"))
 for name, a, b, w in [("door_tavern", (60, 18.3), (60, 1.5), 2.4), ("door_smithy", (94, 18.7), (94, 1.5), 2.4), ("door_herb", (78.5, 18.7), (78.5, 1.5), 2.4),
                       ("door_gatehouse", (38.5, 7.2), (38.5, 1.5), 2.2),
                       ("door_house_a", (102.5, 6), (102.5, 1.5), 2.2), ("door_house_b", (108.0, -5), (105.5, -1.5), 2.2),
@@ -134,14 +134,21 @@ zones.append({"id": "bridge_deck", "shape": "rect", "center": P(0, 0), "size": P
 zones.append({"id": "glade", "shape": "circle", "center": P(-72, -47), "radius": 11, "tags": ["glade"]})
 zones.append({"id": "lair_den", "shape": "circle", "center": P(-48, -70), "radius": 5, "tags": ["lair"]})
 zones.append({"id": "field_plot", "shape": "rect", "center": P(-131, 16.5), "size": P(15, 13), "tags": ["field"]})
-zones.append({"id": "square_zone", "shape": "circle", "center": P(72, 0), "radius": 14, "tags": ["square"]})
+zones.append({"id": "square_zone", "shape": "circle", "center": P(72, 0), "radius": 14, "tags": ["square", "paved"]})  # D-22b: paved — булыжник шейдером земли (GroundMask)
 zones.append({"id": "camp_spawn", "shape": "circle", "center": P(-166.5, -4.6), "radius": 3, "tags": ["camp"]})
+zones.append({"id": "camp_spawn_ground", "shape": "circle", "center": P(-166.5, -4.6), "radius": 2.3, "tags": ["bare"]})
+# D-22b: у костров — вытоптанная земля без травы (концепт f1n; искры поджигают сухую траву в радиусе campfireSparkRadius 1,5 м, data/elements.json)
+zones.append({"id": "camp_east", "shape": "circle", "center": P(13.8, -5.2), "radius": 2.3, "tags": ["camp", "bare"]})
 for zid, cx, cz, rad in [("mud_river_west", -12, -9, 3.5), ("mud_trail", -84, -14.5, 3.0), ("mud_river_east", 12, 9, 3.5), ("mud_field", -118, 9, 3.0)]:
     zones.append({"id": zid, "shape": "circle", "center": P(cx, cz), "radius": rad, "tags": ["mud"]})
 
 # ---------------------------------------------------------------- спавн: бревно, костёр, первая палка
 add("log_spawn", "log_large", -171.5, -3.8, 8, ["decor", "poi", "log"])
 add("campfire_spawn", "campfire_logs", -166.5, -4.6, 0, ["campfire", "rest_point", "poi"], collide=False)
+for k in range(8):  # D-22b: кольцо камней вокруг костра (концепт f1n)
+    a_ = math.radians(k * 45 + 10)
+    add(f"campfire_spawn_stone_{k}", ["stone_small_a", "stone_small_c", "stone_small_e", "stone_small_b"][k % 4], -166.5 + 0.95 * math.cos(a_), -4.6 + 0.95 * math.sin(a_),
+        k * 53, ["decor"], collide=False, scale=0.55)
 pickup("pickup_firewood_1", "log", "firewood", -164.2, -6.4, 70, 0.7)
 pickup("pickup_firewood_2", "log", "firewood", -169.0, -7.2, 20, 0.7)
 pickup("pickup_stick_1", "log", "stick", -149, 3.6, 25, 0.35, poi=True)
@@ -177,8 +184,8 @@ add("cart_barrel", "prop_barrel", -109.8, 3.8, 0, ["decor"])
 add("sign_trail", "sign", -90.5, -3.6, 0, ["decor", "poi"])
 add("wood_pile", "log_stack", -68, 4.2, 15, ["decor", "poi"])
 pickup("pickup_stick_3", "log", "stick", -95, -3.0, 70, 0.35)
-pickup("pickup_herbs_1", "plant_flat_tall", "herbs", -78, 5.5)
-pickup("pickup_herbs_2", "plant_flat_tall", "herbs", -57, 6.0)
+pickup("pickup_herbs_1", "veg_grass_leaf", "herbs", -78, 5.5)
+pickup("pickup_herbs_2", "veg_grass_leaf", "herbs", -57, 6.0)
 # развалины-кольцо камней у дороги
 for i, (dx_, dz_, m) in enumerate([(-2.6, 0, "stone_tall_a"), (2.6, 0, "stone_tall_c"), (0, 2.6, "stone_tall_b"), (0, -2.6, "stone_tall_d"), (1.9, 1.9, "stone_large_a"), (-1.9, -1.9, "stone_large_c")]):
     add(f"ruin_stone_{i}", m, -43 + dx_, -8.5 + dz_, i * 40, ["decor", "poi"] if i == 0 else ["decor"])
@@ -192,9 +199,9 @@ pickup("pickup_flint_2", "stone_small_flat_b", "flint", 7.5, -4.8)
 marker("anchor_glade", -72, -45, ["anchor", "poi_side"])
 for i, (bx, bz) in enumerate([(-76, -43), (-69, -50), (-77, -52), (-67, -44)]):
     add(f"bush_berries_{i + 1}", "plant_bush_detailed", bx, bz, i * 70, ["pickup", "poi_side"], item="berries", collide=False)
-pickup("pickup_healing_herbs_1", "flower_purple_b", "healing_herbs", -70, -41)
-pickup("pickup_healing_herbs_2", "flower_purple_c", "healing_herbs", -75, -48)
-pickup("pickup_herbs_3", "plant_flat_tall", "herbs", -79, -46)
+pickup("pickup_healing_herbs_1", "veg_flower_purple_b", "healing_herbs", -70, -41)
+pickup("pickup_healing_herbs_2", "veg_flower_purple_b", "healing_herbs", -75, -48)
+pickup("pickup_herbs_3", "veg_grass_leaf", "herbs", -79, -46)
 pickup("pickup_stick_4", "log", "stick", -66, -47, 40, 0.35)
 pickup("pickup_stick_5", "log", "stick", -80, -41, 120, 0.35)
 add("glade_stump", "stump_round", -73, -51, 0, ["decor"])
@@ -312,8 +319,8 @@ marker("anchor_herb_house", 80, 21.5, ["anchor"])
 npc("herbalist", 76.5, 14.4, "#5f7d4f")  # D-22: у грядок, не на тропе к двери (x = 78,5)
 for i, (px, pz, m) in enumerate([(75.4, 15.6, "pot_large"), (82.4, 15.6, "pot_small"), (75.6, 19.6, "plant_bush_small"), (84.4, 20.8, "plant_bush_small")]):
     add(f"herb_deco_{i}", m, px, pz, 0, ["decor"])
-add("herb_flowers_1", "flower_purple_a", 76.2, 16.8, 0, ["decor"], collide=False)
-add("herb_flowers_2", "flower_yellow_b", 81.2, 16.6, 0, ["decor"], collide=False)
+add("herb_flowers_1", "veg_flower_purple_a", 76.2, 16.8, 0, ["decor"], collide=False)
+add("herb_flowers_2", "veg_flower_yellow_b", 81.2, 16.6, 0, ["decor"], collide=False)
 
 # дома жителей вдоль восточной улицы
 house("house_a", "house_small", 102.5, 6.0, "S", ["building", "poi"])
@@ -348,7 +355,9 @@ def grass_cells(prefix, x0, x1, z0, z1, avoid, start):
             x, z = xc + jx, zc + jz
             ok = all(math.hypot(x - ax, z - az) > ar for ax, az, ar in avoid)
             if ok:
-                add(f"{prefix}_{n:03d}", "grass_large", x, z, (n * 47) % 360, ["decor", "grass_cell"], collide=False)
+                # D-22b: клетка травы — акварельный кустик (billboard), сухой через один
+                add(f"{prefix}_{n:03d}", ["veg_grass_tuft", "veg_grass_wide", "veg_grass_leaf", "veg_grass_dry"][n % 4], x, z, 0, ["decor", "grass_cell"],
+                    collide=False, scale=r1(1.0 + 0.25 * math.sin(n * 3.7)))
                 n += 1
             xc += 1.5
         zc += 1.3
@@ -356,20 +365,28 @@ def grass_cells(prefix, x0, x1, z0, z1, avoid, start):
     return n
 
 
-AVOID_CAMP = [(-166.5, -4.6, 2.2), (-171.5, -3.8, 2.4), (-164.2, -6.4, 1.2), (-169, -7.2, 1.2), (-156, -3.4, 1), (-161, 3.2, 1)]
+AVOID_CAMP = [(-166.5, -4.6, 3.4), (-171.5, -3.8, 2.4), (-164.2, -6.4, 1.2), (-169, -7.2, 1.2), (-156, -3.4, 1), (-161, 3.2, 1)]
 nn = grass_cells("grass_cell", -178, -156, -12, -5.5, AVOID_CAMP, 0)
 nn = grass_cells("grass_cell", -178, -158, 4, 11, AVOID_CAMP, nn)
 
 # ---------------------------------------------------------------- россыпи
-# D-22: трава крупнее и реже (scale 1,5–2,2, плотность ~2/100 м²), цветы только жёлтые и лиловые, кроны многошаровые (концепты f1, env-forest)
-MEADOW = [{"id": "grass", "weight": 4}, {"id": "grass_large", "weight": 3}, {"id": "plant_flat_short", "weight": 1}]
-FLOWERS = [{"id": "flower_yellow_a", "weight": 2}, {"id": "flower_yellow_b", "weight": 1}, {"id": "flower_yellow_c", "weight": 1},
-           {"id": "flower_purple_a", "weight": 2}, {"id": "flower_purple_b", "weight": 1}, {"id": "flower_purple_c", "weight": 1}]
+# D-22b: трава, цветы, кусты, папоротник, тростник — акварельные billboard-спрайты (veg_*, tools/art/veg_build.py; концепт f1): кустики травы
+# разной высоты, цветы жёлтые и лиловые, кусты; кроны деревьев — многошаровые модели (env-forest)
+# по кадру D-22b: сухие и метёлки читались соломой — луг f1 зелёно-оливковый, с листовыми кустиками
+MEADOW = [{"id": "veg_grass_tuft", "weight": 4}, {"id": "veg_grass_wide", "weight": 3}, {"id": "veg_grass_leaf", "weight": 3}, {"id": "veg_clover", "weight": 2},
+          {"id": "veg_grass_tall", "weight": 1}, {"id": "veg_grass_dry", "weight": 0.7}, {"id": "veg_sedge", "weight": 0.7}, {"id": "veg_grass_plume", "weight": 0.2}]
+FLOWERS = [{"id": "veg_flower_yellow_a", "weight": 3}, {"id": "veg_flower_yellow_b", "weight": 2}, {"id": "veg_flower_purple_a", "weight": 3}, {"id": "veg_flower_purple_b", "weight": 2}]
+SHRUBS = [{"id": "veg_shrub_a", "weight": 2}, {"id": "veg_shrub_b", "weight": 2}, {"id": "veg_shrub_c", "weight": 1}]
+UNDERGROWTH = [{"id": "veg_fern_a", "weight": 3}, {"id": "veg_fern_b", "weight": 3}, {"id": "veg_shrub_a", "weight": 1}, {"id": "veg_shrub_c", "weight": 1},
+               {"id": "veg_grass_wide", "weight": 2}, {"id": "veg_grass_leaf", "weight": 2}, {"id": "veg_grass_tuft", "weight": 2}]
+REEDS = [{"id": "veg_reed", "weight": 3}, {"id": "veg_cattail", "weight": 2}, {"id": "veg_sedge", "weight": 2}, {"id": "veg_grass_plume", "weight": 1}]
 TREES = [{"id": "tree_pine_tall_a_detailed", "weight": 2}, {"id": "tree_pine_tall_b_detailed", "weight": 2}, {"id": "tree_pine_tall_c_detailed", "weight": 1},
          {"id": "tree_pine_tall_d_detailed", "weight": 1}, {"id": "tree_pine_round_a", "weight": 1}, {"id": "tree_detailed", "weight": 2},
          {"id": "tree_oak", "weight": 2}, {"id": "tree_fat", "weight": 1}]
+# D-22b: ели — только в лесу; у луга, по краям региона и за городом — лиственные шаровые кроны (концепт f1, env-bridge)
+LEAFY = [{"id": "tree_oak", "weight": 3}, {"id": "tree_detailed", "weight": 3}, {"id": "tree_fat", "weight": 2}, {"id": "tree_default", "weight": 1}]
 MEADOW_TREES = [{"id": "tree_oak", "weight": 3}, {"id": "tree_detailed", "weight": 3}, {"id": "tree_fat", "weight": 1}, {"id": "tree_default", "weight": 1}]
-SOFT = {"paths": 0.9, "water": 1.2, "objects": 0.6, "zones": ["bridge_deck", "field_plot", "square_zone"]}
+SOFT = {"paths": 0.5, "water": 1.0, "objects": 0.5, "zones": ["bridge_deck", "field_plot", "square_zone", "camp_spawn", "camp_east"], "zoneMargin": 0.3}
 FOREST_ZONES = {"paths": 2.2, "water": 3, "objects": 2.2, "zones": ["glade", "lair_den", "camp_spawn"], "zoneMargin": 1.2}
 
 
@@ -386,30 +403,44 @@ def sc(id_, area, models, density, seed, avoid, smin=0.8, smax=1.2, spacing=0, c
     scatter.append(d)
 
 
-sc("meadow_west", rect(-92, 14, 176, 60), MEADOW, 1.7, 11, SOFT, 1.5, 2.2)
-sc("meadow_east_bank", rect(18, 0, 30, 70), MEADOW, 1.6, 12, SOFT, 1.5, 2.2)
-sc("meadow_town", rect(92, 0, 115, 90), MEADOW, 0.5, 13, {"paths": 1.2, "water": 1.5, "objects": 1.0, "zones": ["square_zone"]}, 1.5, 2.2)
-sc("meadow_flowers_west", rect(-92, 14, 176, 60), FLOWERS, 0.8, 14, SOFT, 1.4, 2.0)
-sc("meadow_flowers_east_bank", rect(18, 0, 30, 70), FLOWERS, 0.8, 15, SOFT, 1.4, 2.0)
+# плотность — штук на 100 м²: луг ~0,3 на м² (концепт f1: кустик/цветок через 1–2 м), у дороги гуще, у города реже
+sc("meadow_west", rect(-92, 14, 176, 60), MEADOW, 30, 11, SOFT, 1.0, 1.5, 0.75)
+sc("meadow_east_bank", rect(18, 0, 30, 70), MEADOW, 30, 12, SOFT, 1.0, 1.5, 0.75)
+sc("meadow_town", rect(92, 0, 115, 90), MEADOW, 9, 13, {"paths": 0.8, "water": 1.5, "objects": 1.0, "zones": ["square_zone"]}, 1.0, 1.4, 0.75)
+# цветы — клампами по 5–9 в пятне (концепт f1; density — пятен на 100 м²)
+CLUMP = {"radius": 0.9, "min": 5, "max": 9}
+sc("meadow_flowers_west", rect(-92, 14, 176, 60), FLOWERS, 2.0, 14, SOFT, 1.0, 1.4)
+sc("meadow_flowers_east_bank", rect(18, 0, 30, 70), FLOWERS, 2.0, 15, SOFT, 1.0, 1.4)
+scatter[-2]["clump"] = CLUMP
+scatter[-1]["clump"] = CLUMP
+sc("meadow_shrubs_west", rect(-92, 14, 176, 60), SHRUBS, 1.2, 17, {"paths": 1.2, "water": 1.5, "objects": 1.0, "zones": ["bridge_deck", "field_plot", "camp_spawn"]}, 0.8, 1.3, 2.0)
+# вдоль главной дороги — полоса гуще (видна всю дорогу), и кустики, наползающие на кромку (рваный травяной край, концепт f1)
+ROAD_BAND_AVOID = {"paths": 0.3, "water": 1.0, "objects": 0.5, "zones": ["bridge_deck", "field_plot", "square_zone", "camp_spawn", "camp_east"], "zoneMargin": 0.3}
+scatter.append({"id": "road_band_grass", "area": {"shape": "strip", "points": [P(*p) for p in ROAD[:12]], "width": 15}, "models": MEADOW, "density": 90, "seed": 18,
+                "scale": {"min": 1.0, "max": 1.5}, "minSpacing": 0.6, "avoid": ROAD_BAND_AVOID})
+scatter.append({"id": "road_band_flowers", "area": {"shape": "strip", "points": [P(*p) for p in ROAD[:12]], "width": 15}, "models": FLOWERS, "density": 5.5, "seed": 19,
+                "scale": {"min": 1.0, "max": 1.4}, "avoid": ROAD_BAND_AVOID, "clump": CLUMP})
+scatter.append({"id": "road_edge_tufts", "area": {"shape": "strip", "points": [P(*p) for p in ROAD], "width": 4.0}, "models":
+                [{"id": "veg_grass_tuft", "weight": 3}, {"id": "veg_grass_wide", "weight": 2}, {"id": "veg_clover", "weight": 2}, {"id": "veg_grass_dry", "weight": 1}],
+                "density": 50, "seed": 20, "scale": {"min": 0.85, "max": 1.25}, "minSpacing": 0.55,
+                "avoid": {"paths": -0.35, "water": 1.0, "objects": 0.4, "zones": ["bridge_deck", "square_zone", "camp_spawn", "camp_east"]}})
+scatter.append({"id": "river_reeds", "area": {"shape": "strip", "points": [P(*p) for p in RIVER], "width": 10.5}, "models": REEDS, "density": 40, "seed": 32,
+                "scale": {"min": 0.8, "max": 1.2}, "minSpacing": 0.5, "avoid": {"paths": 1.2, "water": -0.4, "objects": 0.5, "zones": ["bridge_deck"], "zoneMargin": 2.0}})
 sc("meadow_trees", rect(-92, 14, 176, 60), MEADOW_TREES, 0.12, 16, {"paths": 3.0, "water": 3, "objects": 3.0, "zones": ["field_plot", "camp_spawn", "bridge_deck"], "zoneMargin": 2.0}, 0.9, 1.3, 9.0, True)
 sc("forest_trees", rect(-88, -56, 152, 80), TREES, 4.2, 21, FOREST_ZONES, 0.85, 1.25, 2.6, True)
-sc("forest_undergrowth", rect(-88, -56, 152, 80),
-   [{"id": "plant_bush", "weight": 2}, {"id": "plant_bush_large", "weight": 1}, {"id": "plant_bush_small", "weight": 2}, {"id": "mushroom_red", "weight": 0.3},
-    {"id": "mushroom_tan", "weight": 0.3}, {"id": "grass", "weight": 3}, {"id": "plant_flat_tall", "weight": 1}],
-   2.8, 22, {"paths": 1.0, "water": 1.5, "objects": 0.8, "zones": ["glade", "lair_den"]})
+sc("forest_undergrowth", rect(-88, -56, 152, 80), UNDERGROWTH, 14, 22, {"paths": 0.5, "water": 1.5, "objects": 0.6, "zones": ["glade", "lair_den"]}, 0.85, 1.3, 0.8)
 sc("forest_rocks", rect(-88, -56, 152, 80), [{"id": "rock_large_a", "weight": 1}, {"id": "rock_large_b", "weight": 1}, {"id": "rock_large_d", "weight": 1}, {"id": "stone_tall_c", "weight": 1}],
    0.25, 23, FOREST_ZONES, 0.8, 1.3, 4.0, True)
-sc("glade_flowers", {"ref": "glade"}, [{"id": "flower_yellow_a", "weight": 2}, {"id": "flower_purple_a", "weight": 2}, {"id": "flower_yellow_c", "weight": 1}, {"id": "grass_large", "weight": 3}],
-   9, 24, {"paths": 0.8, "objects": 0.7}, 1.4, 2.0)
-sc("trees_north_west", rect(-92, 72, 176, 48), TREES, 1.1, 25, {"paths": 2.2, "water": 3, "objects": 2.0}, 0.85, 1.25, 4.0, True)
-sc("trees_north_east", rect(92, 72, 115, 48), TREES, 1.4, 26, {"paths": 2.2, "water": 3, "objects": 2.0}, 0.85, 1.25, 4.0, True)
-sc("trees_south_east", rect(92, -72, 115, 48), TREES, 1.4, 27, {"paths": 2.2, "water": 3, "objects": 2.0}, 0.85, 1.25, 4.0, True)
-sc("trees_east_bank_south", rect(19, -66, 30, 60), TREES, 2.0, 28, {"paths": 2.2, "water": 3, "objects": 2.0, "zones": ["mud_river_east"]}, 0.85, 1.25, 3.4, True)
-sc("trees_east_bank_north", rect(19, 66, 30, 60), TREES, 2.0, 29, {"paths": 2.2, "water": 3, "objects": 2.0}, 0.85, 1.25, 3.4, True)
+sc("glade_flowers", {"ref": "glade"}, FLOWERS + [{"id": "veg_grass_tuft", "weight": 3}, {"id": "veg_clover", "weight": 2}], 40, 24, {"paths": 0.4, "objects": 0.6}, 0.85, 1.2, 0.5)
+sc("trees_north_west", rect(-92, 72, 176, 48), LEAFY, 1.1, 25, {"paths": 2.2, "water": 3, "objects": 2.0}, 0.85, 1.25, 4.0, True)
+sc("trees_north_east", rect(92, 72, 115, 48), LEAFY, 1.4, 26, {"paths": 2.2, "water": 3, "objects": 2.0}, 0.85, 1.25, 4.0, True)
+sc("trees_south_east", rect(92, -72, 115, 48), LEAFY, 1.4, 27, {"paths": 2.2, "water": 3, "objects": 2.0}, 0.85, 1.25, 4.0, True)
+sc("trees_east_bank_south", rect(19, -66, 30, 60), LEAFY, 2.0, 28, {"paths": 2.2, "water": 3, "objects": 2.0, "zones": ["mud_river_east"]}, 0.85, 1.25, 3.4, True)
+sc("trees_east_bank_north", rect(19, 66, 30, 60), LEAFY, 2.0, 29, {"paths": 2.2, "water": 3, "objects": 2.0}, 0.85, 1.25, 3.4, True)
 sc("river_stones", {"ref": "river"}, [{"id": "stone_small_a", "weight": 1}, {"id": "stone_small_c", "weight": 1}, {"id": "rock_small_b", "weight": 1}],
    1.5, 31, {"paths": 1.5, "zones": ["bridge_deck"], "zoneMargin": 2.0}, 0.8, 1.4)
 scatter.append({"id": "edge_trees", "area": {"shape": "strip", "points": [P(-176, -96), P(176, -96), P(176, 96), P(-176, 96), P(-176, -96)], "width": 8},
-                "models": TREES, "density": 4.5, "seed": 41, "scale": {"min": 0.9, "max": 1.3}, "minSpacing": 2.6, "collide": True,
+                "models": LEAFY, "density": 4.5, "seed": 41, "scale": {"min": 0.9, "max": 1.3}, "minSpacing": 2.6, "collide": True,
                 "avoid": {"paths": 2.0, "water": 3, "objects": 1.5}})
 
 # ---------------------------------------------------------------- D-22: земля пятнами, кромка дороги, камешки, туман, цветочные кучки
@@ -435,17 +466,6 @@ def near_other_paths(x, z, margin, skip=("road_main", "square_ring_n")):
     return False
 
 
-def disc(id_, x, z, dx, dz, yaw, color, top, tags=("decor", "ground_patch")):
-    """Плоское «пятно» — цилиндр высотой 2 см (поверхность на высоте top), без коллайдера; тона — слои по высоте, чтобы не мерцали."""
-    assert id_ not in ids, id_
-    ids.add(id_)
-    o = {"id": id_, "shape": "cylinder", "position": {"x": r1(x), "y": r1(top - 0.01), "z": r1(z)}, "scale": {"x": r1(dx), "y": 0.01, "z": r1(dz)},
-         "color": color, "collide": False, "tags": list(tags)}
-    if yaw:
-        o["rotation"] = {"x": 0, "y": r1(yaw), "z": 0}
-    objects.append(o)
-
-
 TOWN_SQUARE = (72.0, 0.0, 16.0)
 
 
@@ -453,29 +473,9 @@ def in_square(x, z, extra=0.0):
     return math.hypot(x - TOWN_SQUARE[0], z - TOWN_SQUARE[1]) < TOWN_SQUARE[2] + extra
 
 
-# земля: 3 тона пятнами (светлый жёлто-оливковый, шалфейный, тёплый сухой)
-for tone, (col, top, count, rmin, rmax) in enumerate([("#8f9259", 0.008, 100, 5.0, 11.0), ("#677b52", 0.011, 100, 4.0, 9.0), ("#938a5a", 0.014, 50, 3.0, 7.0)]):
-    n = 0
-    while n < count:
-        x, z = rng.uniform(-176, 148), rng.uniform(-94, 94)
-        if in_square(x, z, 2.0):
-            continue
-        rr = rng.uniform(rmin, rmax)
-        disc(f"patch_{tone}_{n:03d}", x, z, rr * 2, rr * 2 * rng.uniform(0.55, 0.95), rng.uniform(0, 180), col, top)
-        n += 1
-
-# площадь: булыжник вокруг фонтана (концепт f4), поверх пятен, под лентами дорог
-disc("square_cobble_base", 72, 0, 31, 31, 0, "#a39c8a", 0.016)
-disc("square_cobble_inner", 72, 0, 20, 20, 0, "#b3ab98", 0.018)
-for k in range(46):
-    a, rr = rng.uniform(0, 2 * math.pi), math.sqrt(rng.uniform(0.15, 1.0)) * 14.0
-    x, z = 72 + rr * math.cos(a), rr * math.sin(a)
-    if abs(x - 72) < 3.4 and abs(z) < 3.4:
-        continue
-    d = rng.uniform(1.2, 2.8)
-    disc(f"square_cobble_{k:02d}", x, z, d, d * rng.uniform(0.6, 0.95), rng.uniform(0, 180), "#8f8878" if k % 2 else "#bdb59f", 0.020 + 0.001 * (k % 2))
-
-# кромка главной дороги: тёмный бортик, выступы пыли, «зубцы» травы; камешки по краю
+# D-22b: земля, кромка дороги и булыжник площади — шейдером земли по маске (core GroundMask, Zelda/Toon _ZD_GROUND), не дисками:
+# диски высотой 2 см давали пунктирный контур пера и читались как бумажные кружки (вердикт координатора по кадрам D-22)
+# камешки по краю главной дороги (модели, концепт f1)
 ROAD_PTS = [(p["x"], p["z"]) for p in paths[0]["points"]]
 total = sum(math.hypot(ROAD_PTS[i + 1][0] - ROAD_PTS[i][0], ROAD_PTS[i + 1][1] - ROAD_PTS[i][1]) for i in range(len(ROAD_PTS) - 1))
 
@@ -491,10 +491,11 @@ def road_at(d):
     return ROAD_PTS[-1] + (1.0, 0.0)
 
 
-PEBBLES = ["rock_small_a", "rock_small_b", "rock_small_c", "rock_small_d", "rock_small_e", "rock_small_g", "rock_small_h", "rock_small_i",
-           "rock_small_flat_a", "rock_small_flat_b", "rock_small_flat_c"]
+# D-22b: серые камешки stone_* (у rock_* Kenney зелёная «крышка» травы — шестигранники на кадре)
+PEBBLES = ["stone_small_a", "stone_small_b", "stone_small_c", "stone_small_d", "stone_small_e", "stone_small_g", "stone_small_h", "stone_small_i",
+           "stone_small_flat_a", "stone_small_flat_b", "stone_small_flat_c"]
 solid = [(o["position"]["x"], o["position"]["z"]) for o in objects if o.get("model") and o.get("collide") is not False]
-edge_n = peb_n = 0
+peb_n = 0
 d = 1.0
 while d < total - 1:
     x, z, tx, tz = road_at(d)
@@ -502,22 +503,9 @@ while d < total - 1:
     if abs(x) < 10.5 or 55.0 < x < 89.0 or near_other_paths(x, z, 2.0):
         d += 2.4
         continue
-    yaw = -math.degrees(math.atan2(tz, tx))
     for side in (-1, 1):
-        lat = side * (1.5 + rng.uniform(0.0, 0.3))
-        ex, ez = x + nx * lat + tx * rng.uniform(-0.8, 0.8), z + nz * lat + tz * rng.uniform(-0.8, 0.8)
-        disc(f"edge_rim_{edge_n:03d}", ex, ez, rng.uniform(1.6, 3.0), rng.uniform(0.9, 1.7), yaw + rng.uniform(-25, 25), "#8e8052", 0.022)
-        if rng.random() < 0.7:
-            lat2 = side * rng.uniform(1.55, 1.95)
-            disc(f"edge_dust_{edge_n:03d}", x + nx * lat2 + tx * rng.uniform(1, 2.2), z + nz * lat2 + tz * rng.uniform(1, 2.2), rng.uniform(0.9, 1.9), rng.uniform(0.7, 1.3),
-                 yaw + rng.uniform(-40, 40), "#b09a6e", 0.026)
-        if rng.random() < 0.55:
-            lat3 = side * rng.uniform(1.0, 1.4)
-            disc(f"edge_notch_{edge_n:03d}", x + nx * lat3 + tx * rng.uniform(-1, 1), z + nz * lat3 + tz * rng.uniform(-1, 1), rng.uniform(0.7, 1.5), rng.uniform(0.5, 0.9),
-                 yaw + rng.uniform(-30, 30), "#7e8a57", 0.046)
-        edge_n += 1
         for _ in range(rng.choice([0, 1, 1, 2])):
-            lat4 = side * rng.uniform(1.75, 2.9)
+            lat4 = side * rng.uniform(1.5, 2.6)
             px, pz = x + nx * lat4 + tx * rng.uniform(-1.2, 1.2), z + nz * lat4 + tz * rng.uniform(-1.2, 1.2)
             if any(math.hypot(px - sx, pz - sz) < 1.3 for sx, sz in solid):
                 continue
@@ -525,29 +513,8 @@ while d < total - 1:
             peb_n += 1
     d += 2.4
 
-# цветочные кучки у дороги (концепт f1: жёлтые и лиловые группами)
-for k in range(40):
-    d = rng.uniform(4, 215)
-    x, z, tx, tz = road_at(d)
-    if abs(x) < 14 or near_other_paths(x, z, 3.0):
-        continue
-    side = rng.choice([-1, 1])
-    off = rng.uniform(3.6, 11.0)
-    cx, cz = x - tz * side * off, z + tx * side * off
-    if in_square(cx, cz, 3):
-        continue
-    scatter.append({"id": f"flower_cluster_{k:02d}", "area": {"shape": "circle", "center": P(r1(cx), r1(cz)), "radius": r1(rng.uniform(1.8, 3.0))}, "models": FLOWERS,
-                    "density": 28, "seed": 300 + k, "scale": {"min": 1.4, "max": 2.0},
-                    "avoid": {"paths": 0.9, "water": 1.5, "objects": 0.8, "zones": ["field_plot", "camp_spawn", "bridge_deck"]}})
-
-# туман над лугом у спавна (тег mist: утром, MorningMist.cs; мягкие диски в 0,45 м над землёй)
-for k, (mx, mz, mr) in enumerate([(-176, 10, 7), (-165, 16, 8), (-154, 8, 6.5), (-150, 22, 8), (-140, 4, 7), (-128, 18, 8.5), (-118, 6, 7), (-172, 26, 8),
-                                  (-160, 30, 7.5), (-108, 14, 8), (-96, 24, 8.5), (-136, 32, 8), (-176, -14, 7), (-146, -9, 6.5)]):
-    assert f"mist_{k:02d}" not in ids
-    ids.add(f"mist_{k:02d}")
-    objects.append({"id": f"mist_{k:02d}", "shape": "quad", "position": {"x": mx, "y": 0.45, "z": mz}, "rotation": {"x": 90, "y": r1(rng.uniform(0, 360)), "z": 0},
-                    "scale": {"x": mr * 2, "y": mr * 2 * rng.uniform(0.6, 0.9), "z": 1}, "color": "#f2ead8", "collide": False, "tags": ["decor", "mist"]})
-print(f"D-22: patches/edge/pebbles/mist: edge={edge_n} pebbles={peb_n}")
+# D-22b: утренний туман — в постпроходе (по высоте и мировому шуму, MorningMist), не стопкой квадов
+print(f"D-22: pebbles={peb_n}")
 
 
 config = {
@@ -556,7 +523,7 @@ config = {
     "build": {"include": True, "order": 0},
     "save": {"slot": "slot"},
     "ground": {"sizeX": 360, "sizeZ": 200, "color": "#7d8a5c", "terrain": "grass"},
-    "light": {"rotation": {"x": 40, "y": -60, "z": 0}, "color": "#ffe9c8", "intensity": 1.0, "shadows": "hard"},
+    "light": {"rotation": {"x": 56, "y": -60, "z": 0}, "color": "#ffe9c8", "intensity": 1.0, "shadows": "soft"},
     "ambient": {"color": "#a8aeb4"},
     "camera": {"orthographic": True, "pitch": 35, "yaw": 45, "distance": 20, "size": CAMERA_SIZE, "followSmoothTime": 0.15},
     "hero": {"spawn": {"x": -168, "y": 0, "z": 0}, "shape": "capsule", "color": "#c9a46a"},
