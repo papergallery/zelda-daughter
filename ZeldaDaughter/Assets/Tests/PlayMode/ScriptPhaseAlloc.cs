@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
@@ -18,6 +19,9 @@ namespace ZeldaDaughter.Tests
         private static PlayerLoopSystem _saved;
         private static bool _on;
         private static long _begin;
+        private static ProfilerRecorder _rec;
+        public static long RecTotal { get; private set; }
+        private static long _recBegin;
 
         /// <summary>Bytes allocated inside the wrapped phases since <see cref="Start"/>.</summary>
         public static long Total { get; private set; }
@@ -32,7 +36,9 @@ namespace ZeldaDaughter.Tests
             Wrap(ref loop, typeof(PreLateUpdate.ScriptRunBehaviourLateUpdate));
             Wrap(ref loop, typeof(FixedUpdate.ScriptRunBehaviourFixedUpdate));
             PlayerLoop.SetPlayerLoop(loop);
+            _rec = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame", 1);
             Total = 0;
+            RecTotal = 0;
             Calls = 0;
             _on = true;
         }
@@ -41,6 +47,7 @@ namespace ZeldaDaughter.Tests
         {
             if (!_on) return;
             PlayerLoop.SetPlayerLoop(_saved);
+            _rec.Dispose();
             _on = false;
         }
 
@@ -50,8 +57,8 @@ namespace ZeldaDaughter.Tests
         public static int Calls { get; private set; }
         public static int Wrapped { get; private set; }
 
-        private static void OnBegin() { Calls++; _begin = GC.GetAllocatedBytesForCurrentThread(); }
-        private static void OnEnd() { Total += GC.GetAllocatedBytesForCurrentThread() - _begin; }
+        private static void OnBegin() { Calls++; _recBegin = _rec.CurrentValue; _begin = GC.GetAllocatedBytesForCurrentThread(); }
+        private static void OnEnd() { RecTotal += _rec.CurrentValue - _recBegin; Total += GC.GetAllocatedBytesForCurrentThread() - _begin; }
 
         private static void Wrap(ref PlayerLoopSystem root, Type phase)
         {
