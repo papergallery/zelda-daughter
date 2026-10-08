@@ -235,6 +235,7 @@ namespace ZeldaDaughter.Tests
             Assert.IsFalse(merchant.IsWalking, "she got there");
             Assert.LessOrEqual(worst, 0.05f, "she walks her waypoints");
             Assert.AreEqual(NpcPresenter.TavernRingMeters, Flat(merchant.transform.position, tavern), 0.1f);
+            float speed = walked / (Time.time - simStart);
             float pace = _s.State.Npcs.WalkSpeed("merchant");
             Assert.That(speed, Is.InRange(pace * 0.5f, pace * 1.25f), "at about the pace of npcs.json (long frames are clamped, so never faster)");
         }
