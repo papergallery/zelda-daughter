@@ -1,0 +1,123 @@
+{
+ "_source": "D-09. Паспорта персонажей для листов Klein (tools/art/klein.py) и нормализации (tools/art/sprite_build.py). Описания NPC — по апрельскому character_pipeline/config.py, переписаны: все — люди средневекового городка (project-design.md §2), героиня — решение 1 (docs/demo/decisions.md). Рост — видимая высота фигуры в метрах (с шапкой/шлемом, без копья); у зверей — по рамке бокового вида (холка из критериев D-09: кабан 0,9, волк 0,8 + голова/уши). Генерация — облако Polza, GPT Image 2.5 (tools/art/gen_sheets.py, решение в docs/demo/decisions.md); Klein на ПК (tools/art/klein.py) — запасной путь.",
+ "ppm": 320,
+ "palette_mix": 0.3,
+ "palette": [
+  "#f2e8d5",
+  "#e3cfa8",
+  "#c9a66b",
+  "#a87b3e",
+  "#7a5530",
+  "#4f3826",
+  "#2e221a",
+  "#c9c08f",
+  "#98975a",
+  "#6b7040",
+  "#454a2c",
+  "#d9a07a",
+  "#b86e4b",
+  "#8f4a35",
+  "#6b3530",
+  "#a9b1a8",
+  "#7d8a8c",
+  "#56636b",
+  "#3b4249",
+  "#e8c9a8",
+  "#c79a7a",
+  "#9a6e55",
+  "#d8d2c4",
+  "#a49c8c",
+  "#6e675c"
+ ],
+ "style": "Hand-drawn storybook illustration made with a dip pen and watercolor: uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms, muted warm earthy palette of ochre, olive green, umber, rust and dusty red, slightly exaggerated whimsical proportions like the game Don't Starve (a bit large head, thin limbs). Flat even light, no cast shadows, no ground patch, plain flat light grey background (#c8c8c8). No text, no letters, no logos, no watermark, no signature, no frame.",
+ "characters": {
+  "heroine": {
+   "kind": "human",
+   "height_m": 1.65,
+   "walk": true,
+   "who": "an ADULT young woman of about twenty-two (not a child, not a teenager: adult face with a defined jaw and normal-sized eyes, adult body about six and a half heads tall), an ordinary person from our modern world who got lost in a medieval fantasy land. Plain loose short-sleeved OFF-WHITE cotton t-shirt (not red, not orange), blue denim jeans rolled up at the ankles, worn off-white canvas sneakers with no logos, a small olive-green backpack on both shoulders, messy shoulder-length dark brown hair, slightly tired curious face, empty hands, no weapons."
+  },
+  "peasant": {
+   "kind": "human",
+   "height_m": 1.75,
+   "who": "a middle-aged peasant farmer man of a small medieval town: weathered tanned face, short brown beard, wide-brimmed woven straw hat, patched undyed linen tunic belted with a rope, rolled-up brown wool trousers, cloth leg wraps and simple leather shoes, dirty hands, empty hands.",
+   "poses": {
+    "point": "pointing far away to the right with an outstretched arm and index finger (\"over there\")"
+   },
+   "walk": true
+  },
+  "guard": {
+   "kind": "human",
+   "height_m": 1.88,
+   "who": "a town guard man of a small medieval town, about thirty-five: stern face, short dark beard, round iron kettle-hat helmet, quilted padded gambeson in faded rust-red under a simple ochre tabard without any emblem, leather belt, brown trousers, leather boots, holding a tall wooden spear upright in his hand with the spearhead above his head.",
+   "poses": {
+    "point": "pointing far away to the right with his free outstretched arm, spear still upright in the other hand"
+   },
+   "walk": true
+  },
+  "merchant": {
+   "kind": "human",
+   "height_m": 1.72,
+   "who": "a plump middle-aged merchant man of a small medieval town: round friendly face, trimmed grey beard, soft burgundy felt cap, long mustard-ochre wool robe with a wide brown leather belt, a fat coin purse and a small ledger hanging at the belt, brown leather shoes, empty hands.",
+   "poses": {
+    "point": "pointing far away to the right with an outstretched arm and index finger"
+   },
+   "walk": true
+  },
+  "smith": {
+   "kind": "human",
+   "height_m": 1.82,
+   "who": "a broad-shouldered blacksmith man of a small medieval town, about forty: muscular bare forearms with rolled-up sleeves of a grey linen shirt, a heavy brown leather work apron down to the knees, short black beard, soot on his face and hands, close-cropped hair, dark trousers, heavy boots, empty hands.",
+   "poses": {
+    "strike": "striking with a heavy blacksmith hammer: first the hammer raised high above his head, then the hammer brought down at waist height"
+   },
+   "walk": true
+  },
+  "barkeep": {
+   "kind": "human",
+   "height_m": 1.76,
+   "who": "a cheerful round-bellied tavern keeper man of a small medieval town: rosy cheeks, bald head with a fringe of ginger hair and big ginger moustache, cream linen shirt with rolled sleeves, olive-green waistcoat, a long off-white apron tied at the waist, a rag over one shoulder, brown trousers, leather shoes, empty hands.",
+   "poses": {
+    "point": "pointing far away to the right with an outstretched arm and index finger"
+   },
+   "walk": true
+  },
+  "herbalist": {
+   "kind": "human",
+   "height_m": 1.62,
+   "who": "an elderly human herbalist woman of a small medieval town: kind wrinkled face, long grey hair in a loose braid, faded sage-green wool dress with a brown shawl over her shoulders, a cloth satchel at her hip with bundles of dried herbs sticking out, leather shoes, empty hands.",
+   "walk": true
+  },
+  "townswoman": {
+   "kind": "human",
+   "height_m": 1.63,
+   "who": "a young townswoman of a small medieval town: round face, auburn hair tucked under a white linen headscarf, dusty-blue wool dress with a cream apron, a woven wicker basket hanging on her arm, simple leather shoes.",
+   "walk": true
+  },
+  "old_man": {
+   "kind": "human",
+   "height_m": 1.66,
+   "who": "a thin stooped old man of a small medieval town: long white beard, bald head, bushy eyebrows, long patched brown wool cloak over a grey tunic, leaning on a knotted wooden walking stick, worn leather shoes.",
+   "walk": true,
+   "measure": "bbox"
+  },
+  "weaver": {
+   "kind": "human",
+   "height_m": 1.65,
+   "who": "a middle-aged weaver woman of a small medieval town: sharp attentive face, dark hair in a bun, mustard-yellow linen dress with sleeves pushed up, a dark red wool overdress, a skein of wool yarn hanging over her shoulder and a wooden shuttle tucked in her belt, leather shoes, empty hands.",
+   "walk": true
+  },
+  "boar": {
+   "kind": "animal",
+   "height_m": 0.95,
+   "walk": true,
+   "who": "a wild boar: big and heavy, bristly dark umber-brown fur with a stiff mane along the back, short curved ivory tusks, small angry eyes, short thin legs with dark hooves, a short tail."
+  },
+  "wolf": {
+   "kind": "animal",
+   "height_m": 0.95,
+   "walk": true,
+   "who": "a grey wolf: lean and rangy, shaggy grey-brown fur with lighter belly and muzzle, pointed ears up, yellow eyes, long legs, bushy tail held low, mouth closed."
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "id": "old_man",
+ "ppu": 320,
+ "height_m": 1.66,
+ "size_px": [
+  334,
+  546
+ ],
+ "pivot": [
+  0.5,
+  0.0055
+ ],
+ "side_faces": "right",
+ "walk": {
+  "front": [
+   0,
+   1
+  ],
+  "side": [
+   0,
+   1,
+   2
+  ],
+  "back": [
+   0,
+   1,
+   2
+  ]
+ },
+ "poses": {},
+ "source": {
+  "sources": [
+   {
+    "file": "old_man-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "old_man-extra-a-0.png",
+    "ref": 1,
+    "match": "front_0",
+    "figs": [
+     null,
+     "front_1",
+     "back_1",
+     "back_2"
+    ]
+   }
+  ]
+ }
+}

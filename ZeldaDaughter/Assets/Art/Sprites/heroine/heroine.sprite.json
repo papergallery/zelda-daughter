@@ -1,0 +1,91 @@
+{
+ "id": "heroine",
+ "ppu": 320,
+ "height_m": 1.65,
+ "size_px": [
+  936,
+  615
+ ],
+ "pivot": [
+  0.5,
+  0.0049
+ ],
+ "side_faces": "right",
+ "walk": {
+  "front": [
+   0,
+   1,
+   2
+  ],
+  "side": [
+   0,
+   1,
+   2
+  ],
+  "back": [
+   0,
+   1,
+   2
+  ]
+ },
+ "poses": {
+  "attack": {
+   "side": [
+    0,
+    1
+   ]
+  },
+  "down": {
+   "side": [
+    0
+   ]
+  },
+  "eat": {
+   "front": [
+    0
+   ]
+  },
+  "hurt": {
+   "front": [
+    0
+   ]
+  },
+  "pickup": {
+   "front": [
+    0
+   ]
+  }
+ },
+ "source": {
+  "sources": [
+   {
+    "file": "heroine-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2",
+     "front_1",
+     "front_2"
+    ]
+   },
+   {
+    "file": "heroine-poses2-a-0.png",
+    "ref": 6,
+    "match": "front_0",
+    "figs": [
+     "back_1",
+     "back_2",
+     "side_attack_0",
+     "side_attack_1",
+     "front_pickup_0",
+     "front_hurt_0",
+     "front_eat_0",
+     "side_down_0"
+    ]
+   }
+  ]
+ }
+}

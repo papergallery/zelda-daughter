@@ -1,0 +1,354 @@
+{
+ "_source": "D-09: отобранные генерации. Файлы — в рабочей папке ($ZD_ART_WORK или _work): <name>.png + .mask.png (BiRefNet) + .json (модель, промпт, URL результата). sources[0] — base-лист: фигура ref имеет рост height_m из sprites.json; у остальных листов фигура ref приводится к росту кадра match базового листа. figs — имена кадров фигур слева направо: <view>_<frame> (шаг, 0 — стоит) или <view>_<pose>_<frame>; null — пропустить.",
+ "_work": "/tmp/claude-1002/-var-www-html-Zelda-s-daughter/4cfb0226-a852-4ebb-8ca3-382c8ca9c989/scratchpad/d09/sel",
+ "heroine": {
+  "sources": [
+   {
+    "file": "heroine-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2",
+     "front_1",
+     "front_2"
+    ]
+   },
+   {
+    "file": "heroine-poses2-a-0.png",
+    "ref": 6,
+    "match": "front_0",
+    "figs": [
+     "back_1",
+     "back_2",
+     "side_attack_0",
+     "side_attack_1",
+     "front_pickup_0",
+     "front_hurt_0",
+     "front_eat_0",
+     "side_down_0"
+    ]
+   }
+  ]
+ },
+ "wolf": {
+  "sources": [
+   {
+    "file": "wolf-base-b-0.png",
+    "ref": 1,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     null
+    ]
+   },
+   {
+    "file": "wolf-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "side_windup_0",
+     null
+    ]
+   },
+   {
+    "file": "wolf-fix-a-0.png",
+    "ref": 0,
+    "match": "side_1",
+    "figs": [
+     "side_2",
+     "side_dead_0"
+    ]
+   }
+  ]
+ },
+ "boar": {
+  "sources": [
+   {
+    "file": "boar-base-b-0.png",
+    "ref": 1,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     null
+    ]
+   },
+   {
+    "file": "boar-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "side_windup_0",
+     null
+    ]
+   },
+   {
+    "file": "boar-fix-a-0.png",
+    "ref": 0,
+    "match": "side_1",
+    "figs": [
+     "side_2",
+     "side_dead_0"
+    ]
+   }
+  ]
+ },
+ "peasant": {
+  "sources": [
+   {
+    "file": "peasant-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "peasant-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "front_point_0",
+     "side_point_0"
+    ]
+   }
+  ]
+ },
+ "guard": {
+  "sources": [
+   {
+    "file": "guard-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "guard-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "front_point_0",
+     "side_point_0"
+    ]
+   }
+  ]
+ },
+ "merchant": {
+  "sources": [
+   {
+    "file": "merchant-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "merchant-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "front_point_0",
+     "side_point_0"
+    ]
+   }
+  ]
+ },
+ "barkeep": {
+  "sources": [
+   {
+    "file": "barkeep-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "barkeep-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "front_point_0",
+     "side_point_0"
+    ]
+   }
+  ]
+ },
+ "smith": {
+  "sources": [
+   {
+    "file": "smith-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "smith-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "side_strike_0",
+     "side_strike_1"
+    ]
+   }
+  ]
+ },
+ "herbalist": {
+  "sources": [
+   {
+    "file": "herbalist-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "herbalist-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2"
+    ]
+   }
+  ]
+ },
+ "townswoman": {
+  "sources": [
+   {
+    "file": "townswoman-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "townswoman-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2"
+    ]
+   }
+  ]
+ },
+ "weaver": {
+  "sources": [
+   {
+    "file": "weaver-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "weaver-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2"
+    ]
+   }
+  ]
+ },
+ "old_man": {
+  "sources": [
+   {
+    "file": "old_man-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "old_man-extra-a-0.png",
+    "ref": 1,
+    "match": "front_0",
+    "figs": [
+     null,
+     "front_1",
+     "back_1",
+     "back_2"
+    ]
+   }
+  ]
+ }
+}

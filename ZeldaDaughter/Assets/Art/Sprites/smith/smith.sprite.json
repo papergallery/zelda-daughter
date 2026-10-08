@@ -1,0 +1,67 @@
+{
+ "id": "smith",
+ "ppu": 320,
+ "height_m": 1.82,
+ "size_px": [
+  650,
+  700
+ ],
+ "pivot": [
+  0.5,
+  0.0029
+ ],
+ "side_faces": "right",
+ "walk": {
+  "front": [
+   0,
+   1,
+   2
+  ],
+  "side": [
+   0,
+   1,
+   2
+  ],
+  "back": [
+   0,
+   1,
+   2
+  ]
+ },
+ "poses": {
+  "strike": {
+   "side": [
+    0,
+    1
+   ]
+  }
+ },
+ "source": {
+  "sources": [
+   {
+    "file": "smith-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "smith-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "side_strike_0",
+     "side_strike_1"
+    ]
+   }
+  ]
+ }
+}

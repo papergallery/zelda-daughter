@@ -1,0 +1,80 @@
+{
+ "id": "wolf",
+ "ppu": 320,
+ "height_m": 0.95,
+ "size_px": [
+  724,
+  444
+ ],
+ "pivot": [
+  0.5,
+  0.0045
+ ],
+ "side_faces": "right",
+ "walk": {
+  "front": [
+   0,
+   1,
+   2
+  ],
+  "side": [
+   0,
+   1,
+   2
+  ],
+  "back": [
+   0,
+   1,
+   2
+  ]
+ },
+ "poses": {
+  "dead": {
+   "side": [
+    0
+   ]
+  },
+  "windup": {
+   "side": [
+    0
+   ]
+  }
+ },
+ "source": {
+  "sources": [
+   {
+    "file": "wolf-base-b-0.png",
+    "ref": 1,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     null
+    ]
+   },
+   {
+    "file": "wolf-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "side_windup_0",
+     null
+    ]
+   },
+   {
+    "file": "wolf-fix-a-0.png",
+    "ref": 0,
+    "match": "side_1",
+    "figs": [
+     "side_2",
+     "side_dead_0"
+    ]
+   }
+  ]
+ }
+}

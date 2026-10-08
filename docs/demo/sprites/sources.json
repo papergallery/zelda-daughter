@@ -1,0 +1,357 @@
+{
+ "_source": "D-09: исходные листы спрайтов — модель, запрос Polza, URL результата (s3.polza.ai), цена, промпт и референсы. Отбор кадров — tools/art/selection.json, сборка — tools/art/sprite_build.py. Сид у GPT Image 2.5 через Polza не задаётся: повтор — тем же промптом и референсами, результат будет другим вариантом.",
+ "sheets": {
+  "heroine-base-a-0.png": {
+   "character": "heroine",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219385476557312001",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_3439438fd82d902d.png",
+   "cost_rub": 7,
+   "aspect_ratio": "21:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 7 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind (backpack visible);\n4) walking, side profile facing right, the leg NEAREST to the viewer is forward and the far arm swings forward;\n5) walking, side profile facing right, the OPPOSITE phase of the previous drawing: the leg nearest to the viewer is BEHIND, the far leg is forward, and the near arm swings forward;\n6) walking toward the viewer (front view), mid-stride, her left leg forward and right arm swinging forward;\n7) walking toward the viewer (front view), mid-stride, her right leg forward and left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: an ADULT young woman of about twenty-two (not a child, not a teenager: adult face with a defined jaw and normal-sized eyes, adult body about six and a half heads tall), an ordinary person from our modern world who got lost in a medieval fantasy land. Plain loose short-sleeved OFF-WHITE cotton t-shirt (not red, not orange), blue denim jeans rolled up at the ankles, worn off-white canvas sneakers with no logos, a small olive-green backpack on both shoulders, messy shoulder-length dark brown hair, slightly tired curious face, empty hands, no weapons.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image is an earlier sheet of this same woman: keep her face, hair, jeans, sneakers, backpack, proportions, camera angle and art style, but her t-shirt is now plain OFF-WHITE. All drawings use exactly the same camera angle and the same head size."
+  },
+  "heroine-poses2-a-0.png": {
+   "character": "heroine",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219389019662585857",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_b6d97dbe62bd5c28.png",
+   "cost_rub": 7,
+   "aspect_ratio": "21:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_3439438fd82d902d.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 8 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking away from the viewer (back view, backpack visible), mid-stride, left leg forward;\n2) walking away from the viewer (back view, backpack visible), mid-stride, right leg forward;\n3) side profile facing right, swinging a short wooden stick back over her shoulder (wind-up of a strike);\n4) side profile facing right, lunging forward and striking with the short wooden stick at arm's length;\n5) side profile facing right, squatting down and reaching to the ground with one hand to pick something up;\n6) front view, standing hunched, clutching her side with one hand in pain;\n7) front view, standing and taking a bite of a piece of bread held with both hands;\n8) lying unconscious flat on her back ON THE GROUND, arms spread, eyes closed, body horizontal with her head to the left, the whole body inside the picture, nothing under her head;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: an ADULT young woman of about twenty-two (not a child, not a teenager: adult face with a defined jaw and normal-sized eyes, adult body about six and a half heads tall), an ordinary person from our modern world who got lost in a medieval fantasy land. Plain loose short-sleeved OFF-WHITE cotton t-shirt (not red, not orange), blue denim jeans rolled up at the ankles, worn off-white canvas sneakers with no logos, a small olive-green backpack on both shoulders, messy shoulder-length dark brown hair, slightly tired curious face, empty hands, no weapons.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle.\nExactly the same camera angle, head size and body scale as the first reference image."
+  },
+  "wolf-base-b-0.png": {
+   "character": "wolf",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219381822525804545",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_8f9b5634fd8f5d2e.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same animal in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, three-quarter front view, coming toward the viewer;\n2) standing, side profile view facing right;\n3) standing, three-quarter back view, walking away from the viewer;\n4) walking, side profile facing right, left front leg and right hind leg stepping forward;\n5) walking, side profile facing right, right front leg and left hind leg stepping forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the back and the top of the head are seen from above.\nThe animal: a grey wolf: lean and rangy, shaggy grey-brown fur with lighter belly and muzzle, pointed ears up, yellow eyes, long legs, bushy tail held low, mouth closed.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "wolf-extra-a-0.png": {
+   "character": "wolf",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382800185036801",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_5409a24554f6497d.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_8f9b5634fd8f5d2e.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 6 full-body drawings of ONE and the same animal in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer, three-quarter front view, left front leg stepping forward;\n2) walking toward the viewer, three-quarter front view, right front leg stepping forward;\n3) walking away from the viewer, three-quarter back view, left hind leg stepping forward;\n4) walking away from the viewer, three-quarter back view, right hind leg stepping forward;\n5) crouched low and tense right before charging, side profile facing right, head down, about to leap (wind-up);\n6) lying dead on its side, legs limp, eyes closed, seen from above (a carcass), side view, head to the right;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the back and the top of the head are seen from above.\nThe animal: a grey wolf: lean and rangy, shaggy grey-brown fur with lighter belly and muzzle, pointed ears up, yellow eyes, long legs, bushy tail held low, mouth closed.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this animal: keep the identical face, fur, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "wolf-fix-a-0.png": {
+   "character": "wolf",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219385489979609089",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_64cafd4fa66f1d33.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_8f9b5634fd8f5d2e.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 2 full-body drawings of ONE and the same animal in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking, side profile facing right, the OPPOSITE phase of the reference walking drawings: the legs nearest to the viewer are BEHIND and the far legs are forward;\n2) dead, lying FLAT on its side ON THE GROUND, legs limp and stretched sideways, eyes closed, seen from slightly above, the body low and touching the ground;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the back and the top of the head are seen from above.\nThe animal: a grey wolf: lean and rangy, shaggy grey-brown fur with lighter belly and muzzle, pointed ears up, yellow eyes, long legs, bushy tail held low, mouth closed.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this animal: keep the identical face, fur, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle.\nExactly the same camera angle, head size and body scale as the first reference image."
+  },
+  "boar-base-b-0.png": {
+   "character": "boar",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219381822358556673",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_946b418a74ea7c61.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same animal in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, three-quarter front view, coming toward the viewer;\n2) standing, side profile view facing right;\n3) standing, three-quarter back view, walking away from the viewer;\n4) walking, side profile facing right, left front leg and right hind leg stepping forward;\n5) walking, side profile facing right, right front leg and left hind leg stepping forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the back and the top of the head are seen from above.\nThe animal: a wild boar: big and heavy, bristly dark umber-brown fur with a stiff mane along the back, short curved ivory tusks, small angry eyes, short thin legs with dark hooves, a short tail.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "boar-extra-a-0.png": {
+   "character": "boar",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382812636614657",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_9b4d7f0f6b77beb3.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_946b418a74ea7c61.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 6 full-body drawings of ONE and the same animal in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer, three-quarter front view, left front leg stepping forward;\n2) walking toward the viewer, three-quarter front view, right front leg stepping forward;\n3) walking away from the viewer, three-quarter back view, left hind leg stepping forward;\n4) walking away from the viewer, three-quarter back view, right hind leg stepping forward;\n5) crouched low and tense right before charging, side profile facing right, head down, about to leap (wind-up);\n6) lying dead on its side, legs limp, eyes closed, seen from above (a carcass), side view, head to the right;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the back and the top of the head are seen from above.\nThe animal: a wild boar: big and heavy, bristly dark umber-brown fur with a stiff mane along the back, short curved ivory tusks, small angry eyes, short thin legs with dark hooves, a short tail.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this animal: keep the identical face, fur, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "boar-fix-a-0.png": {
+   "character": "boar",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219385501672017921",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_ba3c34b260437a1e.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_946b418a74ea7c61.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 2 full-body drawings of ONE and the same animal in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking, side profile facing right, the OPPOSITE phase of the reference walking drawings: the legs nearest to the viewer are BEHIND and the far legs are forward;\n2) dead, lying FLAT on its side ON THE GROUND, legs limp and stretched sideways, eyes closed, seen from slightly above, the body low and touching the ground;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the back and the top of the head are seen from above.\nThe animal: a wild boar: big and heavy, bristly dark umber-brown fur with a stiff mane along the back, short curved ivory tusks, small angry eyes, short thin legs with dark hooves, a short tail.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this animal: keep the identical face, fur, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle.\nExactly the same camera angle, head size and body scale as the first reference image."
+  },
+  "peasant-base-a-0.png": {
+   "character": "peasant",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382825227915265",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_c4c9cbc94d07a30a.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a middle-aged peasant farmer man of a small medieval town: weathered tanned face, short brown beard, wide-brimmed woven straw hat, patched undyed linen tunic belted with a rope, rolled-up brown wool trousers, cloth leg wraps and simple leather shoes, dirty hands, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "peasant-extra-a-0.png": {
+   "character": "peasant",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384178583801857",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_861a07501eaff69d.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_c4c9cbc94d07a30a.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 6 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\n5) front view, pointing far away to the right with an outstretched arm and index finger (\"over there\");\n6) side profile facing right, pointing far away to the right with an outstretched arm and index finger (\"over there\");\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a middle-aged peasant farmer man of a small medieval town: weathered tanned face, short brown beard, wide-brimmed woven straw hat, patched undyed linen tunic belted with a rope, rolled-up brown wool trousers, cloth leg wraps and simple leather shoes, dirty hands, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "guard-base-a-0.png": {
+   "character": "guard",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382842024923137",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_df92272bb4cce1b0.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a town guard man of a small medieval town, about thirty-five: stern face, short dark beard, round iron kettle-hat helmet, quilted padded gambeson in faded rust-red under a simple ochre tabard without any emblem, leather belt, brown trousers, leather boots, holding a tall wooden spear upright in his hand with the spearhead above his head.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "guard-extra-a-0.png": {
+   "character": "guard",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384090755600385",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_b08dcfae2bf037a8.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_df92272bb4cce1b0.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 6 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\n5) front view, pointing far away to the right with his free outstretched arm, spear still upright in the other hand;\n6) side profile facing right, pointing far away to the right with his free outstretched arm, spear still upright in the other hand;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a town guard man of a small medieval town, about thirty-five: stern face, short dark beard, round iron kettle-hat helmet, quilted padded gambeson in faded rust-red under a simple ochre tabard without any emblem, leather belt, brown trousers, leather boots, holding a tall wooden spear upright in his hand with the spearhead above his head.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "merchant-base-a-0.png": {
+   "character": "merchant",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382858772779009",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_4ef92c278cb0bff9.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a plump middle-aged merchant man of a small medieval town: round friendly face, trimmed grey beard, soft burgundy felt cap, long mustard-ochre wool robe with a wide brown leather belt, a fat coin purse and a small ledger hanging at the belt, brown leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "merchant-extra-a-0.png": {
+   "character": "merchant",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384157320908801",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_56bd3e2c42145c75.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_4ef92c278cb0bff9.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 6 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\n5) front view, pointing far away to the right with an outstretched arm and index finger;\n6) side profile facing right, pointing far away to the right with an outstretched arm and index finger;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a plump middle-aged merchant man of a small medieval town: round friendly face, trimmed grey beard, soft burgundy felt cap, long mustard-ochre wool robe with a wide brown leather belt, a fat coin purse and a small ledger hanging at the belt, brown leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "barkeep-base-a-0.png": {
+   "character": "barkeep",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382892359061505",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_9e2bf7d5342c5d40.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a cheerful round-bellied tavern keeper man of a small medieval town: rosy cheeks, bald head with a fringe of ginger hair and big ginger moustache, cream linen shirt with rolled sleeves, olive-green waistcoat, a long off-white apron tied at the waist, a rag over one shoulder, brown trousers, leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "barkeep-extra-a-0.png": {
+   "character": "barkeep",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384140552081409",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_bc88830fa7539a33.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_9e2bf7d5342c5d40.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 6 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\n5) front view, pointing far away to the right with an outstretched arm and index finger;\n6) side profile facing right, pointing far away to the right with an outstretched arm and index finger;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a cheerful round-bellied tavern keeper man of a small medieval town: rosy cheeks, bald head with a fringe of ginger hair and big ginger moustache, cream linen shirt with rolled sleeves, olive-green waistcoat, a long off-white apron tied at the waist, a rag over one shoulder, brown trousers, leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "smith-base-a-0.png": {
+   "character": "smith",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382875702169601",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_083d5ceaa0a56db8.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a broad-shouldered blacksmith man of a small medieval town, about forty: muscular bare forearms with rolled-up sleeves of a grey linen shirt, a heavy brown leather work apron down to the knees, short black beard, soot on his face and hands, close-cropped hair, dark trousers, heavy boots, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "smith-extra-a-0.png": {
+   "character": "smith",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384115451662337",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_bf90497b9f1aed43.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_083d5ceaa0a56db8.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 6 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\n5) side profile facing right, hammer raised high above his head before a strike;\n6) side profile facing right, hammer brought down hard in front of him at waist height (the strike);\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a broad-shouldered blacksmith man of a small medieval town, about forty: muscular bare forearms with rolled-up sleeves of a grey linen shirt, a heavy brown leather work apron down to the knees, short black beard, soot on his face and hands, close-cropped hair, dark trousers, heavy boots, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "herbalist-base-a-0.png": {
+   "character": "herbalist",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382909109800961",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_77ee35056fa571de.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: an elderly human herbalist woman of a small medieval town: kind wrinkled face, long grey hair in a loose braid, faded sage-green wool dress with a brown shawl over her shoulders, a cloth satchel at her hip with bundles of dried herbs sticking out, leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "herbalist-extra-a-0.png": {
+   "character": "herbalist",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384102765596673",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_fdac0bb4a770bb95.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_77ee35056fa571de.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 4 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: an elderly human herbalist woman of a small medieval town: kind wrinkled face, long grey hair in a loose braid, faded sage-green wool dress with a brown shawl over her shoulders, a cloth satchel at her hip with bundles of dried herbs sticking out, leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "townswoman-base-a-0.png": {
+   "character": "townswoman",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382925938659329",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_a10484308550d5ae.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a young townswoman of a small medieval town: round face, auburn hair tucked under a white linen headscarf, dusty-blue wool dress with a cream apron, a woven wicker basket hanging on her arm, simple leather shoes.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "townswoman-extra-a-0.png": {
+   "character": "townswoman",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384128053055489",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_52e81617b7e66e41.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_a10484308550d5ae.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 4 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a young townswoman of a small medieval town: round face, auburn hair tucked under a white linen headscarf, dusty-blue wool dress with a cream apron, a woven wicker basket hanging on her arm, simple leather shoes.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "weaver-base-a-0.png": {
+   "character": "weaver",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219383192742531073",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_892c58af14b7d32c.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a middle-aged weaver woman of a small medieval town: sharp attentive face, dark hair in a bun, mustard-yellow linen dress with sleeves pushed up, a dark red wool overdress, a skein of wool yarn hanging over her shoulder and a wooden shuttle tucked in her belt, leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "weaver-extra-a-0.png": {
+   "character": "weaver",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384763714899969",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_0f4814405d195ded.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_892c58af14b7d32c.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 4 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a middle-aged weaver woman of a small medieval town: sharp attentive face, dark hair in a bun, mustard-yellow linen dress with sleeves pushed up, a dark red wool overdress, a skein of wool yarn hanging over her shoulder and a wooden shuttle tucked in her belt, leather shoes, empty hands.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  },
+  "old_man-base-a-0.png": {
+   "character": "old_man",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219382942732652545",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_a134fe2d1523b0e0.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 5 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) standing, front view facing the viewer, arms relaxed;\n2) standing, side profile view facing right;\n3) standing, back view seen from behind;\n4) walking, side profile facing right, mid-stride with the left leg forward and the right arm swinging forward;\n5) walking, side profile facing right, mid-stride with the right leg forward and the left arm swinging forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a thin stooped old man of a small medieval town: long white beard, bald head, bushy eyebrows, long patched brown wool cloak over a grey tunic, leaning on a knotted wooden walking stick, worn leather shoes.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe reference image shows a DIFFERENT character (the game's heroine). Use it ONLY for the art style, line work, watercolor texture, palette, camera angle and scale (an adult of about 1.65 m is drawn as tall as she is); do NOT copy her face, hair, clothes or backpack."
+  },
+  "old_man-extra-a-0.png": {
+   "character": "old_man",
+   "model": "openai/gpt-image-2.5-flare",
+   "request": "gen_2219384165716201473",
+   "url": "https://s3.polza.ai/f/221426/2026/10/t_89702bd09310e2b8.png",
+   "cost_rub": 7,
+   "aspect_ratio": "16:9",
+   "image_resolution": "2K",
+   "refs": [
+    "https://s3.polza.ai/f/221426/2026/10/t_a134fe2d1523b0e0.png",
+    "https://s3.polza.ai/f/221426/2026/10/t_882959b8cc786814.png"
+   ],
+   "prompt": "Game character sprite sheet for a 2D storybook game: 4 full-body drawings of ONE and the same person in a single row, evenly spaced with wide empty gaps, nothing overlapping, all the same height and scale, all feet on one horizontal ground line:\n1) walking toward the viewer (front view), mid-stride, left leg forward and right arm swinging forward;\n2) walking toward the viewer (front view), mid-stride, right leg forward and left arm swinging forward;\n3) walking away from the viewer (back view), mid-stride, left leg forward;\n4) walking away from the viewer (back view), mid-stride, right leg forward;\nCamera: HIGH ANGLE, the same for every drawing. The viewer stands above and looks down at about 30 degrees, like the camera of an isometric top-down game (Don't Starve): the top of the head and the shoulders are seen from above, the body is slightly foreshortened toward the feet, and the feet are seen from above.\nThe person: a thin stooped old man of a small medieval town: long white beard, bald head, bushy eyebrows, long patched brown wool cloak over a grey tunic, leaning on a knotted wooden walking stick, worn leather shoes.\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a bit of scratchy hatching, loose transparent watercolor washes, muted warm earthy palette (ochre, olive, umber, rust, dusty red), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows, no ground, plain flat uniform light grey background. No text, no labels, no numbers, no logos, no watermark, no signature, no frame.\nThe first reference image is the character sheet of exactly this person: keep the identical face, hair, clothes, colors, proportions and art style. The second reference image shows the game's heroine — use it only for style and camera angle."
+  }
+ }
+}

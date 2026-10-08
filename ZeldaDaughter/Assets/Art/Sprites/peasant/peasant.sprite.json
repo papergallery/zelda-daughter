@@ -1,0 +1,69 @@
+{
+ "id": "peasant",
+ "ppu": 320,
+ "height_m": 1.75,
+ "size_px": [
+  480,
+  584
+ ],
+ "pivot": [
+  0.5,
+  0.0051
+ ],
+ "side_faces": "right",
+ "walk": {
+  "front": [
+   0,
+   1,
+   2
+  ],
+  "side": [
+   0,
+   1,
+   2
+  ],
+  "back": [
+   0,
+   1,
+   2
+  ]
+ },
+ "poses": {
+  "point": {
+   "front": [
+    0
+   ],
+   "side": [
+    0
+   ]
+  }
+ },
+ "source": {
+  "sources": [
+   {
+    "file": "peasant-base-a-0.png",
+    "ref": 0,
+    "figs": [
+     "front_0",
+     "side_0",
+     "back_0",
+     "side_1",
+     "side_2"
+    ]
+   },
+   {
+    "file": "peasant-extra-a-0.png",
+    "ref": 0,
+    "match": "front_0",
+    "figs": [
+     "front_1",
+     "front_2",
+     "back_1",
+     "back_2",
+     "front_point_0",
+     "side_point_0"
+    ]
+   }
+  ]
+ }
+}
