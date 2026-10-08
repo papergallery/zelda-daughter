@@ -457,5 +457,29 @@ namespace ZeldaDaughter.Tests
             yield return new WaitForSeconds(0.4f);
             yield return Capture("talk-trade");
         }
+
+        /// <summary>D-12 with the D-09 sprites: the smith at the anvil (hammer up, hammer down) and the peasant pointing to the gate.</summary>
+        [UnityTest]
+        public IEnumerator Frames_of_the_forge_and_the_gesture()
+        {
+            yield return Load("region");
+            SetHour(12);
+            var smith = View("smith");
+            _hero.Teleport(smith.transform.position + new Vector3(-3.2f, 1f, -3.2f), 45f);
+            yield return new WaitForSeconds(1.0f);
+            float t0 = Time.time;
+            while (Time.time - t0 < 3f && smith.Figure.CurrentSprite.name != "smith_side_strike_0") yield return null;
+            yield return Capture("forge-hammer-up");
+            while (Time.time - t0 < 6f && smith.Figure.CurrentSprite.name != "smith_side_strike_1") yield return null;
+            yield return Capture("forge-hammer-down");
+
+            SetHour(12);
+            var peasant = View("peasant");
+            _hero.Teleport(peasant.transform.position + new Vector3(2.5f, 1f, -2.5f), 45f);
+            yield return new WaitForSeconds(0.6f);
+            peasant.Point(_s.Index.Find("town_gate").transform.position);
+            yield return new WaitForSeconds(0.4f);
+            yield return Capture("peasant-point");
+        }
     }
 }
