@@ -8,8 +8,8 @@ using UnityEngine.PlayerLoop;
 namespace ZeldaDaughter.Tests
 {
     /// <summary>
-    /// D-26b: bytes allocated by the scripts' own frame phases (Update, LateUpdate, FixedUpdate of every MonoBehaviour), counted on the main thread by
-    /// <see cref="GC.GetAllocatedBytesForCurrentThread"/> between two markers inserted into the player loop around each phase.
+    /// D-26b: bytes allocated by the scripts' own frame phases (Update, LateUpdate, FixedUpdate of every MonoBehaviour), read from the profiler's "GC Allocated In Frame" counter
+    /// (<c>CurrentValue</c> is the running total of the frame; <c>GC.GetAllocatedBytesForCurrentThread</c> returns a constant under Unity's Mono, measured 2026-10-08) between two markers inserted into the player loop around each phase.
     /// The profiler's "GC Allocated In Frame" counter also carries everything the editor does itself (the bridge, the Game view, the test runner): measured
     /// 2026-10-08 as ~270-300 KB per frame with every game component, light, renderer and camera switched off - against a test limit of 512 B per 120 frames.
     /// The editor's work happens outside these phases, so the number here is the game's alone (and what a phone would see from scripts).
@@ -20,8 +20,6 @@ namespace ZeldaDaughter.Tests
         private static bool _on;
         private static long _begin;
         private static ProfilerRecorder _rec;
-        public static long RecTotal { get; private set; }
-        private static long _recBegin;
 
         /// <summary>Bytes allocated inside the wrapped phases since <see cref="Start"/>.</summary>
         public static long Total { get; private set; }
@@ -38,7 +36,6 @@ namespace ZeldaDaughter.Tests
             PlayerLoop.SetPlayerLoop(loop);
             _rec = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame", 1);
             Total = 0;
-            RecTotal = 0;
             Calls = 0;
             _on = true;
         }
@@ -57,8 +54,8 @@ namespace ZeldaDaughter.Tests
         public static int Calls { get; private set; }
         public static int Wrapped { get; private set; }
 
-        private static void OnBegin() { Calls++; _recBegin = _rec.CurrentValue; _begin = GC.GetAllocatedBytesForCurrentThread(); }
-        private static void OnEnd() { RecTotal += _rec.CurrentValue - _recBegin; Total += GC.GetAllocatedBytesForCurrentThread() - _begin; }
+        private static void OnBegin() { Calls++; _begin = _rec.CurrentValue; }
+        private static void OnEnd() { Total += _rec.CurrentValue - _begin; }
 
         private static void Wrap(ref PlayerLoopSystem root, Type phase)
         {

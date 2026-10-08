@@ -101,7 +101,7 @@ namespace ZeldaDaughter.Tests
         }
 
         /// <summary>D-26b: the exact per-component number. The profiler counter carries the editor's own noise (+-1 MB); here every Update/LateUpdate/FixedUpdate of every ZeldaDaughter component is called once more by hand
-        /// and the bytes are counted on this thread (GC.GetAllocatedBytesForCurrentThread) around the call alone.</summary>
+        /// and the bytes are counted on this thread (the profiler counter's running total of the frame, read before and after the call; GC.GetAllocatedBytesForCurrentThread is a constant under Unity Mono).</summary>
         [UnityTest, Explicit("diagnostic: run by hand, the result is the [ZD:AllocProbe] line in the log")]
         public IEnumerator Exact_bytes_per_component_method()
         {
@@ -124,17 +124,19 @@ namespace ZeldaDaughter.Tests
                     calls.Add((m.GetType().Name + "." + n, (System.Action)System.Delegate.CreateDelegate(typeof(System.Action), m, mi)));
                 }
             var sum = new long[calls.Count];
+            var rec = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame", 1);
             for (int f = 0; f < 240; f++)
             {
                 yield return null;
                 for (int i = 0; i < calls.Count; i++)
                 {
-                    long b = System.GC.GetAllocatedBytesForCurrentThread();
+                    long b = rec.CurrentValue;
                     calls[i].act();
-                    long used = System.GC.GetAllocatedBytesForCurrentThread() - b;
+                    long used = rec.CurrentValue - b;
                     if (f >= 30) sum[i] += used;   // the first frames: first-use caches
                 }
             }
+            rec.Dispose();
             var sb = new StringBuilder("exact bytes over 210 idle frames, extra call per frame\n");
             long all = 0;
             for (int i = 0; i < calls.Count; i++) { all += sum[i]; if (sum[i] > 0) sb.AppendLine($"  {calls[i].name}: {sum[i]} B"); }
