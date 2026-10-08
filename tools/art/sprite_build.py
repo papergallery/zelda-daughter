@@ -389,7 +389,8 @@ def piece(src: pathlib.Path, idx: int, flip: bool):
 def frame_order(name):
     view, rest = name.split('_', 1)
     pose = rest.rsplit('_', 1)[0] if '_' in rest else ''
-    return (pose != '', pose, VIEWS.index(view) if view in VIEWS else 9, rest)
+    num = int(rest.rsplit('_', 1)[-1]) if rest.rsplit('_', 1)[-1].isdigit() else 0
+    return (pose != '', pose, VIEWS.index(view) if view in VIEWS else 9, num, rest)
 
 
 def cmd_build(cid):
@@ -401,7 +402,17 @@ def cmd_build(cid):
     wd = work_dir()
     ppm = CFG['ppm']
     frames, body = {}, {}
+    groups = {}  # D-25: кадры цикла с общего холста ролика — имя кадра → группа (одно смещение на группу)
     for n, src in enumerate(sel['sources']):
+        if 'dir' in src:  # готовые кадры (d25_frames.py: 320 px/м, общий холст группы, палитра) — без вырезки и масштаба
+            d = pathlib.Path(src['dir']) if pathlib.Path(src['dir']).is_absolute() else wd / src['dir']
+            files = sorted(d.glob('[0-9]*.png'))
+            if len(files) != len(src['names']):
+                print(f'WARN {cid} {d}: кадров {len(files)}, имён {len(src["names"])}')
+            for f, name in zip(files, src['names']):
+                frames[name] = np.asarray(Image.open(f).convert('RGBA')).astype(np.float32) / 255
+                groups[name] = src.get('group', str(d))
+            continue
         rgba = cutout(wd / src['file'])
         figs = figures(rgba)
         if len(figs) != len(src['figs']):
@@ -460,6 +471,11 @@ def cmd_build(cid):
         else:
             fx = feet_x(p[..., 3], tt, bb)
         info[k] = (fx, int(rows[0]), bb)
+    for g in set(groups.values()):  # группа: одно смещение (медиана центра стоп, нижняя опора группы) — без центровки по кадру
+        ks = [k for k in groups if groups[k] == g]
+        gfx = float(np.median([info[k][0] for k in ks])); gbb = max(info[k][2] for k in ks)
+        for k in ks:
+            info[k] = (gfx, info[k][1], gbb)
     half = max(max(fx, frames[k].shape[1] - fx) for k, (fx, _, _) in info.items())
     up = max(bb - top for (_, top, bb) in info.values())
     down = max(frames[k].shape[0] - 1 - bb for k, (_, _, bb) in info.items())

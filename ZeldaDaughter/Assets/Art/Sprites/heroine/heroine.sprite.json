@@ -20,7 +20,17 @@
   "side": [
    0,
    1,
-   2
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
   ],
   "back": [
    0,
@@ -66,8 +76,8 @@
      "front_0",
      "side_0",
      "back_0",
-     "side_1",
-     "side_2",
+     null,
+     null,
      "front_1",
      "front_2"
     ],
@@ -178,6 +188,25 @@
     "figs": [
      null,
      "side_attack_0"
+    ]
+   },
+   {
+    "_d25": "D-25: бок — цикл лёгкого бега 12 кадров (Seedance 2 mini 720p 4 с, d25_frames.py video --n 12 --period 25 --align --color-ref side_0); кадры с общего холста ролика, одна группа",
+    "dir": "../d25/heroine-run-side",
+    "group": "run_side",
+    "names": [
+     "side_1",
+     "side_2",
+     "side_3",
+     "side_4",
+     "side_5",
+     "side_6",
+     "side_7",
+     "side_8",
+     "side_9",
+     "side_10",
+     "side_11",
+     "side_12"
     ]
    }
   ],
