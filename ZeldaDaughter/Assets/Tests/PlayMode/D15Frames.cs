@@ -8,6 +8,7 @@ using UnityEngine.TestTools;
 using ZeldaDaughter.Game;
 using ZeldaDaughter.Hero;
 using ZeldaDaughter.UI;
+using ZeldaDaughter.World;
 
 namespace ZeldaDaughter.Tests
 {
