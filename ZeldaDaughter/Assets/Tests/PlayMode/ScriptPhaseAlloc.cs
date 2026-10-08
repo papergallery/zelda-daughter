@@ -43,9 +43,9 @@ namespace ZeldaDaughter.Tests
         public static void Stop()
         {
             if (!_on) return;
+            _on = false;                        // the rest of this frame still runs the old loop
             PlayerLoop.SetPlayerLoop(_saved);
             _rec.Dispose();
-            _on = false;
         }
 
         private struct Begin { }
@@ -54,8 +54,8 @@ namespace ZeldaDaughter.Tests
         public static int Calls { get; private set; }
         public static int Wrapped { get; private set; }
 
-        private static void OnBegin() { Calls++; _begin = _rec.CurrentValue; }
-        private static void OnEnd() { Total += _rec.CurrentValue - _begin; }
+        private static void OnBegin() { if (!_on) return; Calls++; _begin = _rec.CurrentValue; }
+        private static void OnEnd() { if (!_on) return; Total += _rec.CurrentValue - _begin; }
 
         private static void Wrap(ref PlayerLoopSystem root, Type phase)
         {
