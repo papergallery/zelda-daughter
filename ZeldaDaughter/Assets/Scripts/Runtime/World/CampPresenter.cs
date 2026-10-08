@@ -17,6 +17,7 @@ namespace ZeldaDaughter.World
     public sealed class CampPresenter : MonoBehaviour
     {
         private const float LightIntensity = 3f;
+        private const float FlameScale = 2f;
         private static readonly Color FireColor = new Color(1f, 0.62f, 0.3f);
 
         [SerializeField] private GameSession _session;
@@ -216,6 +217,7 @@ namespace ZeldaDaughter.World
             {
                 view.Fx = Instantiate(fxPrefab, go.transform, false);
                 view.Fx.name = "fire";
+                view.Fx.transform.localScale = Vector3.one * FlameScale; // D-21: the pack's flame is ~0.45 m — lost in the lit ground; the concept's is ~1 m
             }
             else
             {
