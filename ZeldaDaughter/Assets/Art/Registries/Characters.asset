@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8316944707162218240
+--- !u!114 &-7366206634074458188
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10,17 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: boar
+  m_Name: townswoman
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
+  _front:
+  - {fileID: 21300000, guid: 75771022251532a44a76ae880fbb2fd1, type: 3}
+  - {fileID: 21300000, guid: 0d1901b22f75e0f47a164a0d96b6af91, type: 3}
+  - {fileID: 21300000, guid: 0cc1228a874145c488cd9cae6f76baba, type: 3}
+  _back:
+  - {fileID: 21300000, guid: 7e794a7b008e3e0408f757616890b15b, type: 3}
+  - {fileID: 21300000, guid: 7741bf4fe7d9ef14badf8e815d0bfb7e, type: 3}
+  - {fileID: 21300000, guid: 026cef37755cbc14eb6cf8cc2c4417a5, type: 3}
+  _side:
+  - {fileID: 21300000, guid: eb1a6a0d95da0b546871e9150efd6795, type: 3}
+  - {fileID: 21300000, guid: 3868844e9d85c42408afd500a466f9f5, type: 3}
+  - {fileID: 21300000, guid: 8c2800cc55fb5434a84660b55d065a47, type: 3}
   _down: {fileID: 0}
-  _pixelsPerMeter: 142
+  _pixelsPerMeter: 320
   _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.41960785, g: 0.2901961, b: 0.22745098, a: 1}
---- !u!114 &-4215080053136768865
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &-7039071097258678846
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -30,117 +39,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: herbalist
+  m_Name: merchant
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
+  _front:
+  - {fileID: 21300000, guid: b84840be01dccb4429c3a9982c5fbfa1, type: 3}
+  - {fileID: 21300000, guid: 50af280a2a391e940901a36d043ef1b2, type: 3}
+  - {fileID: 21300000, guid: be460d3c3fc7bae46b8e5e23d7c5a77c, type: 3}
+  _back:
+  - {fileID: 21300000, guid: d03a7f3a307df7b499cd3381df971df8, type: 3}
+  - {fileID: 21300000, guid: 037d8e8f5019d4a408ce2834150bc06c, type: 3}
+  - {fileID: 21300000, guid: 91e35b72e8f70cd4e848e053a1b0365d, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 2e322a704ce642343b40a4132c9303f8, type: 3}
+  - {fileID: 21300000, guid: bcb77951d8375b142be1ee4212fdd886, type: 3}
+  - {fileID: 21300000, guid: 932f194d16c50cd49aee48f27bb6a0c6, type: 3}
   _down: {fileID: 0}
-  _pixelsPerMeter: 75
+  _pixelsPerMeter: 320
   _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.37254903, g: 0.49019608, b: 0.30980393, a: 1}
---- !u!114 &-3525616320980387681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: old_man
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
-  _down: {fileID: 0}
-  _pixelsPerMeter: 75
-  _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.43137255, g: 0.41568628, b: 0.3529412, a: 1}
---- !u!114 &-3406351750582224286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: barkeep
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
-  _down: {fileID: 0}
-  _pixelsPerMeter: 75
-  _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.5411765, g: 0.3529412, b: 0.2901961, a: 1}
---- !u!114 &-2537557541519768337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: weaver
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
-  _down: {fileID: 0}
-  _pixelsPerMeter: 75
-  _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.6039216, g: 0.47843137, b: 0.41568628, a: 1}
---- !u!114 &-1663888837243626215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: guard
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
-  _down: {fileID: 0}
-  _pixelsPerMeter: 75
-  _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.3372549, g: 0.3764706, b: 0.41568628, a: 1}
---- !u!114 &-1199658145682813704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: smith
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
-  _down: {fileID: 0}
-  _pixelsPerMeter: 75
-  _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.41568628, g: 0.3137255, b: 0.28235295, a: 1}
---- !u!114 &-212931466029964406
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &-5085269594566672548
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,14 +70,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
   m_Name: wolf
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
-  _down: {fileID: 0}
-  _pixelsPerMeter: 160
+  _front:
+  - {fileID: 21300000, guid: b78aae003c9f95d40a62298d1d0b5f14, type: 3}
+  - {fileID: 21300000, guid: 04da192c1bebe744a9b7bdccab355c28, type: 3}
+  - {fileID: 21300000, guid: 7866e78e6440eac459dd693ae3c383a4, type: 3}
+  _back:
+  - {fileID: 21300000, guid: c56a975f10fc46246a9211c859cfa897, type: 3}
+  - {fileID: 21300000, guid: b0def538938075847af9d6d08d2691c3, type: 3}
+  - {fileID: 21300000, guid: fcded23d079483549b35bb1569d89761, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 58787d6bd02b5884cb1b0a63f8a70811, type: 3}
+  - {fileID: 21300000, guid: 306c943a4ec428b4184986e5a471c912, type: 3}
+  - {fileID: 21300000, guid: ae94982f2e4cebd49a0c45a4fa00f4b1, type: 3}
+  _down: {fileID: 21300000, guid: 2fc905c6e466f9a49b60835410977943, type: 3}
+  _pixelsPerMeter: 320
   _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.41568628, g: 0.41568628, b: 0.4392157, a: 1}
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &-3485615872066929110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
+  m_Name: guard
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
+  _front:
+  - {fileID: 21300000, guid: e2c6e3d06def9874897c69b7858a4d3e, type: 3}
+  - {fileID: 21300000, guid: 61029217380d77f4ab4ae958e146a853, type: 3}
+  - {fileID: 21300000, guid: 38bab60a12ba27747bd1167b41fee232, type: 3}
+  _back:
+  - {fileID: 21300000, guid: d7398bdac0241984cadf40f334168087, type: 3}
+  - {fileID: 21300000, guid: b2297e9c156bcb0498b7b6f9cf71a7a6, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 86581932ae34bce44af232b049c8c204, type: 3}
+  - {fileID: 21300000, guid: ccf219bf87ea7a24f9ecee48b8ccb72a, type: 3}
+  - {fileID: 21300000, guid: 7afa57014ed913540b45a82a1eae6e22, type: 3}
+  _down: {fileID: 0}
+  _pixelsPerMeter: 320
+  _strideMeters: 0.8
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &-1707401108208810535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
+  m_Name: weaver
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
+  _front:
+  - {fileID: 21300000, guid: 25d97fa0a23141243aa1c06589f989cd, type: 3}
+  - {fileID: 21300000, guid: 9d8d5c7adcf6edc4a87327146fc4bb4b, type: 3}
+  - {fileID: 21300000, guid: 346cf3af48e3737489bdc3b401690a4d, type: 3}
+  _back:
+  - {fileID: 21300000, guid: 71db31f8a3c7e8f43a221817cb70c642, type: 3}
+  - {fileID: 21300000, guid: ab3505dfa6a0a4840af67d163c25a184, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 8d95d4dbd2ca01f43ae09fbf79be8c07, type: 3}
+  - {fileID: 21300000, guid: 2ee49cc3680028e498b49d870c79a390, type: 3}
+  - {fileID: 21300000, guid: 39fb8212db30f5946b66ae0e92e8f1bb, type: 3}
+  _down: {fileID: 0}
+  _pixelsPerMeter: 320
+  _strideMeters: 0.8
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,19 +169,19 @@ MonoBehaviour:
   - weaver
   - wolf
   _sets:
-  - {fileID: -3406351750582224286}
-  - {fileID: -8316944707162218240}
-  - {fileID: -1663888837243626215}
-  - {fileID: -4215080053136768865}
-  - {fileID: 2659127379741517603}
-  - {fileID: 9190886686117501476}
-  - {fileID: -3525616320980387681}
-  - {fileID: 4785184856659550032}
-  - {fileID: -1199658145682813704}
-  - {fileID: 3045929363207959934}
-  - {fileID: -2537557541519768337}
-  - {fileID: -212931466029964406}
---- !u!114 &2659127379741517603
+  - {fileID: 6438588177798504873}
+  - {fileID: 542601111091034443}
+  - {fileID: -3485615872066929110}
+  - {fileID: 1046417197821557021}
+  - {fileID: 4195931703521363891}
+  - {fileID: -7039071097258678846}
+  - {fileID: 2825523362008442059}
+  - {fileID: 1615016941689538628}
+  - {fileID: 4933946568922899418}
+  - {fileID: -7366206634074458188}
+  - {fileID: -1707401108208810535}
+  - {fileID: -5085269594566672548}
+--- !u!114 &542601111091034443
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -208,17 +191,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: heroine
+  m_Name: boar
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
-  _down: {fileID: 0}
-  _pixelsPerMeter: 75
+  _front:
+  - {fileID: 21300000, guid: 6740dd7e6330f3a4a94634657be81b63, type: 3}
+  - {fileID: 21300000, guid: e9aa275d61649104a991ac7bb6810db7, type: 3}
+  - {fileID: 21300000, guid: 69c3499cdcb407a459754626cdedfbb3, type: 3}
+  _back:
+  - {fileID: 21300000, guid: 56194d63569eaf54591d682eba293d88, type: 3}
+  - {fileID: 21300000, guid: 8595eab6925418547ac5fddaafb17d7a, type: 3}
+  - {fileID: 21300000, guid: 2b5e77cceda623447947678a4e74afd0, type: 3}
+  _side:
+  - {fileID: 21300000, guid: be6d37d76c09c6f4c8b18c90ab03d9d5, type: 3}
+  - {fileID: 21300000, guid: ddfdbc667af9ef24dad3cb8e5fed473f, type: 3}
+  - {fileID: 21300000, guid: db5012c8466e2af4bb95c3e3310cb4be, type: 3}
+  _down: {fileID: 21300000, guid: ce602e7440d07574e909c98eea896ee5, type: 3}
+  _pixelsPerMeter: 320
   _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.7882353, g: 0.6431373, b: 0.41568628, a: 1}
---- !u!114 &3045929363207959934
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &1046417197821557021
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,17 +220,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: townswoman
+  m_Name: herbalist
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
+  _front:
+  - {fileID: 21300000, guid: 0f7a0de0bc905a74db6fc68a2ba69261, type: 3}
+  - {fileID: 21300000, guid: 8f2b047f4155a724bab1694fec9f09d1, type: 3}
+  - {fileID: 21300000, guid: 13f7d84340644f3449f5bd8a04f6465c, type: 3}
+  _back:
+  - {fileID: 21300000, guid: 3b6312da004172f46af87dd250692964, type: 3}
+  - {fileID: 21300000, guid: 0b97db4a51c34364fa8fc65f1abed3e6, type: 3}
+  - {fileID: 21300000, guid: e6d0bb842dc92734abffda54696d46cb, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 79507eda9343cf44cbaf2440904bbdb3, type: 3}
+  - {fileID: 21300000, guid: 1b759b902d50a4b47a632964371157a9, type: 3}
+  - {fileID: 21300000, guid: 9f1bbdde4dfe9a04ba56cc2c5e7ac60a, type: 3}
   _down: {fileID: 0}
-  _pixelsPerMeter: 75
+  _pixelsPerMeter: 320
   _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.47843137, g: 0.41568628, b: 0.5411765, a: 1}
---- !u!114 &4785184856659550032
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &1615016941689538628
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -250,15 +251,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
   m_Name: peasant
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
+  _front:
+  - {fileID: 21300000, guid: af59700d92d58ee4d9349b566ce4ed2a, type: 3}
+  - {fileID: 21300000, guid: 743bbdadaa3fe664caca5c639172cf65, type: 3}
+  - {fileID: 21300000, guid: 447358b81cef38443b45f67bb56bc5d0, type: 3}
+  _back:
+  - {fileID: 21300000, guid: e6a1a53ec5143c646aa145897445bd22, type: 3}
+  - {fileID: 21300000, guid: f80f9502da2d2f24c9a38d2ca5c3ce81, type: 3}
+  - {fileID: 21300000, guid: be42774cbfb8209468636f9be6147afd, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 6476b55ebb96c6b4e9afc2ecbf217598, type: 3}
+  - {fileID: 21300000, guid: 0da1ac28b43aaee45951bf3afa859b3c, type: 3}
+  - {fileID: 21300000, guid: 437f18bc1e5626841b5bfdb6b3ac736d, type: 3}
   _down: {fileID: 0}
-  _pixelsPerMeter: 75
+  _pixelsPerMeter: 320
   _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.56078434, g: 0.47843137, b: 0.2901961, a: 1}
---- !u!114 &9190886686117501476
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &2825523362008442059
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -268,13 +278,108 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
-  m_Name: merchant
+  m_Name: old_man
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
-  _front: []
-  _back: []
-  _side: []
+  _front:
+  - {fileID: 21300000, guid: 3315cfbe771b5d8419d49ff8c8a53460, type: 3}
+  - {fileID: 21300000, guid: 15343a1c46bc2a74ea8ca5ec4203c06f, type: 3}
+  _back:
+  - {fileID: 21300000, guid: cb2d81f2d61db234a9ff76433315fca5, type: 3}
+  - {fileID: 21300000, guid: befa8a6bdfac9b94ea98a67da30e1785, type: 3}
+  - {fileID: 21300000, guid: 50f576d95f60ccb4099bb1b29bca9840, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 5e52627ef55b52b43b29ec36c3a8abcd, type: 3}
+  - {fileID: 21300000, guid: 27764724bd3fd784dab9b75784a8cc7e, type: 3}
+  - {fileID: 21300000, guid: 23ffd03abf222264ba9519957dc8c371, type: 3}
   _down: {fileID: 0}
-  _pixelsPerMeter: 75
+  _pixelsPerMeter: 320
   _strideMeters: 0.8
-  _placeholder: 1
-  _color: {r: 0.47843137, g: 0.3529412, b: 0.5411765, a: 1}
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &4195931703521363891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
+  m_Name: heroine
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
+  _front:
+  - {fileID: 21300000, guid: 865e8abc7a9b400489523c62d45fb278, type: 3}
+  - {fileID: 21300000, guid: bf36584346e0d954ead561198b3575b6, type: 3}
+  - {fileID: 21300000, guid: 29f07cc8f5628a449ba88b857fc19fc5, type: 3}
+  _back:
+  - {fileID: 21300000, guid: ecea15869dba54c4bb1d22dd9933f708, type: 3}
+  - {fileID: 21300000, guid: 394f332f66afb0b4f95b7be50239c240, type: 3}
+  - {fileID: 21300000, guid: 2bd87d8fb4795c44fa707388d92044aa, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 7f3ecc7f6388f324faceb42028584d3b, type: 3}
+  - {fileID: 21300000, guid: 80209e632d6f22740ade8701c2a5aa10, type: 3}
+  - {fileID: 21300000, guid: 61f3efad15f477c4687663c1e7faf595, type: 3}
+  _down: {fileID: 21300000, guid: 60f5e02ae3a50944596aebe28ac30638, type: 3}
+  _pixelsPerMeter: 320
+  _strideMeters: 0.8
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &4933946568922899418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
+  m_Name: smith
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
+  _front:
+  - {fileID: 21300000, guid: 2e7c487b50715db4091607a935376fa8, type: 3}
+  - {fileID: 21300000, guid: 4190f353bf4285b488de734c94088017, type: 3}
+  - {fileID: 21300000, guid: 0b9d73b0a1c564548a57f57895249222, type: 3}
+  _back:
+  - {fileID: 21300000, guid: bd02475e1cec6924d92813747f1a05a2, type: 3}
+  - {fileID: 21300000, guid: ead6aec43d6aad348a5b8d25193eab77, type: 3}
+  - {fileID: 21300000, guid: 68004bab0bc07cf4f989d81f8b8a169e, type: 3}
+  _side:
+  - {fileID: 21300000, guid: ffc5b9a16ecc2eb4284cc0f62f06c061, type: 3}
+  - {fileID: 21300000, guid: d163be6b2b87a1f4ebc1bbe845c1a871, type: 3}
+  - {fileID: 21300000, guid: c26ccfa7b76cd5c439a7c462b4667556, type: 3}
+  _down: {fileID: 0}
+  _pixelsPerMeter: 320
+  _strideMeters: 0.8
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
+--- !u!114 &6438588177798504873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36db304847a0e936eccc84144f12c0d9, type: 3}
+  m_Name: barkeep
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.CharacterSpriteSet
+  _front:
+  - {fileID: 21300000, guid: 3b3aa6452db05ac428577c3d9c552134, type: 3}
+  - {fileID: 21300000, guid: bf71ad128deed0a43a6bd0a09fa2c8f8, type: 3}
+  - {fileID: 21300000, guid: 5eb6b1107d68aff4cbe23bee553d5c6a, type: 3}
+  _back:
+  - {fileID: 21300000, guid: 466adea53ea202945ab3e2530d4c2d70, type: 3}
+  - {fileID: 21300000, guid: 981182087f6e0be4ba12c2b1bc37178d, type: 3}
+  - {fileID: 21300000, guid: 85f365ed89004d84eadb3d09c818c8b9, type: 3}
+  _side:
+  - {fileID: 21300000, guid: 25978621f81720c41a7dfd203b857525, type: 3}
+  - {fileID: 21300000, guid: 4d0848de97d1aa341b5acd8e3f8982a3, type: 3}
+  - {fileID: 21300000, guid: 1a8610b260ca67b4aa0c41deae332e06, type: 3}
+  _down: {fileID: 0}
+  _pixelsPerMeter: 320
+  _strideMeters: 0.8
+  _placeholder: 0
+  _color: {r: 0.8, g: 0.65, b: 0.4, a: 1}
