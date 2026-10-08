@@ -54,7 +54,7 @@ namespace ZeldaDaughter.Core.Tests
         [Fact]
         public void Night_zones_are_objects_of_the_scene()
         {
-            Settle("night zones", D.Night.Zones.Where(z => !Ids.Contains(z)).Select(z => $"night.json: зона '{z}' — нет объекта"));
+            Settle("night safe areas", D.Night.SafeAreas.Where(z => !Ids.Contains(z.Anchor)).Select(z => $"night.json: safeAreas '{z.Anchor}' — нет объекта"));
         }
 
         [Fact]

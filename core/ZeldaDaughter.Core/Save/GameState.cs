@@ -30,8 +30,10 @@ namespace ZeldaDaughter.Core.Save
         public readonly string? Topic;
         /// <summary>Health the food gave (Ate), else 0.</summary>
         public readonly float Heal;
+        /// <summary>The meal took the hunger away (she was peckish or worse and now is not): the view calls <c>Say(Topics.Sated)</c> (D-23).</summary>
+        public readonly bool Sated;
 
-        public HeroUseResult(HeroUseOutcome outcome, string? topic = null, float heal = 0f) { Outcome = outcome; Topic = topic; Heal = heal; }
+        public HeroUseResult(HeroUseOutcome outcome, string? topic = null, float heal = 0f, bool sated = false) { Outcome = outcome; Topic = topic; Heal = heal; Sated = sated; }
         public override string ToString() => $"{Outcome} {Topic}".TrimEnd();
     }
 
@@ -62,6 +64,9 @@ namespace ZeldaDaughter.Core.Save
             Combat = new HeroCombat(data.Weapons, Skills, Condition, Hunger, Bag);
             Enemies = new EnemyRoster(data.Enemies, Combat, () => WeaponInHand, id => Killed.Contains(id), OnEnemyDied);
             Nature.Predators.Locate = id => Enemies.Get(id)?.Position;
+            Nature.Predators.Forbidden = p => Enemies.Blocked != null && Enemies.Blocked(p);
+            Torch = new Torch(data.Camp, Bag);
+            Enemies.Fire = FireAt;
         }
 
         public DataSet Data { get; }
@@ -81,6 +86,42 @@ namespace ZeldaDaughter.Core.Save
         public Camp Camp { get; }
         /// <summary>Weather, wind, grass fire, mud and night predators (D-06); the scene registers its cells, zones and mud ground at start.</summary>
         public Nature Nature { get; }
+
+        /// <summary>The hero's torch (D-23): burns down in real time, weakens, goes out and leaves a burnt stick.</summary>
+        public Torch Torch { get; }
+
+        /// <summary>
+        /// Is there a fire whose fear reaches <paramref name="at"/> (D-23)? A lit campfire (enemies.json fire.campfireRadius) and the hero's
+        /// burning torch (fire.torchRadius) scare; both reach less as they die. No allocation. The enemy roster asks it for every animal that fears fire.
+        /// </summary>
+        public bool FireAt(Vec2 at, out Vec2 source, out float radius)
+        {
+            var fear = Data.Enemies.Fire;
+            var fires = Camp.Campfires;
+            for (int i = 0; i < fires.Count; i++)
+            {
+                var f = fires[i];
+                if (!f.IsLit) continue;
+                float r = fear.CampfireRadius * f.Light;
+                if ((f.Position - at).Length <= r) { source = f.Position; radius = r; return true; }
+            }
+            if (Torch.IsLit)
+            {
+                float r = fear.TorchRadius * Torch.Light;
+                if ((HeroPosition - at).Length <= r) { source = HeroPosition; radius = r; return true; }
+            }
+            source = default; radius = 0f;
+            return false;
+        }
+
+        /// <summary>A living predator (an enemy that attacks on sight — a wolf) within <paramref name="radius"/> metres of the hero: she may say she is afraid (remarks.json wolf_close). No allocation.</summary>
+        public bool PredatorNear(float radius)
+        {
+            var list = Enemies.Active;
+            for (int i = 0; i < list.Count; i++)
+                if (!list[i].IsCarcass && list[i].Def.AggroOnSight && (list[i].Position - HeroPosition).Length <= radius) return true;
+            return false;
+        }
 
         /// <summary>Resting by a lit campfire (the zone around it): pass to <c>Condition.Tick(dt, g.CurrentRest())</c>; in the tavern the view passes <c>RestKind.Tavern</c>. Needs <c>HeroPosition</c>.</summary>
         public RestKind CurrentRest() => Camp.IsLitNear(HeroPosition, Data.Camp.RestRadius) ? RestKind.Campfire : RestKind.None;
@@ -123,6 +164,7 @@ namespace ZeldaDaughter.Core.Save
             Nature.Tick(dt, roll, Camp.Campfires, HeroPosition, Clock.Daylight, _inLight, events);
             var burnt = Camp.Tick(dt, Nature.Weather.IsRaining);
             for (int i = 0; i < burnt.Count; i++) events.Add(burnt[i]);
+            if (Torch.Tick(dt, Nature.Weather.IsRaining) == TorchEvent.BurntOut) events.Add(new WorldEvent(WorldEventKind.TorchBurntOut, "torch", HeroPosition));
             _scorchCooldown = Math.Max(0f, _scorchCooldown - dt);
             if (_scorchCooldown <= 0f && Nature.Grass.BurningNear(HeroPosition, Data.Elements.Grass.BurnRadius))
             {
@@ -134,8 +176,13 @@ namespace ZeldaDaughter.Core.Save
             for (int i = 0; i < events.Count; i++)
             {
                 var e = events[i];
-                if (e.Kind == WorldEventKind.PredatorSpawned && Enemies.Spawn(e.Id, e.Detail, e.Position) == null) Nature.Predators.Released(e.Id);
+                if (e.Kind == WorldEventKind.PredatorSpawned)
+                {
+                    var wolf = Enemies.Spawn(e.Id, e.Detail, e.Position);
+                    if (wolf == null) Nature.Predators.Released(e.Id); else wolf.Hunt();   // the dark wolf comes for her (D-23)
+                }
                 else if (e.Kind == WorldEventKind.PredatorDespawned) Enemies.Remove(e.Id);
+                else if (e.Kind == WorldEventKind.PredatorDismissed) Enemies.Get(e.Id)?.Dismiss();
             }
             return events.Count == 0 ? NoWorldEvents : events.ToArray();   // a quiet frame: the shared empty list
         }
@@ -280,8 +327,9 @@ namespace ZeldaDaughter.Core.Save
             if (Condition.IsKnockedOut || Bag.Count(itemId) < 1) return new HeroUseResult(HeroUseOutcome.NotUsable);
             if (Data.Hunger.Food.ContainsKey(itemId))
             {
+                var before = Hunger.Level;
                 var e = Eat(itemId);
-                return new HeroUseResult(HeroUseOutcome.Ate, null, e.Heal);
+                return new HeroUseResult(HeroUseOutcome.Ate, null, e.Heal, before != HungerLevel.Fed && Hunger.Level == HungerLevel.Fed);
             }
             if (Condition.Treat(itemId))
             {

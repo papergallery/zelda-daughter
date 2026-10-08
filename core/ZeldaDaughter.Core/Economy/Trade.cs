@@ -37,10 +37,12 @@ namespace ZeldaDaughter.Core.Economy
         public readonly float TakeValue;
         /// <summary>This was the very first barter — the moment someone may start teaching coins.</summary>
         public readonly bool FirstBarter;
+        /// <summary>The hero bought something from the shelf for the very first time (D-23): she may remark on it. Set by <c>Execute</c> only.</summary>
+        public readonly bool FirstPurchase;
 
-        public TradeResult(TradeOutcome outcome, float give = 0, float take = 0, bool firstBarter = false)
+        public TradeResult(TradeOutcome outcome, float give = 0, float take = 0, bool firstBarter = false, bool firstPurchase = false)
         {
-            Outcome = outcome; GiveValue = give; TakeValue = take; FirstBarter = firstBarter;
+            Outcome = outcome; GiveValue = give; TakeValue = take; FirstBarter = firstBarter; FirstPurchase = firstPurchase;
         }
         public override string ToString() => $"{Outcome} give={GiveValue:0.##} take={TakeValue:0.##}";
     }
@@ -144,6 +146,8 @@ namespace ZeldaDaughter.Core.Economy
         {
             var r = Check(traderId, offer, out var give, out var take);
             if (r.Outcome != TradeOutcome.Done || give == null || take == null) return r;
+            bool boughtBefore = _sold.Count > 0;
+            bool buys = take.Keys.Any(k => !IsCoin(k.item) && !k.fromBuyback);
 
             foreach (var kv in give) _bag.Remove(kv.Key.item, kv.Value);
             foreach (var kv in take) _bag.Add(kv.Key.item, kv.Value);   // room was checked
@@ -158,7 +162,7 @@ namespace ZeldaDaughter.Core.Economy
             }
             bool coins = give.Keys.Any(k => IsCoin(k.item)) || take.Keys.Any(k => IsCoin(k.item));
             if (!coins) BarterDeals++;
-            return r;
+            return new TradeResult(r.Outcome, r.GiveValue, r.TakeValue, r.FirstBarter, buys && !boughtBefore);
         }
 
         TradeResult Check(string traderId, TradeOffer offer, out Dictionary<(string item, bool fromBuyback), int>? giveOut, out Dictionary<(string item, bool fromBuyback), int>? takeOut)

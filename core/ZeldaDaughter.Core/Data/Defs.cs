@@ -15,6 +15,8 @@ namespace ZeldaDaughter.Core.Data
         /// <summary>The hero's line on pick-up.</summary>
         public string Pickup { get; set; } = "";
         public bool Placeable { get; set; }
+        /// <summary>A short description for the long tap in the bag (D-23): what it is and what it is for, in the hero's own voice, no numbers.</summary>
+        public string Description { get; set; } = "";
         /// <summary>Hidden worth in coins (§2); 0 — not for trade (quest things). Each trader scales it (traders.json).</summary>
         public int Value { get; set; }
     }

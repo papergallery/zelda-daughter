@@ -20,6 +20,14 @@ namespace ZeldaDaughter.Core.World
         public float LightRadius { get; set; }
         public float RainBurnFactor { get; set; } = 1f;
         public float PlaceMinSpacing { get; set; }
+        /// <summary>A lit torch in the bag burns this long (real seconds) and then becomes <see cref="BurntItem"/> (D-23).</summary>
+        public float TorchBurnSeconds { get; set; }
+        /// <summary>Its light weakens over the last seconds.</summary>
+        public float TorchFadeSeconds { get; set; }
+        /// <summary>In the rain a torch burns down this many times faster.</summary>
+        public float TorchRainBurnFactor { get; set; } = 1f;
+        /// <summary>What is left of a burnt-down torch (an item id), or empty for nothing.</summary>
+        public string BurntItem { get; set; } = "";
         /// <summary>Item id → world object kind the placed item becomes (the target of world recipes); other items are just «item».</summary>
         public Dictionary<string, string> PlacedKinds { get; set; } = new Dictionary<string, string>();
         /// <summary>Item id → seconds it adds to a burning campfire.</summary>

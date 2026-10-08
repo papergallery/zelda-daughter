@@ -5,5 +5,7 @@
   "npcBubbleSeconds": 8,
   "remarkCheckSeconds": 1.0,
   "tappableHintRadius": 8,
-  "nightDaylightBelow": 0.1
+  "nightDaylightBelow": 0.1,
+  "predatorFearMeters": 25,
+  "itemInfoSeconds": 4
 }

@@ -107,7 +107,6 @@ namespace ZeldaDaughter.Core.Tests
             var g = G();
             for (int i = 0; i < 5; i++) g.Nature.Grass.AddCell($"g{i}", new Vec2(i * 0.5f, 0));
             g.Nature.Mud.AddZone("mud", new Vec2(30, 30), 4);
-            g.Nature.Predators.AddZone(D.Night.Zones[0], new Vec2(50, 50));
             g.Camp.Restore(1, null, new[] { new Campfire("fire", new Vec2(5, 5), 5000f, 10f) });
             var first = g.TickWorld(0.25f, 0.5);
             Assert.Empty(first);

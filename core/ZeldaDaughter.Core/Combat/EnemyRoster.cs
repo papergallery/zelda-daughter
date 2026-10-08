@@ -32,6 +32,7 @@ namespace ZeldaDaughter.Core.Combat
         readonly List<Enemy> _active = new List<Enemy>();
         readonly List<EnemyEvent> _scratch = new List<EnemyEvent>(4);
         readonly Func<Vec2, bool> _blockedProxy;
+        readonly FireQuery _fireProxy;
 
         /// <param name="isKilled">Is this enemy id in the list of kills (no respawn).</param>
         /// <param name="died">Called once when an enemy dies, after it left the roster (remember the kill, leave a carcass).</param>
@@ -43,6 +44,13 @@ namespace ZeldaDaughter.Core.Combat
             _isKilled = isKilled ?? throw new ArgumentNullException(nameof(isKilled));
             _died = died ?? throw new ArgumentNullException(nameof(died));
             _blockedProxy = p => Blocked != null && Blocked(p);
+            _fireProxy = (Vec2 at, out Vec2 source, out float radius) =>
+            {
+                var f = Fire;
+                if (f != null) return f(at, out source, out radius);
+                source = default; radius = 0f;
+                return false;
+            };
         }
 
         /// <summary>The living enemies, in the order they were spawned.</summary>
@@ -50,6 +58,9 @@ namespace ZeldaDaughter.Core.Combat
 
         /// <summary>The view's verdict on a spot: true — no enemy may stand there (walls, houses, water). Null — nothing is forbidden.</summary>
         public Func<Vec2, bool>? Blocked { get; set; }
+
+        /// <summary>Where fire scares (campfires, the hero's torch): set by <c>GameState</c>; handed to every enemy that fears it.</summary>
+        public FireQuery? Fire { get; set; }
 
         public Enemy? Get(string id)
         {
@@ -66,7 +77,7 @@ namespace ZeldaDaughter.Core.Combat
             if (_isKilled(id)) return null;
             var have = Get(id);
             if (have != null) return have;
-            var e = new Enemy(id, _s, defId, position) { Blocked = _blockedProxy };
+            var e = new Enemy(id, _s, defId, position) { Blocked = _blockedProxy, Fire = _fireProxy };
             _active.Add(e);
             return e;
         }

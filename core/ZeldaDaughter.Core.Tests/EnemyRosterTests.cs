@@ -171,7 +171,6 @@ namespace ZeldaDaughter.Core.Tests
             g.Clock.SetTime(1, 0.95);
             g.HeroPosition = new Vec2(0, 0);
             g.Combat.Position = new Vec2(0, 0);
-            g.Nature.Predators.AddZone(D.Night.Zones[0], new Vec2(60, 0));
             return g;
         }
 

@@ -48,11 +48,29 @@ namespace ZeldaDaughter.Core.Combat
         public float LoseInterestFactor { get; set; }
         /// <summary>After walking away from a downed hero the enemy ignores him until he comes into aggroRange having moved this far (m).</summary>
         public float ReapproachMeters { get; set; }
+        /// <summary>A hunting night predator (<see cref="Enemy.Hunt"/>) stops following a hero farther than this (m).</summary>
+        public float StalkMeters { get; set; }
         /// <summary>The tool whose presence in the bag turns a tap on a carcass into butchering (§6): item id.</summary>
         public string ButcherTool { get; set; } = "";
         /// <summary>Wound name (cut | fracture | burn | poison) → what it does to the enemy.</summary>
         public Dictionary<string, EnemyWoundEffect> WoundEffects { get; set; } = new Dictionary<string, EnemyWoundEffect>();
         public Dictionary<string, EnemyDef> Enemies { get; set; } = new Dictionary<string, EnemyDef>();
+        /// <summary>How far fire scares the animals that fear it (D-23).</summary>
+        public FireFearSettings Fire { get; set; } = new FireFearSettings();
+    }
+
+    /// <summary>enemies.json «fire»: wolves keep out of a campfire's and a torch's reach and run from it.</summary>
+    public sealed class FireFearSettings
+    {
+        /// <summary>A lit campfire scares within this many metres (not less than camp.json lightRadius: no wolf in the light). Shrinks with a dying fire.</summary>
+        public float CampfireRadius { get; set; }
+        /// <summary>The hero's burning torch scares within this many metres. Shrinks as the torch dies.</summary>
+        public float TorchRadius { get; set; }
+        /// <summary>Metres past the edge of the reach that a scared animal runs before it turns back.</summary>
+        public float FleeMargin { get; set; }
+        /// <summary>Running from fire: this × chaseSpeed.</summary>
+        public float FleeSpeedFactor { get; set; } = 1f;
+        public float MaxFleeSeconds { get; set; } = 5f;
     }
 
     public sealed class EnemyWoundEffect
@@ -81,6 +99,8 @@ namespace ZeldaDaughter.Core.Combat
         public float AggroRange { get; set; }
         public bool AggroOnSight { get; set; }
         public bool AggroOnDamage { get; set; }
+        /// <summary>Keeps away from a campfire and a torch, runs from them (D-23): wolves — yes, the boar — no.</summary>
+        public bool FearsFire { get; set; }
         /// <summary>What the carcass gives: minimum for bare hands, full set with a knife (D-05).</summary>
         public LootTable Loot { get; set; } = new LootTable();
 

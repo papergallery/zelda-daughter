@@ -40,6 +40,10 @@ namespace ZeldaDaughter.Core.Data
         public float TappableHintRadius { get; set; }
         /// <summary>Daylight (0..1) below which the hero counts it as night for her remarks.</summary>
         public float NightDaylightBelow { get; set; }
+        /// <summary>A predator closer than this (m) makes the hero afraid aloud (D-23).</summary>
+        public float PredatorFearMeters { get; set; }
+        /// <summary>How long the description cloud of an item hangs after a long press in the bag (D-23).</summary>
+        public float ItemInfoSeconds { get; set; }
 
         public bool IsNear(float distance) => distance < TappableHintRadius;
         public bool IsNight(float daylight) => daylight < NightDaylightBelow;
@@ -130,6 +134,9 @@ namespace ZeldaDaughter.Core.Data
                 if (it.Stack < 1) problems.Add($"items.json: '{it.Id}' — stack < 1");
                 if (it.Value < 0) problems.Add($"items.json: '{it.Id}' — отрицательная ценность");
                 if (Array.IndexOf(ItemKinds, it.Kind) < 0) problems.Add($"items.json: '{it.Id}' — неизвестный вид '{it.Kind}' ({string.Join(" | ", ItemKinds)})");
+                if (string.IsNullOrWhiteSpace(it.Description)) problems.Add($"items.json: '{it.Id}' — нет description (долгий тап по предмету, D-23)");
+                else if (it.Description.Any(char.IsDigit)) problems.Add($"items.json: '{it.Id}' — в description цифры (вес и ценность скрыты от игрока)");
+                else if (it.Description.Length > 160) problems.Add($"items.json: '{it.Id}' — description длиннее 160 знаков (облачко)");
                 if (it.Kind == "weapon" && !d.Weapons.Weapons.ContainsKey(it.Id)) problems.Add($"items.json: '{it.Id}' — оружие без записи в weapons.json");
             }
             if (!d.Weapons.Weapons.ContainsKey(WeaponSettings.Fists)) problems.Add($"weapons.json: нет '{WeaponSettings.Fists}' — герой без оружия бьёт кулаками");
@@ -179,6 +186,7 @@ namespace ZeldaDaughter.Core.Data
                 if (!string.IsNullOrEmpty(w.Wound) && w.ParsedWound == null) problems.Add($"weapons.json: '{kv.Key}' — неизвестная рана '{w.Wound}'");
                 if (w.Severity < 0 || w.Severity > 1) problems.Add($"weapons.json: '{kv.Key}' — тяжесть раны вне 0..1");
             }
+            if (d.Session.PredatorFearMeters <= 0 || d.Session.ItemInfoSeconds <= 0) problems.Add("session.json: predatorFearMeters и itemInfoSeconds должны быть > 0");
             if (d.Session.TappableHintRadius <= 0) problems.Add("session.json: tappableHintRadius должен быть > 0");
             if (d.Session.NightDaylightBelow <= 0 || d.Session.NightDaylightBelow > 1) problems.Add("session.json: nightDaylightBelow должен быть в (0; 1]");
             foreach (var kv in d.Enemies.Enemies)
@@ -239,6 +247,14 @@ namespace ZeldaDaughter.Core.Data
             }
             if (d.Npcs.WalkSpeed <= 0 || d.Npcs.WalkSpeed > d.Movement.WalkSpeed) problems.Add($"npcs.json: walkSpeed {d.Npcs.WalkSpeed} — должен быть в (0; {d.Movement.WalkSpeed}] (не быстрее героини)");
             if (d.Elements.Grass.CellSpacing <= 0 || d.Elements.Grass.CellSpacing > d.Elements.Grass.NeighborDistance) problems.Add($"elements.json: grass.cellSpacing {d.Elements.Grass.CellSpacing} — должен быть в (0; neighborDistance {d.Elements.Grass.NeighborDistance}], иначе поле травы не связано");
+            {
+                var tr = d.Traders.TypicalRound;
+                foreach (var q in tr.Quests) if (!d.Quests.Quests.ContainsKey(q)) problems.Add($"traders.json: typicalRound.quests '{q}' — нет в quests.json");
+                foreach (var kv in tr.Carcasses) if (!d.Enemies.Enemies.ContainsKey(kv.Key) || kv.Value < 1) problems.Add($"traders.json: typicalRound.carcasses '{kv.Key}' — нет в enemies.json или число < 1");
+                foreach (var kv in tr.Gathered) if (!byId.ContainsKey(kv.Key) || kv.Value < 1) problems.Add($"traders.json: typicalRound.gathered '{kv.Key}' — нет в items.json или число < 1");
+                if (!byId.ContainsKey(tr.Goal)) problems.Add($"traders.json: typicalRound.goal '{tr.Goal}' — нет в items.json");
+                else if (!d.Traders.Traders.TryGetValue(tr.Seller, out var seller) || !seller.Stock.Any(x => x.Item == tr.Goal)) problems.Add($"traders.json: typicalRound.seller '{tr.Seller}' не продаёт '{tr.Goal}'");
+            }
             foreach (var kv in d.Quests.Quests)
             {
                 if (string.IsNullOrEmpty(kv.Value.Thanks)) problems.Add($"quests.json: '{kv.Key}' — нет thanks (узел благодарности получателя)");
@@ -345,10 +361,27 @@ namespace ZeldaDaughter.Core.Data
                 if (!d.Enemies.Enemies.ContainsKey(n.Enemy)) problems.Add($"night.json: enemy '{n.Enemy}' — нет в enemies.json");
                 if (n.MaxAtNight < 0) problems.Add("night.json: maxAtNight < 0");
                 if (n.DaylightBelow <= 0 || n.DaylightBelow > 1) problems.Add("night.json: daylightBelow должен быть в (0; 1]");
-                if (n.SpawnIntervalSeconds <= 0 || n.ZoneRadius <= 0 || n.MinHeroDistance < 0 || n.DespawnDistance <= 0) problems.Add("night.json: spawnIntervalSeconds, zoneRadius, despawnDistance должны быть > 0, minHeroDistance ≥ 0");
-                if (n.PerZoneMax < 1) problems.Add("night.json: perZoneMax ≥ 1");
-                if (n.Zones.Count == 0) problems.Add("night.json: нет zones");
-                foreach (var z in n.Zones) if (!IdPattern.IsMatch(z)) problems.Add($"night.json: zone '{z}' — id объекта сцены ([a-z0-9_] с буквы)");
+                if (n.SpawnIntervalSeconds <= 0 || n.DespawnDistance <= 0 || n.MinHeroDistance < 0) problems.Add("night.json: spawnIntervalSeconds, despawnDistance должны быть > 0, minHeroDistance ≥ 0");
+                if (n.MaxHeroDistance < n.MinHeroDistance) problems.Add("night.json: maxHeroDistance < minHeroDistance");
+                if (d.Enemies.Enemies.TryGetValue(n.Enemy, out var nightDef))
+                {
+                    if (n.DespawnDistance <= nightDef.AggroRange || n.DespawnDistance >= d.Enemies.LoseInterestFactor * nightDef.AggroRange)
+                        problems.Add($"night.json: despawnDistance {n.DespawnDistance} — должен быть между aggroRange ({nightDef.AggroRange}) и loseInterestFactor × aggroRange: ушедший волк иначе застрянет или исчезнет у героини на глазах");
+                    if (d.Enemies.StalkMeters < n.MaxHeroDistance) problems.Add("enemies.json: stalkMeters меньше night.json maxHeroDistance — ночной волк бросил бы погоню, не начав");
+                    if (!nightDef.FearsFire) problems.Add($"enemies.json: ночной '{n.Enemy}' должен бояться огня (fearsFire)");
+                }
+                if (n.Bounds.MaxX <= n.Bounds.MinX || n.Bounds.MaxZ <= n.Bounds.MinZ) problems.Add("night.json: bounds пусты");
+                foreach (var sa in n.SafeAreas)
+                {
+                    if (!IdPattern.IsMatch(sa.Anchor)) problems.Add($"night.json: safeAreas '{sa.Anchor}' — id объекта сцены ([a-z0-9_] с буквы)");
+                    if (sa.Radius <= 0) problems.Add($"night.json: safeAreas '{sa.Anchor}' — радиус > 0");
+                }
+                var fire = d.Enemies.Fire;
+                if (fire.CampfireRadius < c.LightRadius) problems.Add($"enemies.json: fire.campfireRadius {fire.CampfireRadius} меньше света костра camp.json lightRadius {c.LightRadius} — волк стоял бы в свете");
+                if (fire.TorchRadius <= 0 || fire.FleeSpeedFactor <= 0 || fire.FleeMargin < 0 || fire.MaxFleeSeconds <= 0) problems.Add("enemies.json: fire.torchRadius, fleeSpeedFactor, maxFleeSeconds > 0, fleeMargin ≥ 0");
+                if (c.TorchBurnSeconds <= 0 || c.TorchFadeSeconds < 0 || c.TorchFadeSeconds > c.TorchBurnSeconds) problems.Add("camp.json: torchBurnSeconds > 0 и torchFadeSeconds в [0; torchBurnSeconds]");
+                if (c.TorchRainBurnFactor < 1) problems.Add("camp.json: torchRainBurnFactor ≥ 1");
+                if (!string.IsNullOrEmpty(c.BurntItem)) Ref("camp.json", "burntItem", c.BurntItem);
                 var g = d.Elements.Grass; var r = d.Elements.Rain; var m = d.Elements.Mud; var w = d.Elements.Wind;
                 if (g.NeighborDistance <= 0) problems.Add("elements.json: grass.neighborDistance > 0");
                 if (g.BurnSeconds <= 0) problems.Add("elements.json: grass.burnSeconds > 0");

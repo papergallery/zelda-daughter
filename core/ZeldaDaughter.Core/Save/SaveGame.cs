@@ -67,6 +67,7 @@ namespace ZeldaDaughter.Core.Save
                 s.Grass[kv.Key] = new GrassDto { State = kv.Value.state.ToString(), T = kv.Value.timer };
             foreach (var kv in g.Nature.Mud.State().OrderBy(x => x.Key, StringComparer.Ordinal))
                 if (kv.Value > 0f) s.Mud[kv.Key] = kv.Value;
+            s.TorchLeft = g.Torch.Saved;
             s.PredatorCounter = g.Nature.Predators.Counter;
             s.PredatorTimer = g.Nature.Predators.Timer;
             s.MapMarks = g.Map.Known.ToList();
@@ -124,6 +125,7 @@ namespace ZeldaDaughter.Core.Save
             g.Nature.Grass.Restore(grass);
             g.Nature.Mud.Restore(s.Mud);
             g.Nature.Predators.Restore(s.PredatorCounter, s.PredatorTimer);
+            g.Torch.Restore(s.TorchLeft);
             g.Map.Restore(s.MapMarks);
             g.Notebook.Restore(s.Notes);
             g.Quests.Restore(s.QuestsOffered, s.QuestsDone);
@@ -219,6 +221,7 @@ namespace ZeldaDaughter.Core.Save
             public float WindTimer { get; set; }
             public Dictionary<string, GrassDto> Grass { get; set; } = new Dictionary<string, GrassDto>();
             public Dictionary<string, float> Mud { get; set; } = new Dictionary<string, float>();
+            public float TorchLeft { get; set; }
             public int PredatorCounter { get; set; }
             public float PredatorTimer { get; set; }
             public List<CarcassDto> Carcasses { get; set; } = new List<CarcassDto>();

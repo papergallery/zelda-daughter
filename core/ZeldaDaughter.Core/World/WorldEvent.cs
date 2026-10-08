@@ -11,6 +11,10 @@ namespace ZeldaDaughter.Core.World
         GrassIgnited, GrassBurnedOut, GrassExtinguished, GrassWetted, GrassDried,
         HeroScorched,
         PredatorSpawned, PredatorDespawned,
+        /// <summary>The morning: this predator walks away (the roster tells the enemy); it is removed once far (<see cref="PredatorDespawned"/>).</summary>
+        PredatorDismissed,
+        /// <summary>The hero's torch burnt down (D-23): the view puts the light out.</summary>
+        TorchBurntOut,
     }
 
     /// <summary>Something happened in the world during <c>GameState.TickWorld</c> — for the view (particles, light, sounds, spawning an enemy).</summary>

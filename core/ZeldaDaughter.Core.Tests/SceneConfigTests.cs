@@ -124,7 +124,7 @@ namespace ZeldaDaughter.Core.Tests
             foreach (var key in d.Npcs.Npcs.Keys) Assert.True(ids.ContainsKey("npc_" + key) && ids["npc_" + key].Tags.Contains("npc"), "npc_" + key);
             foreach (var a in d.Npcs.Npcs.SelectMany(n => n.Value.Schedule).Select(s => s.Anchor).Distinct()) Assert.True(ids.ContainsKey(a), a);
             foreach (var m in d.Map.Marks.Values) Assert.True(ids.ContainsKey(m.Object), m.Object);
-            foreach (var z in d.Night.Zones) Assert.True(ids.ContainsKey(z), z);
+            foreach (var z in d.Night.SafeAreas) Assert.True(ids.ContainsKey(z.Anchor), z.Anchor);
             Assert.Equal("locket", ids["pickup_locket"].Item);
             Assert.Contains(c.Objects, o => o.Tags.Contains("bed"));
             Assert.Contains(c.Objects, o => o.Tags.Contains("smelter") && o.Tags.Contains("station"));

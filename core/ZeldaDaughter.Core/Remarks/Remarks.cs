@@ -34,12 +34,14 @@ namespace ZeldaDaughter.Core.Remarks
         public const string CraftOk = "craft_ok", CraftFail = "craft_fail", CraftStation = "craft_station", CraftNoRoom = "craft_no_room";
         public const string HintWorldUse = "hint_world_use", PlaceInvalid = "place_invalid", NeedFire = "need_fire";
         public const string ButcherNoKnife = "butcher_no_knife", LootEmpty = "loot_empty", UseNothing = "use_nothing";
+        /// <summary>D-23: a wolf close by / a wolf runs from the fire / rain / the first purchase / full after a meal / a torch going out.</summary>
+        public const string WolfClose = "wolf_close", WolfFlees = "wolf_flees", Rain = "rain", FirstPurchase = "first_purchase", Sated = "sated", TorchDying = "torch_dying";
 
         public static readonly string[] All =
         {
             HealthHurt, HealthBad, HealthCritical, WoundCut, WoundFracture, WoundBurn, WoundPoison, HungerPeckish, HungerHungry,
             HungerStarving, Overload, NightNoFire, CraftOk, CraftFail, CraftStation, CraftNoRoom, HintWorldUse, PlaceInvalid,
-            NeedFire, ButcherNoKnife, LootEmpty, UseNothing,
+            NeedFire, ButcherNoKnife, LootEmpty, UseNothing, WolfClose, WolfFlees, Rain, FirstPurchase, Sated, TorchDying,
         };
 
         public static string Skill(Stat stat, int tier) => $"skill_{Skills.Key(stat)}_{tier}";
@@ -91,7 +93,7 @@ namespace ZeldaDaughter.Core.Remarks
         }
 
         /// <summary>Topics the hero's state calls for, most urgent first.</summary>
-        public IReadOnlyList<string> ConditionTopics(HeroCondition c, Hunger h, bool overloaded, bool nightWithoutFire)
+        public IReadOnlyList<string> ConditionTopics(HeroCondition c, Hunger h, bool overloaded, bool nightWithoutFire, bool wolfClose = false, bool raining = false, bool torchDying = false)
         {
             var list = new List<string>();
             if (c.IsKnockedOut) return list;
@@ -102,12 +104,15 @@ namespace ZeldaDaughter.Core.Remarks
             foreach (WoundType t in Enum.GetValues(typeof(WoundType)))
                 if (c.Severity(t) > worstSev) { worst = t; worstSev = c.Severity(t); }
             if (worstSev >= _s.WoundSpeaksFrom) list.Add(Topics.Wound(worst));
+            if (wolfClose) list.Add(Topics.WolfClose);
             if (h.Level == HungerLevel.Starving) list.Add(Topics.HungerStarving);
             if (hp >= _s.HealthCriticalBelow && hp < _s.HealthBadBelow) list.Add(Topics.HealthBad);
             if (h.Level == HungerLevel.Hungry) list.Add(Topics.HungerHungry);
             if (overloaded) list.Add(Topics.Overload);
             if (hp >= _s.HealthBadBelow && hp < _s.HealthHurtBelow) list.Add(Topics.HealthHurt);
             if (nightWithoutFire) list.Add(Topics.NightNoFire);
+            if (torchDying) list.Add(Topics.TorchDying);
+            if (raining) list.Add(Topics.Rain);
             if (h.Level == HungerLevel.Peckish) list.Add(Topics.HungerPeckish);
             return list;
         }

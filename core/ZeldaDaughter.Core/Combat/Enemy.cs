@@ -9,9 +9,12 @@ using ZeldaDaughter.Core.Progression;
 namespace ZeldaDaughter.Core.Combat
 {
     /// <summary>The blow itself is a moment (an event), not a state: windup → <see cref="EnemyEventKind.Struck"/> or Dodged → recover.</summary>
-    public enum EnemyState { Idle, Wander, Alert, Chase, Windup, Recover, Staggered, Leaving, Dead }
+    public enum EnemyState { Idle, Wander, Alert, Chase, Windup, Recover, Staggered, Leaving, Dead, Fleeing }
 
-    public enum EnemyEventKind { Alerted, WindupStarted, Struck, Dodged, Staggered, LostInterest, Died, HeroKnockedOut }
+    /// <summary>Is there a fire (a campfire, the hero's torch) that scares at this point? <paramref name="source"/> and <paramref name="radius"/> — where it burns and how far its fear reaches (D-23).</summary>
+    public delegate bool FireQuery(Vec2 at, out Vec2 source, out float radius);
+
+    public enum EnemyEventKind { Alerted, WindupStarted, Struck, Dodged, Staggered, LostInterest, Died, HeroKnockedOut, Frightened }
 
     public readonly struct EnemyEvent
     {
@@ -40,9 +43,12 @@ namespace ZeldaDaughter.Core.Combat
         readonly float[] _wounds = new float[4];
         float _timer;
         bool _aggro;
+        bool _stalking;
         bool _ignoreHero;
         Vec2 _calmAt;
         Vec2 _dir = new Vec2(1, 0);
+        Vec2 _fireAt;
+        float _fireRadius;
 
         public Enemy(string id, EnemySettings settings, string defId, Vec2 position)
         {
@@ -78,6 +84,28 @@ namespace ZeldaDaughter.Core.Combat
         {
             var ev = new List<EnemyEvent>(1);
             if (!IsCarcass) StartAggro(ev);
+            return ev;
+        }
+
+        /// <summary>
+        /// A night predator (D-23): it goes for the hero from wherever it was called, and does not give up on the way — until it is within its
+        /// aggro range, or she is farther than <c>stalkMeters</c>. After that it behaves as any enemy.
+        /// </summary>
+        public IReadOnlyList<EnemyEvent> Hunt()
+        {
+            var ev = new List<EnemyEvent>(1);
+            if (IsCarcass) return ev;
+            StartAggro(ev);
+            _stalking = true;
+            return ev;
+        }
+
+        /// <summary>The morning (D-23): the enemy loses interest and walks away from the hero; it comes back to her only after she has moved on.</summary>
+        public IReadOnlyList<EnemyEvent> Dismiss()
+        {
+            var ev = new List<EnemyEvent>(1);
+            if (IsCarcass || State == EnemyState.Leaving) return ev;
+            Disengage(ev, leave: true);
             return ev;
         }
 
@@ -127,8 +155,9 @@ namespace ZeldaDaughter.Core.Combat
 
             if (_aggro)
             {
+                if (_stalking && (dist <= Def.AggroRange || dist > _s.StalkMeters)) _stalking = false;   // arrived, or too far to follow
                 if (down) { Disengage(ev, leave: true); }                       // April: endless knockout loop
-                else if (dist > _s.LoseInterestFactor * Def.AggroRange) Disengage(ev, leave: false);
+                else if (!_stalking && dist > _s.LoseInterestFactor * Def.AggroRange) Disengage(ev, leave: false);
             }
             else
             {
@@ -141,10 +170,27 @@ namespace ZeldaDaughter.Core.Combat
             Bleed(dt, ev);
             if (IsCarcass) return;
 
+            if (Def.FearsFire && Fire != null && State != EnemyState.Staggered && State != EnemyState.Fleeing && Fire(Position, out var src, out var rad))
+            {
+                // the fire reaches it: the windup is dropped, it runs from the fire (D-23)
+                _fireAt = src; _fireRadius = rad;
+                Enter(EnemyState.Fleeing);
+                ev.Add(new EnemyEvent(EnemyEventKind.Frightened));
+            }
+
             StateSeconds += dt;
             _timer += State == EnemyState.Staggered ? -dt : dt;
             switch (State)
             {
+                case EnemyState.Fleeing:
+                    {
+                        if (Fire != null && Fire(Position, out var s2, out var r2)) { _fireAt = s2; _fireRadius = r2; }
+                        var away = Position - _fireAt;
+                        float len = away.Length;
+                        Move(len > 1e-4f ? away * (1f / len) : _dir * -1f, _s.Fire.FleeSpeedFactor * Def.ChaseSpeed * SpeedScale * dt, false);
+                        if (len >= _fireRadius + _s.Fire.FleeMargin || StateSeconds >= _s.Fire.MaxFleeSeconds) Enter(_aggro ? EnemyState.Chase : EnemyState.Idle);
+                    }
+                    break;
                 case EnemyState.Idle:
                     if (_timer >= _s.IdleSeconds)
                     {
@@ -247,6 +293,7 @@ namespace ZeldaDaughter.Core.Combat
         void Disengage(List<EnemyEvent> ev, bool leave)
         {
             _aggro = false;
+            _stalking = false;
             _ignoreHero = leave;
             Enter(leave ? EnemyState.Leaving : EnemyState.Idle);
             ev.Add(new EnemyEvent(EnemyEventKind.LostInterest));
@@ -260,17 +307,26 @@ namespace ZeldaDaughter.Core.Combat
         /// </summary>
         public Func<Vec2, bool>? Blocked { get; set; }
 
+        /// <summary>Where fire scares (set by <see cref="EnemyRoster"/>); null — nothing does. Only an enemy whose definition <c>fearsFire</c> cares.</summary>
+        public FireQuery? Fire { get; set; }
+
         internal void SetPosition(Vec2 p) => Position = p;
 
-        void Move(Vec2 dir, float meters)
+        bool Closed(Vec2 p, bool avoidFire)
+        {
+            var blocked = Blocked;
+            if (blocked != null && blocked(p)) return true;
+            return avoidFire && Def.FearsFire && Fire != null && Fire(p, out _, out _);   // a scared animal does not step into the fire's reach
+        }
+
+        void Move(Vec2 dir, float meters, bool avoidFire = true)
         {
             var to = Position + dir * meters;
-            var blocked = Blocked;
-            if (blocked == null || !blocked(to)) { Position = to; return; }
+            if (!Closed(to, avoidFire)) { Position = to; return; }
             var alongX = new Vec2(to.X, Position.Y);
-            if (!blocked(alongX)) { Position = alongX; return; }
+            if (!Closed(alongX, avoidFire)) { Position = alongX; return; }
             var alongY = new Vec2(Position.X, to.Y);
-            if (!blocked(alongY)) Position = alongY;
+            if (!Closed(alongY, avoidFire)) Position = alongY;
         }
     }
 }

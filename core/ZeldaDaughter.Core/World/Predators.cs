@@ -6,7 +6,25 @@ using ZeldaDaughter.Core.Common;
 
 namespace ZeldaDaughter.Core.World
 {
-    /// <summary>data/night.json (D-06).</summary>
+    /// <summary>A circle of the scene where night predators never appear: the town (the object <see cref="Anchor"/> + radius).</summary>
+    public sealed class SafeArea
+    {
+        /// <summary>Id of a scene object (scenes/region.json) that marks the centre.</summary>
+        public string Anchor { get; set; } = "";
+        public float Radius { get; set; }
+    }
+
+    /// <summary>The rectangle of the ground where a predator may be called (the scene's ground less a margin).</summary>
+    public sealed class SpawnBounds
+    {
+        public float MinX { get; set; }
+        public float MaxX { get; set; }
+        public float MinZ { get; set; }
+        public float MaxZ { get; set; }
+        public bool Contains(Vec2 p) => p.X >= MinX && p.X <= MaxX && p.Y >= MinZ && p.Y <= MaxZ;
+    }
+
+    /// <summary>data/night.json (D-06, D-23).</summary>
     public sealed class NightSettings
     {
         /// <summary>Enemy id from enemies.json that comes out at night.</summary>
@@ -15,25 +33,29 @@ namespace ZeldaDaughter.Core.World
         /// <summary>Daylight (0..1) below which predators appear; the count grows to <see cref="MaxAtNight"/> as it gets darker.</summary>
         public float DaylightBelow { get; set; }
         public float SpawnIntervalSeconds { get; set; }
+        /// <summary>A new predator appears on a ring around the hero: not nearer than this …</summary>
         public float MinHeroDistance { get; set; }
+        /// <summary>… and not farther than this (D-23: «20–35 м», not 130).</summary>
+        public float MaxHeroDistance { get; set; }
+        /// <summary>By day a predator farther from the hero than this simply goes; a nearer one walks away first.</summary>
         public float DespawnDistance { get; set; }
-        public float ZoneRadius { get; set; }
-        public int PerZoneMax { get; set; }
-        /// <summary>Ids of scene objects that mark the zones (scenes/region.json); a zone the scene does not register is ignored.</summary>
-        public List<string> Zones { get; set; } = new List<string>();
+        /// <summary>No predator is called inside these circles (the town).</summary>
+        public List<SafeArea> SafeAreas { get; set; } = new List<SafeArea>();
+        public SpawnBounds Bounds { get; set; } = new SpawnBounds { MinX = -1e6f, MaxX = 1e6f, MinZ = -1e6f, MaxZ = 1e6f };
     }
 
     /// <summary>
-    /// Night predators (§2 «ночью опаснее»): how many wolves the dark calls for, where they may appear (zones from the scene), not near the hero
-    /// and not in the light of a fire. The core says «spawn wolf night_wolf_3 here» — the view creates the <c>Enemy</c> — and «send it away» in the morning.
+    /// Night predators (§2 «ночью опаснее»): how many wolves the dark calls for, where they may appear (a ring of 20–35 m around the hero, not
+    /// in the town, not in the light of a fire, not where the view forbids) and when they go. The core says «spawn wolf night_wolf_3 here» —
+    /// the view creates the <c>Enemy</c> — and in the morning «send it away» (it walks off; once far it is removed).
     /// </summary>
     public sealed class Predators
     {
         readonly NightSettings _s;
-        readonly Dictionary<string, Vec2> _zones = new Dictionary<string, Vec2>(StringComparer.Ordinal);
-        readonly List<string> _zoneOrder = new List<string>();
-        readonly Dictionary<string, (string zone, Vec2 position)> _alive = new Dictionary<string, (string, Vec2)>(StringComparer.Ordinal);
+        readonly List<(Vec2 center, float radius)> _safe = new List<(Vec2, float)>();
+        readonly Dictionary<string, Vec2> _alive = new Dictionary<string, Vec2>(StringComparer.Ordinal);
         readonly List<string> _aliveOrder = new List<string>();
+        readonly List<string> _dismissed = new List<string>();
         float _timer;
         int _counter;
 
@@ -41,17 +63,25 @@ namespace ZeldaDaughter.Core.World
 
         /// <summary>The view tells where a living predator is now (for the morning despawn). Default: where it spawned.</summary>
         public Func<string, Vec2?>? Locate { get; set; }
+        /// <summary>The view's verdict on a spot (a wall, deep water): true — nobody may be called there.</summary>
+        public Func<Vec2, bool>? Forbidden { get; set; }
         public int AliveCount => _alive.Count;
         public IReadOnlyList<string> Alive => _aliveOrder;
         internal int Counter => _counter;
         internal float Timer => _timer;
 
-        /// <summary>Registers a zone from the scene (the position of the object called <paramref name="zoneId"/>).</summary>
-        public void AddZone(string zoneId, Vec2 center)
+        /// <summary>Registers a safe circle from the scene (the position of the object named in <see cref="SafeArea.Anchor"/>).</summary>
+        public void AddSafe(string anchor, Vec2 center)
         {
-            if (!_s.Zones.Contains(zoneId) || _zones.ContainsKey(zoneId)) return;
-            _zones[zoneId] = center;
-            _zoneOrder.Add(zoneId);
+            foreach (var a in _s.SafeAreas)
+                if (a.Anchor == anchor) _safe.Add((center, a.Radius));
+        }
+
+        public bool IsSafe(Vec2 p)
+        {
+            for (int i = 0; i < _safe.Count; i++)
+                if ((p - _safe[i].center).Length <= _safe[i].radius) return true;
+            return false;
         }
 
         public int TargetCount(float daylight)
@@ -60,10 +90,27 @@ namespace ZeldaDaughter.Core.World
             return (int)Math.Min(_s.MaxAtNight, Math.Ceiling(_s.MaxAtNight * (1.0 - Math.Max(0f, daylight) / _s.DaylightBelow) - 1e-9));
         }
 
+        /// <summary>
+        /// Where the predator would be called for these three numbers (0..1): a point on the ring between the minimum and maximum
+        /// distance from the hero (uniform by area). The caller still checks the place (<see cref="Allowed"/>).
+        /// </summary>
+        public Vec2 RingPoint(Vec2 hero, double angleRoll, double distanceRoll)
+        {
+            double angle = angleRoll * 2 * Math.PI;
+            double lo = _s.MinHeroDistance * _s.MinHeroDistance, hi = _s.MaxHeroDistance * _s.MaxHeroDistance;
+            float r = (float)Math.Sqrt(lo + distanceRoll * (hi - lo));
+            return hero + new Vec2((float)Math.Cos(angle) * r, (float)Math.Sin(angle) * r);
+        }
+
+        /// <summary>A place a predator may be called to: inside the ground, outside the town, outside the light, not forbidden by the view.</summary>
+        public bool Allowed(Vec2 at, Func<Vec2, bool> inLight) =>
+            _s.Bounds.Contains(at) && !IsSafe(at) && !inLight(at) && !(Forbidden?.Invoke(at) ?? false);
+
         /// <summary>A predator is gone for good (killed, despawned by the view): its place can be taken by a new one.</summary>
         public void Released(string enemyId)
         {
             if (_alive.Remove(enemyId)) _aliveOrder.Remove(enemyId);
+            _dismissed.Remove(enemyId);
         }
 
         internal void Tick(float dt, Vec2 hero, float daylight, double roll, Func<Vec2, bool> inLight, List<WorldEvent> events)
@@ -72,26 +119,30 @@ namespace ZeldaDaughter.Core.World
             int target = TargetCount(daylight);
             if (_alive.Count > target)
             {
-                foreach (var id in _aliveOrder.ToList())
+                int excess = _alive.Count - target;
+                for (int i = _aliveOrder.Count - 1; i >= 0 && excess > 0; i--)
                 {
-                    if (_alive.Count <= target) break;
-                    var pos = Locate?.Invoke(id) ?? _alive[id].position;
-                    if ((pos - hero).Length <= _s.DespawnDistance) continue;
-                    Released(id);
-                    events.Add(new WorldEvent(WorldEventKind.PredatorDespawned, id, pos, _s.Enemy));
+                    string id = _aliveOrder[i];
+                    var pos = Locate?.Invoke(id) ?? _alive[id];
+                    if ((pos - hero).Length > _s.DespawnDistance)
+                    {
+                        Released(id);
+                        events.Add(new WorldEvent(WorldEventKind.PredatorDespawned, id, pos, _s.Enemy));
+                    }
+                    else if (!_dismissed.Contains(id))
+                    {
+                        _dismissed.Add(id);   // the morning: it walks away, and goes when it is far
+                        events.Add(new WorldEvent(WorldEventKind.PredatorDismissed, id, pos, _s.Enemy));
+                    }
+                    excess--;
                 }
                 return;
             }
             if (_alive.Count >= target || _timer < _s.SpawnIntervalSeconds) return;
-            var open = _zoneOrder.Where(z => _alive.Values.Count(a => a.zone == z) < _s.PerZoneMax).ToList();
-            if (open.Count == 0) return;
-            string zone = open[Math.Min(open.Count - 1, (int)(Rolls.At(roll, 11) * open.Count))];
-            double angle = Rolls.At(roll, 12) * 2 * Math.PI;
-            float r = (float)(Math.Sqrt(Rolls.At(roll, 13)) * _s.ZoneRadius);
-            var at = _zones[zone] + new Vec2((float)Math.Cos(angle) * r, (float)Math.Sin(angle) * r);
-            if ((at - hero).Length < _s.MinHeroDistance || inLight(at)) return;   // try again next step with the next roll
+            var at = RingPoint(hero, Rolls.At(roll, 11), Rolls.At(roll, 12));
+            if (!Allowed(at, inLight)) return;   // try again next step with the next roll
             string newId = $"night_{_s.Enemy}_{++_counter}";
-            _alive[newId] = (zone, at);
+            _alive[newId] = at;
             _aliveOrder.Add(newId);
             _timer = 0f;
             events.Add(new WorldEvent(WorldEventKind.PredatorSpawned, newId, at, _s.Enemy));
@@ -101,7 +152,7 @@ namespace ZeldaDaughter.Core.World
         {
             _counter = Math.Max(0, counter);
             _timer = Math.Max(0f, timer);
-            _alive.Clear(); _aliveOrder.Clear();   // living enemies are not saved (D-01): the night calls new ones
+            _alive.Clear(); _aliveOrder.Clear(); _dismissed.Clear();   // living enemies are not saved (D-01): the night calls new ones
         }
     }
 

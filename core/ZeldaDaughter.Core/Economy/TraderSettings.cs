@@ -12,6 +12,26 @@ namespace ZeldaDaughter.Core.Economy
         /// <summary>…and sells at value × this. Share × any multiplier must stay below it (no profit in going round the traders).</summary>
         public float SellMarkup { get; set; }
         public Dictionary<string, TraderDef> Traders { get; set; } = new Dictionary<string, TraderDef>();
+        /// <summary>What an ordinary player brings in during the first hour — the check that the map is within reach (D-23).</summary>
+        public TypicalRound TypicalRound { get; set; } = new TypicalRound();
+    }
+
+    /// <summary>
+    /// A typical round of the first 30–60 minutes (traders.json «typicalRound»): the requests handed in, the carcasses butchered with a knife
+    /// and what was picked up on the way. <see cref="RoundIncome"/> turns it into coins; the map must cost less (EconomyTests).
+    /// </summary>
+    public sealed class TypicalRound
+    {
+        /// <summary>Quest ids from quests.json that are handed in (their coin reward counts).</summary>
+        public List<string> Quests { get; set; } = new List<string>();
+        /// <summary>Enemy id → how many are killed and butchered with a knife (the full loot). The region has one boar; wolves come at night.</summary>
+        public Dictionary<string, int> Carcasses { get; set; } = new Dictionary<string, int>();
+        /// <summary>Item id → pieces picked up on the way that are not needed otherwise.</summary>
+        public Dictionary<string, int> Gathered { get; set; } = new Dictionary<string, int>();
+        /// <summary>Item the round must pay for (the map).</summary>
+        public string Goal { get; set; } = "";
+        /// <summary>Trader who sells <see cref="Goal"/>.</summary>
+        public string Seller { get; set; } = "";
     }
 
     public sealed class TraderDef
