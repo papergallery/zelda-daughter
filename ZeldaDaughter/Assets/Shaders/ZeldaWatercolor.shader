@@ -101,6 +101,11 @@ Shader "Hidden/Zelda/Watercolor"
                 col *= 1.0 - (1.0 - paper.r) * _PaperParams.y;
                 col *= 1.0 + (paper.g - 0.5) * _PaperParams.z;
 
+                // D-21: a bright warm spot (flame, sparks) is light, not paint: it keeps its own colour, unwashed and uninked.
+                float3 raw = ToGamma(SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv).rgb);
+                float hot = smoothstep(0.62, 0.9, Luma(raw)) * smoothstep(0.08, 0.28, raw.r - raw.b);
+                col = lerp(col, raw, hot * 0.9);
+
                 // Pen line.
                 float wob = 1.0 + (paperBig.g - 0.5) * _LineParams.w * 1.6;
                 float2 o = px * _LineParams.x * wob;
@@ -128,7 +133,7 @@ Shader "Hidden/Zelda/Watercolor"
 
                 float line_ = saturate(max(depthEdge, normalEdge * 0.8));
                 line_ *= _LineColor.a * (0.8 + 0.2 * paper.r + (paperBig.g - 0.5) * _LineParams.w);
-                col = lerp(col, _LineColor.rgb, saturate(line_));
+                col = lerp(col, _LineColor.rgb, saturate(line_) * (1.0 - hot * 0.8));
 
                 // Grade: muted, warm; vignette like an old print.
                 float g = Luma(col);
