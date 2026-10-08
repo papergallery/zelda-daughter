@@ -105,12 +105,12 @@ Shader "Zelda/Toon"
                 half h = hsv.x, s = hsv.y, v = hsv.z;
                 half green = smoothstep(0.16h, 0.22h, h) * (1.0h - smoothstep(0.45h, 0.55h, h));
                 h = lerp(h, 0.21h, green * 0.7h);
-                s *= lerp(1.0h, 0.62h, green);
-                v *= lerp(1.0h, 0.80h, green);
+                s *= lerp(1.0h, 0.5h, green);
+                v *= lerp(1.0h, 0.72h, green);
                 half wood = smoothstep(0.04h, 0.06h, h) * (1.0h - smoothstep(0.10h, 0.13h, h)) * smoothstep(0.30h, 0.50h, s);
                 h = lerp(h, 0.075h, wood * 0.5h);
-                s *= lerp(1.0h, 0.5h, wood);
-                v *= lerp(1.0h, 0.55h, wood);
+                s *= lerp(1.0h, 0.42h, wood);
+                v *= lerp(1.0h, 0.5h, wood);
                 c = HsvToRgb(half3(h, s, v));
                 return c * half3(1.05h, 1.0h, 0.86h);
             }

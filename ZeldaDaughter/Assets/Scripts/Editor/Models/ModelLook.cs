@@ -28,12 +28,12 @@ namespace ZeldaDaughter.Editor
             Color.RGBToHSV(muted, out float h, out float s, out float v);
             float green = Smooth(0.16f, 0.22f, h) * (1f - Smooth(0.45f, 0.55f, h));
             h = Mathf.Lerp(h, 0.21f, green * 0.7f);
-            s *= Mathf.Lerp(1f, 0.62f, green);
-            v *= Mathf.Lerp(1f, 0.80f, green);
+            s *= Mathf.Lerp(1f, 0.5f, green);
+            v *= Mathf.Lerp(1f, 0.72f, green);
             float wood = Smooth(0.04f, 0.06f, h) * (1f - Smooth(0.10f, 0.13f, h)) * Smooth(0.30f, 0.50f, s);
             h = Mathf.Lerp(h, 0.075f, wood * 0.5f);
-            s *= Mathf.Lerp(1f, 0.5f, wood);
-            v *= Mathf.Lerp(1f, 0.55f, wood);
+            s *= Mathf.Lerp(1f, 0.42f, wood);
+            v *= Mathf.Lerp(1f, 0.5f, wood);
             var o = Color.HSVToRGB(h, s, v);
             return new Color(o.r * 1.05f, o.g, o.b * 0.86f, c.a);
         }

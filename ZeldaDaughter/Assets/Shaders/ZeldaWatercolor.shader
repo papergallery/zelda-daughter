@@ -135,7 +135,9 @@ Shader "Hidden/Zelda/Watercolor"
                 col = lerp(g.xxx, col, _GradeParams.x);
                 col = (col - 0.5) * _GradeParams.y + 0.5;
                 col = saturate(col);
-                col = lerp(col, col * col * (3.0 - 2.0 * col), _ToneParams.x * (1.0 - 0.6 * _ZD_Night));
+                float lum = max(Luma(col), 1e-3);
+                float lumCurve = lum * lum * (3.0 - 2.0 * lum);
+                col *= lerp(lum, lumCurve, _ToneParams.x * (1.0 - 0.6 * _ZD_Night)) / lum; // on the luma: lights lighter, shadows deeper, chroma kept
                 col *= lerp(_WarmTint.rgb, _NightTint.rgb, _ZD_Night);
                 float2 vv = (uv - 0.5) * float2(_ScreenParams.x / _ScreenParams.y, 1.0) * 1.6;
                 float vig = smoothstep(_GradeParams.w, 1.0, length(vv)) * _GradeParams.z;
