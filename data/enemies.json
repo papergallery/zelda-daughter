@@ -1,5 +1,5 @@
 {
-  "_source": "project-design.md §6: враги контратакуют с предварительным замахом — игрок отводит палец и отбегает; кабан — перелом, волк — колотая рана. Апрель: EnemyData_Boar/Wolf.asset (HP 60/40, урон 20/12, рана 0,6/0,5, радиус удара 1,5, перезарядка 2/1,5, оглушение от 30 % HP за удар на 1 с, агро 6 только на урон / 10 на вид), EnemyFSM.cs (тревога 0,5 с, удар проходит, только если герой в радиусе, сброс агро за 2× радиуса). Изменено: замах ≥ 0,6 с (волк 0,3 → 0,6 — на телефоне не увернуться), погоня ниже бега героя 5 м/с (апрель 6/7 — не убежать), после нокаута героя враг уходит (апрель — цикл нокаутов): идёт прочь со скоростью leaveSpeed, пока герой не дальше aggroRange, и в это время не агрится на вид. idleSeconds / wanderSeconds / wanderSpeed / leaveSpeed — новые, оценка (в апреле покой был без хода); баланс — G2. Для кабана aggroRange — не радиус зрения (он не агрится на вид), а база радиуса сброса агро (loseInterestFactor × aggroRange).",
+  "_source": "project-design.md §6: враги контратакуют с предварительным замахом — игрок отводит палец и отбегает; кабан — перелом, волк — колотая рана. Апрель: EnemyData_Boar/Wolf.asset (HP 60/40, урон 20/12, рана 0,6/0,5, радиус удара 1,5, перезарядка 2/1,5, оглушение от 30 % HP за удар на 1 с, агро 6 только на урон / 10 на вид), EnemyFSM.cs (тревога 0,5 с, удар проходит, только если герой в радиусе, сброс агро за 2× радиуса). Изменено: замах ≥ 0,6 с (волк 0,3 → 0,6 — на телефоне не увернуться), погоня ниже бега героя 5 м/с (апрель 6/7 — не убежать; волк 4,0, а не 4,8: при разнице 0,2 м/с волк отпускал лишь через ~85 с, теперь ~18 с, как кабан), после нокаута героя враг уходит (апрель — цикл нокаутов): идёт прочь со скоростью leaveSpeed, пока герой не дальше aggroRange, и в это время не агрится на вид. idleSeconds / wanderSeconds / wanderSpeed / leaveSpeed — новые, оценка (в апреле покой был без хода); баланс — G2. Для кабана aggroRange — не радиус зрения (он не агрится на вид), а база радиуса сброса агро (loseInterestFactor × aggroRange).",
   "minWindup": 0.6,
   "alertSeconds": 0.5,
   "idleSeconds": 3.0,
@@ -9,6 +9,6 @@
   "loseInterestFactor": 2.0,
   "enemies": {
     "boar": { "name": "Кабан", "hp": 60, "damage": 20, "wound": "fracture", "severity": 0.6, "range": 1.5, "cooldown": 2.0, "windup": 0.7, "staggerShare": 0.3, "staggerSeconds": 1.0, "chaseSpeed": 4.5, "aggroRange": 6,  "aggroOnSight": false, "aggroOnDamage": true },
-    "wolf": { "name": "Волк",  "hp": 40, "damage": 12, "wound": "cut",      "severity": 0.5, "range": 1.5, "cooldown": 1.5, "windup": 0.6, "staggerShare": 0.3, "staggerSeconds": 1.0, "chaseSpeed": 4.8, "aggroRange": 10, "aggroOnSight": true,  "aggroOnDamage": true }
+    "wolf": { "name": "Волк",  "hp": 40, "damage": 12, "wound": "cut",      "severity": 0.5, "range": 1.5, "cooldown": 1.5, "windup": 0.6, "staggerShare": 0.3, "staggerSeconds": 1.0, "chaseSpeed": 4.0, "aggroRange": 10, "aggroOnSight": true,  "aggroOnDamage": true }
   }
 }
