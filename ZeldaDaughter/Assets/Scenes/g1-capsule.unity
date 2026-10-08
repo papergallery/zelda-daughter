@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &8027840
+--- !u!1 &57477952
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,385 +127,35 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8027861}
-  - component: {fileID: 8027860}
-  - component: {fileID: 8027859}
-  - component: {fileID: 8027858}
-  - component: {fileID: 8027857}
-  - component: {fileID: 8027856}
-  - component: {fileID: 8027855}
-  - component: {fileID: 8027854}
-  - component: {fileID: 8027853}
-  - component: {fileID: 8027852}
-  - component: {fileID: 8027851}
-  - component: {fileID: 8027850}
-  - component: {fileID: 8027849}
-  - component: {fileID: 8027848}
-  - component: {fileID: 8027847}
-  - component: {fileID: 8027846}
-  - component: {fileID: 8027845}
-  - component: {fileID: 8027844}
-  - component: {fileID: 8027843}
-  - component: {fileID: 8027842}
-  - component: {fileID: 8027841}
+  - component: {fileID: 57477953}
   m_Layer: 0
-  m_Name: Game
+  m_Name: Objects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &8027841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f5d2dfc2f193d6ec43980c350e07b2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.RemarkBubble
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _height: 2.3
---- !u!114 &8027842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ca894f740df6dece42c31437e03da35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.HintView
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _icons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
---- !u!114 &8027843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3452c80be89280789147afc3fbdd9738, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.RestPresenter
-  _session: {fileID: 8027856}
-  _fader: {fileID: 8027853}
-  _windows: {fileID: 8027854}
-  _ui: {fileID: 1830921988}
-  _hero: {fileID: 338128600}
-  _closeSeconds: 1
-  _holdSeconds: 0.5
-  _openSeconds: 1
---- !u!114 &8027844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b411d367c7e3f4915232ecc62108606, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.NotebookWindow
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _windows: {fileID: 8027854}
---- !u!114 &8027845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb42edd73b56f24b60fdb96f3956178, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.MapWindow
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _windows: {fileID: 8027854}
-  _sheet: {fileID: 21300000, guid: 6f2b957ceed236740b31cf42d932be9a, type: 3}
-  _groundSize: {x: 40, y: 40}
---- !u!114 &8027846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8fdadfb75de90f363b5e59c0a776c53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.TradeWindow
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _windows: {fileID: 8027854}
-  _art: {fileID: 8027860}
---- !u!114 &8027847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66d62ad59273750be7fe4797d7823d37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.StationWindow
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _windows: {fileID: 8027854}
-  _art: {fileID: 8027860}
-  _strikesNeeded: 3
---- !u!114 &8027848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08809225bc07ab2536ef227b5364faf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Combat.CombatPresenter
-  _session: {fileID: 8027856}
-  _art: {fileID: 8027860}
-  _camera: {fileID: 1637433084}
-  _enemiesRoot: {fileID: 142413733}
-  _carcassesRoot: {fileID: 1529017983}
-  _carcassReachMeters: 2.5
-  _blockHeight: 0.6
-  _blockRadius: 0.3
---- !u!114 &8027849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17f51a61a4cf4b0cbc5854d6c15a6841, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.TalkBubbleView
-  _ui: {fileID: 1830921988}
-  _icons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
-  _look: {fileID: 11400000, guid: aa430e66dfe57504a8a7c4bac287e0fe, type: 2}
-  _camera: {fileID: 1637433084}
-  _hero: {fileID: 338128599}
---- !u!114 &8027850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 563d9b81dda7b99238475be652b106ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.NPC.NpcPresenter
-  _session: {fileID: 8027856}
-  _views: []
-  _routes: []
---- !u!114 &8027851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ba186004d756817dd3896c1e6e8290e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.NPC.TalkPresenter
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _bubble: {fileID: 8027849}
-  _npcs: {fileID: 8027850}
---- !u!114 &8027852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40f7cddd5c42e9095bfa45e4d3543b3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.PickupPresenter
-  _session: {fileID: 8027856}
---- !u!114 &8027853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72ead30d0f9ba41ed251b22961bb7074, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.ScreenFader
-  _ui: {fileID: 1830921988}
-  _session: {fileID: 8027856}
---- !u!114 &8027854
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a20acbd3989d54f16e24627484fc2e8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.WindowStack
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _hero: {fileID: 338128600}
---- !u!114 &8027855
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ad05305b0c251cd30888c05ef842be5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.InputRouter
-  _hero: {fileID: 338128600}
-  _session: {fileID: 8027856}
---- !u!114 &8027856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25e4ff765305899a6f956dd9c87033ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Game.GameSession
-  _hero: {fileID: 338128600}
-  _sun: {fileID: 8027859}
-  _ui: {fileID: 1830921988}
-  _index: {fileID: 8027858}
-  _zone: g1-capsule
-  _seed: 20261008
-  _slot: 
---- !u!114 &8027857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c288b7d175830c017cb71dc6d2b7708c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.WorldPicker
-  _camera: {fileID: 1637433084}
-  _hero: {fileID: 338128600}
-  _index: {fileID: 8027858}
-  _rayLength: 500
---- !u!114 &8027858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2372613a24066d4c0560797b3bede1a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Game.WorldIndex
-  _objects:
-  - {fileID: 1912044710}
-  - {fileID: 654550556}
-  - {fileID: 1197703543}
-  - {fileID: 197007236}
-  - {fileID: 1799859371}
-  _zones: []
---- !u!114 &8027859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1674a3a4b70e44560165ec90b8ba1a46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SunController
-  _sun: {fileID: 1750455878}
-  _dayRotation: {x: 50, y: -30, z: 0}
-  _dayIntensity: 1.1
-  _dayAmbient: {r: 0.6039216, g: 0.627451, b: 0.65882355, a: 1}
-  _camera: {fileID: 1637433084}
---- !u!114 &8027860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 863ac2c76e9b02e89093890d15054546, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Game.ArtAssets
-  _ui: {fileID: 11400000, guid: aa430e66dfe57504a8a7c4bac287e0fe, type: 2}
-  _sprites: {fileID: 11400000, guid: 18845fcae55047749bfdda55c271c78a, type: 2}
-  _characters: {fileID: 11400000, guid: aaafbbf458c9734499c122addc1d4913, type: 2}
-  _itemIcons: {fileID: 11400000, guid: b566bb43bce2fb046b9e1c2ae8cab979, type: 2}
-  _talkIcons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
-  _sounds: {fileID: 11400000, guid: 5a97e235c4b1448419732735e5178e3a, type: 2}
-  _fx: {fileID: 11400000, guid: 254eb10f6d820404380bcb4322bb1a78, type: 2}
---- !u!4 &8027861
+--- !u!4 &57477953
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8027840}
+  m_GameObject: {fileID: 57477952}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1830921989}
-  - {fileID: 1798557466}
-  - {fileID: 142413733}
-  - {fileID: 1529017983}
-  - {fileID: 1362812991}
-  - {fileID: 168394760}
+  - {fileID: 187297299}
+  - {fileID: 702704441}
+  - {fileID: 1903122954}
+  - {fileID: 1072246548}
+  - {fileID: 375816693}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &142413732
+--- !u!1 &149314526
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -513,30 +163,78 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 142413733}
+  - component: {fileID: 149314527}
+  - component: {fileID: 149314529}
+  - component: {fileID: 149314528}
   m_Layer: 0
-  m_Name: Enemies
+  m_Name: EventSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &142413733
+--- !u!4 &149314527
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 142413732}
+  m_GameObject: {fileID: 149314526}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8027861}
+  m_Father: {fileID: 1877458362}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &168394759
+--- !u!114 &149314528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149314526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
+--- !u!114 &149314529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149314526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!1 &187297298
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -544,128 +242,58 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 168394760}
-  - component: {fileID: 168394762}
-  - component: {fileID: 168394761}
-  m_Layer: 0
-  m_Name: Nature
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &168394760
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 168394759}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8027861}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &168394761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 168394759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02282ee6f3ea98ea6d689c6ecf411eb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Hero.HeroTorchLight
-  _session: {fileID: 8027856}
-  _hero: {fileID: 338128599}
-  _fx: {fileID: 11400000, guid: 254eb10f6d820404380bcb4322bb1a78, type: 2}
-  _flameMat: {fileID: 2100000, guid: 678116f1f0215a348a2b37360da9ec3b, type: 2}
---- !u!114 &168394762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 168394759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffc5ae17720d0b3fcb8d1e127da667b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.NatureFx
-  _session: {fileID: 8027856}
-  _ground: {fileID: 805283824}
-  _hero: {fileID: 338128599}
-  _fx: {fileID: 11400000, guid: 254eb10f6d820404380bcb4322bb1a78, type: 2}
-  _rainMat: {fileID: 2100000, guid: 955c71a30575fca4aa323e67f22fad69, type: 2}
-  _puffMat: {fileID: 2100000, guid: 12acdb452bb57c64cabd6f47e72d5b23, type: 2}
-  _flameMat: {fileID: 2100000, guid: 678116f1f0215a348a2b37360da9ec3b, type: 2}
-  _burntMat: {fileID: 2100000, guid: f8b28e1fec86542429b3cc882995d67b, type: 2}
-  _tintGround: 0
---- !u!1 &197007230
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 197007231}
-  - component: {fileID: 197007235}
-  - component: {fileID: 197007234}
-  - component: {fileID: 197007233}
-  - component: {fileID: 197007236}
-  - component: {fileID: 197007232}
+  - component: {fileID: 187297299}
+  - component: {fileID: 187297303}
+  - component: {fileID: 187297302}
+  - component: {fileID: 187297301}
+  - component: {fileID: 187297304}
+  - component: {fileID: 187297300}
   m_Layer: 9
-  m_Name: marker_west
+  m_Name: marker_north
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &197007231
+--- !u!4 &187297299
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197007230}
+  m_GameObject: {fileID: 187297298}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 560704676}
+  m_Father: {fileID: 57477953}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &197007232
+--- !u!114 &187297300
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197007230}
+  m_GameObject: {fileID: 187297298}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e45f90b6823f5e079511687c84c7725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.Tappable
-  _id: marker_west
+  _id: marker_north
   _kind: 0
   _screenRadiusPx: 0
   _aimHeight: 0.5
   _enabled: 1
---- !u!23 &197007233
+--- !u!23 &187297301
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197007230}
+  m_GameObject: {fileID: 187297298}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -684,7 +312,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cfaa79554ea8633479b7eab0e314deaf, type: 2}
+  - {fileID: 2100000, guid: 96f66ca79674f6e468ecfe1fbcd26c34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -708,13 +336,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &197007234
-SphereCollider:
+--- !u!65 &187297302
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197007230}
+  m_GameObject: {fileID: 187297298}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -727,35 +355,35 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &197007235
+--- !u!33 &187297303
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197007230}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &197007236
+  m_GameObject: {fileID: 187297298}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &187297304
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197007230}
+  m_GameObject: {fileID: 187297298}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8851b065203bf180ecff82d3a9e66468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SceneTags
-  _id: marker_west
+  _id: marker_north
   _tags:
   - marker
   _item: 
   _enemy: 
   _station: 
---- !u!1 &338128598
+--- !u!1 &195987330
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -763,12 +391,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 338128599}
-  - component: {fileID: 338128604}
-  - component: {fileID: 338128603}
-  - component: {fileID: 338128602}
-  - component: {fileID: 338128600}
-  - component: {fileID: 338128601}
+  - component: {fileID: 195987331}
+  - component: {fileID: 195987336}
+  - component: {fileID: 195987335}
+  - component: {fileID: 195987334}
+  - component: {fileID: 195987332}
+  - component: {fileID: 195987333}
   m_Layer: 10
   m_Name: Hero
   m_TagString: Untagged
@@ -776,62 +404,62 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &338128599
+--- !u!4 &195987331
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338128598}
+  m_GameObject: {fileID: 195987330}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1451670507}
+  - {fileID: 464283288}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &338128600
+--- !u!114 &195987332
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338128598}
+  m_GameObject: {fileID: 195987330}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbd08f2e7578645a4a3588f0fc9a0f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Hero.HeroController
-  _iso: {fileID: 1637433085}
-  _camera: {fileID: 1637433084}
+  _iso: {fileID: 833360580}
+  _camera: {fileID: 833360579}
   _terrain: grass
-  _zones: {fileID: 1730418994}
-  _picker: {fileID: 8027857}
---- !u!114 &338128601
+  _zones: {fileID: 644434240}
+  _picker: {fileID: 1877458358}
+--- !u!114 &195987333
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338128598}
+  m_GameObject: {fileID: 195987330}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56c8e44a914ff41b00c8da76ed71e366, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Hero.HeroView
-  _session: {fileID: 8027856}
-  _hero: {fileID: 338128600}
-  _sprite: {fileID: 1451670508}
+  _session: {fileID: 1877458357}
+  _hero: {fileID: 195987332}
+  _sprite: {fileID: 464283289}
   _look: {fileID: 11400000, guid: 18845fcae55047749bfdda55c271c78a, type: 2}
---- !u!143 &338128602
+--- !u!143 &195987334
 CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338128598}
+  m_GameObject: {fileID: 195987330}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -850,13 +478,13 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &338128603
+--- !u!23 &195987335
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338128598}
+  m_GameObject: {fileID: 195987330}
   m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -899,15 +527,15 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &338128604
+--- !u!33 &195987336
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 338128598}
+  m_GameObject: {fileID: 195987330}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &560704675
+--- !u!1 &213792572
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -915,195 +543,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 560704676}
-  m_Layer: 0
-  m_Name: Objects
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &560704676
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 560704675}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1912044705}
-  - {fileID: 654550551}
-  - {fileID: 1197703538}
-  - {fileID: 197007231}
-  - {fileID: 1799859376}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &654550550
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 654550551}
-  - component: {fileID: 654550555}
-  - component: {fileID: 654550554}
-  - component: {fileID: 654550553}
-  - component: {fileID: 654550556}
-  - component: {fileID: 654550552}
-  m_Layer: 9
-  m_Name: marker_east
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &654550551
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 654550550}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 560704676}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &654550552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 654550550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e45f90b6823f5e079511687c84c7725c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.Tappable
-  _id: marker_east
-  _kind: 0
-  _screenRadiusPx: 0
-  _aimHeight: 0.5
-  _enabled: 1
---- !u!23 &654550553
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 654550550}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 1154437ff1ac8774ebd205f108100c82, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &654550554
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 654550550}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &654550555
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 654550550}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &654550556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 654550550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8851b065203bf180ecff82d3a9e66468, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SceneTags
-  _id: marker_east
-  _tags:
-  - marker
-  _item: 
-  _enemy: 
-  _station: 
---- !u!1 &805283823
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 805283827}
-  - component: {fileID: 805283826}
-  - component: {fileID: 805283825}
-  - component: {fileID: 805283824}
+  - component: {fileID: 213792576}
+  - component: {fileID: 213792575}
+  - component: {fileID: 213792574}
+  - component: {fileID: 213792573}
   m_Layer: 8
   m_Name: Ground
   m_TagString: Untagged
@@ -1111,13 +554,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!23 &805283824
+--- !u!23 &213792573
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805283823}
+  m_GameObject: {fileID: 213792572}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -1160,13 +603,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &805283825
+--- !u!64 &213792574
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805283823}
+  m_GameObject: {fileID: 213792572}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1182,21 +625,21 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!33 &805283826
+--- !u!33 &213792575
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805283823}
+  m_GameObject: {fileID: 213792572}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &805283827
+--- !u!4 &213792576
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805283823}
+  m_GameObject: {fileID: 213792572}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1205,7 +648,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1197703537
+--- !u!1 &334973482
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1213,58 +656,110 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1197703538}
-  - component: {fileID: 1197703542}
-  - component: {fileID: 1197703541}
-  - component: {fileID: 1197703540}
-  - component: {fileID: 1197703543}
-  - component: {fileID: 1197703539}
-  m_Layer: 9
-  m_Name: marker_south
+  - component: {fileID: 334973484}
+  - component: {fileID: 334973483}
+  m_Layer: 0
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1197703538
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197703537}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -12}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 560704676}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1197703539
+--- !u!114 &334973483
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197703537}
+  m_GameObject: {fileID: 334973482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05ee9ca6653b0f9b513b7861babad88e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Game.SessionUI
+  _camera: {fileID: 833360579}
+  _hero: {fileID: 195987331}
+  _look: {fileID: 11400000, guid: aa430e66dfe57504a8a7c4bac287e0fe, type: 2}
+  _talkIcons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
+  _talkView: {fileID: 1877458350}
+--- !u!4 &334973484
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334973482}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1877458362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &375816687
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 375816693}
+  - component: {fileID: 375816692}
+  - component: {fileID: 375816691}
+  - component: {fileID: 375816690}
+  - component: {fileID: 375816688}
+  - component: {fileID: 375816689}
+  m_Layer: 9
+  m_Name: rock_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &375816688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375816687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8851b065203bf180ecff82d3a9e66468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SceneTags
+  _id: rock_1
+  _tags:
+  - obstacle
+  _item: 
+  _enemy: 
+  _station: 
+--- !u!114 &375816689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375816687}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e45f90b6823f5e079511687c84c7725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.Tappable
-  _id: marker_south
+  _id: rock_1
   _kind: 0
   _screenRadiusPx: 0
   _aimHeight: 0.5
   _enabled: 1
---- !u!23 &1197703540
+--- !u!23 &375816690
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197703537}
+  m_GameObject: {fileID: 375816687}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -1283,7 +778,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4395b56f46026394792bc112c0ce2253, type: 2}
+  - {fileID: 2100000, guid: 391a2ed1f950ac44e9b1d7fea95b3aa3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1307,13 +802,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &1197703541
-CapsuleCollider:
+--- !u!65 &375816691
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197703537}
+  m_GameObject: {fileID: 375816687}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1325,181 +820,33 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &1197703542
+--- !u!33 &375816692
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197703537}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1197703543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197703537}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8851b065203bf180ecff82d3a9e66468, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SceneTags
-  _id: marker_south
-  _tags:
-  - marker
-  _item: 
-  _enemy: 
-  _station: 
---- !u!1 &1362812990
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1362812991}
-  - component: {fileID: 1362812995}
-  - component: {fileID: 1362812994}
-  - component: {fileID: 1362812993}
-  - component: {fileID: 1362812992}
-  m_Layer: 0
-  m_Name: Items
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1362812991
+  m_GameObject: {fileID: 375816687}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &375816693
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362812990}
+  m_GameObject: {fileID: 375816687}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0.25881907, z: 0, w: 0.9659259}
+  m_LocalPosition: {x: 5, y: 0.4, z: 6}
+  m_LocalScale: {x: 1.5, y: 0.8, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8027861}
+  m_Father: {fileID: 57477953}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1362812992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362812990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cdbda30cfee4acb7be4ec3866caddc9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.CampPresenter
-  _session: {fileID: 8027856}
-  _art: {fileID: 8027860}
-  _itemIds:
-  - firewood
-  - planks
-  - stick
-  - short_stick
-  - sharpened_stick
-  - torch
-  - torch_unlit
-  - stone
-  - flint
-  - ore
-  - metal
-  _itemModels:
-  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
-  - {fileID: -927199367670048503, guid: ce2bf7db28d163761b66ce0c4588a388, type: 3}
-  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
-  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
-  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
-  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
-  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
-  - {fileID: -927199367670048503, guid: 8a512855a4d7fd8ff9cbb971ec8923b0, type: 3}
-  - {fileID: -927199367670048503, guid: 93a7bd7c37c54df1a3fe5fdc52f592c5, type: 3}
-  - {fileID: -927199367670048503, guid: e88edc4b49014e464fc3c89bd10bc99a, type: 3}
-  - {fileID: -927199367670048503, guid: 6acf7c0f3f94977d344d31a5112423a1, type: 3}
-  _itemScales:
-  - 0.7
-  - 0.5
-  - 0.35
-  - 0.25
-  - 0.35
-  - 0.3
-  - 0.3
-  - 1
-  - 1
-  - 0.35
-  - 1
-  _campfireModel: {fileID: -927199367670048503, guid: 69df60d3c4cf3af97c970d9daf90ae96, type: 3}
-  _thingMaterial: {fileID: 2100000, guid: fcf3ffef875ad7c41bf547d4ed81ac6d, type: 2}
-  _flameMaterial: {fileID: 2100000, guid: a689abdcdbfeb8843bf8532f8d525cd3, type: 2}
---- !u!114 &1362812993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362812990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abde4ca7123b7b19bd41291ba1ac4bdb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.RadialMenu
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _hero: {fileID: 338128600}
-  _inventory: {fileID: 1362812994}
-  _windows: {fileID: 8027854}
-  _icons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
---- !u!114 &1362812994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362812990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99643b49b71985992f727b72f923ca08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.InventoryWindow
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _windows: {fileID: 8027854}
-  _drag: {fileID: 1362812995}
-  _icons: {fileID: 11400000, guid: b566bb43bce2fb046b9e1c2ae8cab979, type: 2}
---- !u!114 &1362812995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362812990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56e517c458c0b41208aada498cbf85dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.ItemDrag
-  _session: {fileID: 8027856}
-  _ui: {fileID: 1830921988}
-  _windows: {fileID: 8027854}
-  _hero: {fileID: 338128600}
-  _picker: {fileID: 8027857}
-  _inventory: {fileID: 1362812994}
-  _zones: {fileID: 1730418994}
-  _icons: {fileID: 11400000, guid: b566bb43bce2fb046b9e1c2ae8cab979, type: 2}
---- !u!1 &1451670506
+--- !u!1 &464283287
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1507,8 +854,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1451670507}
-  - component: {fileID: 1451670508}
+  - component: {fileID: 464283288}
+  - component: {fileID: 464283289}
   m_Layer: 0
   m_Name: HeroSprite
   m_TagString: Untagged
@@ -1516,28 +863,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1451670507
+--- !u!4 &464283288
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1451670506}
+  m_GameObject: {fileID: 464283287}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 338128599}
+  m_Father: {fileID: 195987331}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1451670508
+--- !u!114 &464283289
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1451670506}
+  m_GameObject: {fileID: 464283287}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1daac38b661672a0b971b99997eddb31, type: 3}
@@ -1545,9 +892,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.BillboardSprite
   _registry: {fileID: 11400000, guid: aaafbbf458c9734499c122addc1d4913, type: 2}
   _look: {fileID: 11400000, guid: 18845fcae55047749bfdda55c271c78a, type: 2}
-  _camera: {fileID: 1637433084}
+  _camera: {fileID: 833360579}
   _characterId: heroine
---- !u!1 &1529017982
+--- !u!1 &644434239
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1555,30 +902,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1529017983}
+  - component: {fileID: 644434241}
+  - component: {fileID: 644434240}
   m_Layer: 0
-  m_Name: Carcasses
+  m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1529017983
+--- !u!114 &644434240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644434239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 114d579e7aaa3b29144223b21b14f7cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.TerrainZones
+  _json: '{"Default":"grass","Layers":[]}'
+--- !u!4 &644434241
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1529017982}
+  m_GameObject: {fileID: 644434239}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8027861}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1637433083
+--- !u!1 &702704440
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1586,10 +947,159 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1637433087}
-  - component: {fileID: 1637433084}
-  - component: {fileID: 1637433086}
-  - component: {fileID: 1637433085}
+  - component: {fileID: 702704441}
+  - component: {fileID: 702704445}
+  - component: {fileID: 702704444}
+  - component: {fileID: 702704443}
+  - component: {fileID: 702704446}
+  - component: {fileID: 702704442}
+  m_Layer: 9
+  m_Name: marker_east
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &702704441
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702704440}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 12, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 57477953}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &702704442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702704440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e45f90b6823f5e079511687c84c7725c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.Tappable
+  _id: marker_east
+  _kind: 0
+  _screenRadiusPx: 0
+  _aimHeight: 0.5
+  _enabled: 1
+--- !u!23 &702704443
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702704440}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 1154437ff1ac8774ebd205f108100c82, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &702704444
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702704440}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &702704445
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702704440}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &702704446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702704440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8851b065203bf180ecff82d3a9e66468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SceneTags
+  _id: marker_east
+  _tags:
+  - marker
+  _item: 
+  _enemy: 
+  _station: 
+--- !u!1 &833360578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 833360582}
+  - component: {fileID: 833360579}
+  - component: {fileID: 833360581}
+  - component: {fileID: 833360580}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1597,13 +1107,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!20 &1637433084
+--- !u!20 &833360579
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1637433083}
+  m_GameObject: {fileID: 833360578}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
@@ -1648,38 +1158,38 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &1637433085
+--- !u!114 &833360580
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1637433083}
+  m_GameObject: {fileID: 833360578}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 44e2fd3e893111e2dff55ad7cb9d084c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.IsoCamera
-  _target: {fileID: 338128599}
+  _target: {fileID: 195987331}
   _pitch: 35
   _yaw: 45
   _distance: 20
   _smoothTime: 0.15
---- !u!81 &1637433086
+--- !u!81 &833360581
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1637433083}
+  m_GameObject: {fileID: 833360578}
   m_Enabled: 1
---- !u!4 &1637433087
+--- !u!4 &833360582
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1637433083}
+  m_GameObject: {fileID: 833360578}
   serializedVersion: 2
   m_LocalRotation: {x: 0.2778159, y: 0.3649717, z: -0.115075134, w: 0.88111955}
   m_LocalPosition: {x: -11.584559, y: 12.471528, z: -11.5845585}
@@ -1688,7 +1198,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1730418993
+--- !u!1 &1012810445
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1696,44 +1206,30 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1730418995}
-  - component: {fileID: 1730418994}
+  - component: {fileID: 1012810446}
   m_Layer: 0
-  m_Name: Terrain
+  m_Name: Carcasses
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1730418994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1730418993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 114d579e7aaa3b29144223b21b14f7cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.TerrainZones
-  _json: '{"Default":"grass","Layers":[]}'
---- !u!4 &1730418995
+--- !u!4 &1012810446
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1730418993}
+  m_GameObject: {fileID: 1012810445}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1877458362}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1750455877
+--- !u!1 &1072246547
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1741,8 +1237,300 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1750455879}
-  - component: {fileID: 1750455878}
+  - component: {fileID: 1072246548}
+  - component: {fileID: 1072246552}
+  - component: {fileID: 1072246551}
+  - component: {fileID: 1072246550}
+  - component: {fileID: 1072246553}
+  - component: {fileID: 1072246549}
+  m_Layer: 9
+  m_Name: marker_west
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1072246548
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072246547}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 57477953}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1072246549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072246547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e45f90b6823f5e079511687c84c7725c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.Tappable
+  _id: marker_west
+  _kind: 0
+  _screenRadiusPx: 0
+  _aimHeight: 0.5
+  _enabled: 1
+--- !u!23 &1072246550
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072246547}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: cfaa79554ea8633479b7eab0e314deaf, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &1072246551
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072246547}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &1072246552
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072246547}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1072246553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072246547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8851b065203bf180ecff82d3a9e66468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SceneTags
+  _id: marker_west
+  _tags:
+  - marker
+  _item: 
+  _enemy: 
+  _station: 
+--- !u!1 &1291547949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1291547950}
+  - component: {fileID: 1291547954}
+  - component: {fileID: 1291547953}
+  - component: {fileID: 1291547952}
+  - component: {fileID: 1291547951}
+  m_Layer: 0
+  m_Name: Items
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1291547950
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291547949}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1877458362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1291547951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291547949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cdbda30cfee4acb7be4ec3866caddc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.CampPresenter
+  _session: {fileID: 1877458357}
+  _art: {fileID: 1877458361}
+  _itemIds:
+  - firewood
+  - planks
+  - stick
+  - short_stick
+  - sharpened_stick
+  - torch
+  - torch_unlit
+  - stone
+  - flint
+  - ore
+  - metal
+  _itemModels:
+  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
+  - {fileID: -927199367670048503, guid: ce2bf7db28d163761b66ce0c4588a388, type: 3}
+  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
+  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
+  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
+  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
+  - {fileID: -927199367670048503, guid: e01a97a29b075c36efc26eeaf56a4864, type: 3}
+  - {fileID: -927199367670048503, guid: 8a512855a4d7fd8ff9cbb971ec8923b0, type: 3}
+  - {fileID: -927199367670048503, guid: 93a7bd7c37c54df1a3fe5fdc52f592c5, type: 3}
+  - {fileID: -927199367670048503, guid: e88edc4b49014e464fc3c89bd10bc99a, type: 3}
+  - {fileID: -927199367670048503, guid: 6acf7c0f3f94977d344d31a5112423a1, type: 3}
+  _itemScales:
+  - 0.7
+  - 0.5
+  - 0.35
+  - 0.25
+  - 0.35
+  - 0.3
+  - 0.3
+  - 1
+  - 1
+  - 0.35
+  - 1
+  _campfireModel: {fileID: -927199367670048503, guid: 69df60d3c4cf3af97c970d9daf90ae96, type: 3}
+  _thingMaterial: {fileID: 2100000, guid: fcf3ffef875ad7c41bf547d4ed81ac6d, type: 2}
+  _flameMaterial: {fileID: 2100000, guid: a689abdcdbfeb8843bf8532f8d525cd3, type: 2}
+--- !u!114 &1291547952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291547949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abde4ca7123b7b19bd41291ba1ac4bdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.RadialMenu
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _hero: {fileID: 195987332}
+  _inventory: {fileID: 1291547953}
+  _windows: {fileID: 1877458355}
+  _icons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
+--- !u!114 &1291547953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291547949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99643b49b71985992f727b72f923ca08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.InventoryWindow
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _windows: {fileID: 1877458355}
+  _drag: {fileID: 1291547954}
+  _icons: {fileID: 11400000, guid: b566bb43bce2fb046b9e1c2ae8cab979, type: 2}
+--- !u!114 &1291547954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291547949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e517c458c0b41208aada498cbf85dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.ItemDrag
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _windows: {fileID: 1877458355}
+  _hero: {fileID: 195987332}
+  _picker: {fileID: 1877458358}
+  _inventory: {fileID: 1291547953}
+  _zones: {fileID: 644434240}
+  _icons: {fileID: 11400000, guid: b566bb43bce2fb046b9e1c2ae8cab979, type: 2}
+--- !u!1 &1618131644
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1618131646}
+  - component: {fileID: 1618131645}
   m_Layer: 0
   m_Name: Sun
   m_TagString: Untagged
@@ -1750,13 +1538,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!108 &1750455878
+--- !u!108 &1618131645
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1750455877}
+  m_GameObject: {fileID: 1618131644}
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 1
@@ -1815,13 +1603,13 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!4 &1750455879
+--- !u!4 &1618131646
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1750455877}
+  m_GameObject: {fileID: 1618131644}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821794, y: -0.23456973, z: 0.10938166, w: 0.8754261}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1830,7 +1618,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1798557465
+--- !u!1 &1854331510
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1838,78 +1626,30 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1798557466}
-  - component: {fileID: 1798557468}
-  - component: {fileID: 1798557467}
+  - component: {fileID: 1854331511}
   m_Layer: 0
-  m_Name: EventSystem
+  m_Name: Enemies
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1798557466
+--- !u!4 &1854331511
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798557465}
+  m_GameObject: {fileID: 1854331510}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8027861}
+  m_Father: {fileID: 1877458362}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1798557467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798557465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
-  m_SendPointerHoverToParent: 1
-  m_MoveRepeatDelay: 0.5
-  m_MoveRepeatRate: 0.1
-  m_XRTrackingOrigin: {fileID: 0}
-  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_DeselectOnBackgroundClick: 1
-  m_PointerBehavior: 0
-  m_CursorLockBehavior: 0
-  m_ScrollDeltaPerTick: 6
---- !u!114 &1798557468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798557465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
---- !u!1 &1799859370
+--- !u!1 &1877458341
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1917,197 +1657,386 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1799859376}
-  - component: {fileID: 1799859375}
-  - component: {fileID: 1799859374}
-  - component: {fileID: 1799859373}
-  - component: {fileID: 1799859371}
-  - component: {fileID: 1799859372}
-  m_Layer: 9
-  m_Name: rock_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1799859371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799859370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8851b065203bf180ecff82d3a9e66468, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SceneTags
-  _id: rock_1
-  _tags:
-  - obstacle
-  _item: 
-  _enemy: 
-  _station: 
---- !u!114 &1799859372
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799859370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e45f90b6823f5e079511687c84c7725c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.Tappable
-  _id: rock_1
-  _kind: 0
-  _screenRadiusPx: 0
-  _aimHeight: 0.5
-  _enabled: 1
---- !u!23 &1799859373
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799859370}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 391a2ed1f950ac44e9b1d7fea95b3aa3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 1
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1799859374
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799859370}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &1799859375
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799859370}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1799859376
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1799859370}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.25881907, z: 0, w: 0.9659259}
-  m_LocalPosition: {x: 5, y: 0.4, z: 6}
-  m_LocalScale: {x: 1.5, y: 0.8, z: 1.2}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 560704676}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1830921987
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1830921989}
-  - component: {fileID: 1830921988}
+  - component: {fileID: 1877458362}
+  - component: {fileID: 1877458361}
+  - component: {fileID: 1877458360}
+  - component: {fileID: 1877458359}
+  - component: {fileID: 1877458358}
+  - component: {fileID: 1877458357}
+  - component: {fileID: 1877458356}
+  - component: {fileID: 1877458355}
+  - component: {fileID: 1877458354}
+  - component: {fileID: 1877458353}
+  - component: {fileID: 1877458352}
+  - component: {fileID: 1877458351}
+  - component: {fileID: 1877458350}
+  - component: {fileID: 1877458349}
+  - component: {fileID: 1877458348}
+  - component: {fileID: 1877458347}
+  - component: {fileID: 1877458346}
+  - component: {fileID: 1877458345}
+  - component: {fileID: 1877458344}
+  - component: {fileID: 1877458343}
+  - component: {fileID: 1877458342}
   m_Layer: 0
-  m_Name: UI
+  m_Name: Game
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1830921988
+--- !u!114 &1877458342
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1830921987}
+  m_GameObject: {fileID: 1877458341}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05ee9ca6653b0f9b513b7861babad88e, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f5d2dfc2f193d6ec43980c350e07b2f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Game.SessionUI
-  _camera: {fileID: 1637433084}
-  _hero: {fileID: 338128599}
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.RemarkBubble
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _height: 2.3
+--- !u!114 &1877458343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ca894f740df6dece42c31437e03da35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.HintView
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _icons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
+--- !u!114 &1877458344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3452c80be89280789147afc3fbdd9738, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.RestPresenter
+  _session: {fileID: 1877458357}
+  _fader: {fileID: 1877458354}
+  _windows: {fileID: 1877458355}
+  _ui: {fileID: 334973483}
+  _hero: {fileID: 195987332}
+  _closeSeconds: 1
+  _holdSeconds: 0.5
+  _openSeconds: 1
+--- !u!114 &1877458345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b411d367c7e3f4915232ecc62108606, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.NotebookWindow
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _windows: {fileID: 1877458355}
+--- !u!114 &1877458346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fb42edd73b56f24b60fdb96f3956178, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.MapWindow
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _windows: {fileID: 1877458355}
+  _sheet: {fileID: 21300000, guid: 6f2b957ceed236740b31cf42d932be9a, type: 3}
+  _groundSize: {x: 40, y: 40}
+--- !u!114 &1877458347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8fdadfb75de90f363b5e59c0a776c53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.TradeWindow
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _windows: {fileID: 1877458355}
+  _art: {fileID: 1877458361}
+--- !u!114 &1877458348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66d62ad59273750be7fe4797d7823d37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.StationWindow
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _windows: {fileID: 1877458355}
+  _art: {fileID: 1877458361}
+  _strikesNeeded: 3
+--- !u!114 &1877458349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08809225bc07ab2536ef227b5364faf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Combat.CombatPresenter
+  _session: {fileID: 1877458357}
+  _art: {fileID: 1877458361}
+  _camera: {fileID: 833360579}
+  _enemiesRoot: {fileID: 1854331511}
+  _carcassesRoot: {fileID: 1012810446}
+  _carcassReachMeters: 2.5
+  _blockHeight: 0.6
+  _blockRadius: 0.3
+--- !u!114 &1877458350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f51a61a4cf4b0cbc5854d6c15a6841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.TalkBubbleView
+  _ui: {fileID: 334973483}
+  _icons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
   _look: {fileID: 11400000, guid: aa430e66dfe57504a8a7c4bac287e0fe, type: 2}
+  _camera: {fileID: 833360579}
+  _hero: {fileID: 195987331}
+--- !u!114 &1877458351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 563d9b81dda7b99238475be652b106ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.NPC.NpcPresenter
+  _session: {fileID: 1877458357}
+  _views: []
+  _routes: []
+--- !u!114 &1877458352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba186004d756817dd3896c1e6e8290e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.NPC.TalkPresenter
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _bubble: {fileID: 1877458350}
+  _npcs: {fileID: 1877458351}
+--- !u!114 &1877458353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f7cddd5c42e9095bfa45e4d3543b3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.PickupPresenter
+  _session: {fileID: 1877458357}
+--- !u!114 &1877458354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ead30d0f9ba41ed251b22961bb7074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.ScreenFader
+  _ui: {fileID: 334973483}
+  _session: {fileID: 1877458357}
+--- !u!114 &1877458355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a20acbd3989d54f16e24627484fc2e8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.UI.WindowStack
+  _session: {fileID: 1877458357}
+  _ui: {fileID: 334973483}
+  _hero: {fileID: 195987332}
+--- !u!114 &1877458356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ad05305b0c251cd30888c05ef842be5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.InputRouter
+  _hero: {fileID: 195987332}
+  _session: {fileID: 1877458357}
+--- !u!114 &1877458357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25e4ff765305899a6f956dd9c87033ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Game.GameSession
+  _hero: {fileID: 195987332}
+  _sun: {fileID: 1877458360}
+  _ui: {fileID: 334973483}
+  _index: {fileID: 1877458359}
+  _zone: g1-capsule
+  _seed: 20261008
+  _slot: 
+--- !u!114 &1877458358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c288b7d175830c017cb71dc6d2b7708c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.WorldPicker
+  _camera: {fileID: 833360579}
+  _hero: {fileID: 195987332}
+  _index: {fileID: 1877458359}
+  _rayLength: 500
+--- !u!114 &1877458359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2372613a24066d4c0560797b3bede1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Game.WorldIndex
+  _objects:
+  - {fileID: 187297304}
+  - {fileID: 702704446}
+  - {fileID: 1903122959}
+  - {fileID: 1072246553}
+  - {fileID: 375816688}
+  _zones: []
+--- !u!114 &1877458360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1674a3a4b70e44560165ec90b8ba1a46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SunController
+  _sun: {fileID: 1618131645}
+  _dayRotation: {x: 50, y: -30, z: 0}
+  _dayIntensity: 1.1
+  _dayAmbient: {r: 0.6039216, g: 0.627451, b: 0.65882355, a: 1}
+  _camera: {fileID: 833360579}
+--- !u!114 &1877458361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1877458341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863ac2c76e9b02e89093890d15054546, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Game.ArtAssets
+  _ui: {fileID: 11400000, guid: aa430e66dfe57504a8a7c4bac287e0fe, type: 2}
+  _sprites: {fileID: 11400000, guid: 18845fcae55047749bfdda55c271c78a, type: 2}
+  _characters: {fileID: 11400000, guid: aaafbbf458c9734499c122addc1d4913, type: 2}
+  _itemIcons: {fileID: 11400000, guid: b566bb43bce2fb046b9e1c2ae8cab979, type: 2}
   _talkIcons: {fileID: 11400000, guid: 772d1101f2049574c8c230006038d4dc, type: 2}
-  _talkView: {fileID: 8027849}
---- !u!4 &1830921989
+  _sounds: {fileID: 11400000, guid: 5a97e235c4b1448419732735e5178e3a, type: 2}
+  _fx: {fileID: 11400000, guid: 254eb10f6d820404380bcb4322bb1a78, type: 2}
+--- !u!4 &1877458362
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1830921987}
+  m_GameObject: {fileID: 1877458341}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8027861}
+  m_Children:
+  - {fileID: 334973484}
+  - {fileID: 149314527}
+  - {fileID: 1854331511}
+  - {fileID: 1012810446}
+  - {fileID: 1291547950}
+  - {fileID: 1996127074}
+  - {fileID: 2102315476}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1912044704
+--- !u!1 &1903122953
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2115,58 +2044,58 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1912044705}
-  - component: {fileID: 1912044709}
-  - component: {fileID: 1912044708}
-  - component: {fileID: 1912044707}
-  - component: {fileID: 1912044710}
-  - component: {fileID: 1912044706}
+  - component: {fileID: 1903122954}
+  - component: {fileID: 1903122958}
+  - component: {fileID: 1903122957}
+  - component: {fileID: 1903122956}
+  - component: {fileID: 1903122959}
+  - component: {fileID: 1903122955}
   m_Layer: 9
-  m_Name: marker_north
+  m_Name: marker_south
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1912044705
+--- !u!4 &1903122954
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1912044704}
+  m_GameObject: {fileID: 1903122953}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 12}
+  m_LocalPosition: {x: 0, y: 1, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 560704676}
+  m_Father: {fileID: 57477953}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1912044706
+--- !u!114 &1903122955
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1912044704}
+  m_GameObject: {fileID: 1903122953}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e45f90b6823f5e079511687c84c7725c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Input.Tappable
-  _id: marker_north
+  _id: marker_south
   _kind: 0
   _screenRadiusPx: 0
   _aimHeight: 0.5
   _enabled: 1
---- !u!23 &1912044707
+--- !u!23 &1903122956
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1912044704}
+  m_GameObject: {fileID: 1903122953}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -2185,7 +2114,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 96f66ca79674f6e468ecfe1fbcd26c34, type: 2}
+  - {fileID: 2100000, guid: 4395b56f46026394792bc112c0ce2253, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2209,13 +2138,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1912044708
-BoxCollider:
+--- !u!136 &1903122957
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1912044704}
+  m_GameObject: {fileID: 1903122953}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -2227,43 +2156,164 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!33 &1912044709
+--- !u!33 &1903122958
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1912044704}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1912044710
+  m_GameObject: {fileID: 1903122953}
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1903122959
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1912044704}
+  m_GameObject: {fileID: 1903122953}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8851b065203bf180ecff82d3a9e66468, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.SceneTags
-  _id: marker_north
+  _id: marker_south
   _tags:
   - marker
   _item: 
   _enemy: 
   _station: 
+--- !u!1 &1996127073
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1996127074}
+  - component: {fileID: 1996127076}
+  - component: {fileID: 1996127075}
+  m_Layer: 0
+  m_Name: Nature
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1996127074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996127073}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1877458362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1996127075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996127073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02282ee6f3ea98ea6d689c6ecf411eb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Hero.HeroTorchLight
+  _session: {fileID: 1877458357}
+  _hero: {fileID: 195987331}
+  _fx: {fileID: 11400000, guid: 254eb10f6d820404380bcb4322bb1a78, type: 2}
+  _flameMat: {fileID: 2100000, guid: 678116f1f0215a348a2b37360da9ec3b, type: 2}
+--- !u!114 &1996127076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996127073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc5ae17720d0b3fcb8d1e127da667b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.World.NatureFx
+  _session: {fileID: 1877458357}
+  _ground: {fileID: 213792573}
+  _hero: {fileID: 195987331}
+  _fx: {fileID: 11400000, guid: 254eb10f6d820404380bcb4322bb1a78, type: 2}
+  _rainMat: {fileID: 2100000, guid: 955c71a30575fca4aa323e67f22fad69, type: 2}
+  _puffMat: {fileID: 2100000, guid: 12acdb452bb57c64cabd6f47e72d5b23, type: 2}
+  _flameMat: {fileID: 2100000, guid: 678116f1f0215a348a2b37360da9ec3b, type: 2}
+  _burntMat: {fileID: 2100000, guid: f8b28e1fec86542429b3cc882995d67b, type: 2}
+  _tintGround: 0
+--- !u!1 &2102315475
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2102315476}
+  - component: {fileID: 2102315477}
+  m_Layer: 0
+  m_Name: Audio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2102315476
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102315475}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1877458362}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2102315477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102315475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45dcb2acc702b6d66936b4fd985b225, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Audio.AudioDirector
+  _session: {fileID: 1877458357}
+  _hero: {fileID: 195987332}
+  _sounds: {fileID: 11400000, guid: 5a97e235c4b1448419732735e5178e3a, type: 2}
+  _zones: []
+  _fireMaxDistance: 40
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 805283827}
-  - {fileID: 1750455879}
-  - {fileID: 338128599}
-  - {fileID: 1637433087}
-  - {fileID: 1730418995}
-  - {fileID: 560704676}
-  - {fileID: 8027861}
+  - {fileID: 213792576}
+  - {fileID: 1618131646}
+  - {fileID: 195987331}
+  - {fileID: 833360582}
+  - {fileID: 644434241}
+  - {fileID: 57477953}
+  - {fileID: 1877458362}

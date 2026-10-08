@@ -13,24 +13,140 @@ MonoBehaviour:
   m_Name: Sounds
   m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Audio.SoundRegistry
   _sounds:
+  - Id: act_butcher
+    Clips:
+    - {fileID: 8300000, guid: ed4788777a58c3c4e80815f675152c12, type: 3}
+    - {fileID: 8300000, guid: 3a33c2303d0920744bd28a8d6f277d69, type: 3}
+    - {fileID: 8300000, guid: f705951812e6fad44b9c27f78ceb60e3, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.08
+    Spatial: 1
+  - Id: act_craft
+    Clips:
+    - {fileID: 8300000, guid: 63a5f9d7058ba9f42826938ff05d7275, type: 3}
+    - {fileID: 8300000, guid: aad2b5b14f5d83547b11baa81fb6ea9b, type: 3}
+    - {fileID: 8300000, guid: b40b23af67e162a4ab0da13eeffa1a6d, type: 3}
+    Volume: 0.55
+    PitchJitter: 0.05
+    Spatial: 1
+  - Id: act_eat
+    Clips:
+    - {fileID: 8300000, guid: b9bd4b329395a4b40931b0eced82de58, type: 3}
+    - {fileID: 8300000, guid: d8ba2895d9e429147acd2871e4b5a16e, type: 3}
+    - {fileID: 8300000, guid: a1fcb25a4b9165846b96bf1c7d082ab8, type: 3}
+    - {fileID: 8300000, guid: dcaef4e602d4209488904e2f3915a74d, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.05
+    Spatial: 0
+  - Id: act_pickup
+    Clips:
+    - {fileID: 8300000, guid: 430d64bf78ec81c4180eaad909f8f94c, type: 3}
+    - {fileID: 8300000, guid: 60ae58e880fd2b84b99088994c6b5961, type: 3}
+    - {fileID: 8300000, guid: e2735be043c0ffb4684d0067673e6cda, type: 3}
+    - {fileID: 8300000, guid: 52236515e2883cb45b1bd58916807f73, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.06
+    Spatial: 0
+  - Id: act_place
+    Clips:
+    - {fileID: 8300000, guid: 74918eb16cbedf14991007828503cab0, type: 3}
+    - {fileID: 8300000, guid: cc929fdf7e4b0d94eb4bd8d7cf0691d8, type: 3}
+    - {fileID: 8300000, guid: 90b4579f7b6a5e746aa0b84968907716, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.06
+    Spatial: 1
+  - Id: act_sleep
+    Clips:
+    - {fileID: 8300000, guid: d810c81a6f7fbaa4dafd66639d457edb, type: 3}
+    - {fileID: 8300000, guid: 6709f91c1a6f8dc479e8963fc1c6ec4c, type: 3}
+    Volume: 0.5
+    PitchJitter: 0
+    Spatial: 0
+  - Id: act_trade
+    Clips:
+    - {fileID: 8300000, guid: 0c43b42026ef69e43882dde0decfe4d3, type: 3}
+    - {fileID: 8300000, guid: 0b38905ab6dcad0429c490aa36db29f8, type: 3}
+    - {fileID: 8300000, guid: 124b88ad4861fb94b8f6e2ce02ebb807, type: 3}
+    - {fileID: 8300000, guid: bcff95734d54d77498aa1f42d88a7b78, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.05
+    Spatial: 0
+  - Id: act_treat
+    Clips:
+    - {fileID: 8300000, guid: a3b9fce70b86ddb40af58b52f334d758, type: 3}
+    - {fileID: 8300000, guid: c42b99ac934d91b43affa2713a3b4aab, type: 3}
+    - {fileID: 8300000, guid: 8821359b6ef0e1247a58921d8bfb8262, type: 3}
+    - {fileID: 8300000, guid: c2f241224c9a9214a98c7fe8f045c9d4, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.05
+    Spatial: 0
+  - Id: amb_field
+    Clips:
+    - {fileID: 8300000, guid: dd921abe8105a074183c4d81642d922f, type: 3}
+    Volume: 0.45
+    PitchJitter: 0
+    Spatial: 0
   - Id: amb_forest
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: e1db9f5a7b9cba44ab82b6160a94d1c4, type: 3}
     Volume: 0.5
     PitchJitter: 0
     Spatial: 0
   - Id: amb_night
-    Clips: []
-    Volume: 0.5
+    Clips:
+    - {fileID: 8300000, guid: c577d46665893374cbe7d71e9a4d6686, type: 3}
+    - {fileID: 8300000, guid: fdf49607edbd7d148a075ca118a84c8f, type: 3}
+    - {fileID: 8300000, guid: 4c1275717fec75d4c9c6b288ca7488cf, type: 3}
+    Volume: 0.4
     PitchJitter: 0
     Spatial: 0
   - Id: amb_rain
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: 5314b152eeee19a4d994a469221e3254, type: 3}
     Volume: 0.5
     PitchJitter: 0
     Spatial: 0
+  - Id: amb_river
+    Clips:
+    - {fileID: 8300000, guid: a40e5036d7b47df45a911f0cc1bf6a95, type: 3}
+    Volume: 0.6
+    PitchJitter: 0
+    Spatial: 0
   - Id: amb_town
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: 14185300149450a4ab9bfab632647c21, type: 3}
     Volume: 0.5
+    PitchJitter: 0
+    Spatial: 0
+  - Id: amb_town_cart
+    Clips:
+    - {fileID: 8300000, guid: e01e5d2335679bd498cc476d5d34a553, type: 3}
+    - {fileID: 8300000, guid: ffb2a74a298b94048a67630344dab18c, type: 3}
+    Volume: 0.45
+    PitchJitter: 0.03
+    Spatial: 1
+  - Id: amb_town_life
+    Clips:
+    - {fileID: 8300000, guid: 0ad43d65ff09fe742a653841e89dbf7c, type: 3}
+    - {fileID: 8300000, guid: 1f726e3036874cf4c92e797796b1d5f0, type: 3}
+    - {fileID: 8300000, guid: c08915cef5a951d44977a8dcf7be1418, type: 3}
+    - {fileID: 8300000, guid: 8b085d45ab0348a48b88024f56f071d3, type: 3}
+    Volume: 0.4
+    PitchJitter: 0.05
+    Spatial: 1
+  - Id: amb_town_smith
+    Clips:
+    - {fileID: 8300000, guid: 5fa840cd58932d14cab51ff8b549d70c, type: 3}
+    - {fileID: 8300000, guid: 93e1655315b78254b8b0318b724ce13d, type: 3}
+    - {fileID: 8300000, guid: 14502286a991659429e70edbf697a189, type: 3}
+    - {fileID: 8300000, guid: 27e9c8024db2916449869404a40bb71c, type: 3}
+    Volume: 0.5
+    PitchJitter: 0.05
+    Spatial: 1
+  - Id: amb_wind
+    Clips:
+    - {fileID: 8300000, guid: 85838df55f0deaf44b49bc5b44d6a40b, type: 3}
+    Volume: 0.35
     PitchJitter: 0
     Spatial: 0
   - Id: bard_tavern
@@ -39,38 +155,62 @@ MonoBehaviour:
     PitchJitter: 0
     Spatial: 1
   - Id: fire_campfire
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: f349cb913b7aaf04882987a5ba9f7c6f, type: 3}
     Volume: 0.6
     PitchJitter: 0
     Spatial: 1
   - Id: fire_grass
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: b591692d75d36614f9d05dd2bfb49be3, type: 3}
     Volume: 0.6
     PitchJitter: 0
     Spatial: 1
   - Id: fire_torch
-    Clips: []
-    Volume: 0.6
+    Clips:
+    - {fileID: 8300000, guid: 1cacbccdce0ce924e8c39d0858f9253f, type: 3}
+    Volume: 0.4
     PitchJitter: 0
     Spatial: 1
   - Id: hit_blade
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: 1aecc8d45cbb1ad42bd32eb4d53b46c3, type: 3}
+    - {fileID: 8300000, guid: 1b676d4534ef2ae4c8f331e629beb79f, type: 3}
+    - {fileID: 8300000, guid: ef273da43cf6a41488dbc71526a87b99, type: 3}
+    - {fileID: 8300000, guid: 6c537ecd8866db146992091b297b3525, type: 3}
     Volume: 0.8
     PitchJitter: 0.1
     Spatial: 1
   - Id: hit_boar
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: 5a42956e4f371894fa273362c027a703, type: 3}
     Volume: 0.8
-    PitchJitter: 0.1
+    PitchJitter: 0.12
     Spatial: 1
   - Id: hit_fists
-    Clips: []
-    Volume: 0.8
+    Clips:
+    - {fileID: 8300000, guid: 1824e78644d7ee24e9605a798b1ff2dc, type: 3}
+    - {fileID: 8300000, guid: da2bd3af97497814699b6591a1305b75, type: 3}
+    - {fileID: 8300000, guid: 9a73ae70c8b3c2349bcafc0a02a78202, type: 3}
+    Volume: 0.5
     PitchJitter: 0.1
     Spatial: 1
   - Id: hit_hero
-    Clips: []
-    Volume: 0.8
+    Clips:
+    - {fileID: 8300000, guid: 788ff2d1b2aef8842891175d4744268e, type: 3}
+    - {fileID: 8300000, guid: 7ef4e28b1d476c74287ef3bee815a335, type: 3}
+    - {fileID: 8300000, guid: 07158ab90207e774082e9458cbcdb763, type: 3}
+    - {fileID: 8300000, guid: 9bec2618f78f4954dae06649075c8bcf, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.1
+    Spatial: 1
+  - Id: hit_miss
+    Clips:
+    - {fileID: 8300000, guid: 66ef40d12319e74469d04a51e64a6023, type: 3}
+    - {fileID: 8300000, guid: e232a04c811cc014889f15beb6968f83, type: 3}
+    - {fileID: 8300000, guid: 86de7499a26e13b4b9026201006bb6a7, type: 3}
+    - {fileID: 8300000, guid: c0ca3fc532076d94fb909ca513af99b8, type: 3}
+    Volume: 0.6
     PitchJitter: 0.1
     Spatial: 1
   - Id: hit_wolf
@@ -79,27 +219,106 @@ MonoBehaviour:
     PitchJitter: 0.1
     Spatial: 1
   - Id: step_grass
-    Clips: []
-    Volume: 0.6
+    Clips:
+    - {fileID: 8300000, guid: 9a0a6a9cbd7b4d9439af46c51a4fa9f9, type: 3}
+    - {fileID: 8300000, guid: bf7976a1194148944be2dbfbba95b151, type: 3}
+    - {fileID: 8300000, guid: 98c30eb791a83dd4d9f86f8e3e5df0f3, type: 3}
+    - {fileID: 8300000, guid: 426bd061ee75cc44da8a91d1280941ca, type: 3}
+    - {fileID: 8300000, guid: e0d12f8c575083543bbf5ef21f9b5d19, type: 3}
+    - {fileID: 8300000, guid: a8415ab518b0e9843a9bc12267713690, type: 3}
+    - {fileID: 8300000, guid: 72cb6fb8e38af8745afab3d5077c8d70, type: 3}
+    - {fileID: 8300000, guid: 199377d74c749e44a88c82a3be659c8a, type: 3}
+    Volume: 0.55
     PitchJitter: 0.08
     Spatial: 0
   - Id: step_ground
-    Clips: []
-    Volume: 0.6
+    Clips:
+    - {fileID: 8300000, guid: 54e8a837eaabf754cb99647bea6084ac, type: 3}
+    - {fileID: 8300000, guid: 17e03fc2f2017354a90cd54ea0a4738a, type: 3}
+    - {fileID: 8300000, guid: 8a4dc196defc1404f99d3d97320f9e7a, type: 3}
+    - {fileID: 8300000, guid: d32951a5463eae04daa3a84e90abf813, type: 3}
+    - {fileID: 8300000, guid: 2d610fbdf12aea748b330a6e61d446c8, type: 3}
+    - {fileID: 8300000, guid: 96722565512c41e4685534a611831fa6, type: 3}
+    - {fileID: 8300000, guid: 9c7d56acc97526a4484c09233ffb467f, type: 3}
+    - {fileID: 8300000, guid: 1a4611cf5e8899442b4e9b9fd896f188, type: 3}
+    Volume: 0.55
     PitchJitter: 0.08
     Spatial: 0
   - Id: step_mud
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: 44a8fd9aa5c5ea94fa35026e0e542433, type: 3}
+    - {fileID: 8300000, guid: 198df3a375a113741bc940b555ab8a88, type: 3}
+    - {fileID: 8300000, guid: 243709376da96964baff53632e72adcc, type: 3}
+    - {fileID: 8300000, guid: 0af8a46fd112ee2498f112df482477e2, type: 3}
+    - {fileID: 8300000, guid: 44dbf736150ff014a8068b0042b669c9, type: 3}
+    - {fileID: 8300000, guid: b0fe8f741ecb3d744b58cd03df6dab9d, type: 3}
     Volume: 0.6
     PitchJitter: 0.08
     Spatial: 0
   - Id: step_road
-    Clips: []
-    Volume: 0.6
+    Clips:
+    - {fileID: 8300000, guid: cca83b86a96507948bfc94f6ab4b7fb9, type: 3}
+    - {fileID: 8300000, guid: b6abce3439aaaf74e830c1985040801c, type: 3}
+    - {fileID: 8300000, guid: e526dc9df985ad845b1ee9ccadf76f8b, type: 3}
+    - {fileID: 8300000, guid: 64bcee5b056a5284387477f1866b3a3c, type: 3}
+    - {fileID: 8300000, guid: 0a6d52d218beeaf4580496f8cd04d4f6, type: 3}
+    - {fileID: 8300000, guid: f6dcc0f780f628840b62144575dc09e1, type: 3}
+    - {fileID: 8300000, guid: 37b7a96cb922f1e428e27ed280052870, type: 3}
+    - {fileID: 8300000, guid: 09af38f5522f35041bb2dbe43b6ad504, type: 3}
+    Volume: 0.55
+    PitchJitter: 0.08
+    Spatial: 0
+  - Id: step_stone
+    Clips:
+    - {fileID: 8300000, guid: a096ead922b6d254e8c69001249b369a, type: 3}
+    - {fileID: 8300000, guid: 623cf8e455ae6924788032c20edde42f, type: 3}
+    - {fileID: 8300000, guid: 58a14fab8daf17048907255802b2da8e, type: 3}
+    - {fileID: 8300000, guid: e7d068035cd2f2749930a058ef6be897, type: 3}
+    - {fileID: 8300000, guid: b180898bf8f90444f9f99ec084bbc819, type: 3}
+    - {fileID: 8300000, guid: 59468f1ac806d6949963728fe1ff1626, type: 3}
+    - {fileID: 8300000, guid: 9fba682d9bcf363419e78f0a556c1b74, type: 3}
+    - {fileID: 8300000, guid: 6016c4d304a3d724caea51c4307cb3e2, type: 3}
+    Volume: 0.55
     PitchJitter: 0.08
     Spatial: 0
   - Id: step_water
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: ce9fbc5deedcaa749ad9baa5f4208593, type: 3}
+    - {fileID: 8300000, guid: d905c08aacb69b84db45cb5d44e3ee03, type: 3}
+    - {fileID: 8300000, guid: cc8b125751727e44780b05e5aa990e50, type: 3}
+    - {fileID: 8300000, guid: 8029793524b2d2d4ea1ae1b340e9d9d7, type: 3}
+    - {fileID: 8300000, guid: eba736a071cc28a429a18dec8e61a5b7, type: 3}
+    - {fileID: 8300000, guid: 8618e2a6095ecd0469421feaee0353f5, type: 3}
     Volume: 0.6
     PitchJitter: 0.08
     Spatial: 0
+  - Id: step_wood
+    Clips:
+    - {fileID: 8300000, guid: 59eb3f2c781fa2b4e910fc578046819b, type: 3}
+    - {fileID: 8300000, guid: 175ea6c65c4da42439f57b38a6753466, type: 3}
+    - {fileID: 8300000, guid: e9396b0a17a6a0549b33a4b43cc7e0cd, type: 3}
+    - {fileID: 8300000, guid: f22750457e19ad44fa0b7e6fe8d2cf24, type: 3}
+    Volume: 0.5
+    PitchJitter: 0.12
+    Spatial: 0
+  - Id: ui_paper
+    Clips:
+    - {fileID: 8300000, guid: 0bee7b1bc4fee5d498f43257d376d864, type: 3}
+    - {fileID: 8300000, guid: 05a0e439e8ab4514d87bbd032adc4d5b, type: 3}
+    - {fileID: 8300000, guid: 0a6e986ff2d555a48bf7ae47d16cd347, type: 3}
+    - {fileID: 8300000, guid: eaeef1744ae7c49479ef462e05e874b3, type: 3}
+    - {fileID: 8300000, guid: b33ea022c592ea24d897d80de7876c71, type: 3}
+    Volume: 0.5
+    PitchJitter: 0.05
+    Spatial: 0
+  - Id: windup_boar
+    Clips:
+    - {fileID: 8300000, guid: 5a42956e4f371894fa273362c027a703, type: 3}
+    Volume: 0.7
+    PitchJitter: 0.15
+    Spatial: 1
+  - Id: windup_wolf
+    Clips: []
+    Volume: 0.8
+    PitchJitter: 0.1
+    Spatial: 1
