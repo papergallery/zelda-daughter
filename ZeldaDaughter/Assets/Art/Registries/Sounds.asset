@@ -94,12 +94,24 @@ MonoBehaviour:
     Spatial: 0
   - Id: amb_night
     Clips:
-    - {fileID: 8300000, guid: c577d46665893374cbe7d71e9a4d6686, type: 3}
-    - {fileID: 8300000, guid: fdf49607edbd7d148a075ca118a84c8f, type: 3}
-    - {fileID: 8300000, guid: 4c1275717fec75d4c9c6b288ca7488cf, type: 3}
-    Volume: 0.4
+    - {fileID: 8300000, guid: d92a032c41a7c714aa452e72877081ac, type: 3}
+    Volume: 0.45
     PitchJitter: 0
     Spatial: 0
+  - Id: amb_night_owl
+    Clips:
+    - {fileID: 8300000, guid: 71b9e1ba096297f40a58a4046d3cf203, type: 3}
+    - {fileID: 8300000, guid: 1ac69053d2f19d14faad72d614fb64c8, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.04
+    Spatial: 1
+  - Id: amb_night_wolf
+    Clips:
+    - {fileID: 8300000, guid: 8878e770504388e40a712a109fde8ece, type: 3}
+    - {fileID: 8300000, guid: 620aa124844d0504f89252acca100e3d, type: 3}
+    Volume: 0.8
+    PitchJitter: 0.05
+    Spatial: 1
   - Id: amb_rain
     Clips:
     - {fileID: 8300000, guid: 5314b152eeee19a4d994a469221e3254, type: 3}
@@ -150,7 +162,10 @@ MonoBehaviour:
     PitchJitter: 0
     Spatial: 0
   - Id: bard_tavern
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: e18bcaf3a241f424b86d4d8015d6b161, type: 3}
+    - {fileID: 8300000, guid: 3d7ab008b2155ac4d8648816e49d33b8, type: 3}
+    - {fileID: 8300000, guid: e25a6e56f52b3114d85d3936a2a0972f, type: 3}
     Volume: 0.7
     PitchJitter: 0
     Spatial: 1
@@ -214,7 +229,9 @@ MonoBehaviour:
     PitchJitter: 0.1
     Spatial: 1
   - Id: hit_wolf
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: 73476a87f9b85ec4b87720748e81fed5, type: 3}
+    - {fileID: 8300000, guid: 634dbaf147e770446a4b8826f99f92ba, type: 3}
     Volume: 0.8
     PitchJitter: 0.1
     Spatial: 1
@@ -294,13 +311,28 @@ MonoBehaviour:
     Spatial: 0
   - Id: step_wood
     Clips:
-    - {fileID: 8300000, guid: 59eb3f2c781fa2b4e910fc578046819b, type: 3}
-    - {fileID: 8300000, guid: 175ea6c65c4da42439f57b38a6753466, type: 3}
-    - {fileID: 8300000, guid: e9396b0a17a6a0549b33a4b43cc7e0cd, type: 3}
-    - {fileID: 8300000, guid: f22750457e19ad44fa0b7e6fe8d2cf24, type: 3}
-    Volume: 0.5
-    PitchJitter: 0.12
+    - {fileID: 8300000, guid: 31a478697433fd748a32b2fea9c126a5, type: 3}
+    - {fileID: 8300000, guid: b975cd726d8d49749a73ceed10bfcab1, type: 3}
+    - {fileID: 8300000, guid: f1a9496f670c3ac458404167f62fbae7, type: 3}
+    - {fileID: 8300000, guid: 91d0d2b564cd1064d802154a72929513, type: 3}
+    - {fileID: 8300000, guid: b139d6fbb903a0849adc0af1f491c478, type: 3}
+    - {fileID: 8300000, guid: 86551336f3ff581448eeeff8fb270fa4, type: 3}
+    Volume: 0.55
+    PitchJitter: 0.08
     Spatial: 0
+  - Id: strike_boar
+    Clips:
+    - {fileID: 8300000, guid: 5a42956e4f371894fa273362c027a703, type: 3}
+    Volume: 0.7
+    PitchJitter: 0.15
+    Spatial: 1
+  - Id: strike_wolf
+    Clips:
+    - {fileID: 8300000, guid: ed4140112cab6bd46993e4f2f7a537d1, type: 3}
+    - {fileID: 8300000, guid: 8ba68cf08a94cf6449ab294008c64d36, type: 3}
+    Volume: 0.8
+    PitchJitter: 0.08
+    Spatial: 1
   - Id: ui_paper
     Clips:
     - {fileID: 8300000, guid: 0bee7b1bc4fee5d498f43257d376d864, type: 3}
@@ -318,7 +350,9 @@ MonoBehaviour:
     PitchJitter: 0.15
     Spatial: 1
   - Id: windup_wolf
-    Clips: []
+    Clips:
+    - {fileID: 8300000, guid: 0579b4b647ea89549a9b110b84a6d869, type: 3}
+    - {fileID: 8300000, guid: 0975a4d7d1a802045a9635381b2cfa80, type: 3}
     Volume: 0.8
     PitchJitter: 0.1
     Spatial: 1
