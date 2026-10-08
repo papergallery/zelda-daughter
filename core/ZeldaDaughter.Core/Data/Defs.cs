@@ -53,5 +53,7 @@ namespace ZeldaDaughter.Core.Data
         public List<FieldRecipe> Field { get; set; } = new List<FieldRecipe>();
         public List<StationRecipe> Station { get; set; } = new List<StationRecipe>();
         public List<WorldRecipe> World { get; set; } = new List<WorldRecipe>();
+        /// <summary>Kinds of world objects (a campfire, placed firewood, a fire) — what a world recipe may target or produce besides items.</summary>
+        public List<string> WorldObjects { get; set; } = new List<string>();
     }
 }

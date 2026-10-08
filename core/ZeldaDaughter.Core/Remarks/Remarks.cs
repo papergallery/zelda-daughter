@@ -75,6 +75,21 @@ namespace ZeldaDaughter.Core.Remarks
             return line;
         }
 
+        /// <summary>
+        /// The first of <paramref name="topics"/> (most urgent first) that is not on pause, spoken; null if all are paused or the global
+        /// gap is still on. An urgent topic on its cooldown must not silence the ones behind it (D-01).
+        /// </summary>
+        public string? SayFirst(IReadOnlyList<string> topics, double now, Func<int, int> pick)
+        {
+            foreach (var topic in topics)
+            {
+                var line = Say(topic, now, pick);
+                if (line != null) return line;
+                if (now - _lastAny < _s.GlobalGapSeconds) return null; // the gap is shared: asking further would not help
+            }
+            return null;
+        }
+
         /// <summary>Topics the hero's state calls for, most urgent first.</summary>
         public IReadOnlyList<string> ConditionTopics(HeroCondition c, Hunger h, bool overloaded, bool nightWithoutFire)
         {

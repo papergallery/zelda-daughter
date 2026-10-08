@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using ZeldaDaughter.Core.Common;
 using ZeldaDaughter.Core.Condition;
+using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Progression;
 
 namespace ZeldaDaughter.Core.Combat
@@ -18,11 +19,14 @@ namespace ZeldaDaughter.Core.Combat
         public readonly float StunSeconds;
         public readonly bool Killed;
         public readonly IReadOnlyList<SkillChange> SkillChanges;
+        /// <summary>What the blow did to the enemy (Alerted, Staggered, Died) — for the view.</summary>
+        public readonly IReadOnlyList<EnemyEvent> EnemyEvents;
 
-        public StrikeResult(StrikeOutcome outcome, float damage = 0, WoundType? wound = null, float severity = 0, float stun = 0, bool killed = false, IReadOnlyList<SkillChange>? changes = null)
+        public StrikeResult(StrikeOutcome outcome, float damage = 0, WoundType? wound = null, float severity = 0, float stun = 0, bool killed = false, IReadOnlyList<SkillChange>? changes = null, IReadOnlyList<EnemyEvent>? enemyEvents = null)
         {
             Outcome = outcome; Damage = damage; Wound = wound; Severity = severity; StunSeconds = stun; Killed = killed;
             SkillChanges = changes ?? Array.Empty<SkillChange>();
+            EnemyEvents = enemyEvents ?? Array.Empty<EnemyEvent>();
         }
     }
 
@@ -34,8 +38,12 @@ namespace ZeldaDaughter.Core.Combat
     {
         readonly WeaponSettings _s;
 
-        public HeroCombat(WeaponSettings settings, Skills skills, HeroCondition condition)
+        /// <param name="hunger">Hunger weakens and slows blows past the threshold (D-01); null — ignored.</param>
+        /// <param name="bag">Overload slows blows with the same curve as walking (§7); null — ignored.</param>
+        public HeroCombat(WeaponSettings settings, Skills skills, HeroCondition condition, Hunger? hunger = null, Bag? bag = null)
         {
+            Hunger = hunger;
+            Bag = bag;
             _s = settings ?? throw new ArgumentNullException(nameof(settings));
             Skills = skills ?? throw new ArgumentNullException(nameof(skills));
             Condition = condition ?? throw new ArgumentNullException(nameof(condition));
@@ -43,9 +51,17 @@ namespace ZeldaDaughter.Core.Combat
 
         public Skills Skills { get; }
         public HeroCondition Condition { get; }
+        public Hunger? Hunger { get; }
+        public Bag? Bag { get; }
         /// <summary>Ground position (x, z), set by the view each frame.</summary>
         public Vec2 Position { get; set; }
         public float CooldownLeft { get; private set; }
+
+        /// <summary>Hunger multiplier on damage and speed (1 until the hunger threshold).</summary>
+        public float HungerMultiplier => Hunger?.Multiplier ?? 1f;
+
+        /// <summary>Overload slows the swing: the bag's speed curve, 1 without a bag or a load.</summary>
+        public float LoadSpeedMultiplier => Bag?.SpeedMultiplier(Skills.CapacityMultiplier()) ?? 1f;
 
         public void Tick(float dt) { if (dt > 0) CooldownLeft = Math.Max(0f, CooldownLeft - dt); }
 
@@ -71,18 +87,18 @@ namespace ZeldaDaughter.Core.Combat
 
             var handling = Skills.WeaponHandling(cls);
             bool hit = roll < HitChance(weaponId);
-            float damage = w.Damage * Skills.DamageMultiplier() * handling.DamageMultiplier * Condition.AttackMultiplier;
+            float damage = w.Damage * Skills.DamageMultiplier() * handling.DamageMultiplier * Condition.AttackMultiplier * HungerMultiplier;
             if (!hit) damage *= _s.MissDamageShare;
             WoundType? wound = hit && w.Severity > 0 ? w.ParsedWound : null;
             float severity = wound.HasValue ? w.Severity : 0f;
             float stun = hit ? w.Stun : 0f;
-            CooldownLeft = _s.AttackCooldown / Math.Max(0.01f, handling.SpeedMultiplier * Skills.AttackSpeedMultiplier());
+            CooldownLeft = _s.AttackCooldown / Math.Max(0.01f, handling.SpeedMultiplier * Skills.AttackSpeedMultiplier() * HungerMultiplier * LoadSpeedMultiplier);
 
-            target.Receive(damage, wound, severity, stun);
+            var enemyEvents = target.Receive(damage, wound, severity, stun);
             bool killed = target.IsCarcass;
             var changes = new List<SkillChange>(Skills.Apply(SkillEvent.Attack(cls, hit)));
             if (killed) changes.AddRange(Skills.Apply(SkillEvent.Victory(cls)));
-            return new StrikeResult(hit ? StrikeOutcome.Hit : StrikeOutcome.Miss, damage, wound, severity, stun, killed, changes);
+            return new StrikeResult(hit ? StrikeOutcome.Hit : StrikeOutcome.Miss, damage, wound, severity, stun, killed, changes, enemyEvents);
         }
 
         WeaponDef Weapon(string id, out WeaponClass cls)

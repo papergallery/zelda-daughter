@@ -27,6 +27,10 @@ namespace ZeldaDaughter.Core.Onboarding
     /// </summary>
     public sealed class Hints
     {
+        /// <summary>Conditions the game reports with <see cref="Set"/> ("start" is always on) and actions it reports with <see cref="Did"/> — data may use only these (DataSet checks).</summary>
+        public static readonly string[] KnownConditions = { "start", "tappable_nearby", "has_item" };
+        public static readonly string[] KnownActions = { "swipe", "tap", "long_press_hero" };
+
         readonly OnboardingSettings _s;
         readonly HashSet<string> _done = new HashSet<string>(StringComparer.Ordinal);
         readonly HashSet<string> _conditions = new HashSet<string>(StringComparer.Ordinal) { "start" };

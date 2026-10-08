@@ -45,6 +45,7 @@ namespace ZeldaDaughter.Core.Data
     /// <summary>All of data/*.json, loaded and cross-checked once (C-05, ADR-0008). Unity reads the same files.</summary>
     public sealed class DataSet
     {
+        static readonly string[] ItemKinds = { "material", "tool", "weapon", "food", "medicine" };
         static readonly Regex IdPattern = new Regex("^[a-z][a-z0-9_]*$");
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings
         {
@@ -69,6 +70,7 @@ namespace ZeldaDaughter.Core.Data
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
         public IReadOnlyList<WorldRecipe> WorldRecipes { get; private set; } = Array.Empty<WorldRecipe>();
+        public IReadOnlyCollection<string> WorldObjects { get; private set; } = Array.Empty<string>();
 
         /// <summary>Loads from a folder; throws <see cref="DataException"/> listing every problem with file and id.</summary>
         public static DataSet Load(string dir) => Load(name => File.ReadAllText(Path.Combine(dir, name)));
@@ -106,7 +108,11 @@ namespace ZeldaDaughter.Core.Data
                 else byId[it.Id] = it;
                 if (it.Weight < 0) problems.Add($"items.json: '{it.Id}' — отрицательный вес");
                 if (it.Stack < 1) problems.Add($"items.json: '{it.Id}' — stack < 1");
+                if (Array.IndexOf(ItemKinds, it.Kind) < 0) problems.Add($"items.json: '{it.Id}' — неизвестный вид '{it.Kind}' ({string.Join(" | ", ItemKinds)})");
+                if (it.Kind == "weapon" && !d.Weapons.Weapons.ContainsKey(it.Id)) problems.Add($"items.json: '{it.Id}' — оружие без записи в weapons.json");
             }
+            if (!d.Weapons.Weapons.ContainsKey(WeaponSettings.Fists)) problems.Add($"weapons.json: нет '{WeaponSettings.Fists}' — герой без оружия бьёт кулаками");
+            var worldObjects = new HashSet<string>(recipes.WorldObjects, StringComparer.Ordinal);
 
             void Ref(string file, string what, string id)
             {
@@ -131,6 +137,8 @@ namespace ZeldaDaughter.Core.Data
             foreach (var r in recipes.World)
             {
                 Ref("recipes.json", $"{r.Target} ← {r.With}", r.With);
+                if (!worldObjects.Contains(r.Target)) problems.Add($"recipes.json: {r.Target} ← {r.With} — цель '{r.Target}' не объявлена в worldObjects");
+                if (!byId.ContainsKey(r.Result) && !worldObjects.Contains(r.Result)) problems.Add($"recipes.json: {r.Target} ← {r.With} — результат '{r.Result}' ни предмет, ни объявленный мировой объект (worldObjects)");
                 foreach (var k in r.Keep)
                     if (k != r.With) problems.Add($"recipes.json: {r.Target} ← {r.With} — keep '{k}' не предмет рецепта");
             }
@@ -161,13 +169,24 @@ namespace ZeldaDaughter.Core.Data
                 if (e.ChaseSpeed >= d.Movement.RunSpeed) problems.Add($"enemies.json: '{kv.Key}' — погоня {e.ChaseSpeed} м/с не медленнее бега героя {d.Movement.RunSpeed} м/с");
                 if (e.AggroRange <= 0) problems.Add($"enemies.json: '{kv.Key}' — радиус агро должен быть > 0");
             }
+            foreach (var h in d.Onboarding.Hints)
+            {
+                if (Array.IndexOf(Hints.KnownConditions, h.ShowWhen) < 0) problems.Add($"onboarding.json: '{h.Id}' — showWhen '{h.ShowWhen}' игра не сообщает ({string.Join(" | ", Hints.KnownConditions)})");
+                if (Array.IndexOf(Hints.KnownActions, h.DoneBy) < 0) problems.Add($"onboarding.json: '{h.Id}' — doneBy '{h.DoneBy}' игра не сообщает ({string.Join(" | ", Hints.KnownActions)})");
+            }
+            foreach (var kv in d.Enemies.WoundEffects)
+                if (!Enum.GetNames(typeof(WoundType)).Any(n => string.Equals(n, kv.Key, StringComparison.OrdinalIgnoreCase)))
+                    problems.Add($"enemies.json: woundEffects '{kv.Key}' — не имя раны (cut | fracture | burn | poison)");
             foreach (var npc in d.Dialogues.Npcs)
             {
                 if (!npc.Value.Nodes.ContainsKey("start")) problems.Add($"dialogues.json: '{npc.Key}' — нет узла start");
                 foreach (var node in npc.Value.Nodes)
                 {
                     foreach (var r in node.Value.Replies)
+                    {
                         if (!npc.Value.Nodes.ContainsKey(r.To)) problems.Add($"dialogues.json: {npc.Key}.{node.Key} → '{r.To}' — нет узла");
+                        if (!d.Dialogues.Icons.Contains(r.Icon)) problems.Add($"dialogues.json: {npc.Key}.{node.Key} — иконка ответа '{r.Icon}' не в списке");
+                    }
                     foreach (var icon in node.Value.Icons)
                         if (!d.Dialogues.Icons.Contains(icon)) problems.Add($"dialogues.json: {npc.Key}.{node.Key} — иконка '{icon}' не в списке");
                 }
@@ -180,6 +199,7 @@ namespace ZeldaDaughter.Core.Data
             d.FieldRecipes = recipes.Field;
             d.StationRecipes = recipes.Station;
             d.WorldRecipes = recipes.World;
+            d.WorldObjects = worldObjects;
             return d;
         }
 

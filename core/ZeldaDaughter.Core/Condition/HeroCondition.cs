@@ -91,6 +91,15 @@ namespace ZeldaDaughter.Core.Condition
         public float Hp { get; private set; }
         public float HpFraction => Hp / _s.MaxHp;
         public bool IsKnockedOut => _knockoutLeft > 0;
+        /// <summary>Seconds until the hero gets up (0 when not knocked out) — saved, so a save mid-knockout stays one knockout.</summary>
+        public float KnockoutLeft => _knockoutLeft;
+
+        /// <summary>
+        /// Scale of health recovery (natural regeneration and food): the endurance skill and hunger (D-01), set by
+        /// <c>GameState</c>. Null — 1. Bleeding, poison and wound healing are not scaled.
+        /// </summary>
+        public Func<float>? HealScale { get; set; }
+        float Scale => Math.Max(0f, HealScale?.Invoke() ?? 1f);
         public float Severity(WoundType t) => _severity[(int)t];
 
         public float WoundLoad
@@ -139,7 +148,7 @@ namespace ZeldaDaughter.Core.Condition
         /// <summary>Universal small heal (food, §6) — health only, wounds need their medicine.</summary>
         public void Heal(float amount)
         {
-            if (!IsKnockedOut && amount > 0) Hp = Math.Min(_s.MaxHp, Hp + amount);
+            if (!IsKnockedOut && amount > 0) Hp = Math.Min(_s.MaxHp, Hp + amount * Scale);
         }
 
         public IReadOnlyList<ConditionEvent> Tick(float dt, RestKind rest)
@@ -170,7 +179,7 @@ namespace ZeldaDaughter.Core.Condition
                 if (_severity[i] == 0) ev.Add(new ConditionEvent(ConditionEventKind.WoundHealed, t));
             }
             if (drain > 0) Hp -= drain * dt;
-            else Hp = Math.Min(_s.MaxHp, Hp + _s.NaturalHpRegenPerSecond * restK * dt);
+            else Hp = Math.Min(_s.MaxHp, Hp + _s.NaturalHpRegenPerSecond * restK * Scale * dt);
             if (Hp <= 0) KnockOut(ev);
             return ev;
         }
@@ -199,11 +208,20 @@ namespace ZeldaDaughter.Core.Condition
         }
 
         /// <summary>For save/load (C-13).</summary>
-        public void Restore(float hp, IReadOnlyDictionary<string, float> severities)
+        public void Restore(float hp, IReadOnlyDictionary<string, float> severities, float knockoutLeft = 0f)
         {
-            Hp = Math.Max(0.01f, Math.Min(_s.MaxHp, hp));
             foreach (var t in AllTypes) _severity[(int)t] = severities.TryGetValue(Key(t), out float v) ? Clamp01(v) : 0f;
-            _knockoutLeft = 0;
+            if (knockoutLeft > 0)
+            {
+                // saved mid-knockout: stay down for the rest of it (D-01; before, the load stood her up at 0.01 HP and a second knockout followed)
+                _knockoutLeft = Math.Min(knockoutLeft, _s.KnockoutSeconds);
+                Hp = Math.Max(0f, Math.Min(_s.MaxHp, hp));
+            }
+            else
+            {
+                _knockoutLeft = 0;
+                Hp = Math.Max(0.01f, Math.Min(_s.MaxHp, hp));
+            }
         }
 
         void KnockOut(List<ConditionEvent> ev)

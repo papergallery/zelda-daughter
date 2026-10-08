@@ -20,7 +20,8 @@ namespace ZeldaDaughter.Core.Save
 
     public static class SaveGame
     {
-        public const int Version = 1;
+        /// <summary>1 → 2 (D-01): Killed (killed enemies) and KnockoutLeft are added; both default to empty/0, so version 1 still loads.</summary>
+        public const int Version = 2;
 
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings
         {
@@ -38,6 +39,7 @@ namespace ZeldaDaughter.Core.Save
                 X = g.HeroPosition.X, Z = g.HeroPosition.Y, Y = g.HeroHeight, Facing = g.HeroFacingDegrees,
                 Day = g.Clock.Day, TimeOfDay = g.Clock.TimeOfDay,
                 Hp = g.Condition.Hp,
+                KnockoutLeft = g.Condition.KnockoutLeft,
                 Hunger = g.Hunger.Value,
                 Understanding = g.Language.Understanding,
             };
@@ -51,6 +53,7 @@ namespace ZeldaDaughter.Core.Save
             s.HeardLines = g.Language.HeardLines.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.HintsDone = g.Hints.Done.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Picked = g.Picked.OrderBy(x => x, StringComparer.Ordinal).ToList();
+            s.Killed = g.Killed.OrderBy(x => x, StringComparer.Ordinal).ToList();
             return JsonConvert.SerializeObject(s, Json);
         }
 
@@ -64,7 +67,7 @@ namespace ZeldaDaughter.Core.Save
             g.HeroHeight = s.Y;
             g.HeroFacingDegrees = s.Facing;
             g.Clock.SetTime(Math.Max(1, s.Day), Math.Max(0, Math.Min(0.999999, s.TimeOfDay)));
-            g.Condition.Restore(s.Hp, s.Wounds);
+            g.Condition.Restore(s.Hp, s.Wounds, s.KnockoutLeft);
             g.Hunger.Restore(s.Hunger);
             g.Skills.Restore(s.Stats, s.Weapons);
             g.Bag.Restore(s.Bag.Select(x => new Stack(x.Item, x.Count)));
@@ -73,6 +76,8 @@ namespace ZeldaDaughter.Core.Save
             g.Hints.Restore(s.HintsDone);
             g.Picked.Clear();
             foreach (var p in s.Picked) g.Picked.Add(p);
+            g.Killed.Clear();
+            foreach (var k in s.Killed) g.Killed.Add(k);
         }
 
         /// <summary>
@@ -119,7 +124,7 @@ namespace ZeldaDaughter.Core.Save
                 {
                     if (!File.Exists(p)) continue;
                     string text = File.ReadAllText(p);
-                    JsonConvert.DeserializeObject<Snapshot>(text, Json);
+                    if (JsonConvert.DeserializeObject<Snapshot>(text, Json) == null) continue; // "null" / empty file → the backup
                     return text;
                 }
                 catch (JsonException) { }
@@ -139,6 +144,7 @@ namespace ZeldaDaughter.Core.Save
             public int Day { get; set; } = 1;
             public double TimeOfDay { get; set; }
             public float Hp { get; set; }
+            public float KnockoutLeft { get; set; }
             public Dictionary<string, float> Wounds { get; set; } = new Dictionary<string, float>();
             public float Hunger { get; set; }
             public Dictionary<string, float> Stats { get; set; } = new Dictionary<string, float>();
@@ -150,6 +156,7 @@ namespace ZeldaDaughter.Core.Save
             public List<string> HeardLines { get; set; } = new List<string>();
             public List<string> HintsDone { get; set; } = new List<string>();
             public List<string> Picked { get; set; } = new List<string>();
+            public List<string> Killed { get; set; } = new List<string>();
         }
 
         sealed class StackDto

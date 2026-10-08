@@ -29,7 +29,7 @@ namespace ZeldaDaughter.Core.Combat
         /// <summary>Seconds a hit holds the enemy staggered (hammer).</summary>
         public float Stun { get; set; }
 
-        public WeaponClass? ParsedClass => Enum.TryParse<WeaponClass>(Class, true, out var c) ? c : (WeaponClass?)null;
+        public WeaponClass? ParsedClass => EnumNames.Parse<WeaponClass>(Class);
         public WoundType? ParsedWound => WoundNames.Parse(Wound);
     }
 
@@ -45,7 +45,19 @@ namespace ZeldaDaughter.Core.Combat
         public float LeaveSpeed { get; set; }
         /// <summary>Aggro is dropped when the hero is farther than this × the enemy's aggroRange.</summary>
         public float LoseInterestFactor { get; set; }
+        /// <summary>After walking away from a downed hero the enemy ignores him until he comes into aggroRange having moved this far (m).</summary>
+        public float ReapproachMeters { get; set; }
+        /// <summary>Wound name (cut | fracture | burn | poison) → what it does to the enemy.</summary>
+        public Dictionary<string, EnemyWoundEffect> WoundEffects { get; set; } = new Dictionary<string, EnemyWoundEffect>();
         public Dictionary<string, EnemyDef> Enemies { get; set; } = new Dictionary<string, EnemyDef>();
+    }
+
+    public sealed class EnemyWoundEffect
+    {
+        /// <summary>Speed multiplier at full severity (fracture: limping).</summary>
+        public float SpeedAtFull { get; set; } = 1f;
+        /// <summary>HP lost per second at full severity (cut: bleeding).</summary>
+        public float HpDrainPerSecond { get; set; }
     }
 
     public sealed class EnemyDef
@@ -70,9 +82,20 @@ namespace ZeldaDaughter.Core.Combat
         public WoundType? ParsedWound => WoundNames.Parse(Wound);
     }
 
+    /// <summary>Enum fields in data are names only: a number ("1") or a list ("Cut,Burn") is not a name (D-01).</summary>
+    static class EnumNames
+    {
+        public static T? Parse<T>(string name) where T : struct, Enum
+        {
+            if (string.IsNullOrEmpty(name)) return null;
+            foreach (var n in Enum.GetNames(typeof(T)))
+                if (string.Equals(n, name, StringComparison.OrdinalIgnoreCase)) return (T)Enum.Parse(typeof(T), n);
+            return null;
+        }
+    }
+
     static class WoundNames
     {
-        public static WoundType? Parse(string name) =>
-            string.IsNullOrEmpty(name) ? (WoundType?)null : Enum.TryParse<WoundType>(name, true, out var w) ? w : (WoundType?)null;
+        public static WoundType? Parse(string name) => EnumNames.Parse<WoundType>(name);
     }
 }

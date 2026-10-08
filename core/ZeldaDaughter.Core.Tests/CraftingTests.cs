@@ -1,3 +1,4 @@
+using System.Linq;
 using ZeldaDaughter.Core.Crafting;
 using ZeldaDaughter.Core.Data;
 using ZeldaDaughter.Core.Inventory;
@@ -118,6 +119,81 @@ namespace ZeldaDaughter.Core.Tests
             b.Add("stick", 2); b.Add("cloth", 2);
             Assert.True(c.Combine("stick", "cloth", b).Discovered);
             Assert.False(c.Combine("stick", "cloth", b).Discovered);
+        }
+
+        // ---- D-01: все комбинации project-design.md §7 ----
+
+        [Fact]
+        public void Campfire_from_placed_firewood_and_flint_or_from_placed_planks_and_a_stick()
+        {
+            var (c, b) = New();
+            b.Add("flint"); b.Add("stick");
+            var a = c.InWorld("firewood_placed", "flint", b);
+            Assert.Equal(CraftOutcome.Done, a.Outcome);
+            Assert.Equal("campfire", a.WorldResult);
+            Assert.Equal(1, b.Count("flint"));
+            var s = c.InWorld("planks_placed", "stick", b);
+            Assert.Equal(CraftOutcome.Done, s.Outcome);
+            Assert.Equal("campfire", s.WorldResult);
+            Assert.Equal(0, b.Count("stick"));
+            Assert.Equal(CraftOutcome.NoRecipe, c.InWorld("firewood_placed", "stick", b).Outcome);
+            Assert.Equal(CraftOutcome.MissingIngredients, c.InWorld("planks_placed", "stick", b).Outcome);
+        }
+
+        [Fact]
+        public void A_torch_lights_only_at_a_fire()
+        {
+            var (c, b) = New();
+            b.Add("torch_unlit");
+            Assert.Equal(CraftOutcome.NoRecipe, c.InWorld("campfire_cold", "torch_unlit", b).Outcome);
+            Assert.Equal(CraftOutcome.NoRecipe, c.Combine("torch_unlit", "flint", b).Outcome);
+            var r = c.InWorld("fire", "torch_unlit", b);
+            Assert.Equal(CraftOutcome.Done, r.Outcome);
+            Assert.Equal("torch", r.Item);
+        }
+
+        [Fact]
+        public void The_smelter_turns_ore_into_metal_and_only_ore()
+        {
+            var (c, b) = New();
+            b.Add("ore", 2); b.Add("stick");
+            var r = c.AtStation("smelter", new[] { "ore" }, b);
+            Assert.Equal(CraftOutcome.Done, r.Outcome);
+            Assert.Equal("metal", r.Item);
+            Assert.Equal(1, b.Count("ore"));
+            Assert.Equal(1, b.Count("metal"));
+            Assert.Equal(CraftOutcome.NoRecipe, c.AtStation("smelter", new[] { "stick" }, b).Outcome);
+            Assert.Equal(CraftOutcome.NoRecipe, c.AtStation("anvil", new[] { "ore" }, b).Outcome);
+        }
+
+        [Fact]
+        public void The_anvil_makes_a_sword_a_knife_and_arrowheads()
+        {
+            var (c, b) = New();
+            b.Add("metal", 3); b.Add("stick"); b.Add("short_stick");
+            var sword = c.AtStation("anvil", new[] { "metal", "stick" }, b);
+            Assert.Equal("sword", sword.Item);
+            var knife = c.AtStation("anvil", new[] { "short_stick", "metal" }, b);
+            Assert.Equal("knife", knife.Item);
+            var heads = c.AtStation("anvil", new[] { "metal" }, b);
+            Assert.Equal("arrowhead", heads.Item);
+            Assert.Equal(3, heads.Count);
+            Assert.Equal(3, b.Count("arrowhead"));
+            Assert.Equal(0, b.Count("metal"));
+            Assert.Equal(CraftOutcome.MissingIngredients, c.AtStation("anvil", new[] { "metal" }, b).Outcome);
+            // no weapon in the field, in any order
+            b.Add("metal"); b.Add("short_stick");
+            Assert.Equal(CraftOutcome.NeedsStation, c.Combine("short_stick", "metal", b).Outcome);
+        }
+
+        [Fact]
+        public void Every_world_recipe_target_and_result_is_declared()
+        {
+            foreach (var r in D.WorldRecipes)
+            {
+                Assert.Contains(r.Target, D.WorldObjects);
+                Assert.True(D.Items.ContainsKey(r.Result) || D.WorldObjects.Contains(r.Result), r.Result);
+            }
         }
     }
 }

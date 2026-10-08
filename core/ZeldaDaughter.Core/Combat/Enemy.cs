@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ZeldaDaughter.Core.Common;
 using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Progression;
@@ -10,15 +11,21 @@ namespace ZeldaDaughter.Core.Combat
     /// <summary>The blow itself is a moment (an event), not a state: windup → <see cref="EnemyEventKind.Struck"/> or Dodged → recover.</summary>
     public enum EnemyState { Idle, Wander, Alert, Chase, Windup, Recover, Staggered, Leaving, Dead }
 
-    public enum EnemyEventKind { Alerted, WindupStarted, Struck, Dodged, Staggered, LostInterest, Died }
+    public enum EnemyEventKind { Alerted, WindupStarted, Struck, Dodged, Staggered, LostInterest, Died, HeroKnockedOut }
 
     public readonly struct EnemyEvent
     {
         public readonly EnemyEventKind Kind;
         /// <summary>Damage dealt to the hero (Struck) or taken (Staggered, Died).</summary>
         public readonly float Amount;
+        /// <summary>Skills the hero's side of this event moved (Struck → toughness, Dodged → agility): the view announces tiers.</summary>
+        public readonly IReadOnlyList<SkillChange> SkillChanges;
 
-        public EnemyEvent(EnemyEventKind kind, float amount = 0) { Kind = kind; Amount = amount; }
+        public EnemyEvent(EnemyEventKind kind, float amount = 0, IReadOnlyList<SkillChange>? changes = null)
+        {
+            Kind = kind; Amount = amount;
+            SkillChanges = changes ?? Array.Empty<SkillChange>();
+        }
         public override string ToString() => Kind.ToString();
     }
 
@@ -34,6 +41,7 @@ namespace ZeldaDaughter.Core.Combat
         float _timer;
         bool _aggro;
         bool _ignoreHero;
+        Vec2 _calmAt;
         Vec2 _dir = new Vec2(1, 0);
 
         public Enemy(string id, EnemySettings settings, string defId, Vec2 position)
@@ -104,10 +112,16 @@ namespace ZeldaDaughter.Core.Combat
                 if (down) { Disengage(ev, leave: true); }                       // April: endless knockout loop
                 else if (dist > _s.LoseInterestFactor * Def.AggroRange) Disengage(ev, leave: false);
             }
-            else if (Def.AggroOnSight && !down && !_ignoreHero && dist <= Def.AggroRange && State != EnemyState.Staggered)
+            else
             {
-                StartAggro(ev);
+                // after walking away from a downed hero: calm until he comes up by himself (D-01, enemies.json reapproachMeters)
+                if (_ignoreHero && State != EnemyState.Leaving && !down && dist <= Def.AggroRange && (hero.Position - _calmAt).Length > _s.ReapproachMeters)
+                    _ignoreHero = false;
+                if (Def.AggroOnSight && !down && !_ignoreHero && dist <= Def.AggroRange && State != EnemyState.Staggered) StartAggro(ev);
             }
+
+            Bleed(dt, ev);
+            if (IsCarcass) return ev;
 
             _timer += State == EnemyState.Staggered ? -dt : dt;
             switch (State)
@@ -121,12 +135,12 @@ namespace ZeldaDaughter.Core.Combat
                     }
                     break;
                 case EnemyState.Wander:
-                    Move(_dir, _s.WanderSpeed * dt);
+                    Move(_dir, _s.WanderSpeed * SpeedScale * dt);
                     if (_timer >= _s.WanderSeconds) Enter(EnemyState.Idle);
                     break;
                 case EnemyState.Leaving:
-                    Move(dist > 1e-4f ? toHero * (-1f / dist) : _dir, _s.LeaveSpeed * dt);
-                    if (dist > Def.AggroRange) { _ignoreHero = false; Enter(EnemyState.Idle); }
+                    Move(dist > 1e-4f ? toHero * (-1f / dist) : _dir, _s.LeaveSpeed * SpeedScale * dt);
+                    if (dist > Def.AggroRange * _s.LoseInterestFactor) { _calmAt = hero.Position; Enter(EnemyState.Idle); } // _ignoreHero stays
                     break;
                 case EnemyState.Alert:
                     if (_timer >= _s.AlertSeconds) Enter(EnemyState.Chase);
@@ -137,17 +151,13 @@ namespace ZeldaDaughter.Core.Combat
                         Enter(EnemyState.Windup);
                         ev.Add(new EnemyEvent(EnemyEventKind.WindupStarted));
                     }
-                    else Move(toHero * (1f / dist), Math.Min(Def.ChaseSpeed * dt, dist));
+                    else Move(toHero * (1f / dist), Math.Min(Def.ChaseSpeed * SpeedScale * dt, dist));
                     break;
                 case EnemyState.Windup:
                     if (_timer >= WindupSeconds)
                     {
-                        if (dist <= Def.Range) ev.Add(Land(hero));
-                        else
-                        {
-                            hero.Skills.Apply(SkillEvent.Dodged());
-                            ev.Add(new EnemyEvent(EnemyEventKind.Dodged));
-                        }
+                        if (dist <= Def.Range) Land(hero, ev);
+                        else ev.Add(new EnemyEvent(EnemyEventKind.Dodged, 0, hero.Skills.Apply(SkillEvent.Dodged())));
                         Enter(EnemyState.Recover);
                     }
                     break;
@@ -161,14 +171,49 @@ namespace ZeldaDaughter.Core.Combat
             return ev;
         }
 
-        EnemyEvent Land(HeroCombat hero)
+        void Land(HeroCombat hero, List<EnemyEvent> ev)
         {
+            bool knocked = false;
             var type = Def.ParsedWound;
-            if (type.HasValue) hero.Condition.Wound(type.Value, Def.Severity);
+            if (type.HasValue) knocked |= hero.Condition.Wound(type.Value, Def.Severity).Any(IsKnockOut);
             float dmg = Def.Damage * (1f - hero.Skills.DamageReduction());
-            hero.Condition.Damage(dmg);
-            hero.Skills.Apply(SkillEvent.Damaged(dmg));
-            return new EnemyEvent(EnemyEventKind.Struck, dmg);
+            knocked |= hero.Condition.Damage(dmg).Any(IsKnockOut);
+            ev.Add(new EnemyEvent(EnemyEventKind.Struck, dmg, hero.Skills.Apply(SkillEvent.Damaged(dmg))));
+            if (knocked) ev.Add(new EnemyEvent(EnemyEventKind.HeroKnockedOut));
+        }
+
+        static bool IsKnockOut(ConditionEvent e) => e.Kind == ConditionEventKind.KnockedOut;
+
+        /// <summary>Product over wounds of 1 + (speedAtFull − 1) × severity (data: enemies.json woundEffects).</summary>
+        float SpeedScale
+        {
+            get
+            {
+                float m = 1f;
+                foreach (var kv in _s.WoundEffects)
+                {
+                    var t = EnumNames.Parse<WoundType>(kv.Key);
+                    if (t.HasValue) m *= 1f + (kv.Value.SpeedAtFull - 1f) * _wounds[(int)t.Value];
+                }
+                return Math.Max(m, 0.05f);
+            }
+        }
+
+        void Bleed(float dt, List<EnemyEvent> ev)
+        {
+            float drain = 0f;
+            foreach (var kv in _s.WoundEffects)
+            {
+                var t = EnumNames.Parse<WoundType>(kv.Key);
+                if (t.HasValue) drain += kv.Value.HpDrainPerSecond * _wounds[(int)t.Value];
+            }
+            if (drain <= 0f) return;
+            Hp = Math.Max(0f, Hp - drain * dt);
+            if (Hp <= 0f)
+            {
+                State = EnemyState.Dead;
+                ev.Add(new EnemyEvent(EnemyEventKind.Died, 0));
+            }
         }
 
         void StartAggro(List<EnemyEvent> ev)
