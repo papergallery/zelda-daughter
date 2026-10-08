@@ -239,13 +239,13 @@ namespace ZeldaDaughter.Tests
 
             // the long press itself: a finger down on cell 0, held still for longPressSeconds
             drag.PointerDown(0, bag.CellScreenPosition(0));
-            yield return new WaitForSeconds(g.Data.Input.LongPressSeconds + 0.4f);
+            yield return new WaitForSeconds((float)g.Data.Input.LongPressSeconds + 0.4f);
             string expected = g.Data.Items[g.Bag.Stacks[0].ItemId].Description;
             Assert.IsNotNull(bag.InfoText, "a held finger asks «what is this?»");
             StringAssert.Contains(expected, bag.InfoText);
             Assert.AreEqual(0, bag.InfoCell);
             Assert.IsFalse(drag.IsDragging, "…and it is not a drag");
-            Assert.DoesNotMatch(@"\d", bag.InfoText, "no numbers in the cloud");
+            Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(bag.InfoText, @"\d"), "no numbers in the cloud");
             yield return Capture("item-description");
 
             Assert.IsTrue(drag.Describe(1));
@@ -273,10 +273,22 @@ namespace ZeldaDaughter.Tests
             Assert.AreEqual(ZeldaDaughter.Core.Journal.QuestOutcome.Done, r.Outcome);
             yield return new WaitForSeconds(0.3f);
             string thanks = g.Data.Dialogues.Npcs["old_man"].Nodes[r.Thanks].Line;
-            Assert.AreEqual(thanks, _s.UI.NpcBubbleText, "the old man thanks her in his bubble");
-            StringAssert.Contains("спасибо", _s.UI.NpcBubbleText.ToLowerInvariant());
+            AssertThanksByLanguageStage(g, thanks);
             Assert.AreEqual(coins + g.Data.Quests.Quests["locket"].Reward.Items["coin"], g.Bag.Count("coin"), "the reward is in her hands");
             yield return Capture("thanks");
+        }
+
+        /// <summary>The thanks show by the stage of her language: words once she understands them, runes before (the same rule as every talk).</summary>
+        public static void AssertThanksByLanguageStage(ZeldaDaughter.Core.Save.GameState g, string line)
+        {
+            var shown = Object.FindFirstObjectByType<GameSession>().UI.NpcBubbleText;
+            Assert.IsFalse(string.IsNullOrEmpty(shown), "the receiver says something");
+            bool runes = shown.Any(c => c >= 0x16A0 && c <= 0x16FF);
+            if (!runes)   // before she understands the words the thanks are runes (partly, by the stage); once she does, they read
+            {
+                Assert.AreEqual(line, shown, "…in words she understands");
+                StringAssert.Contains("спасибо", shown.ToLowerInvariant());
+            }
         }
 
         // ------------------------------------------------------------------ 7. the heroine's remarks

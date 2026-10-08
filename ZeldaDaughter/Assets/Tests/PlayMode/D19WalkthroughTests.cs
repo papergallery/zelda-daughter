@@ -294,8 +294,7 @@ namespace ZeldaDaughter.Tests
             Assert.AreEqual(ZeldaDaughter.Core.Journal.QuestOutcome.Done, handed.Outcome, "the locket goes to the old man");
             yield return null;
             yield return null;
-            Assert.AreEqual(g.Data.Dialogues.Npcs["old_man"].Nodes[handed.Thanks].Line, _s.UI.NpcBubbleText, "he thanks her");
-            StringAssert.Contains("спасибо", _s.UI.NpcBubbleText.ToLowerInvariant());
+            D23LoopTests.AssertThanksByLanguageStage(g, g.Data.Dialogues.Npcs["old_man"].Nodes[handed.Thanks].Line);   // runes or words, by the stage of her language
             Assert.AreEqual(coinsBefore + g.Data.Quests.Quests["locket"].Reward.Items["coin"], g.Bag.Count("coin"), "…with coins");
             Mile($"old man: locket handed over, thanks, coins {g.Bag.Count("coin")}");
             Said("[ZD:Talk] old_man → thanks_locket");
