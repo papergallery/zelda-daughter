@@ -31,26 +31,6 @@ namespace ZeldaDaughter.Core.Scenes
         const int TriesPerItem = 30;
 
 
-        /// <summary>Oriented rectangle on the ground that a built thing covers.</summary>
-        readonly struct Footprint
-        {
-            public readonly float Cx, Cz, Hx, Hz, Cos, Sin;
-            public Footprint(float cx, float cz, float hx, float hz, float yawDegrees)
-            {
-                Cx = cx; Cz = cz; Hx = hx; Hz = hz;
-                double a = yawDegrees * Math.PI / 180.0;
-                Cos = (float)Math.Cos(a); Sin = (float)Math.Sin(a);
-            }
-            public float SignedDistance(float x, float z)
-            {
-                float dx = x - Cx, dz = z - Cz;
-                float lx = dx * Cos - dz * Sin, lz = dx * Sin + dz * Cos;
-                float ex = Math.Abs(lx) - Hx, ez = Math.Abs(lz) - Hz;
-                if (ex > 0 || ez > 0) return (float)Math.Sqrt(Math.Max(ex, 0f) * Math.Max(ex, 0f) + Math.Max(ez, 0f) * Math.Max(ez, 0f));
-                return Math.Max(ex, ez);
-            }
-        }
-
         public static IReadOnlyList<ScatterPlacement> Generate(SceneConfig config, ModelCatalog? catalog)
         {
             var result = new List<ScatterPlacement>();
@@ -131,18 +111,8 @@ namespace ZeldaDaughter.Core.Scenes
             var list = new List<Footprint>();
             foreach (var o in config.Objects)
             {
-                float yaw = o.Rotation.Y;
-                if (!string.IsNullOrEmpty(o.Model) && catalog != null && catalog.Has(o.Model!))
-                {
-                    var b = catalog.Bounds(o.Model!);
-                    double a = yaw * Math.PI / 180.0;
-                    float cos = (float)Math.Cos(a), sin = (float)Math.Sin(a);
-                    float lx = b.CenterX * o.Scale.X, lz = b.CenterZ * o.Scale.Z;
-                    // Unity yaw turns the local centre offset: (x, z) → (x cos + z sin, −x sin + z cos).
-                    list.Add(new Footprint(o.Position.X + lx * cos + lz * sin, o.Position.Z - lx * sin + lz * cos, b.SizeX * o.Scale.X / 2f, b.SizeZ * o.Scale.Z / 2f, yaw));
-                }
-                else if (!string.IsNullOrEmpty(o.Shape))
-                    list.Add(new Footprint(o.Position.X, o.Position.Z, o.Scale.X / 2f, o.Scale.Z / 2f, yaw));
+                var f = Footprint.Of(o, catalog);
+                if (f.HasValue) list.Add(f.Value);
             }
             return list;
         }

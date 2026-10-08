@@ -18,7 +18,9 @@ namespace ZeldaDaughter.Core.Tests
             {
                 var c = SceneConfig.Parse(File.ReadAllText(f));
                 Assert.Equal(Path.GetFileNameWithoutExtension(f), c.Name);
-                Assert.Empty(c.Validate(null, SceneLayoutTests.Catalog(), ZeldaDaughter.Core.Data.DataSet.Load(TestPaths.DataRoot).Movement.Terrain.Keys.ToList()));
+                var data = ZeldaDaughter.Core.Data.DataSet.Load(TestPaths.DataRoot);
+                Assert.Empty(c.Validate(null, SceneLayoutTests.Catalog(), data.Movement.Terrain.Keys.ToList(),
+                    data.Enemies.Enemies.Keys.ToList(), data.StationRecipes.Select(r => r.Station).Distinct().ToList()));
             }
         }
 

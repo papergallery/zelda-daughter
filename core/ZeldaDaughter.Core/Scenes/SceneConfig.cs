@@ -24,6 +24,11 @@ namespace ZeldaDaughter.Core.Scenes
         public List<ObjectConfig> Objects { get; set; } = new List<ObjectConfig>();
         /// <summary>Roads and tracks: ribbons on the ground, terrain "road" by default (D-10).</summary>
         public List<StripConfig> Paths { get; set; } = new List<StripConfig>();
+        /// <summary>
+        /// Invisible footpaths for the residents (C7): strips like <see cref="Paths"/> but nothing is drawn and the terrain underfoot is not changed;
+        /// <see cref="RouteGraph"/> walks along them and the paths together (a shortcut between a door and a road, a lane across a field).
+        /// </summary>
+        public List<StripConfig> Walkways { get; set; } = new List<StripConfig>();
         /// <summary>Rivers: ribbons of water, terrain "water" (the hero is slowed) unless a zone with another terrain (a bridge) covers the spot.</summary>
         public List<StripConfig> Water { get; set; } = new List<StripConfig>();
         /// <summary>Named regions with tags (predator spawn, wet grass…) and an optional terrain override (mud, bridge deck = road).</summary>
@@ -34,7 +39,7 @@ namespace ZeldaDaughter.Core.Scenes
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings { MissingMemberHandling = MissingMemberHandling.Ignore };
         static readonly Regex IdPattern = new Regex("^[a-z][a-z0-9_]*$");
         static readonly Regex ColorPattern = new Regex("^#[0-9a-fA-F]{6}$");
-        static readonly HashSet<string> Shapes = new HashSet<string> { "cube", "sphere", "capsule", "cylinder", "plane", "quad" };
+        static readonly HashSet<string> Shapes = new HashSet<string> { "cube", "sphere", "capsule", "cylinder", "plane", "quad", "empty" };
 
         public static SceneConfig Parse(string json) => JsonConvert.DeserializeObject<SceneConfig>(json, Json) ?? new SceneConfig();
 
@@ -56,7 +61,10 @@ namespace ZeldaDaughter.Core.Scenes
         }
 
         /// <summary>Problems as "scene: id: what"; empty when the scene can be built.</summary>
-        public IReadOnlyList<string> Validate(Func<string, bool>? prefabExists = null, ModelCatalog? catalog = null, ICollection<string>? terrains = null)
+        /// <param name="enemyDefs">Enemy ids from enemies.json: when given, <c>objects[].enemy</c> must be one of them.</param>
+        /// <param name="stations">Station ids from recipes.json: when given, <c>objects[].station</c> must be one of them.</param>
+        public IReadOnlyList<string> Validate(Func<string, bool>? prefabExists = null, ModelCatalog? catalog = null, ICollection<string>? terrains = null,
+            ICollection<string>? enemyDefs = null, ICollection<string>? stations = null)
         {
             var p = new List<string>();
             if (!IdPattern.IsMatch(Name.Replace('-', '_'))) p.Add($"{Name}: name — [a-z0-9_-] с буквы");
@@ -86,6 +94,8 @@ namespace ZeldaDaughter.Core.Scenes
                 }
                 else Thing(p, o.Id, o.Shape, o.Prefab, prefabExists);
                 Color(p, o.Id, o.Color);
+                if (o.Enemy != null && enemyDefs != null && !enemyDefs.Contains(o.Enemy)) p.Add($"{Name}: '{o.Id}' — враг '{o.Enemy}' нет в data/enemies.json");
+                if (o.Station != null && stations != null && !stations.Contains(o.Station)) p.Add($"{Name}: '{o.Id}' — станка '{o.Station}' нет в data/recipes.json");
                 if (o.Scale.X <= 0 || o.Scale.Y <= 0 || o.Scale.Z <= 0) p.Add($"{Name}: '{o.Id}' — масштаб > 0");
             }
             ValidateLayout(p, catalog, terrains);
@@ -111,6 +121,12 @@ namespace ZeldaDaughter.Core.Scenes
                 foreach (var e in s.Check()) p.Add($"{Name}: '{s.Id}' — {e}");
                 Color(p, s.Id, s.Color);
                 Terrain(s.Id, s.Terrain);
+            }
+            foreach (var s in Walkways)
+            {
+                Id(s.Id);
+                if (s.Kind != "strip") p.Add($"{Name}: '{s.Id}' — тропа для жителей задаётся points + width");
+                foreach (var e in s.Check()) p.Add($"{Name}: '{s.Id}' — {e}");
             }
             foreach (var s in Water)
             {
@@ -261,6 +277,10 @@ namespace ZeldaDaughter.Core.Scenes
         public string? Model { get; set; }
         /// <summary>Force the model's collider on / off; null = whatever the catalog says.</summary>
         public bool? Collide { get; set; }
+        /// <summary>Enemy id from data/enemies.json that lives here: the object is its spawn point (D-13); the game creates the enemy unless it was killed.</summary>
+        public string? Enemy { get; set; }
+        /// <summary>Station id from data/recipes.json (anvil, smelter…): a tap opens the crafting window for it (D-15).</summary>
+        public string? Station { get; set; }
         /// <summary>An invisible point without a model: anchors of NPC schedules, spawn points, predator zones (D-10). Only an id, a place and tags.</summary>
         public bool Marker { get; set; }
     }
