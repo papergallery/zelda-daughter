@@ -33,13 +33,13 @@ namespace ZeldaDaughter.Core.Remarks
         public const string Overload = "overload", NightNoFire = "night_no_fire";
         public const string CraftOk = "craft_ok", CraftFail = "craft_fail", CraftStation = "craft_station", CraftNoRoom = "craft_no_room";
         public const string HintWorldUse = "hint_world_use", PlaceInvalid = "place_invalid", NeedFire = "need_fire";
-        public const string ButcherNoKnife = "butcher_no_knife", LootEmpty = "loot_empty";
+        public const string ButcherNoKnife = "butcher_no_knife", LootEmpty = "loot_empty", UseNothing = "use_nothing";
 
         public static readonly string[] All =
         {
             HealthHurt, HealthBad, HealthCritical, WoundCut, WoundFracture, WoundBurn, WoundPoison, HungerPeckish, HungerHungry,
             HungerStarving, Overload, NightNoFire, CraftOk, CraftFail, CraftStation, CraftNoRoom, HintWorldUse, PlaceInvalid,
-            NeedFire, ButcherNoKnife, LootEmpty,
+            NeedFire, ButcherNoKnife, LootEmpty, UseNothing,
         };
 
         public static string Skill(Stat stat, int tier) => $"skill_{Skills.Key(stat)}_{tier}";

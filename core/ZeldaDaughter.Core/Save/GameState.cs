@@ -14,11 +14,27 @@ using ZeldaDaughter.Core.Movement;
 using ZeldaDaughter.Core.Loot;
 using ZeldaDaughter.Core.Npcs;
 using ZeldaDaughter.Core.Onboarding;
+using ZeldaDaughter.Core.Remarks;
 using ZeldaDaughter.Core.Progression;
 using ZeldaDaughter.Core.World;
 
 namespace ZeldaDaughter.Core.Save
 {
+    public enum HeroUseOutcome { Ate, Treated, NotUsable }
+
+    /// <summary>What <see cref="GameState.UseOnHero"/> did.</summary>
+    public readonly struct HeroUseResult
+    {
+        public readonly HeroUseOutcome Outcome;
+        /// <summary>The hero's remark topic (remarks.json) for <see cref="HeroUseOutcome.NotUsable"/>, else null; the view calls <c>Say(Topic)</c>.</summary>
+        public readonly string? Topic;
+        /// <summary>Health the food gave (Ate), else 0.</summary>
+        public readonly float Heal;
+
+        public HeroUseResult(HeroUseOutcome outcome, string? topic = null, float heal = 0f) { Outcome = outcome; Topic = topic; Heal = heal; }
+        public override string ToString() => $"{Outcome} {Topic}".TrimEnd();
+    }
+
     /// <summary>Everything the core knows about one playthrough — what one save slot holds (C-13).</summary>
     public sealed class GameState
     {
@@ -234,6 +250,26 @@ namespace ZeldaDaughter.Core.Save
             var e = Hunger.Eat(itemId);
             Condition.Heal(e.Heal);
             return e;
+        }
+
+        /// <summary>
+        /// Drag an item onto the hero (§6, §7, C4): food is eaten (<see cref="Eat"/>), medicine treats the wound it is for and is spent;
+        /// anything else (or medicine with nothing to treat, or a knocked-out hero) changes nothing and gets the remark <c>use_nothing</c>.
+        /// </summary>
+        public HeroUseResult UseOnHero(string itemId)
+        {
+            if (Condition.IsKnockedOut || Bag.Count(itemId) < 1) return new HeroUseResult(HeroUseOutcome.NotUsable);
+            if (Data.Hunger.Food.ContainsKey(itemId))
+            {
+                var e = Eat(itemId);
+                return new HeroUseResult(HeroUseOutcome.Ate, null, e.Heal);
+            }
+            if (Condition.Treat(itemId))
+            {
+                Bag.Remove(itemId);
+                return new HeroUseResult(HeroUseOutcome.Treated);
+            }
+            return new HeroUseResult(HeroUseOutcome.NotUsable, Topics.UseNothing);
         }
 
         /// <summary>Game hours pass (sleep, a long knockout): the clock and hunger both move. Returns the clock events.</summary>
