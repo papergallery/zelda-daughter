@@ -74,5 +74,21 @@ namespace ZeldaDaughter.Core.Tests
             var e = Assert.Throws<DataException>(() => LoadWith(files));
             Assert.Contains(e.Problems, p => p.StartsWith("world.json"));
         }
+
+        [Fact]
+        public void Weapons_are_item_ids_or_fists_and_enemies_obey_the_design_limits()
+        {
+            var d = DataSet.Load(TestPaths.DataRoot);
+            Assert.Contains("fists", d.Weapons.Weapons.Keys);
+            Assert.All(d.Enemies.Enemies.Values, e => Assert.True(e.Windup >= d.Enemies.MinWindup && e.ChaseSpeed < d.Movement.RunSpeed));
+
+            var files = RealFiles();
+            files["weapons.json"] = files["weapons.json"].Replace("\"sword\":", "\"item_sword\":");
+            files["enemies.json"] = files["enemies.json"].Replace("\"windup\": 0.6", "\"windup\": 0.3").Replace("\"chaseSpeed\": 4.5", "\"chaseSpeed\": 6");
+            var e = Assert.Throws<DataException>(() => LoadWith(files));
+            Assert.Contains(e.Problems, p => p.Contains("weapons.json") && p.Contains("item_sword"));
+            Assert.Contains(e.Problems, p => p.Contains("enemies.json") && p.Contains("'wolf'") && p.Contains("замах"));
+            Assert.Contains(e.Problems, p => p.Contains("enemies.json") && p.Contains("'boar'") && p.Contains("бега"));
+        }
     }
 }

@@ -31,6 +31,7 @@
     { "id": "splint",          "name": "Шина",                 "kind": "medicine",   "weight": 0.3, "stack": 3,  "pickup": "Для перелома" },
     { "id": "burn_salve",      "name": "Мазь от ожогов",       "kind": "medicine",   "weight": 0.2, "stack": 3,  "pickup": "Холодит и заживляет" },
     { "id": "antidote",        "name": "Антидот",              "kind": "medicine",   "weight": 0.2, "stack": 3,  "pickup": "Нейтрализует яд" },
+    { "id": "hammer",          "name": "Молот",                "kind": "weapon",     "weight": 3.0, "stack": 1,  "pickup": "Тяжёлый молот" },
     { "id": "map",             "name": "Карта",                "kind": "tool",       "weight": 0.1, "stack": 1,  "pickup": "Карта. Без подробностей" }
   ]
 }

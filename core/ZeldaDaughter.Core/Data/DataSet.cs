@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using ZeldaDaughter.Core.Combat;
 using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Dialogue;
 using ZeldaDaughter.Core.Input;
@@ -55,6 +56,8 @@ namespace ZeldaDaughter.Core.Data
         public OnboardingSettings Onboarding { get; private set; } = new OnboardingSettings();
         public DialogueSettings Dialogues { get; private set; } = new DialogueSettings();
         public SessionSettings Session { get; private set; } = new SessionSettings();
+        public WeaponSettings Weapons { get; private set; } = new WeaponSettings();
+        public EnemySettings Enemies { get; private set; } = new EnemySettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -81,6 +84,8 @@ namespace ZeldaDaughter.Core.Data
                 Onboarding = Read<OnboardingSettings>(read, "onboarding.json", problems),
                 Dialogues = Read<DialogueSettings>(read, "dialogues.json", problems),
                 Session = Read<SessionSettings>(read, "session.json", problems),
+                Weapons = Read<WeaponSettings>(read, "weapons.json", problems),
+                Enemies = Read<EnemySettings>(read, "enemies.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);
@@ -129,6 +134,24 @@ namespace ZeldaDaughter.Core.Data
             }
             foreach (var kv in d.Wounds.Types)
                 if (!string.IsNullOrEmpty(kv.Value.Medicine)) Ref("wounds.json", kv.Key, kv.Value.Medicine);
+            foreach (var kv in d.Weapons.Weapons)
+            {
+                if (kv.Key != WeaponSettings.Fists) Ref("weapons.json", "оружие", kv.Key);
+                var w = kv.Value;
+                if (w.ParsedClass == null) problems.Add($"weapons.json: '{kv.Key}' — неизвестный класс '{w.Class}'");
+                if (w.Damage <= 0 || w.Range <= 0) problems.Add($"weapons.json: '{kv.Key}' — урон и дальность должны быть > 0");
+                if (!string.IsNullOrEmpty(w.Wound) && w.ParsedWound == null) problems.Add($"weapons.json: '{kv.Key}' — неизвестная рана '{w.Wound}'");
+                if (w.Severity < 0 || w.Severity > 1) problems.Add($"weapons.json: '{kv.Key}' — тяжесть раны вне 0..1");
+            }
+            foreach (var kv in d.Enemies.Enemies)
+            {
+                var e = kv.Value;
+                if (e.Hp <= 0 || e.Range <= 0) problems.Add($"enemies.json: '{kv.Key}' — HP и радиус удара должны быть > 0");
+                if (!string.IsNullOrEmpty(e.Wound) && e.ParsedWound == null) problems.Add($"enemies.json: '{kv.Key}' — неизвестная рана '{e.Wound}'");
+                if (e.Windup < d.Enemies.MinWindup) problems.Add($"enemies.json: '{kv.Key}' — замах {e.Windup} с короче минимума {d.Enemies.MinWindup} с");
+                if (e.ChaseSpeed >= d.Movement.RunSpeed) problems.Add($"enemies.json: '{kv.Key}' — погоня {e.ChaseSpeed} м/с не медленнее бега героя {d.Movement.RunSpeed} м/с");
+                if (e.AggroRange <= 0) problems.Add($"enemies.json: '{kv.Key}' — радиус агро должен быть > 0");
+            }
             foreach (var npc in d.Dialogues.Npcs)
             {
                 if (!npc.Value.Nodes.ContainsKey("start")) problems.Add($"dialogues.json: '{npc.Key}' — нет узла start");
