@@ -87,16 +87,16 @@ namespace ZeldaDaughter.Tests
         public IEnumerator Tap_hand_is_at_the_nearest_thing_and_goes_after_a_tap()
         {
             _s.State.Hints.Did("swipe");
-            _hero.Teleport(new Vector3(7f, 1f, 1.5f), 0f); // 2.5 m from the peasant at (7, 1, 4)
+            _hero.Teleport(new Vector3(2f, 1f, 9.3f), 0f); // 0.7 m from the cloth at (2, 0, 10); the NPCs walk, so the target is a pick-up
             _s.State.Data.Session.RemarkCheckSeconds = 0.1f;
             yield return new WaitForSeconds(1.6f); // the pending check was set from the old interval
             Assert.AreEqual("tap", _hints.ShownHint);
             Assert.NotNull(_hints.TapTarget);
-            Assert.AreEqual("npc_peasant", _hints.TapTarget.Id);
+            Assert.AreEqual("pickup_cloth_1", _hints.TapTarget.Id);
             var want = (Vector2)Camera.main.WorldToScreenPoint(_hints.TapTarget.AimPoint);
             Assert.Less(Vector2.Distance(want, _hints.HandScreenPoint), 40f, $"the fingertip {_hints.HandScreenPoint} is at the target {want}");
 
-            _s.Tap("npc_peasant");
+            _s.Tap("pickup_cloth_1");
             yield return null;
             Assert.IsNull(_hints.ShownHint);
         }
