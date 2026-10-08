@@ -24,6 +24,7 @@ namespace ZeldaDaughter.Game
         [SerializeField] private Transform _hero;
         [SerializeField] private UiLook _look;
         [SerializeField] private IconRegistry _talkIcons;
+        [SerializeField] private TalkBubbleView _talkView; // D-12: when set, it draws the NPC's bubble and the hero's answers
 
         private Canvas _canvas;
         private RectTransform _world, _windows, _overlay;
@@ -50,8 +51,11 @@ namespace ZeldaDaughter.Game
 
         public string CurrentHint { get { Build(); return _hint.Text; } }
         public string HeroBubbleText { get { Build(); return _heroBubble.Text; } }
-        public string NpcBubbleText { get { Build(); return _npcBubble.Text; } }
-        public IReadOnlyList<Button> ReplyButtons => _buttons;
+        public string NpcBubbleText { get { if (_talkView != null) return _talkView.Text; Build(); return _npcBubble.Text; } }
+        public IReadOnlyList<Button> ReplyButtons => _talkView != null ? _talkView.ReplyButtons : _buttons;
+
+        /// <summary>D-12: the talk view takes over the NPC's bubble and the answers; the facade above reads from it.</summary>
+        public void UseTalkView(TalkBubbleView view) => _talkView = view;
 
         public void Configure(Camera cam, Transform hero, UiLook look, IconRegistry talkIcons)
         {
