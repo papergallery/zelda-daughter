@@ -1,0 +1,29 @@
+{
+  "_source": "docs/demo/unity-architecture.md §2.5. Иконки диалогов (data/dialogues.json icons) и интерфейса: trade, radial_bag, radial_map, radial_notebook, hint_hand. \"placeholder\": true — плашка с буквой; иначе \"path\".",
+  "icons": {
+    "bridge": {"placeholder": true},
+    "coin": {"placeholder": true},
+    "danger": {"placeholder": true},
+    "ear": {"placeholder": true},
+    "fire": {"placeholder": true},
+    "food": {"placeholder": true},
+    "forest": {"placeholder": true},
+    "hammer": {"placeholder": true},
+    "hand": {"placeholder": true},
+    "herb": {"placeholder": true},
+    "hint_hand": {"placeholder": true},
+    "letter": {"placeholder": true},
+    "locket": {"placeholder": true},
+    "map": {"placeholder": true},
+    "mug": {"placeholder": true},
+    "point": {"placeholder": true},
+    "question": {"placeholder": true},
+    "radial_bag": {"placeholder": true},
+    "radial_map": {"placeholder": true},
+    "radial_notebook": {"placeholder": true},
+    "sleep": {"placeholder": true},
+    "town": {"placeholder": true},
+    "trade": {"placeholder": true},
+    "wound": {"placeholder": true}
+  }
+}

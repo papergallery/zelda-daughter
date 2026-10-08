@@ -13,7 +13,9 @@ namespace ZeldaDaughter.World
 
         public string Id => _id;
         public bool Has(string tag) => System.Array.IndexOf(_tags, tag) >= 0;
-        public bool Contains(Vector3 position) => (_area ?? (_area = Area.FromJson(_areaJson))).Contains(position.x, position.z);
+        /// <summary>The zone's geometry (centre, radius, size…), e.g. for registering mud with the core.</summary>
+        public Area Area => _area ?? (_area = Area.FromJson(_areaJson));
+        public bool Contains(Vector3 position) => Area.Contains(position.x, position.z);
 
         public void Configure(string id, string[] tags, string areaJson)
         {

@@ -2,6 +2,7 @@
 # R0-05: «проверить» одной командой на сервере. Итог — строка CHECK OK / CHECK FAIL.
 #   tests   — dotnet test ядра логики (если оно есть), под общей с The Chest блокировкой (docs/agent-handbook.md §1);
 #   secrets — известные секреты сервера и шаблоны ключей/паролей в отслеживаемых файлах (репозиторий публичный, ADR-0006);
+#   registries — реестры ассетов вида: каждый id данных есть в Assets/Art/Registries/*.json (W0);
 #   plan    — у каждой строки такс-листа есть раздел задачи, у видимой задачи с галочкой — файл критериев;
 #   guard   — сторож правил решает свои случаи из tools/hooks/cases.jsonl.
 # Unity-код здесь не собирается — только на ПК автора (ADR-0003).
@@ -25,6 +26,7 @@ fi
 
 if python3 tools/check-secrets.py; then echo "secrets: none in tracked files"; else fail+=(secrets); fi
 if python3 tools/check-plan.py; then :; else fail+=(plan); fi
+if python3 tools/check-registries.py; then :; else fail+=(registries); fi
 if python3 tools/unity-meta.py --check >/dev/null; then echo "meta: every core file has one"; else echo "meta: missing — python3 tools/unity-meta.py"; fail+=(meta); fi
 
 bad=0

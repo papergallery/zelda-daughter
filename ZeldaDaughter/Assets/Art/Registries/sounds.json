@@ -1,0 +1,23 @@
+{
+  "_source": "docs/demo/unity-architecture.md §2.5. SoundDef: clips — пути к AudioClip (Assets/Art/Audio/…), volume, pitchJitter, spatial. \"placeholder\": true — тишина и предупреждение [ZD:Art]. Ключи: step_<terrain>, amb_*, hit_*, fire_*, bard_tavern.",
+  "sounds": {
+    "amb_forest": {"placeholder": true, "volume": 0.5, "pitchJitter": 0, "spatial": false},
+    "amb_night": {"placeholder": true, "volume": 0.5, "pitchJitter": 0, "spatial": false},
+    "amb_rain": {"placeholder": true, "volume": 0.5, "pitchJitter": 0, "spatial": false},
+    "amb_town": {"placeholder": true, "volume": 0.5, "pitchJitter": 0, "spatial": false},
+    "bard_tavern": {"placeholder": true, "volume": 0.7, "pitchJitter": 0, "spatial": true},
+    "fire_campfire": {"placeholder": true, "volume": 0.6, "pitchJitter": 0, "spatial": true},
+    "fire_grass": {"placeholder": true, "volume": 0.6, "pitchJitter": 0, "spatial": true},
+    "fire_torch": {"placeholder": true, "volume": 0.6, "pitchJitter": 0, "spatial": true},
+    "hit_blade": {"placeholder": true, "volume": 0.8, "pitchJitter": 0.1, "spatial": true},
+    "hit_boar": {"placeholder": true, "volume": 0.8, "pitchJitter": 0.1, "spatial": true},
+    "hit_fists": {"placeholder": true, "volume": 0.8, "pitchJitter": 0.1, "spatial": true},
+    "hit_hero": {"placeholder": true, "volume": 0.8, "pitchJitter": 0.1, "spatial": true},
+    "hit_wolf": {"placeholder": true, "volume": 0.8, "pitchJitter": 0.1, "spatial": true},
+    "step_grass": {"placeholder": true, "volume": 0.6, "pitchJitter": 0.08, "spatial": false},
+    "step_ground": {"placeholder": true, "volume": 0.6, "pitchJitter": 0.08, "spatial": false},
+    "step_mud": {"placeholder": true, "volume": 0.6, "pitchJitter": 0.08, "spatial": false},
+    "step_road": {"placeholder": true, "volume": 0.6, "pitchJitter": 0.08, "spatial": false},
+    "step_water": {"placeholder": true, "volume": 0.6, "pitchJitter": 0.08, "spatial": false}
+  }
+}

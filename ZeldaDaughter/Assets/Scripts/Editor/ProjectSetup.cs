@@ -21,6 +21,9 @@ namespace ZeldaDaughter.Editor
         const string PipelinePath = SettingsDir + "/URP_Mobile.asset";
         const string AppId = "com.papergallery.zeldasdaughter"; // April id (never published)
 
+        /// <summary>W0: layers the game's rules talk about — the ground the ray and drops land on, what blocks (CheckSphere for placing items), who acts.</summary>
+        public static readonly string[] Layers = { "Ground", "Blocking", "Actors" };
+
         static readonly (string field, object value)[] Pipeline =
         {
             ("m_SupportsHDR", false),
@@ -57,6 +60,7 @@ namespace ZeldaDaughter.Editor
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel28;
             EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ASTC;
             SetProjectSetting("activeInputHandler", 1); // Input System only
+            EnsureLayers();
             // Domain reload on entering Play Mode stays on: statics (GameData) start clean. The bridge's run_tests
             // switched it on by itself on 2026-10-07 — Apply() puts it back.
             EditorSettings.enterPlayModeOptionsEnabled = false;
@@ -101,6 +105,7 @@ namespace ZeldaDaughter.Editor
             Check("activeInputHandler", GetProjectSetting("activeInputHandler"), 1);
             Check("enterPlayModeOptions", EditorSettings.enterPlayModeOptionsEnabled, false);
 
+            foreach (var layer in Layers) Check("layer." + layer, LayerMask.NameToLayer(layer) >= 0, true);
             Check("lights.linearIntensity", GraphicsSettings.lightsUseLinearIntensity, true);
             Check("lights.colorTemperature", GraphicsSettings.lightsUseColorTemperature, true);
             Check("quality.antiAliasing", QualitySettings.antiAliasing, 0);
@@ -114,6 +119,31 @@ namespace ZeldaDaughter.Editor
                 foreach (var (field, value) in Pipeline) Check("urp." + field, Read(so.FindProperty(field)), value);
             }
             Debug.Log(bad.Count == 0 ? "[ZD:Setup] OK" : "[ZD:Setup] MISMATCH " + string.Join(",", bad));
+        }
+
+        /// <summary>Puts <see cref="Layers"/> into the first free user layers (8…31) of ProjectSettings/TagManager.asset; those already there stay where they are.</summary>
+        public static void EnsureLayers()
+        {
+            var manager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
+            var layers = manager.FindProperty("layers");
+            bool changed = false;
+            foreach (var name in Layers)
+            {
+                bool present = false;
+                for (int i = 0; i < layers.arraySize && !present; i++) present = layers.GetArrayElementAtIndex(i).stringValue == name;
+                if (present) continue;
+                int free = -1;
+                for (int i = 8; i < layers.arraySize && free < 0; i++) if (string.IsNullOrEmpty(layers.GetArrayElementAtIndex(i).stringValue)) free = i;
+                if (free < 0) { Debug.LogError($"[ZD:Setup] no free layer for {name}"); continue; }
+                layers.GetArrayElementAtIndex(free).stringValue = name;
+                changed = true;
+                Debug.Log($"[ZD:Setup] layer {free} = {name}");
+            }
+            if (changed)
+            {
+                manager.ApplyModifiedPropertiesWithoutUndo();
+                AssetDatabase.SaveAssets();
+            }
         }
 
         static UniversalRenderPipelineAsset EnsurePipeline()

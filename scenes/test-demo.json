@@ -1,0 +1,730 @@
+{
+ "_source": "W0 (docs/demo/unity-architecture.md §5): тестовая сцена Unity-слоя демо — build.include:false, слота сохранения нет. Заготовки для всех пакетов: крестьянин и торговец (npc), якоря расписаний data/npcs.json, точка кабана (enemy_spawn + enemy_boar), кровать, наковальня и плавильня (station), 6 клеток сухой травы (grass_cell), круг грязи (зона mud), зоны волков (predator_zone), костёр на месте, стена для проверки «не поставить», предметы на земле. Тесты PlayMode пакетов грузят её по пути Assets/Scenes/test-demo.unity; кадры — region. Править руками (в отличие от region.json, который генерирует tools/gen-region.py).",
+ "name": "test-demo",
+ "build": {
+  "include": false,
+  "order": 1000
+ },
+ "ground": {
+  "sizeX": 80,
+  "sizeZ": 80,
+  "color": "#7d8a5c",
+  "terrain": "grass"
+ },
+ "light": {
+  "rotation": {
+   "x": 40,
+   "y": -60,
+   "z": 0
+  },
+  "color": "#ffe9c8",
+  "intensity": 1.0,
+  "shadows": "hard"
+ },
+ "ambient": {
+  "color": "#a8aeb4"
+ },
+ "camera": {
+  "orthographic": true,
+  "pitch": 35,
+  "yaw": 45,
+  "distance": 20,
+  "size": 8,
+  "followSmoothTime": 0.15
+ },
+ "hero": {
+  "spawn": {
+   "x": 0,
+   "y": 0,
+   "z": 0
+  },
+  "shape": "capsule",
+  "color": "#c9a46a"
+ },
+ "zones": [
+  {
+   "id": "mud_test",
+   "shape": "circle",
+   "center": {
+    "x": 10,
+    "z": -20
+   },
+   "radius": 3.0,
+   "tags": [
+    "mud"
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "npc_peasant",
+   "position": {
+    "x": 7,
+    "y": 1,
+    "z": 4
+   },
+   "shape": "capsule",
+   "color": "#8f7a4a",
+   "tags": [
+    "npc"
+   ]
+  },
+  {
+   "id": "npc_merchant",
+   "position": {
+    "x": -7,
+    "y": 1,
+    "z": -6
+   },
+   "shape": "capsule",
+   "color": "#7a5a8a",
+   "tags": [
+    "npc"
+   ]
+  },
+  {
+   "id": "anchor_field",
+   "position": {
+    "x": -30,
+    "y": 0,
+    "z": 22
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_hut",
+   "position": {
+    "x": -22,
+    "y": 0,
+    "z": 22
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_gate",
+   "position": {
+    "x": -14,
+    "y": 0,
+    "z": 22
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_tavern_hall",
+   "position": {
+    "x": -6,
+    "y": 0,
+    "z": 22
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_gatehouse",
+   "position": {
+    "x": 2,
+    "y": 0,
+    "z": 22
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_shop",
+   "position": {
+    "x": 10,
+    "y": 0,
+    "z": 22
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_shop_rear",
+   "position": {
+    "x": 18,
+    "y": 0,
+    "z": 22
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_forge",
+   "position": {
+    "x": 26,
+    "y": 0,
+    "z": 22
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_forge_home",
+   "position": {
+    "x": -30,
+    "y": 0,
+    "z": 28
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_tavern_bar",
+   "position": {
+    "x": -22,
+    "y": 0,
+    "z": 28
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_tavern_room",
+   "position": {
+    "x": -14,
+    "y": 0,
+    "z": 28
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_herb_house",
+   "position": {
+    "x": -6,
+    "y": 0,
+    "z": 28
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_house_a",
+   "position": {
+    "x": 2,
+    "y": 0,
+    "z": 28
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_fountain",
+   "position": {
+    "x": 10,
+    "y": 0,
+    "z": 28
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_house_b",
+   "position": {
+    "x": 18,
+    "y": 0,
+    "z": 28
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "anchor_house_c",
+   "position": {
+    "x": 26,
+    "y": 0,
+    "z": 28
+   },
+   "marker": true,
+   "tags": [
+    "anchor"
+   ]
+  },
+  {
+   "id": "spawn_boar",
+   "position": {
+    "x": 14,
+    "y": 0,
+    "z": -10
+   },
+   "marker": true,
+   "tags": [
+    "enemy_spawn",
+    "enemy_boar"
+   ],
+   "enemy": "boar"
+  },
+  {
+   "id": "zone_wolves_forest",
+   "position": {
+    "x": 26,
+    "y": 0,
+    "z": 26
+   },
+   "marker": true,
+   "tags": [
+    "predator_zone"
+   ]
+  },
+  {
+   "id": "zone_wolves_river",
+   "position": {
+    "x": -26,
+    "y": 0,
+    "z": -26
+   },
+   "marker": true,
+   "tags": [
+    "predator_zone"
+   ]
+  },
+  {
+   "id": "campfire_spawn",
+   "position": {
+    "x": 3,
+    "y": 0,
+    "z": -5
+   },
+   "marker": true,
+   "tags": [
+    "campfire",
+    "rest_point"
+   ]
+  },
+  {
+   "id": "bed_test",
+   "position": {
+    "x": -9,
+    "y": 0.25,
+    "z": 8
+   },
+   "shape": "cube",
+   "scale": {
+    "x": 2,
+    "y": 0.5,
+    "z": 1
+   },
+   "color": "#8a5a4a",
+   "tags": [
+    "bed"
+   ]
+  },
+  {
+   "id": "anvil_test",
+   "position": {
+    "x": -9,
+    "y": 0.5,
+    "z": -3
+   },
+   "shape": "cube",
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 0.6
+   },
+   "color": "#4a4a52",
+   "tags": [
+    "station",
+    "anvil"
+   ],
+   "station": "anvil"
+  },
+  {
+   "id": "smelter_test",
+   "position": {
+    "x": -13,
+    "y": 0.8,
+    "z": -3
+   },
+   "shape": "cylinder",
+   "scale": {
+    "x": 1.2,
+    "y": 0.8,
+    "z": 1.2
+   },
+   "color": "#6a4a3a",
+   "tags": [
+    "station",
+    "smelter"
+   ],
+   "station": "smelter"
+  },
+  {
+   "id": "wall_test",
+   "position": {
+    "x": -22,
+    "y": 1,
+    "z": 0
+   },
+   "shape": "cube",
+   "scale": {
+    "x": 0.6,
+    "y": 2,
+    "z": 8
+   },
+   "color": "#8c8a84",
+   "tags": [
+    "obstacle"
+   ]
+  },
+  {
+   "id": "grass_cell_01",
+   "position": {
+    "x": -4.0,
+    "y": 0,
+    "z": -16
+   },
+   "model": "grass_large",
+   "collide": false,
+   "tags": [
+    "grass_cell"
+   ]
+  },
+  {
+   "id": "grass_cell_02",
+   "position": {
+    "x": -2.5,
+    "y": 0,
+    "z": -16
+   },
+   "model": "grass_large",
+   "collide": false,
+   "tags": [
+    "grass_cell"
+   ]
+  },
+  {
+   "id": "grass_cell_03",
+   "position": {
+    "x": -1.0,
+    "y": 0,
+    "z": -16
+   },
+   "model": "grass_large",
+   "collide": false,
+   "tags": [
+    "grass_cell"
+   ]
+  },
+  {
+   "id": "grass_cell_04",
+   "position": {
+    "x": 0.5,
+    "y": 0,
+    "z": -16
+   },
+   "model": "grass_large",
+   "collide": false,
+   "tags": [
+    "grass_cell"
+   ]
+  },
+  {
+   "id": "grass_cell_05",
+   "position": {
+    "x": 2.0,
+    "y": 0,
+    "z": -16
+   },
+   "model": "grass_large",
+   "collide": false,
+   "tags": [
+    "grass_cell"
+   ]
+  },
+  {
+   "id": "grass_cell_06",
+   "position": {
+    "x": 3.5,
+    "y": 0,
+    "z": -16
+   },
+   "model": "grass_large",
+   "collide": false,
+   "tags": [
+    "grass_cell"
+   ]
+  },
+  {
+   "id": "pickup_stick_1",
+   "position": {
+    "x": 4,
+    "y": 0,
+    "z": 8
+   },
+   "model": "log",
+   "scale": {
+    "x": 0.35,
+    "y": 0.35,
+    "z": 0.35
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "stick"
+  },
+  {
+   "id": "pickup_stick_2",
+   "position": {
+    "x": 5.5,
+    "y": 0,
+    "z": 9
+   },
+   "model": "log",
+   "scale": {
+    "x": 0.35,
+    "y": 0.35,
+    "z": 0.35
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "stick"
+  },
+  {
+   "id": "pickup_cloth_1",
+   "position": {
+    "x": 2,
+    "y": 0,
+    "z": 10
+   },
+   "model": "prop_bag",
+   "scale": {
+    "x": 0.7,
+    "y": 0.7,
+    "z": 0.7
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "cloth"
+  },
+  {
+   "id": "pickup_firewood_1",
+   "position": {
+    "x": 0,
+    "y": 0,
+    "z": 12
+   },
+   "model": "log",
+   "scale": {
+    "x": 0.7,
+    "y": 0.7,
+    "z": 0.7
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "firewood"
+  },
+  {
+   "id": "pickup_firewood_2",
+   "position": {
+    "x": 1.5,
+    "y": 0,
+    "z": 12.5
+   },
+   "model": "log",
+   "scale": {
+    "x": 0.7,
+    "y": 0.7,
+    "z": 0.7
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "firewood"
+  },
+  {
+   "id": "pickup_flint_1",
+   "position": {
+    "x": -2,
+    "y": 0,
+    "z": 9
+   },
+   "model": "stone_small_flat_a",
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "flint"
+  },
+  {
+   "id": "pickup_stone_1",
+   "position": {
+    "x": -3.5,
+    "y": 0,
+    "z": 10
+   },
+   "model": "stone_small_a",
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "stone"
+  },
+  {
+   "id": "bush_berries_1",
+   "position": {
+    "x": 10,
+    "y": 0,
+    "z": 10
+   },
+   "model": "plant_bush_detailed",
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "berries"
+  },
+  {
+   "id": "pickup_herbs_1",
+   "position": {
+    "x": 12,
+    "y": 0,
+    "z": 6
+   },
+   "model": "plant_flat_tall",
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "herbs"
+  },
+  {
+   "id": "pickup_healing_herbs_1",
+   "position": {
+    "x": 13,
+    "y": 0,
+    "z": 8
+   },
+   "model": "flower_purple_b",
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "healing_herbs"
+  },
+  {
+   "id": "pickup_ore_1",
+   "position": {
+    "x": -14,
+    "y": 0,
+    "z": 5
+   },
+   "model": "stone_tall_g",
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "ore"
+  },
+  {
+   "id": "pickup_metal_1",
+   "position": {
+    "x": -12,
+    "y": 0,
+    "z": 6
+   },
+   "model": "stone_small_b",
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "metal"
+  },
+  {
+   "id": "pickup_knife_1",
+   "position": {
+    "x": 8,
+    "y": 0,
+    "z": -3
+   },
+   "model": "prop_pouch_large",
+   "scale": {
+    "x": 0.6,
+    "y": 0.6,
+    "z": 0.6
+   },
+   "collide": false,
+   "tags": [
+    "pickup"
+   ],
+   "item": "knife"
+  }
+ ]
+}

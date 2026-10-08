@@ -1,0 +1,17 @@
+{
+  "_source": "docs/demo/unity-architecture.md §2.5. Ключи: heroine, id из data/npcs.json и data/enemies.json. Запись: либо \"placeholder\": true (цветной силуэт с носом), либо front/back/side — списки кадров ходьбы (пути в Assets/Art/Sprites/<id>/, кадр 0 — стоя), down — поза «лежит». pixelsPerMeter — пикселей на метр роста, strideMeters — путь за цикл шага. Правится на сервере; .asset собирает Zelda → Art → Build registries. Строка — запись, по алфавиту.",
+  "characters": {
+    "barkeep": {"placeholder": true, "color": "#8a5a4a", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "boar": {"placeholder": true, "color": "#6b4a3a", "pixelsPerMeter": 142, "strideMeters": 0.8},
+    "guard": {"placeholder": true, "color": "#56606a", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "herbalist": {"placeholder": true, "color": "#5f7d4f", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "heroine": {"placeholder": true, "color": "#c9a46a", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "merchant": {"placeholder": true, "color": "#7a5a8a", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "old_man": {"placeholder": true, "color": "#6e6a5a", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "peasant": {"placeholder": true, "color": "#8f7a4a", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "smith": {"placeholder": true, "color": "#6a5048", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "townswoman": {"placeholder": true, "color": "#7a6a8a", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "weaver": {"placeholder": true, "color": "#9a7a6a", "pixelsPerMeter": 75, "strideMeters": 0.8},
+    "wolf": {"placeholder": true, "color": "#6a6a70", "pixelsPerMeter": 160, "strideMeters": 0.8}
+  }
+}

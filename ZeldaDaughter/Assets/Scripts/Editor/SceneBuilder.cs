@@ -35,6 +35,7 @@ namespace ZeldaDaughter.Editor
         public static void BuildAll()
         {
             GuardEditorState();
+            RegistryBuilder.BuildAll(); // W0: the art registries first — scenes refer to their assets
             var before = SceneManager.GetActiveScene().path;
             var configs = new List<SceneConfig>();
             foreach (var path in Directory.GetFiles(ConfigDir, "*.json").OrderBy(p => p, StringComparer.Ordinal))
@@ -76,7 +77,10 @@ namespace ZeldaDaughter.Editor
             GuardEditorState();
             var config = SceneConfig.Parse(File.ReadAllText(configPath));
             var catalog = LoadCatalog();
-            var terrains = ZeldaDaughter.Core.Data.DataSet.Load(DataDir).Movement.Terrain.Keys.ToList();
+            var data = ZeldaDaughter.Core.Data.DataSet.Load(DataDir);
+            var terrains = data.Movement.Terrain.Keys.ToList();
+            EnsureLayers(); // W0: Ground / Blocking / Actors exist before anything is put on them
+            RegistryBuilder.EnsureBuilt();
             var problems = config.Validate(p => AssetDatabase.LoadAssetAtPath<GameObject>(p) != null, catalog, terrains).ToList();
             problems.AddRange(catalog.Validate(p => AssetDatabase.LoadAssetAtPath<GameObject>(p) != null).Where(_ => config.Objects.Any(o => o.Model != null) || config.Scatter.Count > 0));
             if (problems.Count > 0)
@@ -138,22 +142,19 @@ namespace ZeldaDaughter.Editor
                 go.transform.localRotation = Quaternion.Euler(V(o.Rotation));
                 go.transform.localScale = V(o.Scale);
                 var tags = go.AddComponent<SceneTags>();
-                tags.Configure(o.Id, o.Tags.ToArray(), o.Item);
+                tags.Configure(o.Id, o.Tags.ToArray(), o.Item, o.Enemy, o.Station);
                 tagged.Add(tags);
+                AddTapTarget(go, o);
             }
 
-            // T-10: the session that runs the core in this scene, with its placeholder UI.
-            var game = new GameObject("Game");
-            var sunCtl = game.AddComponent<SunController>();
-            sunCtl.Configure(sun, V(config.Light.Rotation), config.Light.Intensity, ColorOf(config.Ambient.Color));
-            sunCtl.SetCamera(cam);
-            var uiGo = new GameObject("UI");
-            uiGo.transform.SetParent(game.transform, false);
-            var ui = uiGo.AddComponent<SessionUI>();
-            ui.Configure(cam);
-            game.AddComponent<GameSession>().Configure(hero.GetComponent<HeroController>(), sunCtl, ui, config.Name, tagged.ToArray(), config.Save.Slot);
-            var es = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
-            es.transform.SetParent(game.transform, false);
+            // W0: the session, its UI, input, windows and the registries of the art; then each package's part, in order (SceneBuilder.Session.cs).
+            var ctx = new BuildContext
+            {
+                Config = config, Data = data, Catalog = catalog,
+                Ground = ground, Hero = hero, HeroCtl = heroCtl, Cam = cam, Iso = iso, SunLight = sun,
+                ObjectsRoot = root, Tagged = tagged,
+            };
+            BuildSession(ctx);
 
             if (!AssetDatabase.IsValidFolder(ScenesDir)) AssetDatabase.CreateFolder("Assets", "Scenes");
             string scenePath = $"{ScenesDir}/{config.Name}.unity";
@@ -166,7 +167,8 @@ namespace ZeldaDaughter.Editor
         static GameObject Spawn(string name, string shape, string prefab, string color)
         {
             GameObject go;
-            if (!string.IsNullOrEmpty(prefab))
+            if (shape == "empty") go = new GameObject(); // C7: a container / interaction point with no mesh and no collider
+            else if (!string.IsNullOrEmpty(prefab))
                 go = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(prefab));
             else
             {

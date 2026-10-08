@@ -1,121 +1,161 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ZeldaDaughter.Core.Save;
+using ZeldaDaughter.Rendering;
+using ZeldaDaughter.UI;
 
 namespace ZeldaDaughter.Game
 {
     /// <summary>
-    /// Placeholder look for T-10 (plain UGUI text and buttons, built in code): hint line, the hero's speech bubble, an NPC
-    /// bubble, reply icons. Its look is Р2's job after GК; the session only needs somewhere to show what the core decided.
+    /// The one root Canvas of the game (docs/demo/unity-architecture.md §2.6): Screen Space Overlay, 1080×2340 reference, with three nested
+    /// layers — <see cref="World"/> (bubbles, hints, reply buttons, the finger's ghost), <see cref="Windows"/> (one window at a time), and
+    /// <see cref="Overlay"/> (fades). It is built in code. For T-10 and the tests it keeps the old facade (<see cref="CurrentHint"/>,
+    /// <see cref="HeroBubbleText"/>, <see cref="NpcBubbleText"/>, <see cref="ReplyButtons"/>); D-12 and D-18 replace the bubbles with their own views.
+    /// Text is changed only when it changes: a re-layout of TextMeshPro every frame is what makes a phone hot.
     /// </summary>
     public sealed class SessionUI : MonoBehaviour
     {
+        private const float ReplyWidth = 220f, ReplyHeight = 120f, ReplyGap = 24f;
+
         [SerializeField] private Camera _camera;
+        [SerializeField] private Transform _hero;
+        [SerializeField] private UiLook _look;
+        [SerializeField] private IconRegistry _talkIcons;
 
-        private Text _hint;
-        private Text _heroBubble;
-        private Text _npcBubble;
+        private Canvas _canvas;
+        private RectTransform _world, _windows, _overlay;
+        private BubbleWidget _hint, _heroBubble, _npcBubble;
         private RectTransform _replies;
-        private Transform _hero;
         private Transform _npc;
-        private float _heroUntil;
-        private float _npcUntil;
+        private float _heroUntil, _npcUntil;
+        private float _heroSeconds = 3.5f;
+        private SessionEvents _events;
         private readonly List<Button> _buttons = new List<Button>();
+        private bool _built;
 
-        public string CurrentHint => _hint != null && _hint.enabled ? _hint.text : null;
-        public string HeroBubbleText => _heroBubble != null && _heroBubble.enabled ? _heroBubble.text : null;
-        public string NpcBubbleText => _npcBubble != null && _npcBubble.enabled ? _npcBubble.text : null;
+        /// <summary>The root canvas.</summary>
+        public Canvas Canvas { get { Build(); return _canvas; } }
+        public RectTransform World { get { Build(); return _world; } }
+        public RectTransform Windows { get { Build(); return _windows; } }
+        public RectTransform Overlay { get { Build(); return _overlay; } }
+        public UiLook Look => _look;
+        public IconRegistry TalkIcons => _talkIcons;
+        public Camera Camera => _camera;
+
+        /// <summary>D-18 turns this off when its own remark bubble takes over the hero's lines.</summary>
+        public bool ShowHeroBubble { get; set; } = true;
+
+        public string CurrentHint { get { Build(); return _hint.Text; } }
+        public string HeroBubbleText { get { Build(); return _heroBubble.Text; } }
+        public string NpcBubbleText { get { Build(); return _npcBubble.Text; } }
         public IReadOnlyList<Button> ReplyButtons => _buttons;
 
-        public void Configure(Camera cam) => _camera = cam;
-
-        private void Awake()
+        public void Configure(Camera cam, Transform hero, UiLook look, IconRegistry talkIcons)
         {
-            var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            var canvas = gameObject.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            _camera = cam;
+            _hero = hero;
+            _look = look;
+            _talkIcons = talkIcons;
+        }
+
+        /// <summary>The session's bus: the hero's lines come from <c>HeroSaid</c>, the bubble time from the state's data.</summary>
+        public void Bind(SessionEvents events)
+        {
+            if (_events != null) { _events.HeroSaid -= OnHeroSaid; _events.StateReady -= OnReady; }
+            _events = events;
+            _events.HeroSaid += OnHeroSaid;
+            _events.StateReady += OnReady;
+        }
+
+        private void OnReady(GameState g) => _heroSeconds = g.Data.Session.RemarkBubbleSeconds;
+
+        private void OnHeroSaid(string topic, string line)
+        {
+            if (ShowHeroBubble) HeroSay(_hero, line, _heroSeconds);
+        }
+
+        private void OnDestroy()
+        {
+            if (_events != null) { _events.HeroSaid -= OnHeroSaid; _events.StateReady -= OnReady; }
+        }
+
+        private void Awake() => Build();
+
+        private void Build()
+        {
+            if (_built) return;
+            _built = true;
+            _canvas = gameObject.GetComponent<Canvas>();
+            if (_canvas == null) _canvas = gameObject.AddComponent<Canvas>();
+            _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             var scaler = gameObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1080, 2340);
             scaler.matchWidthOrHeight = 0f;
             gameObject.AddComponent<GraphicRaycaster>();
 
-            _hint = MakeText("Hint", font, 44, new Vector2(0.5f, 0.06f));
-            _heroBubble = MakeText("HeroBubble", font, 40, new Vector2(0.5f, 0.6f));
-            _npcBubble = MakeText("NpcBubble", font, 40, new Vector2(0.5f, 0.7f));
-            _hint.enabled = _heroBubble.enabled = _npcBubble.enabled = false;
+            _world = Layer("World", 0);
+            _windows = Layer("Windows", 10);
+            _overlay = Layer("Overlay", 20);
 
-            var row = new GameObject("Replies", typeof(RectTransform), typeof(HorizontalLayoutGroup));
-            _replies = (RectTransform)row.transform;
-            _replies.SetParent(transform, false);
-            _replies.anchorMin = _replies.anchorMax = new Vector2(0.5f, 0.16f);
-            _replies.sizeDelta = new Vector2(1000, 140);
-            var layout = row.GetComponent<HorizontalLayoutGroup>();
-            layout.spacing = 24;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childForceExpandWidth = false;
+            _hint = UiKit.MakeBubble(_world, "Hint", _look, 960f);
+            UiKit.Place(_hint.Root, new Vector2(0.5f, 0.06f), _hint.Root.sizeDelta, new Vector2(0.5f, 0.5f));
+            _heroBubble = UiKit.MakeBubble(_world, "HeroBubble", _look, 900f);
+            _npcBubble = UiKit.MakeBubble(_world, "NpcBubble", _look, 900f);
+            _replies = UiKit.MakeRect(_world, "Replies");
+            UiKit.Place(_replies, new Vector2(0.5f, 0.16f), new Vector2(1000f, ReplyHeight), new Vector2(0.5f, 0.5f));
         }
 
-        private Text MakeText(string name, Font font, int size, Vector2 anchor)
+        /// <summary>A nested canvas over the root: its own mesh (a change in one layer does not rebuild the others) and its own raycaster for buttons.</summary>
+        private RectTransform Layer(string name, int order)
         {
-            var go = new GameObject(name, typeof(RectTransform), typeof(Text), typeof(Outline));
-            var rt = (RectTransform)go.transform;
-            rt.SetParent(transform, false);
-            rt.anchorMin = rt.anchorMax = anchor;
-            rt.sizeDelta = new Vector2(1000, 200);
-            var t = go.GetComponent<Text>();
-            t.font = font;
-            t.fontSize = size;
-            t.alignment = TextAnchor.MiddleCenter;
-            t.color = Color.white;
-            t.raycastTarget = false;
-            return t;
+            var rt = UiKit.MakeRect(transform, name);
+            UiKit.Stretch(rt);
+            var c = rt.gameObject.AddComponent<Canvas>();
+            c.overrideSorting = true;
+            c.sortingOrder = order;
+            rt.gameObject.AddComponent<GraphicRaycaster>();
+            return rt;
         }
 
         public void ShowHint(string text)
         {
-            _hint.enabled = !string.IsNullOrEmpty(text);
-            if (_hint.enabled) _hint.text = text;
+            Build();
+            if (string.IsNullOrEmpty(text)) { _hint.Hide(); return; }
+            _hint.Show(text);
         }
 
         public void HeroSay(Transform hero, string text, float seconds)
         {
-            _hero = hero;
-            _heroBubble.text = text;
-            _heroBubble.enabled = true;
+            Build();
+            if (hero != null) _hero = hero;
+            _heroBubble.Show(text);
             _heroUntil = Time.time + seconds;
         }
 
         public void NpcSay(Transform npc, string text, float seconds)
         {
+            Build();
             _npc = npc;
-            _npcBubble.text = text;
-            _npcBubble.enabled = true;
+            _npcBubble.Show(text);
             _npcUntil = Time.time + seconds;
         }
 
         public void ShowReplies(IReadOnlyList<string> icons, Action<string> onPick)
         {
+            Build();
             HideReplies();
-            var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            foreach (var icon in icons)
+            for (int i = 0; i < icons.Count; i++)
             {
-                var go = new GameObject("Reply_" + icon, typeof(RectTransform), typeof(Image), typeof(Button), typeof(LayoutElement));
-                go.transform.SetParent(_replies, false);
-                go.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0.55f);
-                var le = go.GetComponent<LayoutElement>();
-                le.preferredWidth = 220;
-                le.preferredHeight = 120;
-                var label = MakeText("Label", font, 36, new Vector2(0.5f, 0.5f));
-                label.transform.SetParent(go.transform, false);
-                ((RectTransform)label.transform).sizeDelta = new Vector2(220, 120);
-                label.text = "[" + icon + "]";
-                label.enabled = true;
-                string captured = icon;
-                var button = go.GetComponent<Button>();
-                button.onClick.AddListener(() => onPick(captured));
-                _buttons.Add(button);
+                string icon = icons[i];
+                var b = UiKit.MakeButton(_replies, "Reply_" + icon, _look, "[" + icon + "]", new Vector2(ReplyWidth, ReplyHeight), () => onPick(icon));
+                var rt = (RectTransform)b.transform;
+                rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition = new Vector2((i - (icons.Count - 1) * 0.5f) * (ReplyWidth + ReplyGap), 0f);
+                _buttons.Add(b);
             }
         }
 
@@ -127,17 +167,17 @@ namespace ZeldaDaughter.Game
 
         private void LateUpdate()
         {
-            if (_heroBubble.enabled && Time.time > _heroUntil) _heroBubble.enabled = false;
-            if (_npcBubble.enabled && Time.time > _npcUntil) _npcBubble.enabled = false;
+            if (!_built) return;
+            if (_heroBubble.Visible && Time.time > _heroUntil) _heroBubble.Hide();
+            if (_npcBubble.Visible && Time.time > _npcUntil) _npcBubble.Hide();
             Follow(_heroBubble, _hero, 2.6f);
             Follow(_npcBubble, _npc, 2.6f);
         }
 
-        private void Follow(Text text, Transform target, float height)
+        private void Follow(BubbleWidget bubble, Transform target, float height)
         {
-            if (!text.enabled || target == null || _camera == null) return;
-            var p = _camera.WorldToScreenPoint(target.position + Vector3.up * height);
-            text.rectTransform.position = p;
+            if (!bubble.Visible || target == null || _camera == null) return;
+            bubble.Root.position = _camera.WorldToScreenPoint(target.position + Vector3.up * height);
         }
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using ZeldaDaughter.Core.Common;
 using ZeldaDaughter.Core.Input;
 using ZeldaDaughter.Core.Movement;
+using ZeldaDaughter.Input;
 using ZeldaDaughter.World;
 using CoreTouchPhase = ZeldaDaughter.Core.Input.TouchPhase;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -35,7 +36,11 @@ namespace ZeldaDaughter.Hero
         private float _verticalSpeed;
         private float _moved;
         private readonly List<RaycastResult> _uiHits = new List<RaycastResult>();
-        private static readonly IReadOnlyList<float> NoModifiers = new float[0];
+        [SerializeField] private WorldPicker _picker;
+        private Func<float> _speedSource;
+        private bool _locked;
+        private Vec2 _finger;
+        private float _walked;
 
         public void Configure(IsoCamera iso, Camera cam, string terrain)
         {
@@ -46,6 +51,47 @@ namespace ZeldaDaughter.Hero
 
         /// <summary>Rivers, roads and terrain zones of the scene (D-10); without them the ground terrain of the scene applies everywhere.</summary>
         public void SetZones(TerrainZones zones) => _zones = zones;
+
+        /// <summary>W0: the one place that decides what a touch lands on. Without it, <see cref="HitAt"/> keeps the T-05 behaviour (ray only).</summary>
+        public void SetPicker(WorldPicker picker) => _picker = picker;
+
+        /// <summary>W0: the combined multiplier of wounds, load, hunger and mud — the session passes <c>() =&gt; g.SpeedMultiplier</c>. Without it, 1.</summary>
+        public void SetSpeedSource(Func<float> source) => _speedSource = source;
+
+        /// <summary>While true (a window is open) the hero does not walk and a swipe does not start a walk.</summary>
+        public bool Locked
+        {
+            get => _locked;
+            set { _locked = value; if (value) CancelMove(); }
+        }
+
+        /// <summary>Stop walking now (a window opened, a conversation began). The swipe in progress, if any, goes on being tracked but moves nothing while Locked.</summary>
+        public void CancelMove()
+        {
+            if (_intent.IsMoving) ZdLog.Info("Move", $"stop dist={_moved:0.00} (cancelled)");
+            _intent = MoveIntent.None;
+        }
+
+        /// <summary>Where the finger is now on the screen (the last touch sample); the radial menu picks its sector by it.</summary>
+        public Vector2 FingerPosition => new Vector2(_finger.X, _finger.Y);
+
+        /// <summary>Metres walked since the last call (the session feeds them to the carrying and endurance skills).</summary>
+        public float TakeWalked()
+        {
+            float w = _walked;
+            _walked = 0f;
+            return w;
+        }
+
+        /// <summary>Is the screen point on the hero's own touch circle.</summary>
+        public bool IsOnHero(Vec2 screen)
+        {
+            var h = _camera.WorldToScreenPoint(transform.position);
+            return _input.IsOnHero(screen, new Vec2(h.x, h.y), _dpi);
+        }
+
+        /// <summary>Screen density relative to the reference one (data/input.json): pixel radii of tap targets scale by it.</summary>
+        public float DpiScale => _input != null && _input.ReferenceDpi > 0f ? _dpi / _input.ReferenceDpi : 1f;
 
         /// <summary>The terrain id under the hero now.</summary>
         public string CurrentTerrain => _zones != null ? _zones.At(transform.position) : _terrain;
@@ -132,11 +178,16 @@ namespace ZeldaDaughter.Hero
         }
 
         /// <summary>One touch sample (already filtered).</summary>
-        public void Feed(TouchSample sample) => Handle(_gestures.Feed(sample));
+        public void Feed(TouchSample sample)
+        {
+            _finger = sample.Position;
+            Handle(_gestures.Feed(sample));
+        }
 
         /// <summary>What a touch at this screen point lands on: the hero by its screen projection, else what the ray hits.</summary>
         public TouchHit HitAt(Vec2 screen)
         {
+            if (_picker != null) return _picker.Pick(screen);
             var heroOnScreen = _camera.WorldToScreenPoint(transform.position);
             if (_input.IsOnHero(screen, new Vec2(heroOnScreen.x, heroOnScreen.y), _dpi)) return TouchHit.Hero;
             if (Physics.Raycast(_camera.ScreenPointToRay(new Vector3(screen.X, screen.Y)), out var hit, 500f))
@@ -151,8 +202,9 @@ namespace ZeldaDaughter.Hero
 
         private void Handle(IReadOnlyList<GestureEvent> events)
         {
-            foreach (var e in events)
+            for (int i = 0; i < events.Count; i++) // no enumerator: a quiet frame must not allocate
             {
+                var e = events[i];
                 Gesture?.Invoke(e);
                 switch (e.Kind)
                 {
@@ -160,6 +212,7 @@ namespace ZeldaDaughter.Hero
                         _moved = 0f;
                         break;
                     case GestureKind.SwipeUpdated:
+                        if (_locked) break;
                         bool was = _intent.IsMoving;
                         _intent = CameraBasis.FromYawDegrees(_iso != null ? _iso.Yaw : 0f).Intent(e.Direction, e.Strength);
                         if (!was) ZdLog.Info("Move", $"start dir={_intent.Direction} strength={e.Strength:0.00}");
@@ -185,7 +238,7 @@ namespace ZeldaDaughter.Hero
         {
             if (dt <= 0f) return;
             Vector3 horizontal = Vector3.zero;
-            if (_intent.IsMoving)
+            if (_intent.IsMoving && !_locked)
             {
                 string terrain = CurrentTerrain;
                 if (terrain != _lastTerrain)
@@ -193,7 +246,7 @@ namespace ZeldaDaughter.Hero
                     ZdLog.Info("Move", $"terrain {_lastTerrain ?? "-"} -> {terrain}");
                     _lastTerrain = terrain;
                 }
-                float speed = _speed.Speed(_intent.Strength, terrain, NoModifiers);
+                float speed = _speed.Speed(_intent.Strength, terrain, _speedSource != null ? _speedSource() : 1f);
                 horizontal = new Vector3(_intent.Direction.X, 0f, _intent.Direction.Y) * speed * dt;
                 transform.rotation = Quaternion.LookRotation(new Vector3(_intent.Direction.X, 0f, _intent.Direction.Y));
             }
@@ -201,7 +254,9 @@ namespace ZeldaDaughter.Hero
             var before = transform.position;
             _cc.Move(horizontal + Vector3.up * _verticalSpeed * dt);
             var delta = transform.position - before;
-            _moved += new Vector2(delta.x, delta.z).magnitude;
+            float flat = new Vector2(delta.x, delta.z).magnitude;
+            _moved += flat;
+            _walked += flat;
         }
 
         private static CoreTouchPhase? Map(UnityTouchPhase p)

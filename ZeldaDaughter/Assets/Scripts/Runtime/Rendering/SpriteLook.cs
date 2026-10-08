@@ -1,0 +1,78 @@
+using UnityEngine;
+
+namespace ZeldaDaughter.Rendering
+{
+    /// <summary>
+    /// How the billboard sprites are drawn: one asset (Assets/Art/Registries/SpriteLook.asset, made by RegistryBuilder). The sprite material is
+    /// URP Unlit with alpha clip, two-sided — it writes depth, so the pen outline of D-08 (depth + normals) sees the figure; the shadow is a
+    /// transparent soft blob on the ground. Look numbers, not balance.
+    /// </summary>
+    public sealed class SpriteLook : ScriptableObject
+    {
+        [SerializeField] private Material _spriteMaterial;
+        [SerializeField] private Material _shadowMaterial;
+        [SerializeField, Range(0.05f, 0.95f)] private float _alphaCutoff = 0.5f;
+        [SerializeField] private float _shadowWidthMeters = 0.9f;
+        [SerializeField, Range(0f, 1f)] private float _shadowAlpha = 0.35f;
+        [SerializeField] private float _shadowLift = 0.04f;
+
+        public Material SpriteMaterial => _spriteMaterial != null ? _spriteMaterial : Fallback(ref _runtimeSprite, false);
+        public Material ShadowMaterial => _shadowMaterial != null ? _shadowMaterial : Fallback(ref _runtimeShadow, true);
+        public float AlphaCutoff => _alphaCutoff;
+        public float ShadowWidthMeters => _shadowWidthMeters;
+        public float ShadowAlpha => _shadowAlpha;
+        public float ShadowLift => _shadowLift;
+
+        private static Material _runtimeSprite, _runtimeShadow;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() { _runtimeSprite = null; _runtimeShadow = null; }
+
+        private Material Fallback(ref Material cache, bool shadow)
+        {
+            if (cache == null) cache = shadow ? NewShadowMaterial() : NewSpriteMaterial(_alphaCutoff);
+            return cache;
+        }
+
+        public void Configure(Material sprite, Material shadow, float alphaCutoff, float shadowWidth, float shadowAlpha, float shadowLift)
+        {
+            _spriteMaterial = sprite;
+            _shadowMaterial = shadow;
+            _alphaCutoff = alphaCutoff;
+            _shadowWidthMeters = shadowWidth;
+            _shadowAlpha = shadowAlpha;
+            _shadowLift = shadowLift;
+        }
+
+        /// <summary>URP Unlit, alpha clip, two-sided, depth write — the figure is a cut-out card in the 3D world.</summary>
+        public static Material NewSpriteMaterial(float cutoff)
+        {
+            var m = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "ZdSprite" };
+            m.SetFloat("_Surface", 0f);
+            m.SetFloat("_Cull", 0f);
+            m.SetFloat("_AlphaClip", 1f);
+            m.SetFloat("_Cutoff", cutoff);
+            m.SetFloat("_ZWrite", 1f);
+            m.EnableKeyword("_ALPHATEST_ON");
+            m.SetOverrideTag("RenderType", "TransparentCutout");
+            m.renderQueue = 2450;
+            return m;
+        }
+
+        /// <summary>URP Unlit, transparent, no depth write — the soft blob under the feet.</summary>
+        public static Material NewShadowMaterial()
+        {
+            var m = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "ZdShadow" };
+            m.SetFloat("_Surface", 1f);
+            m.SetFloat("_Blend", 0f);
+            m.SetFloat("_Cull", 0f);
+            m.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            m.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            m.SetFloat("_ZWrite", 0f);
+            m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            m.SetOverrideTag("RenderType", "Transparent");
+            m.renderQueue = 3000;
+            return m;
+        }
+    }
+}
