@@ -15,6 +15,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 REG = ROOT / 'ZeldaDaughter/Assets/Art/Registries/characters.json'
 OUT = ROOT / 'docs/demo/sprites/preview'
 SCALE = 0.35
+NOTE = ('Пилот D-25: у героини бок — 12 кадров бега (Seedance 2 mini по кадру 0). Остальное пока старые 3 кадра D-09 — '
+        'для сравнения «до/после».')  # строка под заголовком (правка координатора f41798f4)
 
 
 def anims(rec):
@@ -56,7 +58,7 @@ def main(ids):
                     im.resize((max(1, int(im.width * SCALE)), max(1, int(im.height * SCALE))), Image.Resampling.LANCZOS).save(dst, optimize=True)
                 rel.append(f'frames/{cid}/{src.name}')
             data[cid][name] = rel
-    html = PAGE.replace('__DATA__', json.dumps(data, ensure_ascii=False))
+    html = PAGE.replace('__DATA__', json.dumps(data, ensure_ascii=False)).replace('__NOTE__', NOTE)
     (OUT / 'index.html').write_text(html, encoding='utf-8')
     n = sum(len(v) for v in data.values())
     print(OUT / 'index.html', len(data), 'персонажей,', n, 'анимаций')
@@ -83,6 +85,7 @@ button.on{border-color:var(--accent);color:var(--accent)}label{color:var(--muted
 .strip img.cur{border-color:var(--accent)}.info{color:var(--muted);margin-top:8px}
 </style></head><body><main>
 <h1>Анимации персонажей</h1>
+<p class="info" style="margin-top:-6px">__NOTE__</p>
 <div class="bar">
  <label>Персонаж <select id="cid"></select></label>
  <label>Анимация <select id="anim"></select></label>
@@ -111,7 +114,7 @@ $('flip').onclick=()=>{$('img').classList.toggle('flip');$('flip').classList.tog
 $('fps').oninput=()=>{$('fpsv').textContent=$('fps').value;restart()};
 $('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'пауза':'играть';restart()};
 $('prev').onclick=()=>{k--;show()};$('next').onclick=()=>{k++;show()};
-$('cid').onchange();
+if(DATA.heroine)$('cid').value='heroine';$('cid').onchange();
 </script></body></html>
 '''
 

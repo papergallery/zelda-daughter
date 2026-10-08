@@ -48,5 +48,5 @@ $('flip').onclick=()=>{$('img').classList.toggle('flip');$('flip').classList.tog
 $('fps').oninput=()=>{$('fpsv').textContent=$('fps').value;restart()};
 $('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'пауза':'играть';restart()};
 $('prev').onclick=()=>{k--;show()};$('next').onclick=()=>{k++;show()};
-$('cid').value='heroine';$('cid').onchange();$('anim').value='шаг side (цикл 12)';pick();
+if(DATA.heroine)$('cid').value='heroine';$('cid').onchange();
 </script></body></html>
