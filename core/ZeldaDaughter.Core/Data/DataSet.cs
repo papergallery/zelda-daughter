@@ -14,6 +14,7 @@ using ZeldaDaughter.Core.Language;
 using ZeldaDaughter.Core.Remarks;
 using ZeldaDaughter.Core.Progression;
 using ZeldaDaughter.Core.Movement;
+using ZeldaDaughter.Core.Npcs;
 using ZeldaDaughter.Core.Onboarding;
 using ZeldaDaughter.Core.World;
 
@@ -66,6 +67,7 @@ namespace ZeldaDaughter.Core.Data
         public SessionSettings Session { get; private set; } = new SessionSettings();
         public WeaponSettings Weapons { get; private set; } = new WeaponSettings();
         public EnemySettings Enemies { get; private set; } = new EnemySettings();
+        public NpcSettings Npcs { get; private set; } = new NpcSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -95,6 +97,7 @@ namespace ZeldaDaughter.Core.Data
                 Session = Read<SessionSettings>(read, "session.json", problems),
                 Weapons = Read<WeaponSettings>(read, "weapons.json", problems),
                 Enemies = Read<EnemySettings>(read, "enemies.json", problems),
+                Npcs = Read<NpcSettings>(read, "npcs.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);
@@ -190,6 +193,26 @@ namespace ZeldaDaughter.Core.Data
                     foreach (var icon in node.Value.Icons)
                         if (!d.Dialogues.Icons.Contains(icon)) problems.Add($"dialogues.json: {npc.Key}.{node.Key} — иконка '{icon}' не в списке");
                 }
+            }
+            foreach (var kv in d.Npcs.Npcs)
+            {
+                string who = $"npcs.json: '{kv.Key}'";
+                if (!d.Dialogues.Npcs.ContainsKey(kv.Key)) problems.Add($"{who} — нет в dialogues.json");
+                var sched = kv.Value.Schedule;
+                if (sched.Count == 0) problems.Add($"{who} — пустое расписание");
+                bool sleeps = false;
+                for (int i = 0; i < sched.Count; i++)
+                {
+                    var e = sched[i];
+                    if (e.Hour < 0 || e.Hour >= 24) problems.Add($"{who} — час {e.Hour} вне [0; 24)");
+                    if (i > 0 && e.Hour <= sched[i - 1].Hour) problems.Add($"{who} — часы расписания должны расти ({sched[i - 1].Hour} → {e.Hour})");
+                    if (!IdPattern.IsMatch(e.Anchor)) problems.Add($"{who} — якорь '{e.Anchor}' (id объекта сцены: [a-z0-9_] с буквы)");
+                    var act = e.ParsedActivity;
+                    if (act == null) problems.Add($"{who} — занятие '{e.Activity}' (work | trade | tavern | sleep | stroll)");
+                    else if (act == NpcActivity.Sleep) sleeps = true;
+                    else if (act == NpcActivity.Trade && !kv.Value.Shop) problems.Add($"{who} — торгует, а shop: false");
+                }
+                if (sched.Count > 0 && !sleeps) problems.Add($"{who} — в расписании нет сна (§2: ночью спят)");
             }
             var pairs = recipes.Field.GroupBy(r => string.CompareOrdinal(r.A, r.B) <= 0 ? r.A + "|" + r.B : r.B + "|" + r.A).Where(g => g.Count() > 1);
             foreach (var g in pairs) problems.Add($"recipes.json: пара {g.Key.Replace("|", " + ")} — два рецепта");

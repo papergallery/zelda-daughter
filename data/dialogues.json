@@ -1,5 +1,5 @@
 {
-  "_source": "project-design.md §2 «Пролог» (крестьянин — жесты и иконки, показывает направление к городу), §3 этап 1 (кракозябры + иконки, герой отвечает иконками, провалы коммуникации). Тексты — сырьё апрельского DialogueTreeBuilder.cs, переписаны: без рода героя (docs/for-author.md п. 1), направление — жестом на объект, а не «на север» (в апреле расходилось с раскладкой).",
+  "_source": "project-design.md §2 «Пролог» (крестьянин — жесты и иконки, показывает направление к городу), §3 этап 1 (кракозябры + иконки, герой отвечает иконками, провалы коммуникации). Тексты — сырьё апрельского DialogueTreeBuilder.cs, D-02: узлы-заглушки для остальных NPC региона (расписание и торговцы ссылаются на существующих), настоящие диалоги — D-07. Переписаны: без рода героя (docs/for-author.md п. 1), направление — жестом на объект, а не «на север» (в апреле расходилось с раскладкой).",
   "icons": ["question", "town", "point", "food", "danger", "hand", "map", "coin", "sleep"],
   "npcs": {
     "peasant": {
@@ -18,6 +18,13 @@
         "huh":   { "line": "Чего? По-людски говори.", "icons": ["question"], "replies": [ { "icon": "town", "to": "pass" } ] },
         "pass":  { "line": "Проходи. И без глупостей.", "icons": ["point", "danger"], "gesture": { "type": "point", "target": "town_square" }, "end": true }
       }
-    }
+    },
+    "merchant": { "name": "Торговец", "nodes": { "start": { "line": "Заходи, посмотри. Что-нибудь нужно?", "icons": ["hand", "coin"], "end": true } } },
+    "smith": { "name": "Кузнец", "nodes": { "start": { "line": "Железо любит терпение.", "icons": ["hand", "danger"], "end": true } } },
+    "barkeep": { "name": "Хозяин таверны", "nodes": { "start": { "line": "Присаживайся. Поесть? Поспать?", "icons": ["food", "sleep"], "end": true } } },
+    "herbalist": { "name": "Травница", "nodes": { "start": { "line": "Раны? Травы? Скажи, что болит.", "icons": ["hand", "food"], "end": true } } },
+    "townswoman": { "name": "Горожанка", "nodes": { "start": { "line": "Доброго дня.", "icons": ["question"], "end": true } } },
+    "old_man": { "name": "Старик", "nodes": { "start": { "line": "Эх, молодость...", "icons": ["question"], "end": true } } },
+    "weaver": { "name": "Ткачиха", "nodes": { "start": { "line": "Не мешай, считаю нити.", "icons": ["hand"], "end": true } } }
   }
 }

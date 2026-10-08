@@ -7,6 +7,7 @@ using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Data;
 using ZeldaDaughter.Core.Inventory;
 using ZeldaDaughter.Core.Language;
+using ZeldaDaughter.Core.Npcs;
 using ZeldaDaughter.Core.Onboarding;
 using ZeldaDaughter.Core.Progression;
 using ZeldaDaughter.Core.World;
@@ -27,6 +28,7 @@ namespace ZeldaDaughter.Core.Save
             Crafting = new Crafting.Crafting(data);
             Language = new Comprehension(data.Language);
             Hints = new Hints(data.Onboarding);
+            Npcs = new NpcRoster(data.Npcs, Clock);
             // endurance and hunger scale recovery wherever it happens (natural regeneration, food) — D-01
             Condition.HealScale = () => Skills.HealMultiplier() * Hunger.Multiplier;
             Combat = new HeroCombat(data.Weapons, Skills, Condition, Hunger, Bag);
@@ -41,6 +43,8 @@ namespace ZeldaDaughter.Core.Save
         public Crafting.Crafting Crafting { get; }
         public Comprehension Language { get; }
         public Hints Hints { get; }
+        /// <summary>Where the NPCs are by the clock (D-02). Nothing to save: the slot is a function of the time.</summary>
+        public NpcRoster Npcs { get; }
         /// <summary>The hero's side of a fight, wired to this state's skills, wounds, hunger and bag (view sets <c>Position</c>).</summary>
         public HeroCombat Combat { get; }
 
