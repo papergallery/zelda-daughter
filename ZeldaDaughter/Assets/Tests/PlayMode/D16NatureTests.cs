@@ -291,15 +291,31 @@ namespace ZeldaDaughter.Tests
                 .Where(m => m.enabled && m.GetType().Namespace != null && m.GetType().Namespace.StartsWith("ZeldaDaughter") && m != _s).ToList();
             foreach (var m in all) m.enabled = false;
             for (int i = 0; i < 10; i++) yield return null;
-            // The editor's own allocations come and go (a long suite, the bridge): the quieter of three windows each is the steady state.
-            long without = long.MaxValue, with = long.MaxValue, got = 0;
-            for (int k = 0; k < 3; k++) { yield return Allocated(120, t => got = t); without = Math.Min(without, got); }
-            foreach (var m in mine) m.enabled = true;
-            for (int i = 0; i < 10; i++) yield return null;
-            for (int k = 0; k < 3; k++) { yield return Allocated(120, t => got = t); with = Math.Min(with, got); }
+            // The whole-frame counter carries the editor's own allocations (~300 KB a frame, swinging by hundreds of KB between windows, D-26b): the assertion is on
+            // the bytes allocated inside the scripts' frame phases (ScriptPhaseAlloc), the whole-frame numbers are only logged.
+            long without = long.MaxValue, with = long.MaxValue, got = 0, sWithout = long.MaxValue, sWith = long.MaxValue;
+            ScriptPhaseAlloc.Start();
+            try
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    long s0 = ScriptPhaseAlloc.Total;
+                    yield return Allocated(120, t => got = t);
+                    without = Math.Min(without, got); sWithout = Math.Min(sWithout, ScriptPhaseAlloc.Total - s0);
+                }
+                foreach (var m in mine) m.enabled = true;
+                for (int i = 0; i < 10; i++) yield return null;
+                for (int k = 0; k < 3; k++)
+                {
+                    long s0 = ScriptPhaseAlloc.Total;
+                    yield return Allocated(120, t => got = t);
+                    with = Math.Min(with, got); sWith = Math.Min(sWith, ScriptPhaseAlloc.Total - s0);
+                }
+            }
+            finally { ScriptPhaseAlloc.Stop(); }
             foreach (var m in all) m.enabled = true;
-            ZdLog.Info("Test", $"D-16 idle GC over 120 frames: session only {without} B, with the elements {with} B");
-            Assert.LessOrEqual(with - without, 512, "NatureFx + HeroTorchLight in idle frames");
+            ZdLog.Info("Test", $"D-16 idle GC over 120 frames: scripts' phases {sWithout} B without, {sWith} B with the elements; whole frame (editor included) {without} B / {with} B");
+            Assert.LessOrEqual(sWith - sWithout, 512, "NatureFx + HeroTorchLight in idle frames");
         }
 
         // ------------------------------------------------------------------ frames (criteria D-16 p. 5): docs/demo/frames/D-16-*.png

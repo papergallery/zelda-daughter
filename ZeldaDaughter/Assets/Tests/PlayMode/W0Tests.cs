@@ -244,6 +244,27 @@ namespace ZeldaDaughter.Tests
             result(total, worst);
         }
 
+        sealed class Allocator : MonoBehaviour
+        {
+            public static object Sink;
+            private void Update() { Sink = new byte[100]; }
+        }
+
+        [UnityTest]
+        public IEnumerator The_script_phase_counter_sees_an_allocating_update()
+        {
+            // the idle test below is only worth something if the counter it relies on would notice a leak
+            for (int i = 0; i < 10; i++) yield return null;
+            var go = new GameObject("Allocator", typeof(Allocator));
+            ScriptPhaseAlloc.Start();
+            long s0 = ScriptPhaseAlloc.Total;
+            for (int i = 0; i < 20; i++) yield return null;
+            long got = ScriptPhaseAlloc.Total - s0;
+            ScriptPhaseAlloc.Stop();
+            Object.Destroy(go);
+            Assert.GreaterOrEqual(got, 20 * 100, "20 frames x a 100-byte array in Update");
+        }
+
         [UnityTest]
         public IEnumerator Idle_frames_do_not_allocate()
         {
@@ -252,18 +273,29 @@ namespace ZeldaDaughter.Tests
             yield return new WaitForSeconds(1.3f);
             for (int i = 0; i < 60; i++) yield return null; // warm-up: first-use allocations (UI text, caches) are not the steady state
 
-            // The editor allocates by itself every frame (the bridge, the test runner, the Game view): measure the same frames with every
-            // ZeldaDaughter component switched off, and hold the game to the difference.
-            long withGame = 0, worstWith = 0, bare = 0, worstBare = 0;
-            yield return Allocated(120, (t, w) => { withGame = t; worstWith = w; });
-            var off = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
-                .Where(m => m.enabled && m.GetType().Namespace != null && m.GetType().Namespace.StartsWith("ZeldaDaughter")).ToList();
-            foreach (var m in off) m.enabled = false;
-            for (int i = 0; i < 10; i++) yield return null;
-            yield return Allocated(120, (t, w) => { bare = t; worstBare = w; });
-            foreach (var m in off) m.enabled = true;
-            Debug.Log($"[ZD:Test] GC allocated in 120 idle frames: game on {withGame} B (worst frame {worstWith}), game off {bare} B (worst frame {worstBare}), {off.Count} components");
-            Assert.LessOrEqual(withGame - bare, 512, "GC bytes the game allocated over 120 idle frames (over the editor's own)");
+            // The profiler's per-frame counter carries the editor's own allocations (~300 KB a frame on 2026-10-08: the bridge, the Game view, the test runner), which swing by
+            // hundreds of KB between two windows - against a limit of 512 B. The assertion is on the bytes allocated inside the scripts' frame phases
+            // (Update / LateUpdate / FixedUpdate), counted on the main thread (ScriptPhaseAlloc); the profiler counter is only logged. Hold the game to the difference
+            // with every ZeldaDaughter component switched off.
+            long withGame = 0, worstWith = 0, bare = 0, worstBare = 0, scriptsWith = 0, scriptsBare = 0;
+            ScriptPhaseAlloc.Start();
+            try
+            {
+                long s0 = ScriptPhaseAlloc.Total;
+                yield return Allocated(120, (t, w) => { withGame = t; worstWith = w; });
+                scriptsWith = ScriptPhaseAlloc.Total - s0;
+                var off = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                    .Where(m => m.enabled && m.GetType().Namespace != null && m.GetType().Namespace.StartsWith("ZeldaDaughter")).ToList();
+                foreach (var m in off) m.enabled = false;
+                for (int i = 0; i < 10; i++) yield return null;
+                s0 = ScriptPhaseAlloc.Total;
+                yield return Allocated(120, (t, w) => { bare = t; worstBare = w; });
+                scriptsBare = ScriptPhaseAlloc.Total - s0;
+                foreach (var m in off) m.enabled = true;
+                Debug.Log($"[ZD:Test] GC allocated in 120 idle frames: scripts' phases game on {scriptsWith} B, game off {scriptsBare} B; whole frame (with the editor) game on {withGame} B (worst frame {worstWith}), game off {bare} B (worst frame {worstBare}), {off.Count} components");
+            }
+            finally { ScriptPhaseAlloc.Stop(); }
+            Assert.LessOrEqual(scriptsWith - scriptsBare, 512, "GC bytes the game's scripts allocated over 120 idle frames (over the engine's own)");
         }
     }
 }
