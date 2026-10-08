@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-152194464594305715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39948d3905776496961288fd606fef8e, type: 3}
+  m_Name: Watercolor
+  m_EditorClassIdentifier: ZeldaDaughter::ZeldaDaughter.Rendering.WatercolorFeature
+  m_Active: 1
+  _settings: {fileID: 11400000, guid: 7dea59a6a13113946a899d06fe3f6b23, type: 2}
+  _shader: {fileID: 4800000, guid: e0eaca41488e79581a9d2ed041dad4c4, type: 3}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24,10 +39,10 @@ MonoBehaviour:
     probeSamplingDebugMesh: {fileID: 0}
     probeSamplingDebugTexture: {fileID: 0}
     probeVolumeBlendStatesCS: {fileID: 0}
-  m_RendererFeatures: []
-  m_RendererFeatureMap: 
+  m_RendererFeatures:
+  - {fileID: -152194464594305715}
+  m_RendererFeatureMap: 4d5d13d9f04be3fd
   m_UseNativeRenderPass: 0
-  xrSystemData: {fileID: 0}
   postProcessData: {fileID: 0}
   m_AssetVersion: 3
   m_PrepassLayerMask:
