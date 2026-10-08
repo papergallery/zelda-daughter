@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/prologue-grey.unity
-    guid: caabd67c32c3a38458d59aff66e4f1cd
+    path: Assets/Scenes/region.unity
+    guid: 7b84e55c55cbaff41a921d3ab60beda0
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
