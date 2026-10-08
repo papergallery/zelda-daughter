@@ -215,7 +215,8 @@ namespace ZeldaDaughter.Tests
                 var p = merchant.transform.position;
                 walked += Flat(p, last);
                 last = p;
-                Assert.IsFalse(Physics.CheckSphere(p + Vector3.up * 0.6f, 0.15f, blocking), $"through a wall at {p}");
+                var hits = Physics.OverlapSphere(p + Vector3.up * 0.6f, 0.15f, blocking);
+                Assert.AreEqual(0, hits.Length, $"through a wall at {p}: {string.Join(", ", hits.Select(h => h.transform.root == h.transform ? h.name : h.transform.parent.name + "/" + h.name))}");
                 if (Flat(p, tavern) > NpcPresenter.TavernRingMeters + 0.6f) worst = Mathf.Max(worst, DistanceToPolyline(p, road));
                 yield return null;
             }
@@ -277,7 +278,7 @@ namespace ZeldaDaughter.Tests
                 var b = _s.UI.ReplyButtons.First(x => x.name == "Reply_town");
                 b.onClick.Invoke();
                 yield return null;
-                if (_bubble.QuestionVisible) { question = true; Assert.AreEqual(before, _talk.NodeId, "she did not get it: the talk stays"); }
+                if (_bubble.QuestionVisible) { question = true; Assert.AreEqual(before, _talk.NodeId, "she did not get it: the talk stays"); Assert.IsTrue(_talk.Active); }
                 else if (!_talk.Active || _talk.NodeId != before) moved = true;
             }
             Assert.IsTrue(moved, "Reply_town takes the talk on");

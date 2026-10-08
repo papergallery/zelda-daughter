@@ -84,6 +84,7 @@ namespace ZeldaDaughter.UI
             var view = npc != null ? npc.GetComponent<NpcView>() : null;
             _npcHead = view != null ? view.HeadHeight : 1.8f;
             _until = float.PositiveInfinity;
+            _question.gameObject.SetActive(false); // she has said something new: the old «?» is over
 
             float pad = _look != null ? _look.Padding : 24f;
             _iconIds.Clear();
