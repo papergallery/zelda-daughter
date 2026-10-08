@@ -228,24 +228,42 @@ namespace ZeldaDaughter.Tests
             Assert.AreEqual(0f, fader.Alpha, 1e-3f);
         }
 
-        [UnityTest]
-        public IEnumerator Idle_frames_do_not_allocate()
+        /// <summary>Managed bytes allocated per frame over <paramref name="frames"/> frames of standing still (the profiler's «GC Allocated In Frame»).</summary>
+        static IEnumerator Allocated(int frames, System.Action<long, long> result)
         {
-            // Remarks.ConditionTopics (core) builds a list per call, once a second: that is reported to package C, and the check is out of this measurement.
-            _s.State.Data.Session.RemarkCheckSeconds = 1000f;
-            yield return new WaitForSeconds(1.3f);
-            for (int i = 0; i < 60; i++) yield return null; // warm-up: first-use allocations (UI text, caches) are not the steady state
-            long total = 0;
+            long total = 0, worst = 0;
             using (var rec = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame"))
             {
-                for (int i = 0; i < 120; i++)
+                for (int i = 0; i < frames; i++)
                 {
                     yield return null;
                     total += rec.LastValue;
+                    if (rec.LastValue > worst) worst = rec.LastValue;
                 }
             }
-            Debug.Log($"[ZD:Test] GC allocated in 120 idle frames: {total} bytes");
-            Assert.AreEqual(0, total, "GC bytes allocated over 120 idle frames");
+            result(total, worst);
+        }
+
+        [UnityTest]
+        public IEnumerator Idle_frames_do_not_allocate()
+        {
+            // Remarks.ConditionTopics (core) builds a list per call, once a second: reported to package C, kept out of this measurement.
+            _s.State.Data.Session.RemarkCheckSeconds = 1000f;
+            yield return new WaitForSeconds(1.3f);
+            for (int i = 0; i < 60; i++) yield return null; // warm-up: first-use allocations (UI text, caches) are not the steady state
+
+            // The editor allocates by itself every frame (the bridge, the test runner, the Game view): measure the same frames with every
+            // ZeldaDaughter component switched off, and hold the game to the difference.
+            long withGame = 0, worstWith = 0, bare = 0, worstBare = 0;
+            yield return Allocated(120, (t, w) => { withGame = t; worstWith = w; });
+            var off = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Where(m => m.enabled && m.GetType().Namespace != null && m.GetType().Namespace.StartsWith("ZeldaDaughter")).ToList();
+            foreach (var m in off) m.enabled = false;
+            for (int i = 0; i < 10; i++) yield return null;
+            yield return Allocated(120, (t, w) => { bare = t; worstBare = w; });
+            foreach (var m in off) m.enabled = true;
+            Debug.Log($"[ZD:Test] GC allocated in 120 idle frames: game on {withGame} B (worst frame {worstWith}), game off {bare} B (worst frame {worstBare}), {off.Count} components");
+            Assert.LessOrEqual(withGame - bare, 0, "GC bytes the game allocated over 120 idle frames (over the editor's own)");
         }
     }
 }
