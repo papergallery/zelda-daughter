@@ -134,7 +134,7 @@ namespace ZeldaDaughter.Tests
             _s.Events.RadialChosen += id => chosen = id;
             _radial.Choose("map");
             Assert.AreEqual("map", chosen, "the map window (D-15) is told");
-            Assert.IsFalse(_windows.AnyOpen, "the bag did not open");
+            Assert.IsFalse(_windows.IsOpen("bag"), "the bag did not open (the map window of D-15 does)");
             yield return null;
         }
 

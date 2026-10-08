@@ -548,6 +548,7 @@ namespace ZeldaDaughter.Editor
                         if (Math.Abs(px) > s.HalfX - 6f || Math.Abs(pz) > s.HalfZ - 6f) continue;
                         if (Blocked(config, boxes, clear, px, pz)) continue;
                         var c = s.P(px, pz);
+                        if (Vector2.Distance(c, MapWindow.CompassPixel) < 90f) continue;
                         float r = 6f + 3f * Hash01(ix, iz, seed + 2);
                         InkLine(s, Circle(c + new Vector2(0f, r), r, 14, 0.35f, ix * 31 + iz), 0.9f, 0.85f, 0.5f, ++seed % 90 + 600);
                         InkLine(s, new List<Vector2> { c, c + new Vector2(0f, r * 0.5f) }, 0.9f, 0.85f, 0.2f, 650);

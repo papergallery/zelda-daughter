@@ -114,8 +114,7 @@ namespace ZeldaDaughter.UI
             {
                 var e = entries[i];
                 _shown.Add(e.Id);
-                string who = WhoOf(e);
-                var text = ScreenParts.Label(_content, "Note_" + e.Id, look, (who.Length > 0 ? who + ": " : "") + e.Text, normal, 0f, y, width, 10f, TextAlignmentOptions.TopLeft);
+                var text = ScreenParts.Label(_content, "Note_" + e.Id, look, e.Text, normal, 0f, y, width, 10f, TextAlignmentOptions.TopLeft);
                 float h = text.GetPreferredValues(text.text, width, 0f).y;
                 text.rectTransform.sizeDelta = new Vector2(width, h);
                 y += h + 6f;
@@ -135,12 +134,6 @@ namespace ZeldaDaughter.UI
                 y += 34f;
             }
             ScreenParts.SetContentHeight(_content, y);
-        }
-
-        private string WhoOf(NotebookEntry e)
-        {
-            if (string.IsNullOrEmpty(e.Who)) return "";
-            return _g.Data.Npcs.Npcs.TryGetValue(e.Who, out var d) ? d.Name : "";
         }
     }
 }
