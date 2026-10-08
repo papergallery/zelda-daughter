@@ -159,6 +159,10 @@ namespace ZeldaDaughter.Combat
                     pose.TiltDegrees = Mathf.Sin(_enemy.StateSeconds * 16f) * 9f;   // swaying, stunned
                     pose.Crouch = 0.25f;
                     break;
+                case EnemyState.Fleeing:
+                    pose.Crouch = 0.3f;            // D-23: scared of the fire — flat and quick, shying away
+                    pose.Shake = 0.03f;
+                    break;
             }
             if (_lunge > 0f) { pose.TiltDegrees = side * 14f * _lunge; pose.Crouch = 0f; }  // the blow itself: a thrust at the hero
             if (_hurt > 0f) pose.Shake += 0.05f * _hurt;

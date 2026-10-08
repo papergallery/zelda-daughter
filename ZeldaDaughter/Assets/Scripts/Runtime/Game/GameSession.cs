@@ -94,6 +94,7 @@ namespace ZeldaDaughter.Game
             _autosaveLeft = _state.Data.Session.AutosaveSeconds;
             Events.Skill += OnSkill;
             Events.BagChanged += OnBagChanged;
+            Events.Enemy += OnEnemyNotice;
             _hero.SetSpeedSource(() => _state.SpeedMultiplier);
             _ui.Bind(Events);
             Load();
@@ -111,6 +112,7 @@ namespace ZeldaDaughter.Game
         {
             Events.Skill -= OnSkill;
             Events.BagChanged -= OnBagChanged;
+            Events.Enemy -= OnEnemyNotice;
         }
 
         /// <summary>A fresh state registered with this scene and wired to the bus. Registration goes before a save is loaded (grass cells take their saved state as they are added).</summary>
@@ -162,7 +164,8 @@ namespace ZeldaDaughter.Game
                 g.Hints.Set("tappable_nearby", TappableNearby(p));
                 g.Hints.Set("has_item", g.Bag.UsedSlots > 0);
                 bool overloaded = g.Bag.IsOverloaded(g.Skills.CapacityMultiplier());
-                var topics = _remarks.ConditionTopics(g.Condition, g.Hunger, overloaded, g.NightWithoutFire);
+                var topics = _remarks.ConditionTopics(g.Condition, g.Hunger, overloaded, g.NightWithoutFire,
+                    wolfClose: g.PredatorNear(data.Session.PredatorFearMeters), raining: g.Nature.Weather.IsRaining, torchDying: g.Torch.IsLit && g.Torch.Light < 1f);
                 if (topics.Count > 0) SayFirst(topics);
             }
             var hint = g.Hints.Visible;
@@ -196,7 +199,15 @@ namespace ZeldaDaughter.Game
             {
                 _worldAcc -= WorldStepSeconds;
                 var events = _state.TickWorld(WorldStepSeconds, Rolls.World.Next());
-                for (int i = 0; i < events.Count; i++) Events.RaiseWorld(events[i]);
+                for (int i = 0; i < events.Count; i++)
+                {
+                    Events.RaiseWorld(events[i]);
+                    if (events[i].Kind == WorldEventKind.TorchBurntOut)
+                    {
+                        ZdLog.Info("Nature", "torch_burnt_out");
+                        BagChanged("torch burnt out");   // the torch left the bag and a burnt stick took its place: the light, the bag window follow
+                    }
+                }
             }
         }
 
@@ -279,6 +290,14 @@ namespace ZeldaDaughter.Game
 
         /// <summary>The bag changed (picked, crafted, eaten, traded): everyone who shows or reads it is told.</summary>
         public void BagChanged(string why) => Events.RaiseBagChanged(why);
+
+        /// <summary>A wolf ran from the fire while she is near: she remarks on it (D-23).</summary>
+        private void OnEnemyNotice(EnemyNotice n)
+        {
+            if (n.Event.Kind != EnemyEventKind.Frightened) return;
+            var e = _state.Enemies.Get(n.EnemyId);
+            if (e != null && (e.Position - _state.HeroPosition).Length <= _state.Data.Session.PredatorFearMeters) Say(Topics.WolfFlees);
+        }
 
         private void OnBagChanged(string why) => _state.Hints.Set("has_item", _state.Bag.UsedSlots > 0);
 

@@ -166,6 +166,7 @@ namespace ZeldaDaughter.UI
                 _give.Clear();
                 _take.Clear();
                 _session.BagChanged("trade");
+                if (r.FirstPurchase) _session.Say(Topics.FirstPurchase);
             }
             else if (r.Outcome == TradeOutcome.NoRoom) _session.Say(Topics.CraftNoRoom);
             Refresh();

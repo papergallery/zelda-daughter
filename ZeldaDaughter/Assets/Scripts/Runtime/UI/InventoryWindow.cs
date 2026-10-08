@@ -42,6 +42,9 @@ namespace ZeldaDaughter.UI
         private readonly List<CellView> _cells = new List<CellView>();
         private Color _plateColor, _emptyColor;
         private bool _open;
+        private BubbleWidget _info;
+        private float _infoUntil;
+        private int _infoCell = -1;
 
         public string Id => WindowId;
         public RectTransform Root { get { Build(); return _root; } }
@@ -91,8 +94,57 @@ namespace ZeldaDaughter.UI
             ZdLog.Info("Items", $"bag open cells={_cells.Count} stacks={_g.Bag.UsedSlots}");
         }
 
+        // ------------------------------------------------------------------ the description (D-23)
+
+        /// <summary>The description cloud on screen (the text from data/items.json), or null.</summary>
+        public string InfoText => _info != null ? _info.Text : null;
+        public int InfoCell => _info != null && _info.Visible ? _infoCell : -1;
+        public RectTransform InfoRoot => _info?.Root;
+
+        /// <summary>
+        /// A long press on a cell: a paper cloud above the cell tells in a few words what the thing is (<c>description</c> in items.json) — no numbers.
+        /// It goes after <c>itemInfoSeconds</c>, on the next press, or when the bag closes. False for an empty cell.
+        /// </summary>
+        public bool ShowInfo(int index)
+        {
+            Build();
+            string item = ItemIn(index);
+            if (item == null || _g == null || !_g.Data.Items.TryGetValue(item, out var def)) return false;
+            var look = _ui.Look;
+            if (_info == null)
+            {
+                _info = UiKit.MakeBubble(_root, "ItemInfo", look, 700f, look != null ? look.TextSmall : 34f);
+                var rt = _info.Root;
+                rt.anchorMin = rt.anchorMax = new Vector2(0f, 1f);
+                rt.pivot = new Vector2(0.5f, 0f);
+                _info.Background.raycastTarget = false;
+            }
+            _info.Show(def.Name + ". " + def.Description);
+            _info.Root.SetAsLastSibling();
+            _infoCell = index;
+            var cell = _cells[index].Root;
+            float width = _root.sizeDelta.x, half = _info.Root.sizeDelta.x * 0.5f;
+            float x = Mathf.Clamp(cell.anchoredPosition.x, half + 8f, Mathf.Max(half + 8f, width - half - 8f));
+            _info.Root.anchoredPosition = new Vector2(x, cell.anchoredPosition.y + Cell * 0.5f + 8f);
+            _infoUntil = Time.unscaledTime + _g.Data.Session.ItemInfoSeconds;
+            ZdLog.Info("Items", $"describe {item}");
+            return true;
+        }
+
+        public void HideInfo()
+        {
+            if (_info != null) _info.Hide();
+            _infoCell = -1;
+        }
+
+        private void Update()
+        {
+            if (_info != null && _info.Visible && Time.unscaledTime >= _infoUntil) HideInfo();
+        }
+
         public void OnClosed()
         {
+            HideInfo();
             _open = false;
             _drag.Cancel();
         }

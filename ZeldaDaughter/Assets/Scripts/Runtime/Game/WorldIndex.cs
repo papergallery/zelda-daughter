@@ -107,7 +107,7 @@ namespace ZeldaDaughter.Game
 
         /// <summary>
         /// What the core must know about this scene, before a save is loaded: grass cells, mud ground (zones tagged <c>mud</c>, as circles),
-        /// the centres of the night predators' zones (ids from data/night.json).
+        /// the town as a safe circle for night predators (data/night.json safeAreas, D-23).
         /// </summary>
         public void RegisterInto(GameState g)
         {
@@ -120,8 +120,15 @@ namespace ZeldaDaughter.Game
                 float r = a.Radius > 0f ? a.Radius : Mathf.Max(a.Size.X, a.Size.Z) * 0.5f;
                 g.Nature.Mud.AddZone(z.Id, new Vec2(a.Center.X, a.Center.Z), r);
             }
-            foreach (var p in _predatorZones) g.Nature.Predators.AddZone(p.Id, new Vec2(p.Position.x, p.Position.z));
-            ZdLog.Info("Index", $"registered grass={_grassCells.Count} predatorZones={_predatorZones.Count} zones={_zones.Length}");
+            int safe = 0;
+            foreach (var a in g.Data.Night.SafeAreas)
+            {
+                var o = Find(a.Anchor);
+                if (o == null) { ZdLog.Warn("Index", $"night safe area '{a.Anchor}': no such object in the scene"); continue; }
+                g.Nature.Predators.AddSafe(a.Anchor, new Vec2(o.transform.position.x, o.transform.position.z));
+                safe++;
+            }
+            ZdLog.Info("Index", $"registered grass={_grassCells.Count} safeAreas={safe} zones={_zones.Length}");
         }
     }
 }

@@ -200,6 +200,9 @@ namespace ZeldaDaughter.World
                     WolvesCalled++;
                     ZdLog.Info("Nature", $"wolf_called {e.Id} {e.Detail} at {e.Position.X:0.0},{e.Position.Y:0.0}");
                     break;
+                case WorldEventKind.PredatorDismissed:
+                    ZdLog.Info("Nature", $"wolf_leaves {e.Id}");   // D-23: the morning — it walks away, and goes once far
+                    break;
                 case WorldEventKind.PredatorDespawned:
                     WolvesSent++;
                     ZdLog.Info("Nature", $"wolf_gone {e.Id}");

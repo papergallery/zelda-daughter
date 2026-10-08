@@ -73,6 +73,7 @@ namespace ZeldaDaughter.UI
         private int _slot;
         private string _item;
         private Vector2 _down;
+        private float _downAt;
         private bool _inWorld;
         private bool _hinted;
         private RectTransform _ghost;
@@ -123,6 +124,15 @@ namespace ZeldaDaughter.UI
             _slot = slot;
             _item = _g.Bag.Stacks[slot].ItemId;
             _down = screen;
+            _downAt = Time.unscaledTime;
+            _inventory.HideInfo();
+        }
+
+        /// <summary>A long press on cell <paramref name="slot"/> (the finger stayed down and still, data/input.json longPressSeconds): the cell's description (D-23). Also how tests do it.</summary>
+        public bool Describe(int slot)
+        {
+            if (_g == null || _phase == Phase.Dragging || slot < 0 || slot >= _g.Bag.UsedSlots) return false;
+            return _inventory.ShowInfo(slot);
         }
 
         private void Update()
@@ -134,6 +144,13 @@ namespace ZeldaDaughter.UI
                 if (!pressed) { _phase = Phase.Idle; return; }
                 float threshold = _g.Data.Input.MoveThresholdPx * _hero.DpiScale;
                 if ((pos - _down).magnitude > threshold) Begin(_slot, pos);
+                else if (Time.unscaledTime - _downAt >= _g.Data.Input.LongPressSeconds)
+                {
+                    // held still: not a drag but a question «what is this?» — the finger may go up or stay, nothing follows
+                    _phase = Phase.Idle;
+                    _polled = false;
+                    Describe(_slot);
+                }
                 return;
             }
             MoveTo(pos);
@@ -307,6 +324,7 @@ namespace ZeldaDaughter.UI
                     _session.Events.RaiseHeroActed(new HeroAct(HeroActKind.Eat, default, _item));
                     _session.BagChanged("eat");
                     ZdLog.Info("Items", $"eat {_item} heal={r.Heal:0.#}");
+                    if (r.Sated) _session.Say(Topics.Sated);
                     return DragResult.Ate;
                 case HeroUseOutcome.Treated:
                     _session.Events.RaiseHeroActed(new HeroAct(HeroActKind.Treat, default, _item));

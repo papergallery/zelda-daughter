@@ -202,6 +202,11 @@ namespace ZeldaDaughter.Tests
             }
             Assert.Greater(g.Bag.Count("berries"), 0, "berries from the glade");
             Mile($"berries {g.Bag.Count("berries")}");
+            // D-23: the honest map — what an ordinary hour brings (data/traders.json typicalRound): stones, herbs and the locket are picked on the way, no coins and no fangs are added to the bag
+            foreach (var (id, item) in new[] { ("pickup_stone_1", "stone"), ("pickup_stone_2", "stone"), ("pickup_stone_3", "stone"), ("pickup_herbs_1", "herbs"), ("pickup_herbs_2", "herbs"),
+                                               ("pickup_herbs_3", "herbs"), ("pickup_healing_herbs_1", "healing_herbs"), ("pickup_healing_herbs_2", "healing_herbs"), ("pickup_locket", "locket") })
+                yield return Pick(id, item);
+            Mile($"on the way: stones {g.Bag.Count("stone")}, herbs {g.Bag.Count("herbs")}, healing herbs {g.Bag.Count("healing_herbs")}, the locket");
 
             // 6. the boar: a blow, the readable windup, the kill, the carcass (bare hands: a fang), the ore of the den
             var boar = g.Enemies.Get(Boar);
@@ -245,6 +250,7 @@ namespace ZeldaDaughter.Tests
             Assert.AreEqual(1, g.Bag.Count("fang"), "bare hands take the fang");
             Mile("carcass: fang");
             yield return Pick("pickup_ore_1", "ore");
+            yield return Pick("pickup_special_herb_1", "special_herb");
 
             // 7. the bridge: she walks over the river on the planks (the character controller, not a teleport)
             var bridge = Where("anchor_bridge");
@@ -281,31 +287,17 @@ namespace ZeldaDaughter.Tests
             Assert.IsTrue(old.Enabled && old.gameObject.activeInHierarchy, "the old man stands in the square by day");
             Mile("square: the old man by the fountain");
 
-            // 10. the merchant: her words about the map, a barter (a fang and stones for the map), the map opens
-            yield return StandBy("npc_merchant", 1.5f);
-            _s.Tap("npc_merchant");
+            // 10. the old man's locket: a request handed over ends with his thanks, and the reward is in her hands (D-23)
+            int coinsBefore = g.Bag.Count("coin");
+            var handed = g.Quests.Give("old_man", "locket");
+            Assert.AreEqual(ZeldaDaughter.Core.Journal.QuestOutcome.Done, handed.Outcome, "the locket goes to the old man");
             yield return null;
-            yield return Converse("map", 60);
-            Assert.IsTrue(g.Notebook.Has("merchant_map"), "she told about the map");
-            // The map is worth 30 coins, she pays half of the worth for fangs (×1.5 for the merchant): about thirteen fangs. A boar gives one or two —
-            // balance is G2 (docs/demo/known-issues.md); the walkthrough tops the bag up with the hunt of a few more boars.
-            g.Bag.Add("fang", 14);
-            _s.BagChanged("walkthrough");
-            _s.Events.RaiseTradeRequested("merchant", null);
-            Assert.IsTrue(_trade.IsOpen, "the merchant opens her shop by day");
-            Assert.IsTrue(_trade.AddTake("map"), "the map is on her shelf");
-            for (int i = 0; i < 20 && _trade.Evaluate().Outcome != TradeOutcome.Done; i++) _trade.AddGive("fang");
-            Assert.AreEqual(TradeOutcome.Done, _trade.Evaluate().Outcome, "a fair barter");
-            Assert.AreEqual(TradeOutcome.Done, _trade.Deal().Outcome);
-            Assert.AreEqual(1, g.Bag.Count("map"), "the map is hers now");
-            _windows.CloseAll();
-            _s.Events.RaiseRadialChosen("map");
-            Assert.IsTrue(_map.IsOpen, "with a map the map opens");
-            Assert.Greater(_map.ShownMarks.Count, 0, "…and it shows what she was told");
-            _windows.CloseAll();
-            Mile($"barter done, map in the bag, marks {g.Map.VisibleMarks.Count}");
-            Said("[ZD:Trade] merchant Done");
-            Said("[ZD:Map] open");
+            yield return null;
+            Assert.AreEqual(g.Data.Dialogues.Npcs["old_man"].Nodes[handed.Thanks].Line, _s.UI.NpcBubbleText, "he thanks her");
+            StringAssert.Contains("спасибо", _s.UI.NpcBubbleText.ToLowerInvariant());
+            Assert.AreEqual(coinsBefore + g.Data.Quests.Quests["locket"].Reward.Items["coin"], g.Bag.Count("coin"), "…with coins");
+            Mile($"old man: locket handed over, thanks, coins {g.Bag.Count("coin")}");
+            Said("[ZD:Talk] old_man → thanks_locket");
 
             // 11. the forge: ore → metal at the smelter, metal + short stick → a knife on the anvil; the knife takes the whole carcass
             SetHour(12);
@@ -337,7 +329,49 @@ namespace ZeldaDaughter.Tests
             Assert.Greater(g.Bag.Count("meat"), 0, "the knife takes the meat");
             Mile($"carcass with the knife: meat {g.Bag.Count("meat")}");
 
-            // 12. the tavern: the bed, the sleep jumps the clock by the night's hours and the dark returns the light
+            // 12. the merchant: her words about the map; the first barter (three stones for a stick), the lesson of coins, then the map for the coins and the goods of the hunt
+            //     (D-23: nothing is added to the bag — the bag holds what the way gave; traders.json typicalRound)
+            SetHour(12);
+            yield return null;
+            yield return StandBy("npc_merchant", 1.5f);
+            _s.Tap("npc_merchant");
+            yield return null;
+            yield return Converse("map", 60);
+            Assert.IsTrue(g.Notebook.Has("merchant_map"), "she told about the map");
+            _s.Events.RaiseTradeRequested("merchant", null);
+            Assert.IsTrue(_trade.IsOpen, "the merchant opens her shop by day");
+            Assert.IsTrue(_trade.AddTake("stick"));
+            for (int i = 0; i < 3; i++) _trade.AddGive("stone");
+            Assert.AreEqual(TradeOutcome.Done, _trade.Deal().Outcome, "the first deal is a barter");
+            _windows.CloseAll();
+            _s.Tap("npc_merchant");
+            yield return null;
+            yield return Converse("coin", 60);
+            Assert.IsTrue(g.Trade.KnowsCoins, "after the first barter someone teaches her coins");
+            _s.Events.RaiseTradeRequested("merchant", null);
+            Assert.IsTrue(_trade.IsOpen);
+            Assert.IsTrue(_trade.AddTake("map"), "the map is on her shelf");
+            float worth = 0f;
+            foreach (var item in new[] { "coin", "fang", "hide", "bone", "meat", "fat", "herbs", "healing_herbs", "special_herb", "berries" })
+            {
+                int have = g.Bag.Count(item);
+                for (int i = 0; i < have && _trade.Evaluate().Outcome != TradeOutcome.Done; i++) _trade.AddGive(item);
+            }
+            var offer = _trade.Evaluate();
+            worth = offer.GiveValue;
+            Assert.AreEqual(TradeOutcome.Done, offer.Outcome, $"what the way gave pays for the map: {offer.GiveValue:0.#} of {offer.TakeValue:0.#}");
+            Assert.AreEqual(TradeOutcome.Done, _trade.Deal().Outcome);
+            Assert.AreEqual(1, g.Bag.Count("map"), "the map is hers now");
+            _windows.CloseAll();
+            _s.Events.RaiseRadialChosen("map");
+            Assert.IsTrue(_map.IsOpen, "with a map the map opens");
+            Assert.Greater(_map.ShownMarks.Count, 0, "…and it shows what she was told");
+            _windows.CloseAll();
+            Mile($"barter done, map in the bag for {worth:0.#}, marks {g.Map.VisibleMarks.Count}");
+            Said("[ZD:Trade] merchant Done");
+            Said("[ZD:Map] open");
+
+            // 13. the tavern: the bed, the sleep jumps the clock by the night's hours and the dark returns the light
             SetHour(21);
             yield return null;
             yield return StandBy("bed_tavern", 1.2f);

@@ -30,6 +30,8 @@ namespace ZeldaDaughter.Hero
 
         /// <summary>The torch burns on her now.</summary>
         public bool IsOn => _on;
+        /// <summary>1 while the torch burns fully, falling to 0 over its last seconds (the core's <c>g.Torch.Light</c>, D-23).</summary>
+        public float Fade => _g != null && _on ? _g.Torch.Light : 0f;
         public float Intensity => _light != null && _light.enabled ? _light.intensity : 0f;
         public float Range => _light != null ? _light.range : 0f;
         public Light Light => _light;
@@ -101,7 +103,11 @@ namespace ZeldaDaughter.Hero
         {
             if (!_on) return;
             float t = Time.time + _phase;
-            _light.intensity = BaseIntensity * (0.86f + 0.14f * Mathf.Sin(t * 12f) + 0.08f * Mathf.Sin(t * 31f));
+            float fade = _g.Torch.Light;                                        // D-23: the torch dies — the light weakens, shrinks and gutters
+            float gutter = 1f + (1f - fade) * 0.5f * Mathf.Sin(t * 47f);
+            _light.intensity = BaseIntensity * fade * gutter * (0.86f + 0.14f * Mathf.Sin(t * 12f) + 0.08f * Mathf.Sin(t * 31f));
+            _light.range = _g.Data.Camp.LightRadius * RangeShare * Mathf.Lerp(0.5f, 1f, fade);
+            _flame.transform.localScale = Vector3.one * Mathf.Lerp(0.35f, 1f, fade);
         }
     }
 }
