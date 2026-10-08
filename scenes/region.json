@@ -4886,7 +4886,7 @@
    "position": {
     "x": 91.0,
     "y": 0,
-    "z": 10.0
+    "z": -11.0
    },
    "tags": [
     "decor"
@@ -5231,17 +5231,35 @@
   },
   {
    "id": "station_smelter",
-   "model": "campfire_bricks",
+   "model": "town_chimney_base",
    "position": {
     "x": 90.6,
     "y": 0,
-    "z": 15.4
+    "z": 14.841
+   },
+   "rotation": {
+    "x": 0,
+    "y": 90,
+    "z": 0
    },
    "collide": true,
    "tags": [
     "station",
     "smelter",
     "poi"
+   ]
+  },
+  {
+   "id": "smelter_fire",
+   "model": "campfire_bricks",
+   "position": {
+    "x": 90.6,
+    "y": 0,
+    "z": 14.2
+   },
+   "collide": false,
+   "tags": [
+    "decor"
    ]
   },
   {
