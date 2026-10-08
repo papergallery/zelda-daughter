@@ -83,8 +83,10 @@ namespace ZeldaDaughter.World
     public sealed class WolfEyes : MonoBehaviour
     {
         private static Mesh _quad;
-        private static readonly int BaseMap = Shader.PropertyToID("_BaseMap");
-        private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+        private static readonly int MainTex = Shader.PropertyToID("_MainTex");
+        private static readonly int ColorId = Shader.PropertyToID("_Color");
+        private static Material _dotMaterial;
+        private static Texture2D _dot;
         private const float FadeSeconds = 0.4f, EyeSize = 0.2f, BlinkLength = 0.16f;
 
         private EnemyView _view;
@@ -100,7 +102,23 @@ namespace ZeldaDaughter.World
         public bool Visible => Alpha > 0.01f;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => _quad = null;
+        private static void ResetStatics() { _quad = null; _dotMaterial = null; _dot = null; }
+
+        /// <summary>D-26b: the eyes are light, not a shadow: a lit soft dot (Sprites/Default, always in a build), not the dark shadow material that swallowed the colour on the night frame.</summary>
+        private static Material DotMaterial()
+        {
+            if (_dotMaterial != null) return _dotMaterial;
+            _dot = new Texture2D(16, 16, TextureFormat.RGBA32, false) { name = "ZdEyeDot", hideFlags = HideFlags.HideAndDontSave, wrapMode = TextureWrapMode.Clamp };
+            for (int y = 0; y < 16; y++)
+                for (int x = 0; x < 16; x++)
+                {
+                    float d = Mathf.Sqrt((x - 7.5f) * (x - 7.5f) + (y - 7.5f) * (y - 7.5f)) / 8f;
+                    _dot.SetPixel(x, y, new Color(1f, 1f, 1f, Mathf.Clamp01(1.6f * (1f - d))));
+                }
+            _dot.Apply();
+            _dotMaterial = new Material(Shader.Find("Sprites/Default")) { name = "ZdEyeDot", hideFlags = HideFlags.HideAndDontSave };
+            return _dotMaterial;
+        }
 
         public void Configure(EnemyView view, EyesSettings s)
         {
@@ -112,8 +130,7 @@ namespace ZeldaDaughter.World
         {
             if (_eyes != null) return;
             if (_quad == null) _quad = MakeQuad();
-            var look = _view != null && _view.Sprite != null ? _view.Sprite.Look : null;
-            var material = look != null ? look.ShadowMaterial : SpriteLook.NewShadowMaterial();
+            var material = DotMaterial();
             _block = new MaterialPropertyBlock();
             _eyes = new Renderer[2];
             for (int i = 0; i < 2; i++)
@@ -158,8 +175,8 @@ namespace ZeldaDaughter.World
                 t.rotation = ct.rotation;
                 t.localScale = Vector3.one * EyeSize;
                 _eyes[i].GetPropertyBlock(_block);
-                _block.SetTexture(BaseMap, PlaceholderSprites.ShadowTexture);
-                _block.SetColor(BaseColor, color);
+                _block.SetTexture(MainTex, _dot);
+                _block.SetColor(ColorId, color);
                 _eyes[i].SetPropertyBlock(_block);
             }
         }
