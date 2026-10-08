@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using ZeldaDaughter.Core.Common;
@@ -43,9 +42,9 @@ namespace ZeldaDaughter.Tests
         [Test]
         public void Sun_shadows_are_soft_and_the_night_factor_follows_daylight()
         {
-            var pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            var pipeline = GraphicsSettings.currentRenderPipeline;
             Assert.NotNull(pipeline);
-            Assert.IsTrue(pipeline.supportsSoftShadows, "PCF on the URP asset");
+            Assert.IsTrue(new SerializedObject(pipeline).FindProperty("m_SoftShadowsSupported").boolValue, "PCF on the URP asset");
 
             var go = new GameObject("sun-test");
             var light = go.AddComponent<Light>();
