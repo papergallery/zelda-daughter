@@ -174,13 +174,13 @@ namespace ZeldaDaughter.Combat
             _ring.enabled = show;
             if (!show) return;
             float body = Mathf.Abs(_sprite.Card.localScale.x);                // the figure's own width on the ground
-            float w = Mathf.Max(_ringWidth, body * 0.9f) * scale;
+            float w = Mathf.Max(_ringWidth * 1.4f, body * 1.5f) * scale;
             _ring.transform.localScale = new Vector3(w, 1f, w * 0.6f);
             _ring.transform.localPosition = new Vector3(0f, 0.07f, 0f);
             float t = Mathf.Clamp01(scale - 1f);
             _ring.GetPropertyBlock(_ringBlock);
             _ringBlock.SetTexture(BaseMap, PlaceholderSprites.ShadowTexture);
-            _ringBlock.SetColor(BaseColor, new Color(0.35f * t, 0.04f * t, 0.02f * t, 0.35f + 0.35f * t));
+            _ringBlock.SetColor(BaseColor, new Color(0.55f * t, 0.06f * t, 0.03f * t, 0.45f + 0.5f * t));
             _ring.SetPropertyBlock(_ringBlock);
         }
 
