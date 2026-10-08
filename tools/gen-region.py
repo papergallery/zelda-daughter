@@ -33,7 +33,7 @@ def bounds_center(model):
     return (b["center"][0], b["center"][2]) if b else (0.0, 0.0)
 
 
-def add(id_, model, x, z, yaw=0, tags=None, item=None, collide=None, scale=None, centered=True):
+def add(id_, model, x, z, yaw=0, tags=None, item=None, collide=None, scale=None, centered=True, station=None):
     """Модель так, чтобы центр её границ оказался в (x, z)."""
     assert id_ not in ids, id_
     assert model in MODELS, model
@@ -53,16 +53,19 @@ def add(id_, model, x, z, yaw=0, tags=None, item=None, collide=None, scale=None,
         o["tags"] = tags
     if item:
         o["item"] = item
+    if station:
+        o["station"] = station
     objects.append(o)
     return o
 
 
-def marker(id_, x, z, tags=None):
+def marker(id_, x, z, tags=None, **extra):
     assert id_ not in ids, id_
     ids.add(id_)
     o = {"id": id_, "marker": True, "position": {"x": r1(x), "y": 0, "z": r1(z)}}
     if tags:
         o["tags"] = tags
+    o.update(extra)
     objects.append(o)
 
 
@@ -113,10 +116,12 @@ paths.append(line("trail_stump", [(-72, -43), (-84, -48), (-96, -52), (-104, -56
 paths.append(line("trail_lair", [(-72, -43), (-64, -52), (-56, -60), (-50, -68)], 1.4, "#9c8760"))
 paths.append(line("square_pave", [(62, 0), (82, 0)], 26, "#a39c8a"))
 for name, a, b, w in [("door_tavern", (60, 18.3), (60, 9), 2.4), ("door_smithy", (94, 18.7), (94, 1.5), 2.4), ("door_herb", (78.5, 18.7), (78.5, 9), 2.4),
-                      ("door_shop", (113, 18.7), (113, 1.5), 2.4), ("door_gatehouse", (38.5, 7.2), (38.5, 1.5), 2.2),
+                      ("door_gatehouse", (38.5, 7.2), (38.5, 1.5), 2.2),
                       ("door_house_a", (102.5, 6), (102.5, 1.5), 2.2), ("door_house_b", (108.0, -5), (105.5, -1.5), 2.2),
                       ("door_house_c", (122.5, 6), (122.5, 1.5), 2.2), ("door_hut", (-151.5, 21.2), (-151.5, 14), 2.0)]:
     paths.append(line(name, [a, b], w, "#a8946c"))
+paths.append(line("door_shop", [(113, 18.7), (115.8, 16.5), (115.8, 9.5), (113, 1.5)], 2.4, "#a8946c"))  # в обход прилавка
+paths.append(line("track_hut", [(-151.5, 14), (-150, 1.5)], 2.0, "#a8946c"))
 paths.append(line("lane_field", [(-131, 8), (-131, 2)], 2.0, "#a8946c"))
 RIVER = [(-2, -100), (-1, -60), (-2, -20), (0, 0), (0, 20), (2, 60), (1, 100)]
 water.append(line("river", RIVER, 7, "#5f8fa3"))
@@ -192,7 +197,7 @@ pickup("pickup_stick_5", "log", "stick", -80, -41, 120, 0.35)
 add("glade_stump", "stump_round", -73, -51, 0, ["decor"])
 pickup("pickup_flint_3", "stone_small_flat_c", "flint", -64, -50)
 # логово кабана
-marker("spawn_boar", -48, -70, ["enemy_spawn", "enemy_boar", "poi_side"])
+marker("spawn_boar", -48, -70, ["enemy_spawn", "enemy_boar", "poi_side"], enemy="boar")
 for i, (dx_, dz_, m) in enumerate([(-3.5, 1.5, "rock_large_c"), (3.5, 1.0, "rock_large_a"), (0.5, 3.8, "rock_large_e"), (-2.0, -3.2, "stone_large_b")]):
     add(f"lair_rock_{i}", m, -48 + dx_, -70 + dz_, i * 55, ["decor"])
 add("lair_log", "log_large", -49, -67.5, 340, ["decor"])
@@ -282,9 +287,9 @@ house("smithy", "house_long", 94, 18.7, "S", ["building", "poi"])
 marker("anchor_forge_home", 94, 22, ["anchor"])
 npc("smith", 94, 13.4, "#6a5048")
 marker("anchor_forge", 94, 13.4, ["anchor"])
-add("station_smelter", "town_chimney_base", 90.6, 15.6, 90, ["station", "smelter", "poi"], collide=True)
+add("station_smelter", "town_chimney_base", 90.6, 15.6, 90, ["station", "smelter", "poi"], collide=True, station="smelter")
 add("smelter_fire", "campfire_bricks", 90.6, 14.2, 0, ["decor"], collide=False)
-add("station_anvil", "prop_anvil", 97.6, 15.4, 0, ["station", "anvil", "poi"])
+add("station_anvil", "prop_anvil", 97.6, 15.4, 0, ["station", "anvil", "poi"], station="anvil")
 add("forge_workbench", "prop_workbench", 100.0, 14.0, 0, ["decor"])
 add("forge_barrel", "prop_barrel", 88.4, 14.0, 0, ["decor"])
 add("forge_weapons", "prop_weapon_stand", 88.2, 17.0, 0, ["decor"])
@@ -297,8 +302,8 @@ marker("anchor_shop", 113, 9.6, ["anchor"])
 house("shop_house", "house_small", 113, 18.7, "S", ["building"])
 marker("anchor_shop_rear", 114.5, 21.5, ["anchor"])
 add("shop_crate_1", "prop_crate_wooden", 109.8, 12.0, 10, ["decor"])
-add("shop_crate_2", "prop_crate_metal", 116.4, 12.2, 0, ["decor"])
-add("shop_barrel", "prop_barrel", 116.8, 10.2, 0, ["decor"])
+add("shop_crate_2", "prop_crate_metal", 119.0, 12.2, 0, ["decor"])
+add("shop_barrel", "prop_barrel", 119.2, 10.2, 0, ["decor"])
 
 # дом травницы
 house("herb_house", "house_small", 78.5, 18.7, "S", ["building", "poi"])

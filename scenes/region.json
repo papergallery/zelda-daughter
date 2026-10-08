@@ -258,21 +258,6 @@
    "color": "#a8946c"
   },
   {
-   "id": "door_shop",
-   "points": [
-    {
-     "x": 113,
-     "z": 18.7
-    },
-    {
-     "x": 113,
-     "z": 1.5
-    }
-   ],
-   "width": 2.4,
-   "color": "#a8946c"
-  },
-  {
    "id": "door_gatehouse",
    "points": [
     {
@@ -342,6 +327,44 @@
     {
      "x": -151.5,
      "z": 14
+    }
+   ],
+   "width": 2.0,
+   "color": "#a8946c"
+  },
+  {
+   "id": "door_shop",
+   "points": [
+    {
+     "x": 113,
+     "z": 18.7
+    },
+    {
+     "x": 115.8,
+     "z": 16.5
+    },
+    {
+     "x": 115.8,
+     "z": 9.5
+    },
+    {
+     "x": 113,
+     "z": 1.5
+    }
+   ],
+   "width": 2.4,
+   "color": "#a8946c"
+  },
+  {
+   "id": "track_hut",
+   "points": [
+    {
+     "x": -151.5,
+     "z": 14
+    },
+    {
+     "x": -150,
+     "z": 1.5
     }
    ],
    "width": 2.0,
@@ -2160,7 +2183,8 @@
     "enemy_spawn",
     "enemy_boar",
     "poi_side"
-   ]
+   ],
+   "enemy": "boar"
   },
   {
    "id": "lair_rock_0",
@@ -5246,7 +5270,8 @@
     "station",
     "smelter",
     "poi"
-   ]
+   ],
+   "station": "smelter"
   },
   {
    "id": "smelter_fire",
@@ -5273,7 +5298,8 @@
     "station",
     "anvil",
     "poi"
-   ]
+   ],
+   "station": "anvil"
   },
   {
    "id": "forge_workbench",
@@ -5414,7 +5440,7 @@
    "id": "shop_crate_2",
    "model": "prop_crate_metal",
    "position": {
-    "x": 116.4,
+    "x": 119.0,
     "y": 0,
     "z": 12.2
    },
@@ -5426,7 +5452,7 @@
    "id": "shop_barrel",
    "model": "prop_barrel",
    "position": {
-    "x": 116.8,
+    "x": 119.2,
     "y": 0,
     "z": 10.2
    },
