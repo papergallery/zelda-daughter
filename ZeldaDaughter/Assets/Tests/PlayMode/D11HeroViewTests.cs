@@ -276,7 +276,7 @@ namespace ZeldaDaughter.Tests
             Assume.That(_sprite.HasPose("attack"), "the registry has the D-09 poses");
             _s.Events.RaiseHeroActed(new HeroAct(HeroActKind.Strike, _hero.transform.position + CamRight() * 2f));
             var seen = new List<string>();
-            for (int i = 0; i < 40 && _view.Acting; i++) { yield return null; if (Shown() != (seen.Count > 0 ? seen[seen.Count - 1] : null)) seen.Add(Shown()); }
+            for (float t0 = Time.time; Time.time - t0 < 0.7f && _view.Acting;) { yield return null; if (Shown() != (seen.Count > 0 ? seen[seen.Count - 1] : null)) seen.Add(Shown()); }
             Assert.AreEqual(new[] { "heroine_side_attack_0", "heroine_side_attack_1" }, seen.GetRange(0, Mathf.Min(2, seen.Count)).ToArray(), "wind-up, then the thrust");
             yield return new WaitForSeconds(0.7f);
 
