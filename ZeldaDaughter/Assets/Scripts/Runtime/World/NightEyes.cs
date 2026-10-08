@@ -85,7 +85,7 @@ namespace ZeldaDaughter.World
         private static Mesh _quad;
         private static readonly int BaseMap = Shader.PropertyToID("_BaseMap");
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
-        private const float FadeSeconds = 0.4f, EyeSize = 0.09f, BlinkLength = 0.16f;
+        private const float FadeSeconds = 0.4f, EyeSize = 0.15f, BlinkLength = 0.16f;
 
         private EnemyView _view;
         private EyesSettings _s;

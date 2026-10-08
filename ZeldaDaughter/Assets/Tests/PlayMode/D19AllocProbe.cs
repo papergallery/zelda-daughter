@@ -58,5 +58,47 @@ namespace ZeldaDaughter.Tests
             sb.AppendLine($"bare (all off, min of 3): {bare}");
             Debug.Log("[ZD:AllocProbe]\n" + sb);
         }
+
+        /// <summary>D-26b: the exact per-component number. The profiler counter carries the editor's own noise (+-1 MB); here every Update/LateUpdate/FixedUpdate of every ZeldaDaughter component is called once more by hand
+        /// and the bytes are counted on this thread (GC.GetAllocatedBytesForCurrentThread) around the call alone.</summary>
+        [UnityTest, Explicit("diagnostic: run by hand, the result is the [ZD:AllocProbe] line in the log")]
+        public IEnumerator Exact_bytes_per_component_method()
+        {
+            TestSaves.UseCleanFolder();
+            Application.runInBackground = true;
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/test-demo.unity", new LoadSceneParameters(LoadSceneMode.Single));
+            yield return null;
+            GameData.Current.Session.RemarkCheckSeconds = 1000f;
+            yield return new WaitForSeconds(1.3f);
+            for (int i = 0; i < 60; i++) yield return null;
+            var comps = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Where(m => m.enabled && m.GetType().Namespace != null && m.GetType().Namespace.StartsWith("ZeldaDaughter")).ToList();
+            var calls = new System.Collections.Generic.List<(string name, System.Action act)>();
+            var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
+            foreach (var m in comps)
+                foreach (var n in new[] { "Update", "LateUpdate", "FixedUpdate" })
+                {
+                    var mi = m.GetType().GetMethod(n, flags);
+                    if (mi == null || mi.GetParameters().Length != 0) continue;
+                    calls.Add((m.GetType().Name + "." + n, (System.Action)System.Delegate.CreateDelegate(typeof(System.Action), m, mi)));
+                }
+            var sum = new long[calls.Count];
+            for (int f = 0; f < 240; f++)
+            {
+                yield return null;
+                for (int i = 0; i < calls.Count; i++)
+                {
+                    long b = System.GC.GetAllocatedBytesForCurrentThread();
+                    calls[i].act();
+                    long used = System.GC.GetAllocatedBytesForCurrentThread() - b;
+                    if (f >= 30) sum[i] += used;   // the first frames: first-use caches
+                }
+            }
+            var sb = new StringBuilder("exact bytes over 210 idle frames, extra call per frame\n");
+            long all = 0;
+            for (int i = 0; i < calls.Count; i++) { all += sum[i]; if (sum[i] > 0) sb.AppendLine($"  {calls[i].name}: {sum[i]} B"); }
+            sb.AppendLine($"total {all} B in {calls.Count} methods");
+            Debug.Log("[ZD:AllocProbe]\n" + sb);
+        }
     }
 }
