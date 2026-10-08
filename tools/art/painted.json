@@ -1,0 +1,234 @@
+{
+ "_source": "D-28: рисованные объекты пилота «уголок f1» (ADR-0010) — листы FLUX.2 Klein 4B на ПК (tools/art/klein.py, 0 ₽), нарезка и атлас — tools/art/painted_build.py. Приёмы — ref2game (MIT, studioigor/ref2game): лист однотипных с широкими зазорами, нарезка по связным областям, точка опоры у основания, свет/тени/огонь не запекаются; стиль — docs/demo/sprites/style-bible.md дословно (tools/art/style.py). figs — [id, рост_м, вид] по порядку фигур (сверху вниз рядами, в ряду слева направо), null — фигура не берётся.",
+ "ppm": 160,
+ "camera": "Camera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 35 degrees, like the camera of an isometric top-down game (Don't Starve) — each object is seen from the side and a little from above.",
+ "facets": "Faceted look: crowns and stones are built from flat painted planes, like a low-poly sculpture painted in watercolor, every facet a slightly different wash of the same colour, thin brown ink lines along the facet edges — a painting, not a 3D render.",
+ "sheets": {
+  "trees": {
+   "w": 1792,
+   "h": 1024,
+   "seeds": "11,12,13",
+   "prompt": "Game sprite sheet for a 2D storybook game: 4 separate deciduous trees in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every tree standing on one invisible horizontal ground line, each one a separate cut-out game sprite. Each crown is a cluster of big rounded faceted balls of foliage in olive, sage and yellow-green, lighter on top and darker underneath; the trunk is grey-brown with a little fork, short, visible below the crown:\n1) a large old tree with a wide crown of three overlapping faceted foliage balls and a thick forked trunk\n2) a medium tree with one big round faceted crown on a straight trunk\n3) a small young tree with one small round faceted crown on a thin trunk\n4) a tall tree with two faceted foliage balls stacked one above the other",
+   "figs": [
+    [
+     "tree_big",
+     3.6,
+     "tree"
+    ],
+    [
+     "tree_mid",
+     2.8,
+     "tree"
+    ],
+    [
+     "tree_small",
+     2.0,
+     "tree"
+    ],
+    [
+     "tree_tall",
+     3.4,
+     "tree"
+    ]
+   ],
+   "pick": 13,
+   "ref": [
+    "crown",
+    0.5
+   ]
+  },
+  "rocks": {
+   "w": 1792,
+   "h": 1024,
+   "seeds": "21,22",
+   "prompt": "Game sprite sheet for a 2D storybook game: 6 separate rocks in two rows of three, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, each one a separate cut-out game sprite resting on an invisible ground line. Angular faceted grey boulders with flat chipped planes, cool blue-grey and warm ochre-grey washes, the top planes lighter:\n1) a large rounded boulder, wider than tall\n2) a large tall angular boulder\n3) a medium faceted stone\n4) a medium flat stone\n5) a small pointed stone\n6) a small round pebble-like stone",
+   "figs": [
+    [
+     "rock_big_a",
+     1.0,
+     "rock"
+    ],
+    [
+     "rock_big_b",
+     1.2,
+     "rock"
+    ],
+    [
+     "rock_mid_a",
+     0.75,
+     "rock"
+    ],
+    [
+     "rock_mid_b",
+     0.6,
+     "rock"
+    ],
+    [
+     "rock_flat",
+     0.45,
+     "rock"
+    ],
+    [
+     "rock_small",
+     0.35,
+     "rock"
+    ]
+   ],
+   "pick": 22,
+   "ref": [
+    "rock",
+    0.6
+   ]
+  },
+  "props": {
+   "w": 1792,
+   "h": 1024,
+   "seeds": "31,32",
+   "prompt": "Game sprite sheet for a 2D storybook game: 5 separate objects in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, each one a separate cut-out game sprite resting on one invisible ground line:\n1) a fallen tree log lying on its side, grey-brown bark with long cracks, the cut end showing pale growth rings\n2) a large old fallen log, thicker and longer, with a broken branch stub\n3) a low tree stump with a few roots, pale cut top with rings\n4) a ring of round grey stones laid in a circle for a campfire, with a few unburnt sticks crossed inside, cold: no fire, no flame, no smoke, no glow\n5) a short wooden signpost with one blank arrow board, no writing",
+   "figs": [
+    [
+     "log",
+     1.0,
+     "prop"
+    ],
+    [
+     "log_broken",
+     1.1,
+     "prop"
+    ],
+    [
+     "stump",
+     0.7,
+     "prop"
+    ],
+    [
+     "fire_ring",
+     0.55,
+     "prop"
+    ],
+    [
+     "signpost",
+     1.3,
+     "prop"
+    ]
+   ],
+   "pick": 32,
+   "ref": [
+    "log",
+    0.4
+   ]
+  },
+  "plants": {
+   "w": 1792,
+   "h": 1024,
+   "seeds": "41,42",
+   "prompt": "Game sprite sheet for a 2D storybook game: 7 separate wild meadow plants in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every plant rooted on one invisible horizontal ground line, each one a separate cut-out game sprite. Plants are drawn with thinner ink lines; NO ground patch or soil under the plants:\n1) a soft low round tuft of fine olive grass\n2) a tall upright clump of long narrow yellow-green grass blades\n3) a clump of broad arching sage-green leaves fanning out\n4) a clump of grass with small yellow buttercup flowers on thin stems\n5) a clump of grass with small dusty lilac-purple flower spikes\n6) a dry straw-yellow tuft mixed with a few green blades\n7) a wide bushy clump of mixed grass, darker sage at the base and lighter at the tips",
+   "figs": [
+    [
+     "grass_tuft",
+     0.45,
+     "plant"
+    ],
+    [
+     "grass_tall",
+     0.9,
+     "plant"
+    ],
+    [
+     "leaves",
+     0.55,
+     "plant"
+    ],
+    [
+     "grass_clump",
+     0.6,
+     "plant"
+    ],
+    [
+     "flower_yellow",
+     0.55,
+     "plant"
+    ],
+    [
+     "flower_lilac",
+     0.6,
+     "plant"
+    ],
+    [
+     "grass_dry",
+     0.65,
+     "plant"
+    ],
+    [
+     "grass_bush",
+     0.8,
+     "plant"
+    ]
+   ],
+   "pick": 41,
+   "ref": [
+    "meadow",
+    0.35
+   ]
+  },
+  "ground_meadow": {
+   "w": 1024,
+   "h": 1024,
+   "seeds": "53,54,55",
+   "texture": true,
+   "prompt": "A seamless tileable ground texture for a game, seen strictly from directly above, filling the whole square edge to edge with no paper showing: a dense meadow of short grass painted in loose watercolor — overlapping blotches of olive green, sage green and yellow-green only (no red, no pink, no brown patches), many short grass strokes in dark olive ink, a few tiny yellow and lilac flower dots. No objects, no horizon, no perspective, no border.",
+   "pick": 55,
+   "ref": [
+    "meadow",
+    0.6
+   ],
+   "tile_m": 4
+  },
+  "ground_road": {
+   "w": 1024,
+   "h": 1024,
+   "seeds": "63,64,65",
+   "texture": true,
+   "prompt": "A seamless tileable ground texture for a game, seen strictly from directly above, filling the whole square edge to edge with no paper showing: a dry dirt road of packed pale ochre and sand-coloured earth, painted as a fine mosaic of many small soft flat patches (about forty patches across the image) of slightly different light ochre, cream and tan washes with thin brown ink cracks between them, a few tiny pebbles. No objects, no horizon, no perspective, no border.",
+   "pick": 61,
+   "ref": [
+    "road",
+    0.7
+   ],
+   "tile_m": 2.5
+  }
+ },
+ "color_refs": {
+  "_source": "частичный перенос LAB (среднее и разброс, сила k) к кропам f1 — ref2game art.md §4 «Colour drift»; рамки — px в docs/concept/world-b/f1.jpg",
+  "crown": [
+   60,
+   90,
+   250,
+   260
+  ],
+  "rock": [
+   680,
+   1250,
+   800,
+   1360
+  ],
+  "meadow": [
+   480,
+   1150,
+   800,
+   1260
+  ],
+  "road": [
+   180,
+   1260,
+   320,
+   1420
+  ],
+  "log": [
+   560,
+   920,
+   760,
+   1030
+  ]
+ }
+}

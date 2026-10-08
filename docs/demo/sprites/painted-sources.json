@@ -1,0 +1,59 @@
+{
+ "_source": "D-28: листы рисованных объектов (tools/art/painted_build.py gen) — FLUX.2 Klein 4B на ПК, 0 ₽; выбор seed — painted.json",
+ "sheets": {
+  "pt-trees-s13.png": {
+   "model": "flux-2-klein-4b-fp8.safetensors",
+   "seed": 13,
+   "w": 1792,
+   "h": 1024,
+   "steps": 4,
+   "seconds": 8.6,
+   "prompt": "Game sprite sheet for a 2D storybook game: 4 separate deciduous trees in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every tree standing on one invisible horizontal ground line, each one a separate cut-out game sprite. Each crown is a cluster of big rounded faceted balls of foliage in olive, sage and yellow-green, lighter on top and darker underneath; the trunk is grey-brown with a little fork, short, visible below the crown:\n1) a large old tree with a wide crown of three overlapping faceted foliage balls and a thick forked trunk\n2) a medium tree with one big round faceted crown on a straight trunk\n3) a small young tree with one small round faceted crown on a thin trunk\n4) a tall tree with two faceted foliage balls stacked one above the other\n\nFaceted look: crowns and stones are built from flat painted planes, like a low-poly sculpture painted in watercolor, every facet a slightly different wash of the same colour, thin brown ink lines along the facet edges — a painting, not a 3D render.\n\nCamera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 35 degrees, like the camera of an isometric top-down game (Don't Starve) — each object is seen from the side and a little from above.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms and a little paper grain, muted warm earthy palette (ochre, olive green, sage, umber, rust, dusty red, dusty lilac), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows. Do not paint glow, light rays, fire, smoke, mist or water effects into the picture — the game engine draws them. No text, no letters, no numbers, no logos, no watermark, no signature, no frame. Plain flat uniform light grey background (#c8c8c8), no ground patch, no soil, nothing under the feet."
+  },
+  "pt-rocks-s22.png": {
+   "model": "flux-2-klein-4b-fp8.safetensors",
+   "seed": 22,
+   "w": 1792,
+   "h": 1024,
+   "steps": 4,
+   "seconds": 9.8,
+   "prompt": "Game sprite sheet for a 2D storybook game: 6 separate rocks in two rows of three, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, each one a separate cut-out game sprite resting on an invisible ground line. Angular faceted grey boulders with flat chipped planes, cool blue-grey and warm ochre-grey washes, the top planes lighter:\n1) a large rounded boulder, wider than tall\n2) a large tall angular boulder\n3) a medium faceted stone\n4) a medium flat stone\n5) a small pointed stone\n6) a small round pebble-like stone\n\nFaceted look: crowns and stones are built from flat painted planes, like a low-poly sculpture painted in watercolor, every facet a slightly different wash of the same colour, thin brown ink lines along the facet edges — a painting, not a 3D render.\n\nCamera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 35 degrees, like the camera of an isometric top-down game (Don't Starve) — each object is seen from the side and a little from above.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms and a little paper grain, muted warm earthy palette (ochre, olive green, sage, umber, rust, dusty red, dusty lilac), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows. Do not paint glow, light rays, fire, smoke, mist or water effects into the picture — the game engine draws them. No text, no letters, no numbers, no logos, no watermark, no signature, no frame. Plain flat uniform light grey background (#c8c8c8), no ground patch, no soil, nothing under the feet."
+  },
+  "pt-props-s32.png": {
+   "model": "flux-2-klein-4b-fp8.safetensors",
+   "seed": 32,
+   "w": 1792,
+   "h": 1024,
+   "steps": 4,
+   "seconds": 5.0,
+   "prompt": "Game sprite sheet for a 2D storybook game: 5 separate objects in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, each one a separate cut-out game sprite resting on one invisible ground line:\n1) a fallen tree log lying on its side, grey-brown bark with long cracks, the cut end showing pale growth rings\n2) a large old fallen log, thicker and longer, with a broken branch stub\n3) a low tree stump with a few roots, pale cut top with rings\n4) a ring of round grey stones laid in a circle for a campfire, with a few unburnt sticks crossed inside, cold: no fire, no flame, no smoke, no glow\n5) a short wooden signpost with one blank arrow board, no writing\n\nFaceted look: crowns and stones are built from flat painted planes, like a low-poly sculpture painted in watercolor, every facet a slightly different wash of the same colour, thin brown ink lines along the facet edges — a painting, not a 3D render.\n\nCamera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 35 degrees, like the camera of an isometric top-down game (Don't Starve) — each object is seen from the side and a little from above.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms and a little paper grain, muted warm earthy palette (ochre, olive green, sage, umber, rust, dusty red, dusty lilac), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows. Do not paint glow, light rays, fire, smoke, mist or water effects into the picture — the game engine draws them. No text, no letters, no numbers, no logos, no watermark, no signature, no frame. Plain flat uniform light grey background (#c8c8c8), no ground patch, no soil, nothing under the feet."
+  },
+  "pt-plants-s41.png": {
+   "model": "flux-2-klein-4b-fp8.safetensors",
+   "seed": 41,
+   "w": 1792,
+   "h": 1024,
+   "steps": 4,
+   "seconds": 6.8,
+   "prompt": "Game sprite sheet for a 2D storybook game: 7 separate wild meadow plants in a single row, evenly spaced with wide empty gaps of background between them, nothing overlapping, nothing touching the edges of the image, every plant rooted on one invisible horizontal ground line, each one a separate cut-out game sprite. Plants are drawn with thinner ink lines; NO ground patch or soil under the plants:\n1) a soft low round tuft of fine olive grass\n2) a tall upright clump of long narrow yellow-green grass blades\n3) a clump of broad arching sage-green leaves fanning out\n4) a clump of grass with small yellow buttercup flowers on thin stems\n5) a clump of grass with small dusty lilac-purple flower spikes\n6) a dry straw-yellow tuft mixed with a few green blades\n7) a wide bushy clump of mixed grass, darker sage at the base and lighter at the tips\n\nCamera: HIGH ANGLE, the same for every drawing: the viewer stands above and looks down at about 35 degrees, like the camera of an isometric top-down game (Don't Starve) — each object is seen from the side and a little from above.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms and a little paper grain, muted warm earthy palette (ochre, olive green, sage, umber, rust, dusty red, dusty lilac), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows. Do not paint glow, light rays, fire, smoke, mist or water effects into the picture — the game engine draws them. No text, no letters, no numbers, no logos, no watermark, no signature, no frame. Plain flat uniform light grey background (#c8c8c8), no ground patch, no soil, nothing under the feet."
+  },
+  "pt-ground_meadow-s55.png": {
+   "model": "flux-2-klein-4b-fp8.safetensors",
+   "seed": 55,
+   "w": 1024,
+   "h": 1024,
+   "steps": 4,
+   "seconds": 3.4,
+   "prompt": "A seamless tileable ground texture for a game, seen strictly from directly above, filling the whole square edge to edge with no paper showing: a dense meadow of short grass painted in loose watercolor — overlapping blotches of olive green, sage green and yellow-green only (no red, no pink, no brown patches), many short grass strokes in dark olive ink, a few tiny yellow and lilac flower dots. No objects, no horizon, no perspective, no border.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms and a little paper grain, muted warm earthy palette (ochre, olive green, sage, umber, rust, dusty red, dusty lilac), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows. Do not paint glow, light rays, fire, smoke, mist or water effects into the picture — the game engine draws them. No text, no letters, no numbers, no logos, no watermark, no signature, no frame."
+  },
+  "pt-ground_road-s61.png": {
+   "model": "flux-2-klein-4b-fp8.safetensors",
+   "seed": 61,
+   "w": 1024,
+   "h": 1024,
+   "steps": 4,
+   "seconds": 5.2,
+   "prompt": "A seamless tileable ground texture for a game, seen strictly from directly above, filling the whole square edge to edge: a dry dirt road of packed pale ochre and sand-coloured earth, painted as a mosaic of soft flat patches of slightly different light ochre, cream and tan washes with thin brown ink cracks between them, a few tiny pebbles. No objects, no horizon, no perspective, no border.\n\nArt style: hand-drawn storybook illustration made with a dip pen and watercolor — uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms and a little paper grain, muted warm earthy palette (ochre, olive green, sage, umber, rust, dusty red, dusty lilac), slightly exaggerated whimsical proportions in the spirit of Don't Starve. Flat even light, no cast shadows. Do not paint glow, light rays, fire, smoke, mist or water effects into the picture — the game engine draws them. No text, no letters, no numbers, no logos, no watermark, no signature, no frame."
+  }
+ }
+}

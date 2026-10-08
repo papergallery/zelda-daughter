@@ -168,6 +168,7 @@ namespace ZeldaDaughter.Editor
                 ObjectsRoot = root, Tagged = tagged,
             };
             BuildSession(ctx);
+            BuildPainted(configPath, config, catalog, ground); // D-28: only scenes with a «painted» section (SceneBuilder.Painted.cs)
 
             if (!AssetDatabase.IsValidFolder(ScenesDir)) AssetDatabase.CreateFolder("Assets", "Scenes");
             string scenePath = $"{ScenesDir}/{config.Name}.unity";

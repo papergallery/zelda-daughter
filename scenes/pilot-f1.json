@@ -1,0 +1,1017 @@
+{
+ "_source": "D-28: пилот «уголок f1» (ADR-0010, docs/done-criteria/D-28.md) — генерирует tools/gen-pilot-f1.py; раскладка по кадру f1.",
+ "name": "pilot-f1",
+ "build": {
+  "include": false,
+  "order": 900
+ },
+ "save": {},
+ "ground": {
+  "sizeX": 64,
+  "sizeZ": 64,
+  "color": "#7d8a5c",
+  "terrain": "grass"
+ },
+ "light": {
+  "rotation": {
+   "x": 40,
+   "y": -60,
+   "z": 0
+  },
+  "color": "#ffe9c8",
+  "intensity": 1.0,
+  "shadows": "soft"
+ },
+ "ambient": {
+  "color": "#a8aeb4"
+ },
+ "camera": {
+  "orthographic": true,
+  "pitch": 35,
+  "yaw": 45,
+  "distance": 20,
+  "size": 6.3,
+  "followSmoothTime": 0.15
+ },
+ "hero": {
+  "spawn": {
+   "x": 0,
+   "y": 0,
+   "z": 0
+  },
+  "shape": "capsule",
+  "color": "#c9a46a"
+ },
+ "paths": [
+  {
+   "id": "road_main",
+   "points": [
+    {
+     "x": -11.843,
+     "z": -6.098
+    },
+    {
+     "x": -6.194,
+     "z": -2.722
+    },
+    {
+     "x": -2.039,
+     "z": -0.713
+    },
+    {
+     "x": 0.983,
+     "z": 1.109
+    },
+    {
+     "x": 3.326,
+     "z": 2.948
+    },
+    {
+     "x": 5.875,
+     "z": 4.802
+    },
+    {
+     "x": 8.677,
+     "z": 5.962
+    },
+    {
+     "x": 11.968,
+     "z": 6.854
+    },
+    {
+     "x": 15.196,
+     "z": 7.809
+    }
+   ],
+   "width": 2.6,
+   "color": "#b09a6e"
+  }
+ ],
+ "objects": [
+  {
+   "id": "tree_1",
+   "model": "tree_oak",
+   "position": {
+    "x": 5.718,
+    "y": 0,
+    "z": 8.812
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_2",
+   "model": "tree_small",
+   "position": {
+    "x": 10.601,
+    "y": 0,
+    "z": 7.23
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_3",
+   "model": "tree_default",
+   "position": {
+    "x": 8.918,
+    "y": 0,
+    "z": 3.741
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_4",
+   "model": "tree_small",
+   "position": {
+    "x": 1.364,
+    "y": 0,
+    "z": 5.24
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_5",
+   "model": "tree_tall",
+   "position": {
+    "x": 4.813,
+    "y": 0,
+    "z": -0.3
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "rock_1",
+   "model": "rock_large_b",
+   "position": {
+    "x": 5.391,
+    "y": 0,
+    "z": 2.424
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.42,
+    "y": 0.42,
+    "z": 0.42
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_2",
+   "model": "rock_large_c",
+   "position": {
+    "x": 4.606,
+    "y": 0,
+    "z": 1.007
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.36,
+    "y": 0.36,
+    "z": 0.36
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_3",
+   "model": "rock_small_a",
+   "position": {
+    "x": 3.676,
+    "y": 0,
+    "z": 1.277
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.7,
+    "y": 0.7,
+    "z": 0.7
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_4",
+   "model": "rock_tall_a",
+   "position": {
+    "x": -1.951,
+    "y": 0,
+    "z": 2.721
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.42,
+    "y": 0.42,
+    "z": 0.42
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_5",
+   "model": "rock_large_c",
+   "position": {
+    "x": -4.341,
+    "y": 0,
+    "z": 0.268
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.34,
+    "y": 0.34,
+    "z": 0.34
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_6",
+   "model": "rock_large_a",
+   "position": {
+    "x": -0.959,
+    "y": 0,
+    "z": -5.315
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.5,
+    "y": 0.5,
+    "z": 0.5
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_7",
+   "model": "rock_large_a",
+   "position": {
+    "x": -3.476,
+    "y": 0,
+    "z": -7.201
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.5,
+    "y": 0.5,
+    "z": 0.5
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_8",
+   "model": "rock_large_b",
+   "position": {
+    "x": -4.213,
+    "y": 0,
+    "z": -8.885
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.38,
+    "y": 0.38,
+    "z": 0.38
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_9",
+   "model": "rock_large_c",
+   "position": {
+    "x": -5.71,
+    "y": 0,
+    "z": -8.93
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.36,
+    "y": 0.36,
+    "z": 0.36
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_10",
+   "model": "rock_small_a",
+   "position": {
+    "x": -8.577,
+    "y": 0,
+    "z": -4.852
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.6,
+    "y": 0.6,
+    "z": 0.6
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_11",
+   "model": "rock_small_a",
+   "position": {
+    "x": 0.404,
+    "y": 0,
+    "z": 3.119
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.5,
+    "y": 0.5,
+    "z": 0.5
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_12",
+   "model": "rock_small_flat_a",
+   "position": {
+    "x": 6.892,
+    "y": 0,
+    "z": 8.849
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.6,
+    "y": 0.6,
+    "z": 0.6
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_13",
+   "model": "rock_large_c",
+   "position": {
+    "x": 0.031,
+    "y": 0,
+    "z": 4.703
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.3,
+    "y": 0.3,
+    "z": 0.3
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_14",
+   "model": "rock_small_a",
+   "position": {
+    "x": -5.238,
+    "y": 0,
+    "z": -0.376
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.6,
+    "y": 0.6,
+    "z": 0.6
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_15",
+   "model": "rock_small_flat_a",
+   "position": {
+    "x": 8.722,
+    "y": 0,
+    "z": 7.018
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.5,
+    "y": 0.5,
+    "z": 0.5
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "rock_16",
+   "model": "rock_small_a",
+   "position": {
+    "x": -0.682,
+    "y": 0,
+    "z": -1.629
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.4,
+    "y": 0.4,
+    "z": 0.4
+   },
+   "tags": [
+    "decor",
+    "rock"
+   ]
+  },
+  {
+   "id": "log_spawn",
+   "model": "log_large",
+   "position": {
+    "x": 2.333,
+    "y": 0,
+    "z": -1.013
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.8,
+    "y": 0.8,
+    "z": 0.8
+   },
+   "tags": [
+    "decor",
+    "poi",
+    "log"
+   ]
+  },
+  {
+   "id": "campfire_spawn",
+   "model": "campfire_stones",
+   "position": {
+    "x": -0.465,
+    "y": 0,
+    "z": 0.355
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 0.75,
+    "y": 0.75,
+    "z": 0.75
+   },
+   "tags": [
+    "campfire",
+    "rest_point",
+    "poi"
+   ]
+  },
+  {
+   "id": "stump_1",
+   "model": "stump_round",
+   "position": {
+    "x": 1.45,
+    "y": 0,
+    "z": -4.422
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "sign_1",
+   "model": "sign",
+   "position": {
+    "x": 6.128,
+    "y": 0,
+    "z": 4.549
+   },
+   "rotation": {
+    "x": 0,
+    "y": 45,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_6",
+   "model": "tree_oak",
+   "position": {
+    "x": 5.545,
+    "y": 0,
+    "z": 13.058
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_7",
+   "model": "tree_default",
+   "position": {
+    "x": -2.792,
+    "y": 0,
+    "z": 5.984
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_8",
+   "model": "tree_small",
+   "position": {
+    "x": 1.013,
+    "y": 0,
+    "z": -6.626
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_9",
+   "model": "tree_tall",
+   "position": {
+    "x": 9.349,
+    "y": 0,
+    "z": 0.447
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_10",
+   "model": "tree_oak",
+   "position": {
+    "x": -12.852,
+    "y": 0,
+    "z": -5.97
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_11",
+   "model": "tree_default",
+   "position": {
+    "x": -7.324,
+    "y": 0,
+    "z": -13.7
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_12",
+   "model": "tree_small",
+   "position": {
+    "x": 13.104,
+    "y": 0,
+    "z": 14.304
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "tree_13",
+   "model": "tree_oak",
+   "position": {
+    "x": 17.686,
+    "y": 0,
+    "z": 7.521
+   },
+   "rotation": {
+    "x": 0,
+    "y": 0.0,
+    "z": 0
+   },
+   "scale": {
+    "x": 1.0,
+    "y": 1.0,
+    "z": 1.0
+   },
+   "tags": [
+    "decor"
+   ]
+  },
+  {
+   "id": "mist_00",
+   "shape": "quad",
+   "position": {
+    "x": 4.214,
+    "y": 0.45,
+    "z": 8.444
+   },
+   "rotation": {
+    "x": 90,
+    "y": 45,
+    "z": 0
+   },
+   "scale": {
+    "x": 9,
+    "y": 6,
+    "z": 1
+   },
+   "color": "#f2ead8",
+   "collide": false,
+   "tags": [
+    "decor",
+    "mist"
+   ]
+  },
+  {
+   "id": "mist_01",
+   "shape": "quad",
+   "position": {
+    "x": 11.887,
+    "y": 0.45,
+    "z": 8.036
+   },
+   "rotation": {
+    "x": 90,
+    "y": 45,
+    "z": 0
+   },
+   "scale": {
+    "x": 8,
+    "y": 5,
+    "z": 1
+   },
+   "color": "#f2ead8",
+   "collide": false,
+   "tags": [
+    "decor",
+    "mist"
+   ]
+  }
+ ],
+ "scatter": [
+  {
+   "id": "meadow",
+   "area": {
+    "shape": "rect",
+    "center": {
+     "x": 0,
+     "z": 0
+    },
+    "size": {
+     "x": 60,
+     "z": 60
+    }
+   },
+   "models": [
+    {
+     "id": "grass",
+     "weight": 5
+    },
+    {
+     "id": "grass_large",
+     "weight": 3
+    },
+    {
+     "id": "grass_leafs",
+     "weight": 1
+    },
+    {
+     "id": "flower_yellow_a",
+     "weight": 2
+    },
+    {
+     "id": "flower_purple_a",
+     "weight": 2
+    }
+   ],
+   "density": 60,
+   "seed": 28,
+   "scale": {
+    "min": 0.8,
+    "max": 1.25
+   },
+   "minSpacing": 0.25,
+   "collide": false,
+   "randomYaw": true,
+   "avoid": {
+    "paths": 0.15,
+    "objects": 0.35
+   }
+  }
+ ],
+ "painted": {
+  "atlas": "Assets/Art/Painted/painted.json",
+  "models": {
+   "tree_oak": [
+    "tree_big"
+   ],
+   "tree_default": [
+    "tree_mid"
+   ],
+   "tree_small": [
+    "tree_small"
+   ],
+   "tree_tall": [
+    "tree_tall"
+   ],
+   "rock_large_a": [
+    "rock_big_a"
+   ],
+   "rock_large_b": [
+    "rock_mid_a"
+   ],
+   "rock_large_c": [
+    "rock_mid_b"
+   ],
+   "rock_tall_a": [
+    "rock_big_b"
+   ],
+   "rock_small_a": [
+    "rock_small",
+    "rock_mid_b"
+   ],
+   "rock_small_flat_a": [
+    "rock_flat"
+   ],
+   "log_large": [
+    "log"
+   ],
+   "campfire_stones": [
+    "fire_ring"
+   ],
+   "stump_round": [
+    "stump"
+   ],
+   "sign": [
+    "signpost"
+   ],
+   "grass": [
+    "grass_tuft",
+    "grass_clump",
+    "grass_bush"
+   ],
+   "grass_large": [
+    "grass_tall",
+    "grass_dry"
+   ],
+   "grass_leafs": [
+    "leaves"
+   ],
+   "flower_yellow_a": [
+    "flower_yellow"
+   ],
+   "flower_purple_a": [
+    "flower_lilac"
+   ]
+  },
+  "flip": [
+   "rock",
+   "plant"
+  ],
+  "fit": [
+   "rock",
+   "prop"
+  ],
+  "ground": {
+   "meadow": "meadow",
+   "road": "road"
+  }
+ }
+}
