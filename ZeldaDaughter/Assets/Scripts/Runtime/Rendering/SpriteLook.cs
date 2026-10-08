@@ -18,6 +18,10 @@ namespace ZeldaDaughter.Rendering
         [SerializeField, Range(1f, 2f)] private float _facingHysteresis = 1.25f;
         [SerializeField] private float _bobMeters = 0.035f;
         [SerializeField] private float _lyingLift = 0.12f;
+        [SerializeField] private float _turnSeconds = 0.12f;
+        [SerializeField] private float _startSeconds = 0.12f;
+        [SerializeField] private float _stopSeconds = 0.15f;
+        [SerializeField] private float _idleFrameSeconds = 0.3f;
 
         public Material SpriteMaterial => _spriteMaterial != null ? _spriteMaterial : Fallback(ref _runtimeSprite, false);
         public Material ShadowMaterial => _shadowMaterial != null ? _shadowMaterial : Fallback(ref _runtimeShadow, true);
@@ -31,6 +35,12 @@ namespace ZeldaDaughter.Rendering
         public float BobMeters => _bobMeters;
         /// <summary>A figure lying on the ground is raised this much so it does not sink into it.</summary>
         public float LyingLift => _lyingLift;
+        /// <summary>D-25: how long the drawn frames between the walking ones last (all of them together): a turn, the first steps, a stop.</summary>
+        public float TurnSeconds => _turnSeconds;
+        public float StartSeconds => _startSeconds;
+        public float StopSeconds => _stopSeconds;
+        /// <summary>One frame of the drawn breath of standing («idle»).</summary>
+        public float IdleFrameSeconds => _idleFrameSeconds;
 
         private static Material _runtimeSprite, _runtimeShadow;
 

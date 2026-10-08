@@ -174,10 +174,23 @@ namespace ZeldaDaughter.Hero
 
         // ------------------------------------------------------------------ the frame
 
+        private static readonly int HeroPosId = Shader.PropertyToID("_ZD_HeroPos");
+
+        /// <summary>D-26 hit-stop: the figure holds its pose and picture (the controller holds her place); nothing advances while true.</summary>
+        public bool Frozen
+        {
+            get => _frozen;
+            set { _frozen = value; if (_sprite != null) _sprite.Frozen = value; }
+        }
+        private bool _frozen;
+
         private void LateUpdate()
         {
+            if (_frozen) return;
             float dt = Time.deltaTime;
             var p = transform.position;
+            // D-25: the hero's place for the shaders (the grass bends at her feet, the light at her feet) — the interface only; the shaders are theirs
+            Shader.SetGlobalVector(HeroPosId, new Vector4(p.x, p.y - 1f, p.z, 1f));
             if (!_hasLast) { _last = p; _hasLast = true; }
             var d = p - _last;
             d.y = 0f;
@@ -262,6 +275,8 @@ namespace ZeldaDaughter.Hero
                 float k = 1f - Mathf.Clamp01(_upT / GetUpSeconds);
                 pose.Crouch = 0.55f * k;
                 pose.TiltDegrees = 25f * k;
+                pose.Action = "getup";                      // D-25: drawn frames of getting up, if the set has them (else the code pose above)
+                pose.ActionPhase = Mathf.Clamp01(_upT / GetUpSeconds);
             }
 
             if (_walking)
@@ -335,7 +350,12 @@ namespace ZeldaDaughter.Hero
         {
             _downT += dt;
             float u = Mathf.Clamp01(_downT / FallSeconds);
-            if (u < 1f) { pose.TiltDegrees = 70f * u; pose.Crouch = 0.4f * u; }
+            if (u < 1f)
+            {
+                pose.TiltDegrees = 70f * u; pose.Crouch = 0.4f * u;
+                pose.Action = "fall";                       // D-25: drawn frames of the fall, if the set has them
+                pose.ActionPhase = u;
+            }
             else pose.Lying = true;
             return pose;
         }

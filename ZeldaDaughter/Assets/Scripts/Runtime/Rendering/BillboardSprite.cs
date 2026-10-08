@@ -26,6 +26,9 @@ namespace ZeldaDaughter.Rendering
         public static BillboardPose Stand => default;
     }
 
+    /// <summary>Which kind of drawn frame is on the card (D-25).</summary>
+    public enum ShownKind { Walk, Stand, Idle, Start, Stop, Turn, Pose }
+
     /// <summary>
     /// One drawn figure standing in the 3D world (hero, NPC, beast): a card facing the camera, one of three views by the way the figure
     /// faces (the side view is mirrored for the other side), the frame by the path walked, a pose by code, a tint, a blob of shadow
@@ -63,6 +66,18 @@ namespace ZeldaDaughter.Rendering
         private Sprite _shown;
         private bool _dirty = true;
 
+        // D-25: drawn frames between the walking ones (turn, first steps, stop, idle): all from the registry, none made by code.
+        private Facing _lastFacing = Facing.Front;
+        private bool _lastMirrored, _haveLast;
+        private Sprite[] _turnFrames;
+        private float _turnT;
+        private bool _turnReversed, _turnFlip;
+        private float _startT = -1f, _stopT = -1f;
+        private Facing _stopView;
+        private bool _stopFlip;
+        private float _idlePhase;
+        private bool _idleSeeded;
+
         public string CharacterId => _characterId;
         public Facing Facing => _facing;
         /// <summary>The side view is drawn flipped (the figure looks to the left of the screen).</summary>
@@ -70,11 +85,15 @@ namespace ZeldaDaughter.Rendering
         public Sprite CurrentSprite => _shown;
         /// <summary>Index of the walking frame shown; 0 while standing.</summary>
         public int FrameIndex { get; private set; }
+        /// <summary>What the card shows now (for tests and the frame sheets).</summary>
+        public ShownKind Shown { get; private set; }
         public BillboardPose Pose => _pose;
         public Color Tint => _tint;
         /// <summary>The card, for tests and effects (its rotation faces the camera, its scale is the figure's size).</summary>
         public Transform Card { get { EnsureBuilt(); return _card; } }
         public Camera Camera => _camera;
+        /// <summary>The look asset in use (the durations of the drawn frames between the walking ones).</summary>
+        public SpriteLook Look => LookOrDefault();
         /// <summary>The set has a drawn pose of this action (for any view).</summary>
         public bool HasPose(string action) => Set().HasPose(action);
         /// <summary>A drawn pose is on the card now (an action frame or the lying one).</summary>
@@ -131,6 +150,11 @@ namespace ZeldaDaughter.Rendering
         public void Advance(float meters)
         {
             if (meters <= 0f) return;
+            if (!_moving)
+            {
+                _stopT = -1f;
+                _startT = Set().StartFrames(_facing) != null ? 0f : -1f;
+            }
             _path += meters;
             _moving = true;
             _dirty = true;
@@ -140,6 +164,8 @@ namespace ZeldaDaughter.Rendering
         public void Stop()
         {
             if (!_moving && _path == 0f) return;
+            if (_moving && Set().StopFrames(_facing) != null) { _stopT = 0f; _stopView = _facing; _stopFlip = _facing == Facing.Side && _mirrored; }
+            _startT = -1f;
             _moving = false;
             _path = 0f;
             _dirty = true;
@@ -203,15 +229,24 @@ namespace ZeldaDaughter.Rendering
 
         private void Awake() => EnsureBuilt();
 
+        /// <summary>
+        /// D-26 hit-stop: while true the card keeps the picture, the pose and the place it has (it is a child of this object, whose own movement is held
+        /// by the owner); nothing here advances. Not <c>Time.timeScale</c> — the rest of the world goes on.
+        /// </summary>
+        public bool Frozen { get; set; }
+
         private void LateUpdate()
         {
+            if (Frozen) return;
             EnsureBuilt();
             var set = Set();
             if (_camera == null) _camera = Camera.main;
 
             var frames = set.Frames(_facing);
             int count = Mathf.Max(1, frames.Length);
-            int frame = _moving && count > 1 && set.StrideMeters > 0f ? (int)(_path / set.StrideMeters * count) % count : 0;
+            int frame = _moving ? CharacterSpriteSet.StepFrame(count, set.StrideMeters, _path) : 0; // the length of the cycle is the registry's (D-25)
+            float dt = Time.deltaTime;
+            var look = LookOrDefault();
             Sprite sprite;
             _drawnPose = false;
             _flip = _facing == Facing.Side && _mirrored; // the front and back views are drawn as they are
@@ -221,6 +256,7 @@ namespace ZeldaDaughter.Rendering
             {
                 sprite = set.Down;                       // lies on the ground, drawn facing right
                 _drawnPose = true;
+                DropBetween();
                 _flip = _sideLeft;
             }
             else if (!_pose.Lying && !string.IsNullOrEmpty(_pose.Action) && (acted = set.Pose(_pose.Action, _facing, out view)) != null)
@@ -228,9 +264,10 @@ namespace ZeldaDaughter.Rendering
                 int n = acted.Length;
                 sprite = acted[Mathf.Clamp((int)(Mathf.Clamp01(_pose.ActionPhase) * n), 0, n - 1)];
                 _drawnPose = true;
+                DropBetween();
                 _flip = view == Facing.Side && _sideLeft;
             }
-            else sprite = frames.Length > 0 ? frames[frame] : null;
+            else sprite = FrameBetween(set, frames, frame, dt, look);
             if (sprite != _shown) { _shown = sprite; _dirty = true; }
             FrameIndex = frame;
 
@@ -238,6 +275,109 @@ namespace ZeldaDaughter.Rendering
             if (_dirty) Paint(sprite);
         }
 
+
+        /// <summary>
+        /// The walking frame, or a drawn one between the walking ones (D-25): the turn from one view to another, the first steps, the stop,
+        /// the loop of standing. Whatever the registry has is played; what it has not — the picture simply changes at once, as before.
+        /// </summary>
+        private Sprite FrameBetween(CharacterSpriteSet set, Sprite[] frames, int frame, float dt, SpriteLook look)
+        {
+            Shown = _moving ? ShownKind.Walk : ShownKind.Stand;
+            bool changed = _haveLast && (_facing != _lastFacing || (_facing == Facing.Side && _mirrored != _lastMirrored));
+            if (changed && !_pose.Lying && string.IsNullOrEmpty(_pose.Action)) BeginTurn(set);
+            _lastFacing = _facing; _lastMirrored = _mirrored; _haveLast = true;
+
+            if (_turnFrames != null)
+            {
+                float u = _turnT / Mathf.Max(0.02f, look.TurnSeconds);
+                _turnT += dt;
+                if (u < 1f)
+                {
+                    int n = _turnFrames.Length, k = Mathf.Clamp((int)(u * n), 0, n - 1);
+                    _flip = _turnFlip;
+                    Shown = ShownKind.Turn;
+                    return _turnFrames[_turnReversed ? n - 1 - k : k];
+                }
+                _turnFrames = null;
+            }
+            if (_moving && _startT >= 0f)
+            {
+                var start = set.StartFrames(_facing);
+                float at = _startT;
+                _startT += dt;
+                if (start != null && at < look.StartSeconds)
+                {
+                    Shown = ShownKind.Start;
+                    return start[Mathf.Clamp((int)(at / Mathf.Max(0.02f, look.StartSeconds) * start.Length), 0, start.Length - 1)];
+                }
+                _startT = -1f;
+            }
+            if (!_moving && _stopT >= 0f)
+            {
+                var stop = set.StopFrames(_stopView);
+                float at = _stopT;
+                _stopT += dt;
+                if (stop != null && at < look.StopSeconds)
+                {
+                    _flip = _stopFlip;
+                    Shown = ShownKind.Stop;
+                    return stop[Mathf.Clamp((int)(at / Mathf.Max(0.02f, look.StopSeconds) * stop.Length), 0, stop.Length - 1)];
+                }
+                _stopT = -1f;
+            }
+            if (!_moving)
+            {
+                var idle = set.IdleFrames(_facing);
+                if (idle != null)
+                {
+                    if (!_idleSeeded) { _idleSeeded = true; _idlePhase = Seed01(); }
+                    float per = Mathf.Max(0.05f, look.IdleFrameSeconds);
+                    Shown = ShownKind.Idle;
+                    return idle[(int)((Time.time / per + _idlePhase * idle.Length) % idle.Length)];
+                }
+            }
+            return frames.Length > 0 ? frames[frame] : null;
+        }
+
+        /// <summary>A drawn pose is on the card: no turn, start or stop frames are waiting behind it.</summary>
+        private void DropBetween()
+        {
+            Shown = ShownKind.Pose;
+            _turnFrames = null; _startT = -1f; _stopT = -1f;
+            _lastFacing = _facing; _lastMirrored = _mirrored; _haveLast = true;
+        }
+
+        private void BeginTurn(CharacterSpriteSet set)
+        {
+            var from = _lastFacing;
+            var frames = set.TurnFrames(from, _facing, out bool reversed);
+            if (frames == null) { _turnFrames = null; return; }
+            _turnFrames = frames;
+            _turnT = 0f;
+            if (from == Facing.Side && _facing == Facing.Side)
+            {
+                _turnFlip = false;              // turn_side_side is drawn from the right side to the left one
+                _turnReversed = _lastMirrored;  // from the left side to the right one: backwards
+            }
+            else
+            {
+                _turnReversed = reversed;
+                // the drawings turn towards the right side: the mirror of the side that takes part
+                _turnFlip = _facing == Facing.Side ? _mirrored : from == Facing.Side && _lastMirrored;
+            }
+        }
+
+        /// <summary>A number 0 … 1 of this figure (its id and place), so that two of one kind do not breathe together.</summary>
+        private float Seed01()
+        {
+            uint h = 2166136261u;
+            if (_characterId != null) for (int i = 0; i < _characterId.Length; i++) h = (h ^ _characterId[i]) * 16777619u;
+            var p = transform.position;
+            h = (h ^ (uint)(Mathf.RoundToInt(p.x * 10f) * 73856093)) * 16777619u;
+            h = (h ^ (uint)(Mathf.RoundToInt(p.z * 10f) * 19349663)) * 16777619u;
+            h ^= h >> 15; h *= 2246822519u; h ^= h >> 13;
+            return (h & 0xFFFF) / 65536f;
+        }
 
         private void ApplyPose(CharacterSpriteSet set, Sprite sprite)
         {

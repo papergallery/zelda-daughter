@@ -130,14 +130,14 @@ namespace ZeldaDaughter.Tests
         public IEnumerator The_frame_follows_the_path_walked_not_the_clock_and_stands_still_when_she_does()
         {
             Assert.AreEqual(0, _sprite.FrameIndex);
-            yield return Walk(CamRight(), 0.5f, 3.0f); yield return Settle(1);   // 0.5 m fast
+            yield return Walk(CamRight(), 0.35f, 3.0f); yield return Settle(1);   // 0.35 m fast (a quarter of her 1.7 m cycle: the first frame)
             int fast = _sprite.FrameIndex;
             yield return new WaitForSeconds(0.4f);                              // stands: back to the first frame
             Assert.AreEqual(0, _sprite.FrameIndex, "standing: the first frame");
-            yield return Walk(CamRight(), 0.5f, 0.7f); yield return Settle(1);  // 0.5 m slowly
+            yield return Walk(CamRight(), 0.35f, 0.7f); yield return Settle(1);  // 0.35 m slowly
             int slow = _sprite.FrameIndex;
             Assert.AreEqual(fast, slow, "the same path — the same frame, whatever the speed");
-            Assert.Greater(fast, 0, "half a metre of a 0.8 m stride is past the first frame");
+            Assert.Greater(fast, 0, "0.35 m of a 1.7 m cycle is the first walking frame, not standing");
 
             yield return new WaitForSeconds(0.3f);
             Assert.AreEqual(0, _sprite.FrameIndex);
@@ -170,7 +170,7 @@ namespace ZeldaDaughter.Tests
             var healthy = new List<float>();
             void OnStep(Vector3 p, bool limp) => healthy.Add(Time.time);
             _s.Events.HeroStep += OnStep;
-            yield return Walk(CamRight(), 3.6f);
+            yield return Walk(CamRight(), 6.5f); // 7+ steps of her 1.7 m cycle
             _s.Events.HeroStep -= OnStep;
             float healthyRatio = Ratio(healthy);
 
@@ -183,7 +183,7 @@ namespace ZeldaDaughter.Tests
             bool flag = false;
             void OnStepHurt(Vector3 p, bool limp) { hurt.Add(Time.time); flag |= limp; }
             _s.Events.HeroStep += OnStepHurt;
-            yield return Walk(CamRight(), 3.6f);
+            yield return Walk(CamRight(), 6.5f); // 7+ steps of her 1.7 m cycle
             _s.Events.HeroStep -= OnStepHurt;
             float hurtRatio = Ratio(hurt);
             Debug.Log($"[ZD:Test] steps healthy={healthy.Count} ratio {healthyRatio:0.00}; fracture={hurt.Count} ratio {hurtRatio:0.00}");
