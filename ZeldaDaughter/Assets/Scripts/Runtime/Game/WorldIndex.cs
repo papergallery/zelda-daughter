@@ -124,7 +124,7 @@ namespace ZeldaDaughter.Game
             foreach (var a in g.Data.Night.SafeAreas)
             {
                 var o = Find(a.Anchor);
-                if (o == null) { ZdLog.Warn("Index", $"night safe area '{a.Anchor}': no such object in the scene"); continue; }
+                if (o == null) { ZdLog.Info("Index", $"night safe area '{a.Anchor}': no such object in the scene"); continue; }
                 g.Nature.Predators.AddSafe(a.Anchor, new Vec2(o.transform.position.x, o.transform.position.z));
                 safe++;
             }

@@ -139,11 +139,17 @@ namespace ZeldaDaughter.UI
         {
             if (_phase == Phase.Idle || !_polled) return;
             if (!ReadPointer(out var pos, out bool pressed)) { Cancel(); return; }
-            Poll(pos, pressed);
+            Look(pos, pressed);
         }
 
-        /// <summary>One look at the finger: the pointer position and whether it is down (Update reads the device; tests pass them).</summary>
+        /// <summary>One look at the finger given from outside (tests): the device is not read for this touch any more.</summary>
         public void Poll(Vector2 pos, bool pressed)
+        {
+            _polled = false;
+            Look(pos, pressed);
+        }
+
+        private void Look(Vector2 pos, bool pressed)
         {
             if (_phase == Phase.Idle) return;
             if (_phase == Phase.Pending)
