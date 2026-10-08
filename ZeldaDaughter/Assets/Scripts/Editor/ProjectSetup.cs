@@ -35,7 +35,8 @@ namespace ZeldaDaughter.Editor
             ("m_MainLightShadowmapResolution", 1024),
             ("m_ShadowDistance", 25f),
             ("m_ShadowCascadeCount", 1),
-            ("m_SoftShadowsSupported", false),
+            ("m_SoftShadowsSupported", true), // D-21: soft sun shadows (PCF), not hard-edged black
+            ("m_SoftShadowQuality", 2),
             ("m_UseSRPBatcher", true),
             ("m_SupportsDynamicBatching", false),
             ("m_GPUResidentDrawerMode", 0),

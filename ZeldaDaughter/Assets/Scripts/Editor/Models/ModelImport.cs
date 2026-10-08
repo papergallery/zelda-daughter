@@ -13,7 +13,7 @@ namespace ZeldaDaughter.Editor
     {
                 static bool Ours(string path) => path.StartsWith(ModelLook.ModelsRoot, System.StringComparison.Ordinal);
 
-        public override uint GetVersion() => 7u;
+        public override uint GetVersion() => 8u;
 
         void OnPreprocessModel()
         {
@@ -34,6 +34,24 @@ namespace ZeldaDaughter.Editor
             m.preserveHierarchy = false;
             m.materialImportMode = ModelImporterMaterialImportMode.ImportViaMaterialDescription;
             m.materialLocation = ModelImporterMaterialLocation.InPrefab;
+        }
+
+        /// <summary>
+        /// D-21: small ground cover (grass, flowers, mushrooms, flat plants, small bushes) casts no shadow — hundreds of blade shadows were
+        /// the "rubbish" of the D-08 frame; the concept draws shadows only for trees, rocks, logs and houses. By file name, one place.
+        /// </summary>
+        public static bool CastsNoShadow(string path)
+        {
+            string n = System.IO.Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
+            return n.StartsWith("grass") || n.StartsWith("flower_") || n.StartsWith("mushroom") || n.StartsWith("plant_flat")
+                || n == "plant_bushsmall" || n.StartsWith("crops_");
+        }
+
+        void OnPostprocessModel(GameObject root)
+        {
+            if (!Ours(assetPath) || !CastsNoShadow(assetPath)) return;
+            foreach (var r in root.GetComponentsInChildren<Renderer>(true))
+                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         /// <summary>

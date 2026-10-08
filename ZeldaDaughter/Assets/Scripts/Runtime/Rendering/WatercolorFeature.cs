@@ -18,6 +18,7 @@ namespace ZeldaDaughter.Rendering
         private Material _material;
         private Texture2D _paper;
         private WatercolorPass _pass;
+        private OverlayPass _overlay;
         private bool _warned;
 
         /// <summary>Settings asset (the editor tools flip <see cref="WatercolorSettings.enabled"/> for the comparison frame).</summary>
@@ -32,13 +33,15 @@ namespace ZeldaDaughter.Rendering
         public override void Create()
         {
             _pass = new WatercolorPass { renderPassEvent = RenderPassEvent.AfterRenderingTransparents, requiresIntermediateTexture = true };
+            _overlay = new OverlayPass { renderPassEvent = RenderPassEvent.AfterRenderingTransparents + 1 };
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            if (_settings == null || !_settings.enabled) return;
             var type = renderingData.cameraData.cameraType;
             if (type != CameraType.Game && type != CameraType.SceneView) return;
+            renderer.EnqueuePass(_overlay); // D-21: always, wash or not — materials whose pass is ZdAfterWash are drawn only here
+            if (_settings == null || !_settings.enabled) return;
             if (!EnsureResources()) return;
             _pass.ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
             _pass.Setup(_material, _settings, _paper);
@@ -66,6 +69,41 @@ namespace ZeldaDaughter.Rendering
             _paper = null;
         }
 
+        /// <summary>
+        /// D-21: draws the renderers whose shader pass has LightMode "ZdAfterWash" (the rain of D-16) into the colour target AFTER the wash,
+        /// depth-tested against the scene: the wash bleeds, posterises and inks, which eats thin strokes.
+        /// </summary>
+        private sealed class OverlayPass : ScriptableRenderPass
+        {
+            private static readonly ShaderTagId Tag = new ShaderTagId("ZdAfterWash");
+
+            private sealed class PassData { public RendererListHandle List; }
+
+            public OverlayPass() { profilingSampler = new ProfilingSampler("Zelda After Wash"); }
+
+            public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+            {
+                var resources = frameData.Get<UniversalResourceData>();
+                if (resources.isActiveTargetBackBuffer) return;
+                var renderingData = frameData.Get<UniversalRenderingData>();
+                var camera = frameData.Get<UniversalCameraData>();
+                var lights = frameData.Get<UniversalLightData>();
+
+                var drawing = RenderingUtils.CreateDrawingSettings(Tag, renderingData, camera, lights, SortingCriteria.CommonTransparent);
+                var filtering = new FilteringSettings(RenderQueueRange.transparent);
+                var rlParams = new RendererListParams(renderingData.cullResults, drawing, filtering);
+
+                using (var builder = renderGraph.AddRasterRenderPass<PassData>("Zelda After Wash", out var data, profilingSampler))
+                {
+                    data.List = renderGraph.CreateRendererList(rlParams);
+                    builder.UseRendererList(data.List);
+                    builder.SetRenderAttachment(resources.activeColorTexture, 0, AccessFlags.Write);
+                    builder.SetRenderAttachmentDepth(resources.activeDepthTexture, AccessFlags.Read);
+                    builder.SetRenderFunc((PassData d, RasterGraphContext ctx) => ctx.cmd.DrawRendererList(d.List));
+                }
+            }
+        }
+
         private sealed class WatercolorPass : ScriptableRenderPass
         {
             private Material _material;
@@ -80,6 +118,10 @@ namespace ZeldaDaughter.Rendering
             private static readonly int GradeParams = Shader.PropertyToID("_GradeParams");
             private static readonly int WarmTint = Shader.PropertyToID("_WarmTint");
             private static readonly int VignetteColor = Shader.PropertyToID("_VignetteColor");
+            private static readonly int ToneParams = Shader.PropertyToID("_ToneParams");
+            private static readonly int NightTint = Shader.PropertyToID("_NightTint");
+            private static readonly int NightPaper = Shader.PropertyToID("_NightPaper");
+            private static readonly int NightVignette = Shader.PropertyToID("_NightVignette");
             private static readonly int PaperTex = Shader.PropertyToID("_PaperTex");
 
             private sealed class PassData
@@ -112,6 +154,10 @@ namespace ZeldaDaughter.Rendering
                 _material.SetVector(GradeParams, new Vector4(_s.saturation, _s.contrast, _s.vignette, _s.vignetteStart));
                 _material.SetColor(WarmTint, _s.warmTint);
                 _material.SetColor(VignetteColor, _s.vignetteColor);
+                _material.SetVector(ToneParams, new Vector4(_s.toneCurve, 0f, 0f, 0f));
+                _material.SetColor(NightTint, _s.nightTint);
+                _material.SetColor(NightPaper, _s.nightPaper);
+                _material.SetColor(NightVignette, _s.nightVignette);
                 _material.SetTexture(PaperTex, _paper);
 
                 TextureHandle source = resources.activeColorTexture;

@@ -39,6 +39,9 @@ namespace ZeldaDaughter.World
         private static readonly Color EveningFog = new Color(0.82f, 0.58f, 0.46f);
         private const float FogStartDay = 34f, FogEndDay = 78f, FogStartNight = 26f, FogEndNight = 56f;
 
+        private const float ShadowStrength = 0.8f;
+        private static readonly int NightId = Shader.PropertyToID("_ZD_Night");
+
         /// <summary>Sun elevation angle, degrees (low at night).</summary>
         public float Pitch => _sun != null ? _sun.transform.eulerAngles.x : 0f;
         public Color Tint => _sun != null ? _sun.color : Color.black;
@@ -62,6 +65,10 @@ namespace ZeldaDaughter.World
         {
             if (_sun == null) return;
             float d = Mathf.Clamp01(daylight);
+            // D-21: the sun's shadows are soft (PCF) and not fully black whatever the scene config says ("hard" in region.json is the D-08 look).
+            if (_sun.shadows != LightShadows.None) { _sun.shadows = LightShadows.Soft; _sun.shadowStrength = ShadowStrength; }
+            // The post pass turns grade / paper / vignette blue with this (0 day … 1 night).
+            Shader.SetGlobalFloat(NightId, 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(d / 0.3f)));
             var sunColors = evening ? EveningSun : MorningSun;
 
             _sun.color = Sample(sunColors, d);

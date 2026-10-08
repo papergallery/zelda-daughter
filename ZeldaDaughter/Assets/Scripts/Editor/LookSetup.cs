@@ -56,6 +56,7 @@ namespace ZeldaDaughter.Editor
             EditorUtility.SetDirty(settings);
 
             int converted = ConvertGeneratedMaterials();
+            ConvertSpriteMaterial();
             AssetDatabase.SaveAssets();
             Debug.Log($"[ZD:Look] applied feature={feature.name} settings={SettingsPath} toonMaterials={converted}");
         }
@@ -69,7 +70,8 @@ namespace ZeldaDaughter.Editor
             foreach (var guid in AssetDatabase.FindAssets("t:Material", new[] { GeneratedMaterials }))
             {
                 var mat = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(guid));
-                if (mat == null || mat.shader == toon) continue;
+                if (mat == null) continue;
+                if (mat.shader == toon) { ModelLook.Style(mat); EditorUtility.SetDirty(mat); continue; } // D-21: new shadow tint on the old materials
                 var color = mat.HasProperty("_BaseColor") ? mat.GetColor("_BaseColor") : Color.white;
                 mat.shader = toon;
                 mat.SetColor("_BaseColor", color);
@@ -78,6 +80,18 @@ namespace ZeldaDaughter.Editor
                 n++;
             }
             return n;
+        }
+
+        const string SpriteMaterialPath = "Assets/Art/Registries/SpriteLook_Sprite.mat";
+
+        /// <summary>D-21: the billboard sprite material (made by RegistryBuilder once, as URP Unlit) becomes the toon shader in sprite-lit mode — it catches the fire.</summary>
+        static void ConvertSpriteMaterial()
+        {
+            var toon = ModelLook.LoadShader();
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(SpriteMaterialPath);
+            if (toon == null || mat == null) return;
+            SpriteLook.ToSpriteLit(mat, toon);
+            EditorUtility.SetDirty(mat);
         }
 
         public static bool IsWired()

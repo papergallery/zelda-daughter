@@ -16,19 +16,7 @@ Shader "Zelda/NatureFx"
     {
         Tags { "RenderType" = "Transparent" "Queue" = "Transparent" "RenderPipeline" = "UniversalPipeline" }
 
-        Pass
-        {
-            Name "NatureFx"
-            Tags { "LightMode" = "UniversalForward" }
-            Blend [_SrcBlend] [_DstBlend]
-            ZWrite Off
-            Cull Off
-
-            HLSLPROGRAM
-            #pragma target 3.5
-            #pragma vertex vert
-            #pragma fragment frag
-            #pragma multi_compile_instancing
+        HLSLINCLUDE
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
@@ -73,6 +61,39 @@ Shader "Zelda/NatureFx"
                 c.a *= lerp(1.0h, blob, _Disc);
                 return c;
             }
+        ENDHLSL
+
+        Pass
+        {
+            Name "NatureFx"
+            Tags { "LightMode" = "UniversalForward" }
+            Blend [_SrcBlend] [_DstBlend]
+            ZWrite Off
+            Cull Off
+
+            HLSLPROGRAM
+            #pragma target 3.5
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
+            ENDHLSL
+        }
+
+        // D-21: the same effect drawn by the WatercolorFeature AFTER the wash (a material that wants it — the rain — switches the
+        // UniversalForward pass off): the wash would otherwise bleed and posterise thin dark strokes away.
+        Pass
+        {
+            Name "NatureFxAfterWash"
+            Tags { "LightMode" = "ZdAfterWash" }
+            Blend [_SrcBlend] [_DstBlend]
+            ZWrite Off
+            Cull Off
+
+            HLSLPROGRAM
+            #pragma target 3.5
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
             ENDHLSL
         }
     }

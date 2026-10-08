@@ -43,7 +43,7 @@ namespace ZeldaDaughter.World
         [SerializeField] private Material _puffMat;   // alpha-blended soft discs: smoke, mud
         [SerializeField] private Material _flameMat;  // additive soft discs
         [SerializeField] private Material _burntMat;  // instanced dark patch
-        [SerializeField] private bool _tintGround = true;
+        [SerializeField] private bool _tintGround = false; // D-21: Zelda/Toon reads _ZD_Wetness itself now
 
         private GameState _g;
         private Mesh _quad;
@@ -249,6 +249,8 @@ namespace ZeldaDaughter.World
 
         private void BuildRain()
         {
+            // D-21: the rain is drawn by the watercolour feature after the wash (pass ZdAfterWash), not before it.
+            if (_rainMat != null) _rainMat.SetShaderPassEnabled("UniversalForward", false);
             var root = new GameObject("Rain");
             root.transform.SetParent(transform, false);
             var ps = root.AddComponent<ParticleSystem>();
@@ -259,13 +261,13 @@ namespace ZeldaDaughter.World
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             main.startLifetime = 0.55f;
             main.startSpeed = 0f;
-            main.startSize = 0.05f;
-            main.startColor = new Color(0.78f, 0.84f, 0.92f, 0.55f);
+            main.startSize = 0.11f; // thick: the watercolour pass (after transparents) eats thin lines
+            main.startColor = new Color(0.16f, 0.22f, 0.32f, 0.8f); // ink, not water
             main.maxParticles = 2500;
             var vel = ps.velocityOverLifetime;
             vel.enabled = true;
             vel.space = ParticleSystemSimulationSpace.World;
-            vel.x = new ParticleSystem.MinMaxCurve(-3f);
+            vel.x = new ParticleSystem.MinMaxCurve(-7f);
             vel.y = new ParticleSystem.MinMaxCurve(-22f);
             vel.z = new ParticleSystem.MinMaxCurve(0f);
             var shape = ps.shape;
@@ -275,7 +277,7 @@ namespace ZeldaDaughter.World
             em.rateOverTime = 0f;
             var r = root.GetComponent<ParticleSystemRenderer>();
             r.renderMode = ParticleSystemRenderMode.Stretch;
-            r.lengthScale = 14f;
+            r.lengthScale = 13f;
             r.velocityScale = 0f;
             r.sharedMaterial = _rainMat;
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -412,7 +414,7 @@ namespace ZeldaDaughter.World
             var em = _rain.emission;
             if (_rainLevel > 0.001f)
             {
-                em.rateOverTime = 1400f * _rainLevel;
+                em.rateOverTime = 600f * _rainLevel;
                 if (!_rain.isPlaying) _rain.Play();
             }
             else if (_rain.isPlaying) _rain.Stop(true, ParticleSystemStopBehavior.StopEmitting);
@@ -426,7 +428,7 @@ namespace ZeldaDaughter.World
                 if (_tintGround && _ground != null)
                 {
                     // wet earth is darker and a little cooler
-                    var c = Color.Lerp(_groundBase, new Color(_groundBase.r * 0.62f, _groundBase.g * 0.68f, _groundBase.b * 0.72f, _groundBase.a), _wet);
+                    var c = Color.Lerp(_groundBase, new Color(_groundBase.r * 0.48f, _groundBase.g * 0.56f, _groundBase.b * 0.66f, _groundBase.a), _wet);
                     _ground.GetPropertyBlock(_block);
                     _block.SetColor(BaseColorId, c);
                     _ground.SetPropertyBlock(_block);

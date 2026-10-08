@@ -53,10 +53,15 @@ namespace ZeldaDaughter.Rendering
             _shadowLift = shadowLift;
         }
 
-        /// <summary>URP Unlit, alpha clip, two-sided, depth write — the figure is a cut-out card in the 3D world.</summary>
+        /// <summary>
+        /// Alpha clip, two-sided, depth write — the figure is a cut-out card in the 3D world. D-21: the toon shader in sprite-lit mode
+        /// (ground-like light + additional lights, so the campfire and the torch light the figure); URP Unlit if the shader is not found.
+        /// </summary>
         public static Material NewSpriteMaterial(float cutoff)
         {
-            var m = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "ZdSprite" };
+            var toon = Shader.Find("Zelda/Toon");
+            var m = new Material(toon != null ? toon : Shader.Find("Universal Render Pipeline/Unlit")) { name = "ZdSprite" };
+            if (toon != null) ToSpriteLit(m, toon);
             m.SetFloat("_Surface", 0f);
             m.SetFloat("_Cull", 0f);
             m.SetFloat("_AlphaClip", 1f);
@@ -66,6 +71,26 @@ namespace ZeldaDaughter.Rendering
             m.SetOverrideTag("RenderType", "TransparentCutout");
             m.renderQueue = 2450;
             return m;
+        }
+
+        /// <summary>Switches a sprite material to the toon shader in sprite-lit mode, keeping its texture, tint and cutoff. Idempotent.</summary>
+        public static void ToSpriteLit(Material m, Shader toon)
+        {
+            Texture map = m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") : null;
+            float cutoff = m.HasProperty("_Cutoff") ? m.GetFloat("_Cutoff") : 0.5f;
+            m.shader = toon;
+            if (map != null) m.SetTexture("_BaseMap", map);
+            m.SetFloat("_SpriteLit", 1f);
+            m.EnableKeyword("_SPRITELIT");
+            m.SetFloat("_AlphaClip", 1f);
+            m.SetFloat("_Cutoff", cutoff);
+            m.EnableKeyword("_ALPHATEST_ON");
+            m.SetFloat("_Cull", 0f);
+            m.SetFloat("_Steps", 3f);
+            m.SetFloat("_Softness", 0.12f);
+            m.SetColor("_ShadowTint", new Color(0.62f, 0.62f, 0.72f, 1f));
+            m.SetColor("_BaseColor", Color.white);
+            m.renderQueue = 2450;
         }
 
         /// <summary>URP Unlit, transparent, no depth write — the soft blob under the feet.</summary>
