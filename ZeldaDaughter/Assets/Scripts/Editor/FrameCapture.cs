@@ -67,8 +67,7 @@ namespace ZeldaDaughter.Editor
                 if (tex != null) Object.DestroyImmediate(tex);
                 if (rt != null) { rt.Release(); Object.DestroyImmediate(rt); }
                 // Reopen from disk: the sun change above must not be saved into the scene — and the author gets their scene back.
-                if (string.IsNullOrEmpty(previous)) EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-                else EditorSceneManager.OpenScene(previous, OpenSceneMode.Single);
+                SceneBuilder.RestoreScene(previous); // never leave a generated scene open (modified-externally dialog)
             }
             string line = $"[ZD:Frame] {Path.GetFileNameWithoutExtension(scenePath)} daylight={daylight:0.00} → {pngPath}";
             Debug.Log(line);

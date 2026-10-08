@@ -44,7 +44,19 @@ namespace ZeldaDaughter.Editor
             }
             ApplyBuildSettings(configs);
             // The builder replaced whatever was open; put the author's scene back.
-            if (!string.IsNullOrEmpty(before) && File.Exists(before)) EditorSceneManager.OpenScene(before, OpenSceneMode.Single);
+            RestoreScene(before);
+        }
+
+        /// <summary>
+        /// After work the editor must not keep a generated scene (Assets/Scenes) open: a later git reset / archive rewrites the file and Unity asks
+        /// «modified externally — Reload?», a modal that mutes the bridge. A generated or untitled previous scene → an empty untitled one; the
+        /// author's own scene is reopened.
+        /// </summary>
+        public static void RestoreScene(string before)
+        {
+            bool generated = string.IsNullOrEmpty(before) || before.Replace('\\', '/').StartsWith(ScenesDir + "/", StringComparison.Ordinal);
+            if (!generated && File.Exists(before)) EditorSceneManager.OpenScene(before, OpenSceneMode.Single);
+            else EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         }
 
         /// <summary>
