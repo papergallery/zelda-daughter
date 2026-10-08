@@ -132,8 +132,38 @@ namespace ZeldaDaughter.Core.Economy
             return list;
         }
 
+        /// <summary>
+        /// What <see cref="Execute"/> would answer for this offer — the same checks in the same order (unknown, closed, empty, coins unknown,
+        /// missing items, not wanted, not in stock, not enough, no room), with the values — and nothing changes: not the bag, not the stock,
+        /// not the buyback shelf. The trade window asks it on every change of the offer (C5). <see cref="TradeResult.FirstBarter"/> says
+        /// whether this deal would be the very first barter.
+        /// </summary>
+        public TradeResult Evaluate(string traderId, TradeOffer offer) => Check(traderId, offer, out _, out _);
+
         public TradeResult Execute(string traderId, TradeOffer offer)
         {
+            var r = Check(traderId, offer, out var give, out var take);
+            if (r.Outcome != TradeOutcome.Done || give == null || take == null) return r;
+
+            foreach (var kv in give) _bag.Remove(kv.Key.item, kv.Value);
+            foreach (var kv in take) _bag.Add(kv.Key.item, kv.Value);   // room was checked
+
+            foreach (var kv in give)
+                if (!IsCoin(kv.Key.item)) Bump(_buyback, traderId, kv.Key.item, kv.Value);
+            foreach (var kv in take)
+            {
+                if (IsCoin(kv.Key.item)) continue;
+                if (kv.Key.fromBuyback) Bump(_buyback, traderId, kv.Key.item, -kv.Value);
+                else Bump(_sold, traderId, kv.Key.item, kv.Value);
+            }
+            bool coins = give.Keys.Any(k => IsCoin(k.item)) || take.Keys.Any(k => IsCoin(k.item));
+            if (!coins) BarterDeals++;
+            return r;
+        }
+
+        TradeResult Check(string traderId, TradeOffer offer, out Dictionary<(string item, bool fromBuyback), int>? giveOut, out Dictionary<(string item, bool fromBuyback), int>? takeOut)
+        {
+            giveOut = takeOut = null;
             if (!_s.Traders.TryGetValue(traderId, out var def)) return new TradeResult(TradeOutcome.Unknown);
             if (!_isOpen(traderId)) return new TradeResult(TradeOutcome.Closed);
             var give = Merge(offer.Give, false);
@@ -173,28 +203,15 @@ namespace ZeldaDaughter.Core.Economy
             }
             if (giveValue + Eps < takeValue) return new TradeResult(TradeOutcome.NotEnough, giveValue, takeValue);
 
-            var snapshot = _bag.Stacks.Select(s => new Stack(s.ItemId, s.Count)).ToList();
-            foreach (var kv in give) _bag.Remove(kv.Key.item, kv.Value);
-            foreach (var kv in take)
-            {
-                if (!_bag.Add(kv.Key.item, kv.Value))
-                {
-                    _bag.Restore(snapshot);
-                    return new TradeResult(TradeOutcome.NoRoom, giveValue, takeValue);
-                }
-            }
+            var giveCounts = new List<KeyValuePair<string, int>>();
+            foreach (var kv in give) giveCounts.Add(new KeyValuePair<string, int>(kv.Key.item, kv.Value));
+            var takeCounts = new List<KeyValuePair<string, int>>();
+            foreach (var kv in take) takeCounts.Add(new KeyValuePair<string, int>(kv.Key.item, kv.Value));
+            if (!_bag.CanExchange(giveCounts, takeCounts)) return new TradeResult(TradeOutcome.NoRoom, giveValue, takeValue);
 
-            foreach (var kv in give)
-                if (!IsCoin(kv.Key.item)) Bump(_buyback, traderId, kv.Key.item, kv.Value);
-            foreach (var kv in take)
-            {
-                if (IsCoin(kv.Key.item)) continue;
-                if (kv.Key.fromBuyback) Bump(_buyback, traderId, kv.Key.item, -kv.Value);
-                else Bump(_sold, traderId, kv.Key.item, kv.Value);
-            }
-            bool first = false;
-            if (!coins) { first = BarterDeals == 0; BarterDeals++; }
-            return new TradeResult(TradeOutcome.Done, giveValue, takeValue, first);
+            giveOut = give;
+            takeOut = take;
+            return new TradeResult(TradeOutcome.Done, giveValue, takeValue, !coins && BarterDeals == 0);
         }
 
         TraderDef Def(string traderId) => _s.Traders.TryGetValue(traderId, out var d) ? d : throw new ArgumentException($"traders.json: no trader '{traderId}'", nameof(traderId));

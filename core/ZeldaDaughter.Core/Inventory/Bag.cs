@@ -69,6 +69,50 @@ namespace ZeldaDaughter.Core.Inventory
             return _stacks.Count + newSlots <= _s.Slots;
         }
 
+        /// <summary>
+        /// Would the bag take <paramref name="take"/> (one after another, all-or-nothing, as <see cref="Add"/> does) once <paramref name="give"/>
+        /// has been removed? Answers by simulation: nothing changes. False if a give line is not in the bag in that number.
+        /// </summary>
+        public bool CanExchange(IEnumerable<KeyValuePair<string, int>> give, IEnumerable<KeyValuePair<string, int>> take)
+        {
+            var sim = new List<KeyValuePair<string, int>>();   // stacks as (item, count), the same order as the real ones
+            foreach (var s in _stacks) sim.Add(new KeyValuePair<string, int>(s.ItemId, s.Count));
+            foreach (var g in give)
+            {
+                int left = g.Value;
+                if (left <= 0) return false;
+                for (int i = sim.Count - 1; i >= 0 && left > 0; i--)
+                {
+                    if (sim[i].Key != g.Key) continue;
+                    int took = Math.Min(sim[i].Value, left);
+                    left -= took;
+                    if (sim[i].Value - took == 0) sim.RemoveAt(i); else sim[i] = new KeyValuePair<string, int>(g.Key, sim[i].Value - took);
+                }
+                if (left > 0) return false;
+            }
+            foreach (var t in take)
+            {
+                if (t.Value <= 0 || !_items.TryGetValue(t.Key, out var def)) return false;
+                int left = t.Value;
+                for (int i = 0; i < sim.Count && left > 0; i++)
+                {
+                    if (sim[i].Key != t.Key) continue;
+                    int put = Math.Min(def.Stack - sim[i].Value, left);
+                    if (put <= 0) continue;
+                    sim[i] = new KeyValuePair<string, int>(t.Key, sim[i].Value + put);
+                    left -= put;
+                }
+                while (left > 0)
+                {
+                    if (sim.Count >= _s.Slots) return false;
+                    int put = Math.Min(def.Stack, left);
+                    sim.Add(new KeyValuePair<string, int>(t.Key, put));
+                    left -= put;
+                }
+            }
+            return true;
+        }
+
         public bool Add(string itemId, int count = 1)
         {
             if (!CanAdd(itemId, count)) return false;
