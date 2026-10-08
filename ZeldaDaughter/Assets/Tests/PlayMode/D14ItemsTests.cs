@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
@@ -392,6 +393,75 @@ namespace ZeldaDaughter.Tests
             yield return null;
             Assert.AreEqual(0, g.Camp.Campfires.Count);
             Assert.IsFalse(_camp.HasView(p.Object.Id));
+        }
+    }
+
+    /// <summary>D-14 frames for the author (docs/demo/frames/D-14-*.png): the radial menu, the bag, a campfire at night — in the real region scene, at the phone's 1080×2340.
+    /// Written next to the repository (on the PC); where there is no such folder nothing is written.</summary>
+    public class D14FrameTests
+    {
+        static string FramesDir => Path.GetFullPath(Path.Combine(Application.dataPath, "../../docs/demo/frames"));
+        static double Now => Time.realtimeSinceStartupAsDouble;
+
+        IEnumerator Shot(string name)
+        {
+            yield return new WaitForEndOfFrame();
+            var tex = ScreenCapture.CaptureScreenshotAsTexture();
+            int w = tex.width, h = tex.height;
+            if (Directory.Exists(FramesDir)) File.WriteAllBytes(Path.Combine(FramesDir, name + ".png"), tex.EncodeToPNG());
+            Object.Destroy(tex);
+            Debug.Log($"[ZD:Frame] {name} {w}x{h}");
+        }
+
+        [UnityTest]
+        public IEnumerator Frames_menu_bag_and_a_campfire_at_night()
+        {
+            UnityEditor.PlayModeWindow.SetCustomRenderingResolution(1080, 2340, "ZD phone");
+            TestSaves.UseCleanFolder();
+            Application.runInBackground = true;
+            yield return null;
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode("Assets/Scenes/region.unity", new LoadSceneParameters(LoadSceneMode.Single));
+            yield return new WaitForSeconds(1f);
+            var s = Object.FindFirstObjectByType<GameSession>();
+            var hero = Object.FindFirstObjectByType<HeroController>();
+            var radial = Object.FindFirstObjectByType<RadialMenu>();
+            var bag = Object.FindFirstObjectByType<InventoryWindow>();
+            hero.UseDpi(160f);
+            var g = s.State;
+            g.Bag.Add("stick", 3); g.Bag.Add("cloth", 2); g.Bag.Add("berries", 4); g.Bag.Add("firewood", 2); g.Bag.Add("flint");
+            g.Bag.Add("knife"); g.Bag.Add("meat", 2); g.Bag.Add("coin", 7); g.Bag.Add("healing_herbs");
+            s.BagChanged("frame");
+
+            // 1. the fan, the finger on the bag plate
+            var h = Camera.main.WorldToScreenPoint(hero.transform.position);
+            hero.Feed(new TouchSample(0, TouchPhase.Began, Now, new Vec2(h.x, h.y), TouchHit.Hero));
+            yield return new WaitForSeconds(0.8f);
+            var onBag = radial.SectorScreenPosition("bag");
+            hero.Feed(new TouchSample(0, TouchPhase.Moved, Now, new Vec2(onBag.x, onBag.y), default));
+            yield return null;
+            yield return Shot("D-14-menu");
+            hero.Feed(new TouchSample(0, TouchPhase.Ended, Now, new Vec2(onBag.x, onBag.y), default));
+            yield return new WaitForSeconds(0.3f);
+
+            // 2. the bag
+            Assert.IsTrue(Object.FindFirstObjectByType<WindowStack>().IsOpen("bag"));
+            yield return Shot("D-14-bag");
+            Object.FindFirstObjectByType<WindowStack>().Close();
+            yield return null;
+
+            // 3. a fire by the hero, at night
+            var at = hero.transform.position + new Vector3(-1.6f, 0f, -0.4f);
+            var placed = g.Camp.Place("firewood", new Vec2(at.x, at.z));
+            s.Events.RaisePlaced(placed.Object);
+            var used = g.Camp.Use(placed.Object.Id, "flint");
+            s.Events.RaiseUsedOnWorld(placed.Object.Id, used);
+            s.BagChanged("frame");
+            for (int i = 0; i < 24 && g.Clock.Daylight > 0.1; i++) s.JumpTime(() => g.SkipHours(1), 1);
+            yield return new WaitForSeconds(1.5f);
+            Debug.Log($"[ZD:Frame] night daylight={g.Clock.Daylight:0.00} fires={g.Camp.Campfires.Count}");
+            yield return Shot("D-14-campfire-night");
+
+            UnityEditor.PlayModeWindow.UseDefaultRenderingResolution();
         }
     }
 }
