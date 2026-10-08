@@ -15,6 +15,13 @@ namespace ZeldaDaughter.Editor
     public static class FrameCapture
     {
         public static string Capture(string scenePath, string pngPath, float daylight, int width = 1080, int height = 2340)
+            => Capture(scenePath, pngPath, daylight, null, 0f, width, height);
+
+        /// <summary>
+        /// As above, from a given place: the hero is put at <paramref name="heroAt"/> (the camera follows; the change is not saved)
+        /// and the orthographic size can be widened (0 = the scene's own) — frames of the places of a region (D-10).
+        /// </summary>
+        public static string Capture(string scenePath, string pngPath, float daylight, Vector3? heroAt, float orthoSize, int width = 1080, int height = 2340)
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
                 throw new System.InvalidOperationException("[ZD:Frame] the editor is in Play Mode — stop it first");
@@ -34,6 +41,8 @@ namespace ZeldaDaughter.Editor
                 var sun = Object.FindFirstObjectByType<SunController>();
                 if (sun != null) sun.Apply(daylight);
                 cam = Camera.main;
+                if (heroAt.HasValue) Object.FindFirstObjectByType<ZeldaDaughter.Hero.HeroController>().Teleport(heroAt.Value, 0f);
+                if (orthoSize > 0f && cam.orthographic) cam.orthographicSize = orthoSize;
                 var iso = cam.GetComponent<IsoCamera>();
                 if (iso != null) iso.SnapToTarget();
                 rt = new RenderTexture(width, height, 24);
