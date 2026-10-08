@@ -138,7 +138,9 @@ Shader "Hidden/Zelda/Watercolor"
                 float lum = max(Luma(col), 1e-3);
                 float lumCurve = lum * lum * (3.0 - 2.0 * lum);
                 col *= lerp(lum, lumCurve, _ToneParams.x * (1.0 - 0.6 * _ZD_Night)) / lum; // on the luma: lights lighter, shadows deeper, chroma kept
-                col *= lerp(_WarmTint.rgb, _NightTint.rgb, _ZD_Night);
+                // Night turns the world blue, but warm light (the fire) keeps its colour: the blue grade is weaker where the pixel is already warm.
+                float warm = smoothstep(0.05, 0.28, col.r - col.b);
+                col *= lerp(_WarmTint.rgb, lerp(_NightTint.rgb, _WarmTint.rgb, warm), _ZD_Night);
                 float2 vv = (uv - 0.5) * float2(_ScreenParams.x / _ScreenParams.y, 1.0) * 1.6;
                 float vig = smoothstep(_GradeParams.w, 1.0, length(vv)) * _GradeParams.z;
                 col = lerp(col, col * lerp(_VignetteColor.rgb, _NightVignette.rgb, _ZD_Night), vig);
