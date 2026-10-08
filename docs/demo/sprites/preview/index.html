@@ -19,6 +19,7 @@ button.on{border-color:var(--accent);color:var(--accent)}label{color:var(--muted
 .strip img.cur{border-color:var(--accent)}.info{color:var(--muted);margin-top:8px}
 </style></head><body><main>
 <h1>Анимации персонажей</h1>
+<p class="info" style="margin-top:-6px">Пилот D-25: у героини бок — 12 кадров бега (Seedance 2 mini по кадру 0). Остальное пока старые 3 кадра D-09 — для сравнения «до/после».</p>
 <div class="bar">
  <label>Персонаж <select id="cid"></select></label>
  <label>Анимация <select id="anim"></select></label>
@@ -47,5 +48,5 @@ $('flip').onclick=()=>{$('img').classList.toggle('flip');$('flip').classList.tog
 $('fps').oninput=()=>{$('fpsv').textContent=$('fps').value;restart()};
 $('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'пауза':'играть';restart()};
 $('prev').onclick=()=>{k--;show()};$('next').onclick=()=>{k++;show()};
-$('cid').onchange();
+$('cid').value='heroine';$('cid').onchange();$('anim').value='шаг side (цикл 12)';pick();
 </script></body></html>
