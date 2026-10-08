@@ -1,0 +1,12 @@
+{
+  "_source": "project-design.md §2 «Ночью опаснее: больше хищников, ограниченная видимость»; D-06: правило спавна ночных волков. Числа — оценка агента (баланс G2): при daylight ≥ 0,4 волков нет, при 0 — три (линейно между: ceil(3 × (1 − daylight / 0,4))), появляется по одному раз в 20 с в зонах сцены (zones — id объектов сцены в scenes/region.json, D-10), не ближе 18 м к героине и не в свете костра/факела (lightRadius в camp.json); утром волки дальше 30 м от героини исчезают, ближние остаются, пока их не убьют или не отойдут. Сами волки — enemies.json (wolf, C-17).",
+  "enemy": "wolf",
+  "maxAtNight": 3,
+  "daylightBelow": 0.4,
+  "spawnIntervalSeconds": 20,
+  "minHeroDistance": 18,
+  "despawnDistance": 30,
+  "zoneRadius": 6,
+  "perZoneMax": 2,
+  "zones": [ "zone_wolves_forest", "zone_wolves_river" ]
+}

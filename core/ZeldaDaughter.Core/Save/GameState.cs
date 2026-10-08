@@ -40,6 +40,8 @@ namespace ZeldaDaughter.Core.Save
             Notebook = new Notebook(data.Notebook);
             Quests = new Quests(data.Quests, Bag, Notebook, Map);
             Carcasses = new Carcasses(data.Enemies, Bag);
+            Camp = new Camp(data, Bag, Crafting);
+            Nature = new Nature(data.Elements, data.Night, data.Movement.Terrain.TryGetValue("mud", out var mud) ? mud : 1f);
             Combat = new HeroCombat(data.Weapons, Skills, Condition, Hunger, Bag);
         }
 
@@ -56,6 +58,50 @@ namespace ZeldaDaughter.Core.Save
         public NpcRoster Npcs { get; }
         /// <summary>Barter and coins with the shop NPCs (D-03); a shop deals only while its NPC is at the counter.</summary>
         public Trade Trade { get; }
+        /// <summary>Things placed on the ground and campfires (D-06): place, use an item on them, rest and light.</summary>
+        public Camp Camp { get; }
+        /// <summary>Weather, wind, grass fire, mud and night predators (D-06); the scene registers its cells, zones and mud ground at start.</summary>
+        public Nature Nature { get; }
+
+        /// <summary>Resting by a lit campfire (the zone around it): pass to <c>Condition.Tick(dt, g.CurrentRest())</c>; in the tavern the view passes <c>RestKind.Tavern</c>. Needs <c>HeroPosition</c>.</summary>
+        public RestKind CurrentRest() => Camp.IsLitNear(HeroPosition, Data.Camp.RestRadius) ? RestKind.Campfire : RestKind.None;
+
+        /// <summary>Night, no fire in reach and no torch in the bag — the hero may remark on the dark (remarks.json night_no_fire).</summary>
+        public bool NightWithoutFire => Data.Session.IsNight(Clock.Daylight) && Bag.Count("torch") == 0 && !Camp.IsLitNear(HeroPosition, Data.Camp.LightRadius);
+
+        float _scorchCooldown;
+
+        /// <summary>
+        /// The world moves on by <paramref name="dt"/> real seconds: campfires burn, rain comes and goes, wind turns, grass catches and burns out,
+        /// mud forms and dries, night wolves are called. <paramref name="roll"/> — one random number 0..1 from the view per step. Returns what happened.
+        /// </summary>
+        public IReadOnlyList<WorldEvent> TickWorld(float dt, double roll)
+        {
+            var events = new List<WorldEvent>();
+            if (dt <= 0f) return events;
+            Nature.Tick(dt, roll, Camp.Campfires, HeroPosition, Clock.Daylight, p => Camp.IsLitNear(p, Data.Camp.LightRadius), events);
+            events.AddRange(Camp.Tick(dt, Nature.Weather.IsRaining));
+            _scorchCooldown = Math.Max(0f, _scorchCooldown - dt);
+            if (_scorchCooldown <= 0f && Nature.Grass.BurningNear(HeroPosition, Data.Elements.Grass.BurnRadius))
+            {
+                Condition.Wound(WoundType.Burn, Data.Elements.Grass.ScorchSeverity);
+                _scorchCooldown = Data.Elements.Grass.ScorchCooldownSeconds;
+                events.Add(new WorldEvent(WorldEventKind.HeroScorched, "", HeroPosition));
+            }
+            return events;
+        }
+
+        /// <summary>A burning torch in the bag sets a dry grass cell alight. False without a torch or on ground that cannot burn.</summary>
+        public bool IgniteGrass(string cellId) => Bag.Count("torch") > 0 && Nature.Grass.Has(cellId) && Nature.Grass.Ignite(cellId);
+
+        /// <summary>Drag an item onto a world object: a placed thing, a campfire or a burning grass cell (a torch is lit from any fire).</summary>
+        public UseResult UseOnWorld(string objectId, string itemId)
+        {
+            if (Nature.Grass.Has(objectId))
+                return Nature.Grass.StateOf(objectId) == GrassState.Burning ? Camp.UseOnKinds(new[] { "fire" }, itemId) : new UseResult(UseOutcome.NoTarget);
+            return Camp.Use(objectId, itemId);
+        }
+
         /// <summary>Dead enemies lying in the world; a tap calls <c>Carcasses.Tap(id)</c> (D-05).</summary>
         public Carcasses Carcasses { get; }
 
@@ -107,6 +153,7 @@ namespace ZeldaDaughter.Core.Save
             yield return Condition.SpeedMultiplier;
             yield return Bag.SpeedMultiplier(Skills.CapacityMultiplier());
             yield return Hunger.Multiplier;
+            yield return Nature.Mud.SpeedAt(HeroPosition);
         }
 
         /// <summary>Drag food onto the hero: hunger drops, health rises by the food's heal × recovery scale. Not food — nothing happens.</summary>

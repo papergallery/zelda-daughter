@@ -1,0 +1,12 @@
+{
+  "_source": "project-design.md §6 «Крафт костра» (дрова размещаются в мире, кремень на дрова — костёр горит; зона отдыха; источник света ночью; факел зажигается от огня), «Отдых и сон» (костёр — пассивный отдых, множитель лечения — wounds.json restMultiplier), §7 «Размещение предметов» (нельзя на невалидной поверхности — реплика place_invalid). Числа — оценка агента (баланс G2): костёр горит 240 с (≈ 1/6 суток 1500 с), каждое полено +120 с, не больше 600 с; доска +150, палка +40; зона отдыха 3 м, свет 9 м; в дождь прогорает вдвое быстрее; последние 20 с свет мерцает и гаснет. Апрель CampfireObject.cs — справочник (docs/april-review.md).",
+  "burnSeconds": 240,
+  "maxBurnSeconds": 600,
+  "fadeSeconds": 20,
+  "restRadius": 3.0,
+  "lightRadius": 9.0,
+  "rainBurnFactor": 2.0,
+  "placeMinSpacing": 0.5,
+  "placedKinds": { "firewood": "firewood_placed", "planks": "planks_placed" },
+  "fuel": { "firewood": 120, "planks": 150, "stick": 40 }
+}

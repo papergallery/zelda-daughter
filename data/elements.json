@@ -1,0 +1,24 @@
+{
+  "_source": "project-design.md §8 «Физика и взаимодействия среды» (минимум для демо, D-06): огонь распространяется по сухой траве с учётом ветра, мокрая трава не горит, дождь мочит траву и делает грязь (замедление — movement.json terrain.mud). Числа — оценка агента (баланс G2). Трава: клетка загорается от горящей соседней (≤ neighborDistance) с интенсивностью spreadPerSecond (0,5/с ≈ 2 с до соседней клетки), по ветру быстрее, против — медленнее (множитель 1 + windGain × сила × cos, не ниже minSpreadFactor), горит 12 с и становится сгоревшей (не горит повторно); искры костра зажигают сухие клетки в 1,5 м; героиня в горящей клетке (0,9 м) получает ожог 0,3 не чаще раза в 4 с. Дождь: в среднем раз в 1250 с (≈ раз в сутки), 60–180 с; через 20 с дождя трава мокрая (и горящая гаснет → сгорела), через 90 с после дождя сохнет. Грязь в зоне растёт 60 с дождя и сохнет 180 с. Ветер меняется раз в 90 с: направление и сила 0,1–1; старт — вдоль +x, сила 0,3 (угол в градусах от +x к +z).",
+  "grass": {
+    "neighborDistance": 1.6,
+    "burnSeconds": 12,
+    "spreadPerSecond": 0.5,
+    "windGain": 1.5,
+    "minSpreadFactor": 0.15,
+    "campfireSparkRadius": 1.5,
+    "campfireSparkPerSecond": 0.02,
+    "burnRadius": 0.9,
+    "scorchSeverity": 0.3,
+    "scorchCooldownSeconds": 4
+  },
+  "rain": {
+    "chancePerSecond": 0.0008,
+    "minSeconds": 60,
+    "maxSeconds": 180,
+    "wetAfterSeconds": 20,
+    "dryAfterSeconds": 90
+  },
+  "mud": { "riseSeconds": 60, "dryingSeconds": 180 },
+  "wind": { "changeEverySeconds": 90, "minStrength": 0.1, "maxStrength": 1.0, "startDirectionDegrees": 0, "startStrength": 0.3 }
+}

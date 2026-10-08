@@ -21,7 +21,7 @@ namespace ZeldaDaughter.Core.Save
     public static class SaveGame
     {
         /// <summary>1 → 2 (D-01): Killed (killed enemies) and KnockoutLeft are added; both default to empty/0, so version 1 still loads.
-        /// 2 → 3 (D-03, D-04): map marks, notebook entries, requests, carcasses (D-05), trade state (coins taught, barter deals, stock sold, buyback shelves) — absent in older saves, so they load as «nothing traded».</summary>
+        /// 2 → 3 (D-03, D-04): map marks, notebook entries, requests, carcasses (D-05), the camp and the elements — placed things, campfires, rain, wind, grass, mud, night counter (D-06) — and trade state (coins taught, barter deals, stock sold, buyback shelves) — absent in older saves, so they load as «nothing traded».</summary>
         public const int Version = 3;
 
         static readonly JsonSerializerSettings Json = new JsonSerializerSettings
@@ -56,6 +56,19 @@ namespace ZeldaDaughter.Core.Save
             s.Picked = g.Picked.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Killed = g.Killed.OrderBy(x => x, StringComparer.Ordinal).ToList();
             s.Carcasses = g.Carcasses.Active.Select(c => new CarcassDto { Id = c.Id, Def = c.DefId, X = c.Position.X, Z = c.Position.Y, Looted = c.State == Loot.CarcassState.Looted }).ToList();
+            s.PlacedCounter = g.Camp.Counter;
+            s.Placed = g.Camp.Objects.Select(o => new PlacedDto { Id = o.Id, Kind = o.Kind, Item = o.Item, X = o.Position.X, Z = o.Position.Y }).ToList();
+            s.Fires = g.Camp.Campfires.Select(f => new FireDto { Id = f.Id, X = f.Position.X, Z = f.Position.Y, BurnLeft = f.BurnLeft }).ToList();
+            s.Raining = g.Nature.Weather.IsRaining;
+            s.RainLeft = g.Nature.Weather.RainLeft;
+            s.RainElapsed = g.Nature.Weather.RainElapsed;
+            s.WindX = g.Nature.Wind.Direction.X; s.WindZ = g.Nature.Wind.Direction.Y; s.WindStrength = g.Nature.Wind.Strength; s.WindTimer = g.Nature.Wind.Timer;
+            foreach (var kv in g.Nature.Grass.State().OrderBy(x => x.Key, StringComparer.Ordinal))
+                s.Grass[kv.Key] = new GrassDto { State = kv.Value.state.ToString(), T = kv.Value.timer };
+            foreach (var kv in g.Nature.Mud.State().OrderBy(x => x.Key, StringComparer.Ordinal))
+                if (kv.Value > 0f) s.Mud[kv.Key] = kv.Value;
+            s.PredatorCounter = g.Nature.Predators.Counter;
+            s.PredatorTimer = g.Nature.Predators.Timer;
             s.MapMarks = g.Map.Known.ToList();
             s.Notes = g.Notebook.Entries.Select(e => e.Id).ToList();
             s.QuestsOffered = g.Quests.OfferedIds.ToList();
@@ -100,6 +113,17 @@ namespace ZeldaDaughter.Core.Save
             g.Killed.Clear();
             foreach (var k in s.Killed) g.Killed.Add(k);
             g.Carcasses.Restore(s.Carcasses.Select(c => new Loot.Carcass(c.Id, c.Def, new Vec2(c.X, c.Z), c.Looted ? Loot.CarcassState.Looted : Loot.CarcassState.Fresh)));
+            g.Camp.Restore(s.PlacedCounter,
+                s.Placed.Select(o => new World.PlacedObject(o.Id, o.Kind, o.Item, new Vec2(o.X, o.Z))),
+                s.Fires.Select(f => new World.Campfire(f.Id, new Vec2(f.X, f.Z), f.BurnLeft, g.Data.Camp.FadeSeconds)));
+            g.Nature.Weather.Restore(s.Raining, s.RainLeft, s.RainElapsed);
+            g.Nature.Wind.Restore(new Vec2(s.WindX, s.WindZ), s.WindStrength, s.WindTimer);
+            var grass = new Dictionary<string, (World.GrassState, float)>();
+            foreach (var kv in s.Grass)
+                if (Enum.TryParse<World.GrassState>(kv.Value.State, out var gs) && gs != World.GrassState.Dry) grass[kv.Key] = (gs, kv.Value.T);
+            g.Nature.Grass.Restore(grass);
+            g.Nature.Mud.Restore(s.Mud);
+            g.Nature.Predators.Restore(s.PredatorCounter, s.PredatorTimer);
             g.Map.Restore(s.MapMarks);
             g.Notebook.Restore(s.Notes);
             g.Quests.Restore(s.QuestsOffered, s.QuestsDone);
@@ -183,6 +207,20 @@ namespace ZeldaDaughter.Core.Save
             public List<string> HintsDone { get; set; } = new List<string>();
             public List<string> Picked { get; set; } = new List<string>();
             public List<string> Killed { get; set; } = new List<string>();
+            public int PlacedCounter { get; set; }
+            public List<PlacedDto> Placed { get; set; } = new List<PlacedDto>();
+            public List<FireDto> Fires { get; set; } = new List<FireDto>();
+            public bool Raining { get; set; }
+            public float RainLeft { get; set; }
+            public float RainElapsed { get; set; }
+            public float WindX { get; set; } = 1f;
+            public float WindZ { get; set; }
+            public float WindStrength { get; set; }
+            public float WindTimer { get; set; }
+            public Dictionary<string, GrassDto> Grass { get; set; } = new Dictionary<string, GrassDto>();
+            public Dictionary<string, float> Mud { get; set; } = new Dictionary<string, float>();
+            public int PredatorCounter { get; set; }
+            public float PredatorTimer { get; set; }
             public List<CarcassDto> Carcasses { get; set; } = new List<CarcassDto>();
             public List<string> MapMarks { get; set; } = new List<string>();
             public List<string> Notes { get; set; } = new List<string>();
@@ -192,6 +230,29 @@ namespace ZeldaDaughter.Core.Save
             public int BarterDeals { get; set; }
             public Dictionary<string, Dictionary<string, int>> StockSold { get; set; } = new Dictionary<string, Dictionary<string, int>>();
             public Dictionary<string, Dictionary<string, int>> Buyback { get; set; } = new Dictionary<string, Dictionary<string, int>>();
+        }
+
+        sealed class PlacedDto
+        {
+            public string Id { get; set; } = "";
+            public string Kind { get; set; } = "";
+            public string Item { get; set; } = "";
+            public float X { get; set; }
+            public float Z { get; set; }
+        }
+
+        sealed class FireDto
+        {
+            public string Id { get; set; } = "";
+            public float X { get; set; }
+            public float Z { get; set; }
+            public float BurnLeft { get; set; }
+        }
+
+        sealed class GrassDto
+        {
+            public string State { get; set; } = "";
+            public float T { get; set; }
         }
 
         sealed class CarcassDto

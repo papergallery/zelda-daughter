@@ -73,6 +73,9 @@ namespace ZeldaDaughter.Core.Data
         public NpcSettings Npcs { get; private set; } = new NpcSettings();
         public TraderSettings Traders { get; private set; } = new TraderSettings();
         public MapSettings Map { get; private set; } = new MapSettings();
+        public CampSettings Camp { get; private set; } = new CampSettings();
+        public NightSettings Night { get; private set; } = new NightSettings();
+        public ElementsSettings Elements { get; private set; } = new ElementsSettings();
         public NotebookSettings Notebook { get; private set; } = new NotebookSettings();
         public QuestSettings Quests { get; private set; } = new QuestSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
@@ -107,6 +110,9 @@ namespace ZeldaDaughter.Core.Data
                 Npcs = Read<NpcSettings>(read, "npcs.json", problems),
                 Traders = Read<TraderSettings>(read, "traders.json", problems),
                 Map = Read<MapSettings>(read, "map.json", problems),
+                Camp = Read<CampSettings>(read, "camp.json", problems),
+                Night = Read<NightSettings>(read, "night.json", problems),
+                Elements = Read<ElementsSettings>(read, "elements.json", problems),
                 Notebook = Read<NotebookSettings>(read, "notebook.json", problems),
                 Quests = Read<QuestSettings>(read, "quests.json", problems),
             };
@@ -309,6 +315,44 @@ namespace ZeldaDaughter.Core.Data
                     }
                 foreach (var m in q.Reward.Marks) if (!d.Map.Marks.ContainsKey(m)) problems.Add($"{who}: reward mark '{m}' — нет в map.json");
                 foreach (var h in q.HandOut) if (!q.Need.ContainsKey(h.Key)) problems.Add($"{who}: handOut '{h.Key}' не нужен в need — отдавать нечего");
+            }
+            {
+                var c = d.Camp;
+                if (c.BurnSeconds <= 0 || c.MaxBurnSeconds < c.BurnSeconds) problems.Add("camp.json: burnSeconds > 0 и maxBurnSeconds ≥ burnSeconds");
+                if (c.FadeSeconds < 0 || c.FadeSeconds > c.BurnSeconds) problems.Add("camp.json: fadeSeconds в [0; burnSeconds]");
+                if (c.RestRadius <= 0 || c.LightRadius <= 0) problems.Add("camp.json: restRadius и lightRadius должны быть > 0");
+                if (c.RainBurnFactor < 1) problems.Add("camp.json: rainBurnFactor ≥ 1 (дождь не продлевает костёр)");
+                if (c.PlaceMinSpacing < 0) problems.Add("camp.json: placeMinSpacing < 0");
+                foreach (var kv in c.PlacedKinds)
+                {
+                    Ref("camp.json", "placedKinds", kv.Key);
+                    if (!worldObjects.Contains(kv.Value)) problems.Add($"camp.json: placedKinds '{kv.Key}' → '{kv.Value}' — не объявлено в recipes.json worldObjects");
+                }
+                foreach (var kv in c.Fuel)
+                {
+                    Ref("camp.json", "fuel", kv.Key);
+                    if (kv.Value <= 0) problems.Add($"camp.json: fuel '{kv.Key}' — секунд должно быть > 0");
+                }
+                var n = d.Night;
+                if (!d.Enemies.Enemies.ContainsKey(n.Enemy)) problems.Add($"night.json: enemy '{n.Enemy}' — нет в enemies.json");
+                if (n.MaxAtNight < 0) problems.Add("night.json: maxAtNight < 0");
+                if (n.DaylightBelow <= 0 || n.DaylightBelow > 1) problems.Add("night.json: daylightBelow должен быть в (0; 1]");
+                if (n.SpawnIntervalSeconds <= 0 || n.ZoneRadius <= 0 || n.MinHeroDistance < 0 || n.DespawnDistance <= 0) problems.Add("night.json: spawnIntervalSeconds, zoneRadius, despawnDistance должны быть > 0, minHeroDistance ≥ 0");
+                if (n.PerZoneMax < 1) problems.Add("night.json: perZoneMax ≥ 1");
+                if (n.Zones.Count == 0) problems.Add("night.json: нет zones");
+                foreach (var z in n.Zones) if (!IdPattern.IsMatch(z)) problems.Add($"night.json: zone '{z}' — id объекта сцены ([a-z0-9_] с буквы)");
+                var g = d.Elements.Grass; var r = d.Elements.Rain; var m = d.Elements.Mud; var w = d.Elements.Wind;
+                if (g.NeighborDistance <= 0) problems.Add("elements.json: grass.neighborDistance > 0");
+                if (g.BurnSeconds <= 0) problems.Add("elements.json: grass.burnSeconds > 0");
+                if (g.SpreadPerSecond <= 0) problems.Add("elements.json: grass.spreadPerSecond > 0");
+                if (g.MinSpreadFactor <= 0 || g.MinSpreadFactor > 1) problems.Add("elements.json: grass.minSpreadFactor в (0; 1] — против ветра огонь всё же ползёт");
+                if (g.WindGain < 0 || g.CampfireSparkRadius < 0 || g.CampfireSparkPerSecond < 0 || g.BurnRadius <= 0) problems.Add("elements.json: grass.windGain, campfireSpark* ≥ 0, burnRadius > 0");
+                if (g.ScorchSeverity < 0 || g.ScorchSeverity > 1 || g.ScorchCooldownSeconds < 0) problems.Add("elements.json: grass.scorchSeverity в 0..1, scorchCooldownSeconds ≥ 0");
+                if (r.ChancePerSecond < 0 || r.MinSeconds <= 0 || r.MaxSeconds < r.MinSeconds) problems.Add("elements.json: rain.chancePerSecond ≥ 0, 0 < minSeconds ≤ maxSeconds");
+                if (r.WetAfterSeconds < 0 || r.DryAfterSeconds < 0) problems.Add("elements.json: rain.wetAfterSeconds, dryAfterSeconds ≥ 0");
+                if (m.RiseSeconds <= 0 || m.DryingSeconds <= 0) problems.Add("elements.json: mud.riseSeconds, dryingSeconds > 0");
+                if (w.ChangeEverySeconds <= 0 || w.MinStrength < 0 || w.MaxStrength > 1 || w.MinStrength > w.MaxStrength || w.StartStrength < 0 || w.StartStrength > 1) problems.Add("elements.json: wind.changeEverySeconds > 0, 0 ≤ minStrength ≤ maxStrength ≤ 1, startStrength в 0..1");
+                if (!d.Movement.Terrain.ContainsKey("mud")) problems.Add("movement.json: нет terrain.mud (грязь после дождя, D-06)");
             }
             var pairs = recipes.Field.GroupBy(r => string.CompareOrdinal(r.A, r.B) <= 0 ? r.A + "|" + r.B : r.B + "|" + r.A).Where(g => g.Count() > 1);
             foreach (var g in pairs) problems.Add($"recipes.json: пара {g.Key.Replace("|", " + ")} — два рецепта");
