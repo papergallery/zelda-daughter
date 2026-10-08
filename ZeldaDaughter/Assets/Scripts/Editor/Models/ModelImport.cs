@@ -13,7 +13,7 @@ namespace ZeldaDaughter.Editor
     {
                 static bool Ours(string path) => path.StartsWith(ModelLook.ModelsRoot, System.StringComparison.Ordinal);
 
-        public override uint GetVersion() => 3u;
+        public override uint GetVersion() => 5u;
 
         void OnPreprocessModel()
         {
@@ -70,12 +70,16 @@ namespace ZeldaDaughter.Editor
 
         void OnPreprocessTexture()
         {
-            // Kenney's colormap is a palette of flat cells: point sampling, no mips — no colour bleeding between cells.
-            if (!Ours(assetPath) || !assetPath.EndsWith("colormap.png")) return;
+            if (!Ours(assetPath)) return;
             var t = (TextureImporter)assetImporter;
-            t.filterMode = FilterMode.Point;
-            t.mipmapEnabled = false;
-            t.wrapMode = TextureWrapMode.Clamp;
+            t.textureShape = TextureImporterShape.Texture2D; // wide / square sheets are otherwise guessed to be cubemaps
+            // Kenney's colormap is a palette of flat cells: point sampling, no mips — no colour bleeding between cells.
+            if (assetPath.EndsWith("colormap.png"))
+            {
+                t.filterMode = FilterMode.Point;
+                t.mipmapEnabled = false;
+                t.wrapMode = TextureWrapMode.Clamp;
+            }
         }
     }
 }

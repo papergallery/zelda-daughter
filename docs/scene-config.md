@@ -29,4 +29,25 @@
 
 Проверка идемпотентности: сборщик пишет `[ZD:Scene] built <имя> objects=N hash=…` — хеш имён, трансформов и типов компонентов; два прогона подряд дают один хеш (`.unity` побайтно не совпадёт: Unity выдаёт новые fileID).
 
-Дальше (R2-02, V-01): зоны декора с весами, точки спавна, тропы, вода — из апрельского формата, по мере надобности.
+## Модели, дороги, вода, зоны, россыпь (D-10)
+
+Каталог моделей — `data/models.json` (генерирует `tools/gen-models.py`): id → `path` (FBX в `Assets/Art/Models`, CC0, лицензии рядом) или составная модель `parts` (дом из модулей Town: `offset`, `y`, `yaw`, `collider: "none"` для проёма); `collider`: `none | box | capsule | parts` (+ `radius`, `height`, `shrink`); `tags`. Размеры — `data/model-bounds.json` (замер в Unity). Масштаб запечён при импорте: единицы — метры, клетка 3 м. Ядро: `ModelCatalog`, `Area`, `TerrainMap`, `Scatterer` (`core/ZeldaDaughter.Core/Scenes/`).
+
+```json
+"objects": [ { "id": "house_a", "model": "house_small", "position": {...}, "rotation": {...}, "collide": true } ],
+"paths":  [ { "id": "road_main", "points": [ {"x":0,"z":-26}, {"x":0,"z":-8} ], "width": 3, "color": "#b09a6e" } ],   // лента на земле, terrain road
+"water":  [ { "id": "river", "points": [...], "width": 7, "color": "#5f8fa3" } ],                                      // лента воды, terrain water (×0,4)
+"zones":  [ { "id": "bridge_deck", "shape": "rect", "center": {"x":6,"z":8.6}, "size": {"x":3.6,"z":9}, "rotation": 0,
+              "terrain": "road", "tags": ["bridge"] },                                                              // terrain — необязательно; rect | circle (radius) | strip (points+width)
+            { "id": "wolves", "shape": "circle", "center": {...}, "radius": 6, "tags": ["predator_spawn"] } ],
+"scatter": [ { "id": "meadow_grass", "area": { "shape": "rect", "center": {...}, "size": {...} },   // или { "ref": "river" } — геометрия пути/воды/зоны
+               "models": [ { "id": "grass", "weight": 4 }, { "id": "flower_yellow_a", "weight": 1 } ],
+               "density": 18, "seed": 1, "scale": { "min": 0.8, "max": 1.2 }, "minSpacing": 0, "collide": false, "randomYaw": true,
+               "avoid": { "paths": 0.8, "water": 1, "objects": 0.6, "zones": ["bridge_deck"], "zoneMargin": 0 } } ]
+```
+
+- **Террейн под героем:** `TerrainMap` — земля сцены, затем `paths` (road), `water` (water), затем зоны с `terrain`; побеждает последний слой, поэтому зона-мост после реки отменяет воду. Скорость — `SpeedModel` (`data/movement.json`). В Unity — `TerrainZones` (JSON карты в сцене), `HeroController.CurrentTerrain`; лог `[ZD:Move] terrain a -> b`.
+- **Россыпь:** `density` — штук на 100 м²; позиции только из `seed`; отказ, если точка ближе `avoid.*` метров к краю дороги/воды/объекта (по замеренному следу модели) или внутри зоны; `minSpacing` — между элементами одной россыпи; край земли — отступ 1 м. Trees/rocks — `collide: true`, трава — без коллайдеров. Лог `[ZD:Scene] scatter <сцена> placed=N digest=…`.
+- Зоны в сцене — объекты `Zones/<id>` с `ZoneArea` (id, теги, геометрия). Пути и вода — ленты без коллайдера; предметы `model` — под `Objects/<id>` (тап по составной модели находит объект по предку).
+- Обратная совместимость: у `prologue-grey` и `g1-capsule` новых секций нет — собираются как раньше (тест `Old_scenes_keep_working…`).
+- Пробная сцена `scenes/models-test.json` (`build.include: false`): дом, хижина, мост, деревья, камни, забор, поле, реквизит, три россыпи.

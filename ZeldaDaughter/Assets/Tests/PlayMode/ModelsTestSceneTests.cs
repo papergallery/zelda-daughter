@@ -39,10 +39,12 @@ namespace ZeldaDaughter.Tests
         /// <summary>Walk along a world direction (xz) for a time, calling onFrame each frame.</summary>
         IEnumerator Walk(Vector2 worldDir, float seconds, System.Action onFrame = null)
         {
-            var p = _hero.transform.position;
-            var a = Camera.main.WorldToScreenPoint(p);
-            var b = Camera.main.WorldToScreenPoint(p + new Vector3(worldDir.x, 0f, worldDir.y));
-            var d = new Vector2(b.x - a.x, b.y - a.y).normalized * 40f;
+            var a = Camera.main.WorldToScreenPoint(_hero.transform.position);
+            // The game turns a swipe into a ground direction by the camera yaw alone (not by the projection): invert that.
+            float yaw = Camera.main.GetComponent<ZeldaDaughter.World.IsoCamera>().Yaw * Mathf.Deg2Rad;
+            var fwd = new Vector2(Mathf.Sin(yaw), Mathf.Cos(yaw));
+            var right = new Vector2(Mathf.Cos(yaw), -Mathf.Sin(yaw));
+            var d = new Vector2(Vector2.Dot(worldDir, right), Vector2.Dot(worldDir, fwd)).normalized * 40f;
             var o = new Vector2(a.x - 150f, a.y - 250f);
             _hero.Feed(new TouchSample(0, TouchPhase.Began, Now, new Vec2(o.x, o.y), _hero.HitAt(new Vec2(o.x, o.y))));
             _hero.Feed(new TouchSample(0, TouchPhase.Moved, Now, new Vec2(o.x + d.x, o.y + d.y), default));
@@ -63,10 +65,11 @@ namespace ZeldaDaughter.Tests
             // house_a stands at (-12, -2): 2×2 tiles, south wall on z = -5; x = -10.5 is a solid tile (the door is at x = -13.5).
             PlaceAt(-10.5f, -9f);
             yield return new WaitForSeconds(0.2f);
+            var start = _hero.transform.position;
             yield return Walk(Vector2.up, 6f); // world +z, 6 s ≈ 15 m if nothing stopped her
             float z = _hero.transform.position.z;
-            Debug.Log($"[ZD:Test] house wall: stopped at z={z:0.00} (wall at -5)");
-            Assert.Less(z, -4.9f, "the south wall holds");
+            Debug.Log($"[ZD:Test] house wall: from {start} to {_hero.transform.position} (wall at z=-5)");
+            Assert.Less(z, -4.9f, $"the south wall holds (from {start} to {_hero.transform.position})");
             Assert.Greater(z, -6.5f, "she did walk up to it");
         }
 
@@ -76,10 +79,10 @@ namespace ZeldaDaughter.Tests
             PlaceAt(6f, 2.5f);
             yield return new WaitForSeconds(0.2f);
             bool waded = false;
-            yield return Walk(Vector2.up, 6f, () => waded |= _hero.CurrentTerrain == "water");
+            yield return Walk(Vector2.up, 9f, () => waded |= _hero.CurrentTerrain == "water");
             float z = _hero.transform.position.z;
             Debug.Log($"[ZD:Test] bridge: z={z:0.00} waded={waded}");
-            Assert.Greater(z, 12.5f, "across the river (water z 5…12)");
+            Assert.Greater(z, 13.5f, "across the river (water z 5…12)");
             Assert.IsFalse(waded, "the bridge deck is not water");
         }
 
