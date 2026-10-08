@@ -25,6 +25,7 @@ Shader "Zelda/Painted"
         _Cutoff("Alpha Cutoff", Range(0, 1)) = 0.5
         _Fade("Fade: radius m, from height m, strength, chest m", Vector) = (1.3, 1.3, 0.92, 0.9)
         _Wind("Wind sway m at 4 m", Float) = 0.03
+        _NightTint("Night tint of the paint (× at _ZD_Night = 1)", Color) = (1,1,1,1)
         [Toggle(_PAINTED_GROUND)] _Ground("Painted ground", Float) = 0
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", Float) = 0
     }
@@ -51,7 +52,9 @@ Shader "Zelda/Painted"
             half _Cutoff;
             float4 _Fade;
             float _Wind;
+            half4 _NightTint;
         CBUFFER_END
+        float _ZD_Night; // 0 day … 1 night (SunController)
 
         float4 _ZD_HeroPos; // xyz — стопы героини (HeroView, D-25)
 
@@ -232,7 +235,9 @@ Shader "Zelda/Painted"
                 }
                 #endif
 
-                half3 c = MixFog(albedo * light, i.fogFactor);
+                // Своя доля ночного грейда рисованного плана (ref2game: грейд по планам — движком): ночь общего постпрохода синяя,
+                // концепт f1n — сине-серый; рисунок под ним чуть теплее (сцена задаёт _NightTint, по замеру кадра).
+                half3 c = MixFog(albedo * light * lerp(half3(1, 1, 1), _NightTint.rgb, (half)_ZD_Night), i.fogFactor);
                 return half4(c, 1.0h);
             }
             ENDHLSL

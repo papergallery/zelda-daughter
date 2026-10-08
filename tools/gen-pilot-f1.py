@@ -42,7 +42,7 @@ ROCKS = [('rock_1', 'rock_large_b', 630, 690, 0.42), ('rock_2', 'rock_large_c', 
          ('rock_10', 'rock_small_a', 100, 1655, 0.6), ('rock_11', 'rock_small_a', 180, 885, 0.5), ('rock_12', 'rock_small_flat_a', 240, 330, 0.6),
          ('rock_13', 'rock_large_c', 25, 830, 0.3), ('rock_14', 'rock_small_a', 10, 1300, 0.6), ('rock_15', 'rock_small_flat_a', 530, 330, 0.5),
          ('rock_16', 'rock_small_a', 470, 1150, 0.4)]
-ROCK_K = 0.6  # первый кадр (D-28-pilot-f1, 2026-10-09): камни ≈ в 1,6 раза крупнее, чем на f1
+ROCK_K = 0.45  # кадры r1, r2 (2026-10-09): камни в 1,6 и 1,3 раза крупнее, чем на f1
 
 # Дорога: ось по f1 (px снизу вверх), ширина — как на f1 (≈ 190 px поперёк на экране ≈ 2,5 м по земле).
 ROAD = [(-60, 1860), (120, 1450), (290, 1170), (385, 950), (425, 760), (480, 560), (610, 380), (800, 190), (980, 0)]
@@ -55,9 +55,9 @@ def build():
     for oid, model, px, py, s in ROCKS:
         objects.append(obj(oid, model, px, py, yaw=0.0, scale=round(s * ROCK_K, 3), tags=('decor', 'rock')))
     # Бревно у дороги (f1: от (530, 1060) до (790, 900)), длинная ось модели log_large — x: на экране вправо-вверх ≈ как на рисунке.
-    objects.append(obj('log_spawn', 'log_large', 660, 985, yaw=0.0, scale=0.8, tags=('decor', 'poi', 'log')))
+    objects.append(obj('log_spawn', 'log_large', 660, 985, yaw=0.0, scale=0.7, tags=('decor', 'poi', 'log')))
     # Кольцо костра f1n (на краю дороги), костёр зажигает игра (CampPresenter); рисунок — холодное кольцо, огонь — частицы и свет.
-    objects.append(obj('campfire_spawn', 'campfire_stones', 330, 1050, scale=0.75, tags=('campfire', 'rest_point', 'poi')))
+    objects.append(obj('campfire_spawn', 'campfire_stones', 330, 1050, scale=0.5, tags=('campfire', 'rest_point', 'poi')))
     # За кадром f1 (для прогулки): пень, указатель, ещё деревья и камни.
     objects.append(obj('stump_1', 'stump_round', 860, 1180, tags=('decor',)))
     objects.append(obj('sign_1', 'sign', 520, 560, yaw=45, tags=('decor',)))
@@ -73,8 +73,8 @@ def build():
     scatter = [
         {'id': 'meadow', 'area': rect,
          'models': [{'id': 'grass', 'weight': 5}, {'id': 'grass_large', 'weight': 3}, {'id': 'grass_leafs', 'weight': 1},
-                    {'id': 'flower_yellow_a', 'weight': 2}, {'id': 'flower_purple_a', 'weight': 2}],
-         'density': 60, 'seed': 28, 'scale': {'min': 0.8, 'max': 1.25}, 'minSpacing': 0.25, 'collide': False, 'randomYaw': True,
+                    {'id': 'flower_yellow_a', 'weight': 3}, {'id': 'flower_purple_a', 'weight': 3}],
+         'density': 90, 'seed': 28, 'scale': {'min': 0.8, 'max': 1.25}, 'minSpacing': 0.25, 'collide': False, 'randomYaw': True,
          'avoid': {'paths': 0.15, 'objects': 0.35}},
     ]
     scene = {
@@ -87,7 +87,7 @@ def build():
         'ambient': {'color': '#a8aeb4'},
         'camera': {'orthographic': True, 'pitch': 35, 'yaw': 45, 'distance': 20, 'size': 6.3, 'followSmoothTime': 0.15},
         'hero': {'spawn': {'x': 0, 'y': 0, 'z': 0}, 'shape': 'capsule', 'color': '#c9a46a'},
-        'paths': [{'id': 'road_main', 'points': road, 'width': 2.6, 'color': '#b09a6e'}],
+        'paths': [{'id': 'road_main', 'points': road, 'width': 1.8, 'color': '#b09a6e'}],
         'objects': objects,
         'scatter': scatter,
         'painted': {
@@ -102,6 +102,7 @@ def build():
             },
             'flip': ['rock', 'plant'],
             'shadow': 'blob',
+            'nightTint': [1.04, 1.02, 0.70],
             'fit': ['rock', 'prop'],
             'ground': {'meadow': 'meadow', 'road': 'road'},
         },

@@ -186,7 +186,7 @@ def lab_transfer(rgb, weight, ref):
     m, s = flat.mean(0), flat.std(0) + 1e-6
     rm, rs = ref_lab(name)
     tm, ts = m + (rm - m) * k, s * (rs / s) ** k
-    out = (lab - m) / s * ts + tm
+    out = (lab - m) / s * ts + tm + np.array(CFG.get('grade_offset', {}).get('lab', [0, 0, 0]), np.float32)
     return sb._lab_inv(out).astype(np.float32)
 
 

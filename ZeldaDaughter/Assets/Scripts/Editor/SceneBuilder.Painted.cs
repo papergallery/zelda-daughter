@@ -18,6 +18,7 @@ namespace ZeldaDaughter.Editor
     ///              "models": { "tree_oak": ["tree_big"], "rock_large_a": ["rock_big_a", "rock_mid_a"], … },   // id модели → рисунки (выбор по id)
     ///              "flip": ["rock", "plant"],          // виды, которые можно отражать (свет на рисунке ровный — стиль-библия)
     ///              "fit": ["rock", "prop"],            // виды, ширина рисунка которых = ширина модели на экране (по model-bounds)
+    ///              "nightTint": [1.04, 1.02, 0.78],    // множитель рисунка ночью (_ZD_Night), по замеру кадра против f1n
     ///              "shadow": "blob",                   // "model" (по умолчанию) — 3D-модель отбрасывает тень солнца (ShadowsOnly);
     ///                                                  // "blob" — мягкое пятно под основанием (ref2game: «contact shadows» кодом), модель не рисуется
     ///              "ground": { "meadow": "meadow", "road": "road" } }
@@ -49,6 +50,7 @@ namespace ZeldaDaughter.Editor
             public HashSet<string> Flip;
             public HashSet<string> Fit;
             public bool Blob;
+            public Color NightTint = Color.white;
             public HashSet<string> BlobKinds;
             public string AtlasTexture;
             public JObject GroundAtlas;
@@ -92,6 +94,7 @@ namespace ZeldaDaughter.Editor
                 Flip = new HashSet<string>(((JArray)p["flip"] ?? new JArray()).Select(x => (string)x)),
                 Fit = new HashSet<string>(((JArray)p["fit"] ?? new JArray()).Select(x => (string)x)),
                 Blob = (string)p["shadow"] == "blob",
+                NightTint = p["nightTint"] is JArray nt && nt.Count == 3 ? new Color((float)nt[0], (float)nt[1], (float)nt[2], 1f) : Color.white,
                 BlobKinds = new HashSet<string>(((JArray)p["blobKinds"] ?? new JArray("tree", "rock", "prop")).Select(x => (string)x)),
                 AtlasTexture = (string)atlas["texture"], GroundAtlas = atlas["ground"] as JObject, Ground = p["ground"] as JObject,
             };
@@ -212,6 +215,7 @@ namespace ZeldaDaughter.Editor
                 m.SetFloat("_Ground", 0f);
                 m.SetFloat("_Cull", 0f);
                 m.SetFloat("_Cutoff", 0.5f);
+                m.SetColor("_NightTint", setup.NightTint);
                 m.renderQueue = (int)RenderQueue.AlphaTest;
             });
             var rot = Quaternion.Euler(config.Camera.Pitch, config.Camera.Yaw, 0f);
@@ -301,6 +305,7 @@ namespace ZeldaDaughter.Editor
                     m.SetVector("_MaskRect", rect);
                     m.SetVector("_Tile", new Vector4((float)meadow["tile_m"], (float)road["tile_m"], 0, 0));
                     m.EnableKeyword("_PAINTED_GROUND");
+                    m.SetColor("_NightTint", setup.NightTint);
                     m.SetFloat("_Ground", 1f);
                     m.SetFloat("_Cull", 2f);
                     m.SetOverrideTag("RenderType", "Opaque");
@@ -327,7 +332,7 @@ namespace ZeldaDaughter.Editor
         static Mesh _paintedQuad;
 
         /// <summary>
-        /// A soft cool-umber contact shadow under a painted object (ref2game effects: shadows are code, shaped by the footprint): a flat ellipse at the
+        /// A soft green-grey contact shadow (f1: the shade under the crowns is #344132…#545a3f) under a painted object (ref2game effects: shadows are code, shaped by the footprint): a flat ellipse at the
         /// root, <paramref name="width"/> × 0.62·width, lying across the screen, transparent, no depth write (the ground and the hero's blob work the same way).
         /// </summary>
         static void PaintedBlob(Transform t, float width, Quaternion cardRot)
@@ -358,7 +363,7 @@ namespace ZeldaDaughter.Editor
                 _paintedBlobMat = AssetDatabase.LoadAssetAtPath<Material>(path);
                 if (_paintedBlobMat == null) { _paintedBlobMat = ZeldaDaughter.Rendering.SpriteLook.NewShadowMaterial(); AssetDatabase.CreateAsset(_paintedBlobMat, path); }
                 _paintedBlobMat.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(tex));
-                _paintedBlobMat.SetColor("_BaseColor", new Color(0.16f, 0.17f, 0.22f, 0.42f));
+                _paintedBlobMat.SetColor("_BaseColor", new Color(0.17f, 0.22f, 0.17f, 0.45f));
                 EditorUtility.SetDirty(_paintedBlobMat);
                 _paintedQuad = Resources.GetBuiltinResource<Mesh>("Quad.fbx");
             }
