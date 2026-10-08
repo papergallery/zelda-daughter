@@ -50,7 +50,9 @@ namespace ZeldaDaughter.Editor
 
             var go = new GameObject("Audio");
             go.transform.SetParent(ctx.Game.transform, false);
-            go.AddComponent<AudioDirector>().Configure(ctx.Session, ctx.HeroCtl, sounds, zones.ToArray());
+            var director = go.AddComponent<AudioDirector>();
+            director.Configure(ctx.Session, ctx.HeroCtl, sounds, zones.ToArray());
+            go.AddComponent<FeelVoices>().Configure(ctx.Session, director, ctx.Cam);   // D-26: a wolf's growl from its side, her breath, her stomach
 
             // the bard sits at the tavern's bar
             Vector3? bard = null;
@@ -95,7 +97,7 @@ namespace ZeldaDaughter.Editor
                     want.compressionFormat = AudioCompressionFormat.Vorbis;
                     want.quality = 0.5f;
                     want.sampleRateSetting = AudioSampleRateSetting.OptimizeSampleRate;
-                    bool mono = def.Spatial;
+                    bool mono = !def.Id.StartsWith("bard_", System.StringComparison.Ordinal);   // D-26 п. 12: mono for all but the bard's tunes — half the size, a phone speaker has no width anyway
                     if (s.loadType == want.loadType && s.compressionFormat == want.compressionFormat && Mathf.Approximately(s.quality, want.quality)
                         && s.sampleRateSetting == want.sampleRateSetting && imp.forceToMono == mono) continue;
                     imp.defaultSampleSettings = want;

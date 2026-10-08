@@ -30,6 +30,7 @@ namespace ZeldaDaughter.Combat
         [SerializeField] private float _blockRadius = 0.3f;
 
         private GameState _g;
+        private StrikeBuffer _buffer;                 // D-26: a tap in the last 150 ms of the cooldown is kept and strikes when it ends
         private int _blockMask;
         private readonly List<EnemyView> _enemies = new List<EnemyView>();
         private readonly List<CarcassView> _carcasses = new List<CarcassView>();
@@ -74,6 +75,7 @@ namespace ZeldaDaughter.Combat
         private void OnReady(GameState g)
         {
             _g = g;
+            _buffer = new StrikeBuffer(g.Data.Weapons.TapBufferSeconds);
             _blockMask = LayerMask.GetMask(ProjectLayers.Blocking);
             g.Enemies.Blocked = IsBlocked;
             int spawned = 0;
@@ -113,7 +115,12 @@ namespace ZeldaDaughter.Combat
 
         private void Update()
         {
-            if (_g != null) SyncViews();
+            if (_g == null) return;
+            SyncViews();
+            if (_buffer == null || !_buffer.HasPending) return;
+            if (_g.Condition.IsKnockedOut) { _buffer.Clear(); return; }
+            string id = _buffer.Tick(Time.deltaTime, _g.Combat.CooldownLeft);   // the cooldown is over: the kept tap goes now
+            if (id != null) { ZdLog.Info("Combat", $"buffered_strike {id}"); StrikeAt(id); }
         }
 
         /// <summary>Views follow the core's lists: a living enemy has a view, a dead one has a carcass instead, a carcass has one until it is butchered.</summary>
@@ -200,6 +207,12 @@ namespace ZeldaDaughter.Combat
         public void Strike(Tappable t)
         {
             if (_g == null) return;
+            StrikeAt(t.Id);
+        }
+
+        private void StrikeAt(string enemyId)
+        {
+            var t = new TapRef(enemyId);
             var e = _g.Enemies.Get(t.Id);
             if (e == null) return;
             var toward = new Vector3(e.Position.X, _session.Hero.transform.position.y, e.Position.Y);
@@ -225,9 +238,16 @@ namespace ZeldaDaughter.Combat
                     break;
                 case StrikeOutcome.Cooldown:
                     TurnHero(toward);
-                    ZdLog.Info("Combat", $"cooldown {t.Id}");
+                    bool kept = _buffer.Offer(t.Id, _g.Combat.CooldownLeft);
+                    ZdLog.Info("Combat", $"cooldown {t.Id} left={_g.Combat.CooldownLeft:0.000} buffered={kept}");
                     break;
             }
+        }
+
+        private readonly struct TapRef
+        {
+            public readonly string Id;
+            public TapRef(string id) { Id = id; }
         }
 
         /// <summary>A tap on a carcass: bare hands take the minimum once, the knife in the bag takes everything and the carcass is gone.</summary>

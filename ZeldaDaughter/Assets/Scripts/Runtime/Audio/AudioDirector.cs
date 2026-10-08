@@ -329,7 +329,7 @@ namespace ZeldaDaughter.Audio
             var at = HeroPoint;
             switch (act.Kind)
             {
-                case HeroActKind.Strike: Play("hit_miss", at, 1f, 0f, StrideDedupSeconds); break; // the swing
+                case HeroActKind.Strike: Play("swing", at, 1f, 0f, StrideDedupSeconds); break; // the swing (D-26: quiet, its own sound; the hit is louder, the miss is another one)
                 case HeroActKind.Pickup: Play("act_pickup", at, 1f, 0f, StrideDedupSeconds); break;
                 case HeroActKind.Eat: Play("act_eat", at, 1f, 0f, StrideDedupSeconds); break;
                 case HeroActKind.Treat: Play("act_treat", at, 1f, 0f, StrideDedupSeconds); break;
@@ -363,11 +363,13 @@ namespace ZeldaDaughter.Audio
 
         private void OnHeroStruck(string enemyId, StrikeResult r)
         {
-            if (r.Outcome != StrikeOutcome.Hit) return;
             var at = EnemyPoint(enemyId);
+            if (r.Outcome == StrikeOutcome.Miss) { Play("hit_miss", at); return; }   // D-26: the miss has its own sound (after the swing)
+            if (r.Outcome != StrikeOutcome.Hit) return;
             bool fists = _g == null || _g.WeaponInHand == WeaponSettings.Fists;
             Play(fists ? "hit_fists" : "hit_blade", at);
             Play("hit_" + DefOf(enemyId), at);
+            if (r.Killed) Play("kill", at);   // D-26: the killing blow is heard apart from an ordinary hit
         }
 
         private void OnEnemy(EnemyNotice n)

@@ -50,7 +50,13 @@ namespace ZeldaDaughter.Game
         private readonly StepReport _report = new StepReport();
         private readonly List<EnemyNotice> _notices = new List<EnemyNotice>(8);
         private float _npcSyncLeft;
+        private string _hintId;
+        private readonly HashSet<string> _openWindows = new HashSet<string>();
         private bool _saveLocked; // the slot holds a save we refused to load: never overwrite it this session
+
+        /// <summary>D-26: seconds the current onboarding hint has been showing without its action done. The hint is a hand without words; its text comes after
+        /// <c>onboarding.json textAfterSeconds</c> (20 s) of inaction, and never over an open window. Settable for tests.</summary>
+        public float HintIdleSeconds { get; set; }
 
         public GameState State => _state;
         public SessionEvents Events { get; } = new SessionEvents();
@@ -95,6 +101,8 @@ namespace ZeldaDaughter.Game
             Events.Skill += OnSkill;
             Events.BagChanged += OnBagChanged;
             Events.Enemy += OnEnemyNotice;
+            Events.WindowOpened += OnWindowOpened;
+            Events.WindowClosed += OnWindowClosed;
             _hero.SetSpeedSource(() => _state.SpeedMultiplier);
             _ui.Bind(Events);
             Load();
@@ -102,6 +110,7 @@ namespace ZeldaDaughter.Game
 
         private void Start()
         {
+            FramePacing.Apply(_state.Data.Feel.TargetFrameRate);   // D-26: Unity draws 30 on Android unless told otherwise
             ZdLog.Info("Session", $"ready zone={_zone} day={_state.Clock.Day}");
             Events.RaiseStateReady(_state);
             OnBagChanged("start");
@@ -113,7 +122,12 @@ namespace ZeldaDaughter.Game
             Events.Skill -= OnSkill;
             Events.BagChanged -= OnBagChanged;
             Events.Enemy -= OnEnemyNotice;
+            Events.WindowOpened -= OnWindowOpened;
+            Events.WindowClosed -= OnWindowClosed;
         }
+
+        private void OnWindowOpened(string id) => _openWindows.Add(id);
+        private void OnWindowClosed(string id) => _openWindows.Remove(id);
 
         /// <summary>A fresh state registered with this scene and wired to the bus. Registration goes before a save is loaded (grass cells take their saved state as they are added).</summary>
         private GameState NewState()
@@ -169,7 +183,9 @@ namespace ZeldaDaughter.Game
                 if (topics.Count > 0) SayFirst(topics);
             }
             var hint = g.Hints.Visible;
-            _ui.ShowHint(hint != null ? g.Hints.TextOf(hint) : null);
+            if (hint != _hintId) { _hintId = hint; HintIdleSeconds = 0f; }
+            else if (hint != null) HintIdleSeconds += dt;
+            _ui.ShowHint(hint != null && _openWindows.Count == 0 && data.Onboarding.ShowsText(HintIdleSeconds) ? g.Hints.TextOf(hint) : null);
 
             _autosaveLeft -= dt;
             if (_autosaveLeft <= 0f)

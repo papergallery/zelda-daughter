@@ -21,6 +21,12 @@ namespace ZeldaDaughter.Rendering
         private OverlayPass _overlay;
         private bool _warned;
 
+        /// <summary>D-26: the world's colour multiplier from the hero's state (1 = untouched, 0.75 = −25 % when she is badly hurt); set by CombatFeel, multiplies the grade's saturation.</summary>
+        public static float StateSaturation { get; set; } = 1f;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => StateSaturation = 1f;
+
         /// <summary>Settings asset (the editor tools flip <see cref="WatercolorSettings.enabled"/> for the comparison frame).</summary>
         public WatercolorSettings Settings => _settings;
 
@@ -151,7 +157,7 @@ namespace ZeldaDaughter.Rendering
                 _material.SetVector(WashParams, new Vector4(_s.toneLevels, _s.posterize, _s.bleedPx * heightScale, _s.edgeDarken));
                 _material.SetVector(PaperParams, new Vector4(_s.paperTilePx * Mathf.Max(0.5f, heightScale), _s.grain, _s.blotch, _s.pigment));
                 _material.SetColor(PaperColor, _s.paperColor);
-                _material.SetVector(GradeParams, new Vector4(_s.saturation, _s.contrast, _s.vignette, _s.vignetteStart));
+                _material.SetVector(GradeParams, new Vector4(_s.saturation * StateSaturation, _s.contrast, _s.vignette, _s.vignetteStart));
                 _material.SetColor(WarmTint, _s.warmTint);
                 _material.SetColor(VignetteColor, _s.vignetteColor);
                 _material.SetVector(ToneParams, new Vector4(_s.toneCurve, 0f, 0f, 0f));

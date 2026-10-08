@@ -19,7 +19,6 @@ namespace ZeldaDaughter.Combat
         private const float LungeSeconds = 0.25f;
         private const float WindupLeanDegrees = 14f;
         private const float WindupCrouch = 0.65f;
-        private const float WindupShadowGrowth = 1.0f; // the ring is 2× wide at the end
         private static Mesh _flatQuad;
         private static readonly int BaseMap = Shader.PropertyToID("_BaseMap");
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
@@ -103,9 +102,17 @@ namespace ZeldaDaughter.Combat
 
         private float _ringWidth = 0.9f;
 
+        /// <summary>D-26 hit-stop: the figure holds its place, pose and picture (the core goes on thinking; the view catches up after).</summary>
+        public bool Frozen
+        {
+            get => _frozen;
+            set { _frozen = value; if (_sprite != null) _sprite.Frozen = value; }
+        }
+        private bool _frozen;
+
         private void Update()
         {
-            if (_enemy == null) return;
+            if (_enemy == null || _frozen) return;
             float dt = Time.deltaTime;
             var target = new Vector3(_enemy.Position.X, 0f, _enemy.Position.Y);
             target.y = GroundAt(target);
@@ -121,7 +128,8 @@ namespace ZeldaDaughter.Combat
             toHero.y = 0f;
             var state = _enemy.State;
             bool engaged = state == EnemyState.Alert || state == EnemyState.Chase || state == EnemyState.Windup || state == EnemyState.Recover || state == EnemyState.Staggered;
-            if (engaged) _sprite.FaceDirection(toHero);
+            if (state == EnemyState.Windup) _sprite.FaceDirection(ReadableFacing(toHero));
+            else if (engaged) _sprite.FaceDirection(toHero);
             else if (moved > 1e-4f) _sprite.FaceDirection(step);
 
             if (dt > 0f && moved / dt > 0.3f) _sprite.Advance(moved); else _sprite.Stop();
@@ -131,11 +139,26 @@ namespace ZeldaDaughter.Combat
             Pose(toHero, state);
         }
 
+        /// <summary>
+        /// D-26: the swing must be read at a glance — the figure turned to the hero, never its back to the camera. When the hero is farther from the
+        /// camera than the enemy, a plain «toward her» shows the enemy's back; then it stands in profile, facing her side of the screen.
+        /// </summary>
+        private Vector3 ReadableFacing(Vector3 toHero)
+        {
+            var cam = _sprite.Camera != null ? _sprite.Camera.transform : null;
+            if (cam == null) return toHero;
+            var right = cam.right; right.y = 0f; right.Normalize();
+            var forward = cam.forward; forward.y = 0f; forward.Normalize();
+            float x = Vector3.Dot(toHero, right), y = Vector3.Dot(toHero, forward);
+            if (y <= 0f) return toHero;                          // toward the camera: the front or the side is shown anyway
+            return right * (x >= 0f ? 1f : -1f);                  // profile, to her side
+        }
+
         private void Pose(Vector3 toHero, EnemyState state)
         {
             var pose = BillboardPose.Stand;
             float side = SideOf(toHero);           // +1: the hero is to the right of the enemy on the screen
-            float ring = 1f;
+            float ring = 1f, ringProgress = 0f;
             bool showRing = false;
             switch (state)
             {
@@ -151,7 +174,8 @@ namespace ZeldaDaughter.Combat
                     pose.Crouch = WindupCrouch * e;
                     pose.TiltDegrees = -side * WindupLeanDegrees * e;     // back, away from the hero
                     pose.Shake = 0.02f + 0.05f * p;                        // never zero in a windup
-                    ring = 1f + WindupShadowGrowth * e;
+                    ringProgress = p;
+                    ring = 1f + (RingFactor() - 1f) * e;
                     showRing = true;
                     break;
                 }
@@ -168,26 +192,72 @@ namespace ZeldaDaughter.Combat
             if (_hurt > 0f) pose.Shake += 0.05f * _hurt;
             _sprite.SetPose(pose);
             _sprite.SetTint(Color.Lerp(Color.white, new Color(1f, 0.35f, 0.3f), _hurt));
-            ShowRing(showRing, ring);
+            ShowRing(showRing, ring, ringProgress);
         }
 
-        private void ShowRing(bool show, float scale)
+        /// <summary>The ring at the end of the windup as a multiple of the enemy's own width (data: windupRing.diameterFactor, not less than 1.5).</summary>
+        private float RingFactor() => Mathf.Max(1.5f, _session.State != null ? _session.State.Data.Feel.WindupRing.DiameterFactor : 1.7f);
+
+        private static Texture2D _ringTexture;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() { _ringTexture = null; _flatQuad = null; }
+
+        /// <summary>A soft-edged ring with a faint fill: the warning on the ground (a plain blob would read as a shadow).</summary>
+        private static Texture2D RingTexture()
+        {
+            if (_ringTexture != null) return _ringTexture;
+            const int n = 128;
+            var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { name = "windup_ring", wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear };
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++)
+            {
+                for (int x = 0; x < n; x++)
+                {
+                    float dx = (x + 0.5f) / n * 2f - 1f, dy = (y + 0.5f) / n * 2f - 1f;
+                    float r = Mathf.Sqrt(dx * dx + dy * dy);
+                    float band = Mathf.Clamp01(1f - Mathf.Abs(r - 0.86f) / 0.1f);       // the rim
+                    float fill = r < 0.86f ? 0.22f * Mathf.Clamp01((0.86f - r) / 0.06f + 0.3f) : 0f;
+                    float edge = Mathf.Clamp01((1f - r) / 0.03f);                        // nothing outside the disc
+                    byte a = (byte)(Mathf.Clamp01(Mathf.Max(band, fill)) * edge * 255f);
+                    px[y * n + x] = new Color32(255, 255, 255, a);
+                }
+            }
+            tex.SetPixels32(px);
+            tex.Apply(false, true);
+            return _ringTexture = tex;
+        }
+
+        private void ShowRing(bool show, float scale, float progress)
         {
             RingScale = scale;
             if (_ring == null) return;
             _ringShown = show;
             _ring.enabled = show;
             if (!show) return;
-            float body = Mathf.Abs(_sprite.Card.localScale.x);                // the figure's own width on the ground
-            float w = Mathf.Max(_ringWidth * 1.4f, body * 1.5f) * scale;
+            var feel = _session.State != null ? _session.State.Data.Feel.WindupRing : null;
+            float body = Mathf.Max(_ringWidth, Mathf.Abs(_sprite.Card.localScale.x));   // the figure's own width on the ground
+            float w = body * scale;
+            RingWidth = w;
+            BodyWidth = body;
             _ring.transform.localScale = new Vector3(w, 1f, w * 0.6f);
             _ring.transform.localPosition = new Vector3(0f, 0.07f, 0f);
-            float t = Mathf.Clamp01(scale - 1f);
+            // dark red; opaque enough at the end of the swing to be seen on grass (data: windupRing)
+            var c = feel != null && feel.Color.Length >= 3 ? new Color(feel.Color[0], feel.Color[1], feel.Color[2]) : new Color(0.45f, 0.06f, 0.06f);
+            c.a = feel != null ? feel.AlphaAt(progress) : 0.2f + 0.6f * progress;
             _ring.GetPropertyBlock(_ringBlock);
-            _ringBlock.SetTexture(BaseMap, PlaceholderSprites.ShadowTexture);
-            _ringBlock.SetColor(BaseColor, new Color(0.55f * t, 0.06f * t, 0.03f * t, 0.45f + 0.5f * t));
+            _ringBlock.SetTexture(BaseMap, RingTexture());
+            _ringBlock.SetColor(BaseColor, c);
             _ring.SetPropertyBlock(_ringBlock);
+            RingAlpha = c.a;
         }
+
+        /// <summary>The ring's width and the figure's own width on the ground, metres (the ring is at least 1.5 × the figure at the end of the windup).</summary>
+        public float RingWidth { get; private set; }
+        public float BodyWidth { get; private set; }
+
+        /// <summary>Opacity of the ring now (0.2 … 0.8 over the windup, data windupRing).</summary>
+        public float RingAlpha { get; private set; }
 
         /// <summary>+1 if the hero is to the right of this enemy on the screen, −1 to the left (the camera's right on the ground).</summary>
         private float SideOf(Vector3 toHero)

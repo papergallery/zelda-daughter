@@ -157,7 +157,8 @@ namespace ZeldaDaughter.Tests
 
             // 2. the first hint (the swipe) — and the swipe takes it away
             yield return null;
-            Assert.AreEqual(g.Hints.TextOf("swipe"), _s.UI.CurrentHint, "the first hint is the swipe");
+            Assert.AreEqual("swipe", g.Hints.Visible, "the first hint is the swipe");
+            Assert.IsTrue(string.IsNullOrEmpty(_s.UI.CurrentHint), "…as a hand: the text waits for 20 s of inaction (D-26)");
             var h = Camera.main.WorldToScreenPoint(_hero.transform.position);
             var o = new Vec2(h.x, h.y - 250f);
             _hero.Feed(new TouchSample(0, TouchPhase.Began, Time.realtimeSinceStartupAsDouble, o, TouchHit.Ground));

@@ -290,7 +290,7 @@ namespace ZeldaDaughter.Tests
             _s.Events.RaiseHeroActed(new HeroAct(HeroActKind.Strike));
             Assert.AreEqual(1, _dir.PlayedCount("act_eat"));
             Assert.AreEqual(1, _dir.PlayedCount("act_craft"));
-            Assert.AreEqual(1, _dir.PlayedCount("hit_miss"), "the swing");
+            Assert.AreEqual(1, _dir.PlayedCount("swing"), "the swing");
 
             _s.Events.RaiseHeroStruck("spawn_boar", new StrikeResult(StrikeOutcome.Hit, 1f));
             Assert.AreEqual(1, _dir.PlayedCount("hit_fists"), "bare hands");

@@ -30,10 +30,19 @@ namespace ZeldaDaughter.UI
         private string _shown;          // the hint the hand is for, null while it fades out / hidden
         private Tappable _tapTarget;
         private float _clock;
-        private static Sprite _drawn;
+        private static Sprite _drawn, _ringSprite, _dotSprite;
+        // D-26: what the hand does, without a word: a ring that fills under a held finger / spreads from a poke, and a trail behind a slide
+        private Vector3 _handTip;
+        private float _trailAlpha;
+        private bool _trailSet;
+        private int _trailW;
+        private Image _ring;
+        private Image[] _trail;
+        private const int TrailDots = 5;
+        private const float PokeSeconds = 1.4f, HoldSeconds = 1.6f;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() => _drawn = null;
+        private static void ResetStatics() { _drawn = null; _ringSprite = null; _dotSprite = null; }
 
         public void Configure(GameSession session, SessionUI ui, IconRegistry icons)
         {
@@ -81,6 +90,80 @@ namespace ZeldaDaughter.UI
             _group.blocksRaycasts = false;
             _group.interactable = false;
             _hand.gameObject.SetActive(false);
+            BuildExtras();
+        }
+
+        private void BuildExtras()
+        {
+            if (_ringSprite == null) _ringSprite = HandSprites.Ring();
+            if (_dotSprite == null) _dotSprite = HandSprites.Dot();
+            var ring = UiKit.MakeRect(_ui.World, "HintRing");
+            ring.sizeDelta = new Vector2(190f, 190f);
+            ring.anchorMin = ring.anchorMax = Vector2.zero;
+            ring.pivot = new Vector2(0.5f, 0.5f);
+            _ring = ring.gameObject.AddComponent<Image>();
+            _ring.sprite = _ringSprite;
+            _ring.raycastTarget = false;
+            ring.gameObject.SetActive(false);
+            _trail = new Image[TrailDots];
+            for (int i = 0; i < TrailDots; i++)
+            {
+                var d = UiKit.MakeRect(_ui.World, "HintTrail" + i);
+                d.sizeDelta = new Vector2(46f, 46f);
+                d.anchorMin = d.anchorMax = Vector2.zero;
+                d.pivot = new Vector2(0.5f, 0.5f);
+                var im = d.gameObject.AddComponent<Image>();
+                im.sprite = _dotSprite;
+                im.raycastTarget = false;
+                d.gameObject.SetActive(false);
+                _trail[i] = im;
+            }
+        }
+
+        /// <summary>The ring and the trail follow the hand: shown with it, hidden when it is hidden or when this hint does not use them.</summary>
+        private void UpdateExtras(bool on, string id, Vector3 handPos, float alpha)
+        {
+            bool ring = on && (id == "tap" || id == "long_press");
+            if (_ring != null && _ring.gameObject.activeSelf != ring) _ring.gameObject.SetActive(ring);
+            if (ring)
+            {
+                var inkRed = new Color(0.55f, 0.22f, 0.12f);
+                if (id == "long_press")
+                {
+                    // the finger is held: the ring on the hero grows over the long press, holds, then starts again
+                    float t = (_clock % HoldSeconds) / HoldSeconds;
+                    // (a plain ring that grows to its full size over the long press — a filled image would read as a bar)
+                    _ring.rectTransform.position = handPos;
+                    _ring.rectTransform.localScale = Vector3.one * Mathf.Lerp(0.35f, 1.35f, Mathf.Clamp01(t / 0.55f));
+                    _ring.color = new Color(inkRed.r, inkRed.g, inkRed.b, alpha * (t > 0.85f ? (1f - t) / 0.15f : 1f));
+                }
+                else
+                {
+                    // a poke: a ring spreads from the fingertip at the moment it lands, at the thing to touch
+                    float t = (_clock % PokeSeconds) / PokeSeconds;
+                    float land = Mathf.Clamp01((t - 0.35f) / 0.65f);
+                    _ring.rectTransform.position = handPos;
+                    _ring.rectTransform.localScale = Vector3.one * Mathf.Lerp(0.3f, 1.1f, land);
+                    _ring.color = new Color(inkRed.r, inkRed.g, inkRed.b, t < 0.35f ? 0f : alpha * (1f - land));
+                }
+            }
+            // the swipe's track: dots along the path of the slide, laid once (a per-frame change rebuilds the canvas and allocates)
+            bool trail = on && id == "swipe";
+            for (int i = 0; i < _trail.Length; i++)
+            {
+                var d = _trail[i];
+                if (d.gameObject.activeSelf != trail) d.gameObject.SetActive(trail);
+                if (!trail) continue;
+                if (Mathf.Abs(_trailAlpha - alpha) > 0.004f || !_trailSet || _trailW != Screen.width)
+                {
+                    float u = (i + 0.5f) / _trail.Length * 2f - 1f;                    // -1 … 1 across the slide
+                    float x = Screen.width * 0.5f + u * SwipeAmplitude * _ui.Canvas.scaleFactor;
+                    d.rectTransform.position = new Vector3(x, Screen.height * SwipeHeight - 70f * _ui.Canvas.scaleFactor, 0f);
+                    d.rectTransform.localScale = Vector3.one * 0.6f;
+                    d.color = new Color(0.97f, 0.92f, 0.8f, alpha * 0.6f);
+                    if (i == _trail.Length - 1) { _trailAlpha = alpha; _trailSet = true; _trailW = Screen.width; }
+                }
+            }
         }
 
         private Sprite PickSprite()
@@ -118,6 +201,7 @@ namespace ZeldaDaughter.UI
             _group.alpha = Mathf.MoveTowards(_group.alpha, target, step);
             bool on = _group.alpha > 0.01f || target > 0f;
             if (_hand.gameObject.activeSelf != on) _hand.gameObject.SetActive(on);
+            UpdateExtras(on && target > 0f || _group.alpha > 0.01f, _shown, _handTip, _group.alpha);
             _clock += Time.unscaledDeltaTime;
         }
 
@@ -133,6 +217,7 @@ namespace ZeldaDaughter.UI
                     float x = Screen.width * 0.5f + Mathf.Sin(_clock * SwipeSpeed) * SwipeAmplitude * scale;
                     _hand.position = new Vector3(x, Screen.height * SwipeHeight, 0f);
                     _hand.localScale = Vector3.one;
+                    _handTip = _hand.position;
                     return true;
                 }
                 case "tap":
@@ -141,9 +226,13 @@ namespace ZeldaDaughter.UI
                     if (_tapTarget == null || cam == null) return false;
                     var p = cam.WorldToScreenPoint(_tapTarget.AimPoint);
                     if (p.z <= 0f) return false;
-                    float press = 1f - 0.12f * Mathf.Max(0f, Mathf.Sin(_clock * 4f));
-                    _hand.position = new Vector3(p.x, p.y, 0f);
-                    _hand.localScale = Vector3.one * press;
+                    // a poke at the thing itself: the hand comes up to it from below, touches, and goes back (the ring spreads as it lands)
+                    float t = (_clock % PokeSeconds) / PokeSeconds;
+                    float reach = t < 0.35f ? Mathf.SmoothStep(0f, 1f, t / 0.35f) : t < 0.5f ? 1f : Mathf.SmoothStep(1f, 0f, (t - 0.5f) / 0.5f);
+                    float below = (1f - reach) * 90f * _ui.Canvas.scaleFactor;
+                    _hand.position = new Vector3(p.x, p.y - below, 0f);
+                    _hand.localScale = Vector3.one * (1f - 0.1f * Mathf.Clamp01((t - 0.3f) / 0.1f) * (t < 0.5f ? 1f : 0f));
+                    _handTip = new Vector3(p.x, p.y, 0f);
                     return true;
                 }
                 case "long_press":
@@ -152,9 +241,9 @@ namespace ZeldaDaughter.UI
                     if (hero == null || cam == null) return false;
                     var p = cam.WorldToScreenPoint(hero.position + Vector3.up * 0.9f);
                     if (p.z <= 0f) return false;
-                    float pulse = 1f + 0.1f * Mathf.Sin(_clock * 3f);
-                    _hand.position = new Vector3(p.x, p.y, 0f);
-                    _hand.localScale = Vector3.one * pulse;
+                    _hand.position = new Vector3(p.x, p.y, 0f);      // held still: a long press does not move
+                    _hand.localScale = Vector3.one;
+                    _handTip = _hand.position;
                     return true;
                 }
             }
@@ -197,6 +286,43 @@ namespace ZeldaDaughter.UI
             float h = Mathf.Clamp01((pax * bax + pay * bay) / (bax * bax + bay * bay));
             float dx = pax - bax * h, dy = pay - bay * h;
             return Mathf.Sqrt(dx * dx + dy * dy) - r;
+        }
+
+        /// <summary>A thin ring (ink), for the held finger and the poke.</summary>
+        public static Sprite Ring()
+        {
+            const int n = 128;
+            var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { name = "hint_ring", filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++)
+                for (int x = 0; x < n; x++)
+                {
+                    float dx = (x + 0.5f) / n * 2f - 1f, dy = (y + 0.5f) / n * 2f - 1f;
+                    float r = Mathf.Sqrt(dx * dx + dy * dy);
+                    float a = Mathf.Clamp01(1f - Mathf.Abs(r - 0.88f) / 0.07f);
+                    px[y * n + x] = new Color32(255, 255, 255, (byte)(a * 255f));
+                }
+            tex.SetPixels32(px);
+            tex.Apply(false, true);
+            return Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100f);
+        }
+
+        /// <summary>A soft dot, for the trail of a slide.</summary>
+        public static Sprite Dot()
+        {
+            const int n = 64;
+            var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { name = "hint_dot", filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++)
+                for (int x = 0; x < n; x++)
+                {
+                    float dx = (x + 0.5f) / n * 2f - 1f, dy = (y + 0.5f) / n * 2f - 1f;
+                    float a = Mathf.Clamp01(1f - Mathf.Sqrt(dx * dx + dy * dy));
+                    px[y * n + x] = new Color32(255, 255, 255, (byte)(a * a * 255f));
+                }
+            tex.SetPixels32(px);
+            tex.Apply(false, true);
+            return Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100f);
         }
 
         public static Sprite Hand()

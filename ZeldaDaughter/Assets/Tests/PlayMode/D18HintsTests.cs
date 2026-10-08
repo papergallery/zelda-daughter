@@ -94,7 +94,15 @@ namespace ZeldaDaughter.Tests
             Assert.NotNull(_hints.TapTarget);
             Assert.AreEqual("pickup_cloth_1", _hints.TapTarget.Id);
             var want = (Vector2)Camera.main.WorldToScreenPoint(_hints.TapTarget.AimPoint);
-            Assert.Less(Vector2.Distance(want, _hints.HandScreenPoint), 40f, $"the fingertip {_hints.HandScreenPoint} is at the target {want}");
+            // D-26: the hand pokes — it comes up to the target from below and goes back; within one poke (1.4 s) the fingertip touches it
+            float nearest = float.MaxValue;
+            for (float t = 0f; t < 1.6f; t += Time.deltaTime)
+            {
+                want = (Vector2)Camera.main.WorldToScreenPoint(_hints.TapTarget.AimPoint);
+                nearest = Mathf.Min(nearest, Vector2.Distance(want, _hints.HandScreenPoint));
+                yield return null;
+            }
+            Assert.Less(nearest, 40f, $"the fingertip touches the target {want} (nearest {nearest:0} px)");
 
             _s.Tap("pickup_cloth_1");
             yield return null;

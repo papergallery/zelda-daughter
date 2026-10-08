@@ -33,12 +33,12 @@ namespace ZeldaDaughter.Input
             if (_hero.IsOnHero(screen)) return TouchHit.Hero;
 
             var target = NearestTarget(screen);
-            if (target != null) return TouchHit.Object(target.Id);
+            if (target != null) return TouchHit.Object(target.Id, target.Kind == TapKind.Enemy);   // an enemy is struck on the touch itself (D-26)
 
             if (Physics.Raycast(_camera.ScreenPointToRay(new Vector3(screen.X, screen.Y)), out var hit, _rayLength))
             {
                 var t = hit.collider.GetComponentInParent<Tappable>();
-                if (t != null && t.Enabled) return TouchHit.Object(t.Id);
+                if (t != null && t.Enabled) return TouchHit.Object(t.Id, t.Kind == TapKind.Enemy);
             }
             return TouchHit.Ground;
         }

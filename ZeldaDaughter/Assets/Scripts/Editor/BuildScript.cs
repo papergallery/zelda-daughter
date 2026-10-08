@@ -54,6 +54,7 @@ namespace ZeldaDaughter.Editor
             };
             var report = BuildPipeline.BuildPlayer(options);
             var s = report.summary;
+            if (s.result == BuildResult.Succeeded) BuildBudget.Log(report, dir);   // D-26 п. 12: what the build weighs
             string line = $"[ZD:Build] {target} {kind} result={s.result} size={s.totalSize / (1024f * 1024f):0.0}MB time={s.totalTime.TotalSeconds:0}s path={options.locationPathName}";
             if (s.result == BuildResult.Succeeded) UnityEngine.Debug.Log(line);
             else UnityEngine.Debug.LogError(line + $" errors={s.totalErrors}");

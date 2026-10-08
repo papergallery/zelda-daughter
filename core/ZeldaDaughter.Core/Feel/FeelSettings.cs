@@ -39,6 +39,8 @@ namespace ZeldaDaughter.Core.Feel
         public float Miss { get; set; }
         /// <summary>The hero's blow freezes this long after it starts — at the moment of the impact, not of the wind-up.</summary>
         public float ImpactDelay { get; set; }
+        /// <summary>A blow to the hero freezes this long after it lands — her own pose of the blow (the shudder) is set first, then held.</summary>
+        public float StruckDelay { get; set; }
     }
 
     public sealed class ShakeSettings

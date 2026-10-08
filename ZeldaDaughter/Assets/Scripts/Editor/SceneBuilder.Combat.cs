@@ -1,5 +1,7 @@
 using UnityEngine;
 using ZeldaDaughter.Combat;
+using ZeldaDaughter.Hero;
+using ZeldaDaughter.World;
 
 namespace ZeldaDaughter.Editor
 {
@@ -14,6 +16,9 @@ namespace ZeldaDaughter.Editor
             carcasses.transform.SetParent(ctx.Game.transform, false);
             var presenter = ctx.Game.AddComponent<CombatPresenter>();
             presenter.Configure(ctx.Session, ctx.Art, ctx.Cam, enemies.transform, carcasses.transform);
+            // D-26: the response of the fight (hit-stop, shake, haptics, the camera that backs off, the colour that leaves) and the eyes in the dark
+            ctx.Game.AddComponent<CombatFeel>().Configure(ctx.Session, ctx.Iso, presenter, ctx.Hero.GetComponent<HeroView>());
+            ctx.Game.AddComponent<NightEyes>().Configure(ctx.Session, presenter);
             ctx.ById["combat"] = ctx.Game;
         }
     }

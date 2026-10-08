@@ -169,6 +169,14 @@ MonoBehaviour:
     Volume: 0.7
     PitchJitter: 0
     Spatial: 1
+  - Id: breath_hurt
+    Clips:
+    - {fileID: 8300000, guid: 4f9d5f483ff33652fced873870889df8, type: 3}
+    - {fileID: 8300000, guid: a4722fdc29cd43eb0da945953330f7eb, type: 3}
+    - {fileID: 8300000, guid: 9970fdbacaae9cc8da2d12fa919791e2, type: 3}
+    Volume: 0.5
+    PitchJitter: 0.05
+    Spatial: 0
   - Id: fire_campfire
     Clips:
     - {fileID: 8300000, guid: f349cb913b7aaf04882987a5ba9f7c6f, type: 3}
@@ -193,7 +201,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 1b676d4534ef2ae4c8f331e629beb79f, type: 3}
     - {fileID: 8300000, guid: ef273da43cf6a41488dbc71526a87b99, type: 3}
     - {fileID: 8300000, guid: 6c537ecd8866db146992091b297b3525, type: 3}
-    Volume: 0.8
+    Volume: 0.95
     PitchJitter: 0.1
     Spatial: 1
   - Id: hit_boar
@@ -207,7 +215,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 1824e78644d7ee24e9605a798b1ff2dc, type: 3}
     - {fileID: 8300000, guid: da2bd3af97497814699b6591a1305b75, type: 3}
     - {fileID: 8300000, guid: 9a73ae70c8b3c2349bcafc0a02a78202, type: 3}
-    Volume: 0.5
+    Volume: 0.85
     PitchJitter: 0.1
     Spatial: 1
   - Id: hit_hero
@@ -221,12 +229,10 @@ MonoBehaviour:
     Spatial: 1
   - Id: hit_miss
     Clips:
-    - {fileID: 8300000, guid: 66ef40d12319e74469d04a51e64a6023, type: 3}
-    - {fileID: 8300000, guid: e232a04c811cc014889f15beb6968f83, type: 3}
     - {fileID: 8300000, guid: 86de7499a26e13b4b9026201006bb6a7, type: 3}
     - {fileID: 8300000, guid: c0ca3fc532076d94fb909ca513af99b8, type: 3}
-    Volume: 0.6
-    PitchJitter: 0.1
+    Volume: 0.5
+    PitchJitter: 0.18
     Spatial: 1
   - Id: hit_wolf
     Clips:
@@ -234,6 +240,13 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 634dbaf147e770446a4b8826f99f92ba, type: 3}
     Volume: 0.8
     PitchJitter: 0.1
+    Spatial: 1
+  - Id: kill
+    Clips:
+    - {fileID: 8300000, guid: e9d86751b9c53124272e06e210bae96d, type: 3}
+    - {fileID: 8300000, guid: 9b92aadd30e9424071fdc0f7ecc77d97, type: 3}
+    Volume: 1
+    PitchJitter: 0.06
     Spatial: 1
   - Id: step_grass
     Clips:
@@ -320,6 +333,14 @@ MonoBehaviour:
     Volume: 0.55
     PitchJitter: 0.08
     Spatial: 0
+  - Id: stomach
+    Clips:
+    - {fileID: 8300000, guid: a2397970f1ca67b25fcf9edbdb27de37, type: 3}
+    - {fileID: 8300000, guid: 4a05a8a21f05a0c6feb361f7b98c13e1, type: 3}
+    - {fileID: 8300000, guid: 207f7ac6b002e4d98ae0f173fc2792cf, type: 3}
+    Volume: 0.55
+    PitchJitter: 0.05
+    Spatial: 0
   - Id: strike_boar
     Clips:
     - {fileID: 8300000, guid: 5a42956e4f371894fa273362c027a703, type: 3}
@@ -332,6 +353,13 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 8ba68cf08a94cf6449ab294008c64d36, type: 3}
     Volume: 0.8
     PitchJitter: 0.08
+    Spatial: 1
+  - Id: swing
+    Clips:
+    - {fileID: 8300000, guid: 66ef40d12319e74469d04a51e64a6023, type: 3}
+    - {fileID: 8300000, guid: e232a04c811cc014889f15beb6968f83, type: 3}
+    Volume: 0.3
+    PitchJitter: 0.1
     Spatial: 1
   - Id: ui_paper
     Clips:
@@ -356,3 +384,10 @@ MonoBehaviour:
     Volume: 0.8
     PitchJitter: 0.1
     Spatial: 1
+  - Id: wolf_growl_near
+    Clips:
+    - {fileID: 8300000, guid: 0579b4b647ea89549a9b110b84a6d869, type: 3}
+    - {fileID: 8300000, guid: 0975a4d7d1a802045a9635381b2cfa80, type: 3}
+    Volume: 1
+    PitchJitter: 0.08
+    Spatial: 0

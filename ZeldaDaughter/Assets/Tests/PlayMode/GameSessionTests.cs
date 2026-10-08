@@ -55,7 +55,8 @@ namespace ZeldaDaughter.Tests
         public IEnumerator Swipe_hint_goes_after_a_swipe_and_stays_gone_after_reload()
         {
             yield return null;
-            Assert.AreEqual(_s.State.Hints.TextOf("swipe"), _s.UI.CurrentHint);
+            Assert.AreEqual("swipe", _s.State.Hints.Visible);
+            Assert.IsTrue(string.IsNullOrEmpty(_s.UI.CurrentHint), "D-26: the hint is a hand without words; the text comes after 20 s of inaction");
             var h = Camera.main.WorldToScreenPoint(_hero.transform.position);
             var o = new Vec2(h.x, h.y - 250f);
             _hero.Feed(new TouchSample(0, TouchPhase.Began, Time.realtimeSinceStartupAsDouble, o, TouchHit.Ground));

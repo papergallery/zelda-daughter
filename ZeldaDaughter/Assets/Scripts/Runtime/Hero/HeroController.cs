@@ -105,6 +105,9 @@ namespace ZeldaDaughter.Hero
 
         public bool IsMoving => _intent.IsMoving;
 
+        /// <summary>D-26 hit-stop: she stands where she is for a moment (the swipe goes on being tracked; the walk resumes after).</summary>
+        public bool Frozen { get; set; }
+
         /// <summary>Every recognised gesture — the game session listens (T-10).</summary>
         public event Action<GestureEvent> Gesture;
 
@@ -236,7 +239,7 @@ namespace ZeldaDaughter.Hero
 
         private void Move(float dt)
         {
-            if (dt <= 0f) return;
+            if (dt <= 0f || Frozen) return;
             Vector3 horizontal = Vector3.zero;
             if (_intent.IsMoving && !_locked)
             {

@@ -33,7 +33,7 @@ namespace ZeldaDaughter.Editor
             ("m_RequireOpaqueTexture", false),
             ("m_MainLightShadowsSupported", true),
             ("m_MainLightShadowmapResolution", 1024),
-            ("m_ShadowDistance", 25f),
+            ("m_ShadowDistance", 34f), // D-22b: size 7,5 → the visible ground reaches ≈ 31 m from the camera (research §В.4)
             ("m_ShadowCascadeCount", 1),
             ("m_SoftShadowsSupported", true), // D-21: soft sun shadows (PCF), not hard-edged black
             ("m_SoftShadowQuality", 2),
@@ -59,6 +59,7 @@ namespace ZeldaDaughter.Editor
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.iOS, ScriptingImplementation.IL2CPP);
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel28;
+            PlayerSettings.Android.optimizedFramePacing = true; // D-26: Swappy — even frames at the 60 fps the game asks for (Application.targetFrameRate)
             EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ASTC;
             SetProjectSetting("activeInputHandler", 1); // Input System only
             EnsureLayers();
@@ -102,6 +103,7 @@ namespace ZeldaDaughter.Editor
             Check("backend.android", PlayerSettings.GetScriptingBackend(NamedBuildTarget.Android), ScriptingImplementation.IL2CPP);
             Check("arch.android", PlayerSettings.Android.targetArchitectures, AndroidArchitecture.ARM64);
             Check("minSdk", PlayerSettings.Android.minSdkVersion, AndroidSdkVersions.AndroidApiLevel28);
+            Check("optimizedFramePacing", PlayerSettings.Android.optimizedFramePacing, true);
             Check("textures.android", EditorUserBuildSettings.androidBuildSubtarget, MobileTextureSubtarget.ASTC);
             Check("activeInputHandler", GetProjectSetting("activeInputHandler"), 1);
             Check("enterPlayModeOptions", EditorSettings.enterPlayModeOptionsEnabled, false);
