@@ -22,7 +22,7 @@ namespace ZeldaDaughter.Core.Language
 
     /// <summary>
     /// How much of the common tongue the hero understands (project-design.md §3). Grows by talking — new lines and new
-    /// people, not repeats. Rendering is deterministic: the same word from the same NPC always looks the same.
+    /// people, not repeats. Rendering is deterministic: the same word always looks the same, whoever says it.
     /// </summary>
     public sealed class Comprehension
     {
@@ -78,14 +78,14 @@ namespace ZeldaDaughter.Core.Language
             if (Understanding < _s.Stage2At) return false;
             float progress = (Understanding - _s.Stage2At) / (_s.Stage3At - _s.Stage2At);
             float lengthShare = Math.Min(word.Length - 1, 9) / 10f;            // 1 letter → 0, 10+ → 0.9
-            float jitter = Hash(word.ToLowerInvariant(), npcId) % 1000 / 10000f; // 0..0.1, stable
+            float jitter = Hash(word.ToLowerInvariant()) % 1000 / 10000f;        // 0..0.1, stable and the same for every speaker (D-26)
             return progress > lengthShare + jitter;
         }
 
         string Glyphs(string word, string npcId)
         {
             var sb = new StringBuilder(word.Length);
-            uint h = Hash(word.ToLowerInvariant(), npcId);
+            uint h = Hash(word.ToLowerInvariant());
             for (int k = 0; k < word.Length; k++)
             {
                 h = unchecked(h * 1103515245u + 12345u);
@@ -94,16 +94,11 @@ namespace ZeldaDaughter.Core.Language
             return sb.ToString();
         }
 
-        /// <summary>FNV-1a — stable across runs and platforms (string.GetHashCode is not).</summary>
-        static uint Hash(string a, string b)
+        /// <summary>FNV-1a of the word alone — stable across runs and platforms (string.GetHashCode is not), and the same for every NPC: one word, one runes (D-26).</summary>
+        static uint Hash(string word)
         {
             uint h = 2166136261;
-            unchecked
-            {
-                foreach (char c in a) { h ^= c; h *= 16777619; }
-                h ^= '|'; h *= 16777619;
-                foreach (char c in b) { h ^= c; h *= 16777619; }
-            }
+            unchecked { foreach (char c in word) { h ^= c; h *= 16777619; } }
             return h;
         }
 

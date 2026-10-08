@@ -8,6 +8,10 @@ namespace ZeldaDaughter.Core.Onboarding
     public sealed class OnboardingSettings
     {
         public List<HintDef> Hints { get; set; } = new List<HintDef>();
+        /// <summary>A hint is a hand without words; its text shows only after this many seconds without the action (D-26).</summary>
+        public float TextAfterSeconds { get; set; } = 20f;
+
+        public bool ShowsText(float secondsWithoutAction) => secondsWithoutAction >= TextAfterSeconds;
     }
 
     public sealed class HintDef

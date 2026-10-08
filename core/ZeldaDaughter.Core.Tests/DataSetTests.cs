@@ -84,7 +84,7 @@ namespace ZeldaDaughter.Core.Tests
 
             var files = RealFiles();
             files["weapons.json"] = files["weapons.json"].Replace("\"sword\":", "\"item_sword\":");
-            files["enemies.json"] = files["enemies.json"].Replace("\"windup\": 0.6", "\"windup\": 0.3").Replace("\"chaseSpeed\": 4.5", "\"chaseSpeed\": 6");
+            files["enemies.json"] = files["enemies.json"].Replace("\"windup\": 0.7,", "\"windup\": 0.3,").Replace("\"chaseSpeed\": 4.5", "\"chaseSpeed\": 6");
             var e = Assert.Throws<DataException>(() => LoadWith(files));
             Assert.Contains(e.Problems, p => p.Contains("weapons.json") && p.Contains("item_sword"));
             Assert.Contains(e.Problems, p => p.Contains("enemies.json") && p.Contains("'wolf'") && p.Contains("замах"));

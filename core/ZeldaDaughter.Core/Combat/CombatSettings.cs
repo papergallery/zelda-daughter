@@ -15,6 +15,8 @@ namespace ZeldaDaughter.Core.Combat
         public float AttackCooldown { get; set; }
         /// <summary>Share of the damage a miss still deals (a glancing blow, April CombatController: 10 %).</summary>
         public float MissDamageShare { get; set; }
+        /// <summary>A tap in the last this-many seconds of the cooldown is not lost: the blow goes the moment the cooldown ends (D-26, <see cref="StrikeBuffer"/>).</summary>
+        public float TapBufferSeconds { get; set; }
         public Dictionary<string, WeaponDef> Weapons { get; set; } = new Dictionary<string, WeaponDef>();
     }
 
@@ -39,6 +41,10 @@ namespace ZeldaDaughter.Core.Combat
     {
         /// <summary>No windup is ever shorter: on a phone a 0.3 s tell cannot be dodged (April wolf).</summary>
         public float MinWindup { get; set; }
+        /// <summary>The blow counts only if the hero is within <c>range − dodgeForgiveness</c> at its moment (D-26): the dodge has a margin on a phone.</summary>
+        public float DodgeForgiveness { get; set; }
+        /// <summary>While winding up, an enemy whose hero is within its range but outside the reach steps in at this × chaseSpeed (so a hero who stands still is hit).</summary>
+        public float WindupCreepFactor { get; set; }
         public float AlertSeconds { get; set; }
         public float IdleSeconds { get; set; }
         public float WanderSeconds { get; set; }

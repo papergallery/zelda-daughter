@@ -44,11 +44,11 @@ namespace ZeldaDaughter.Core.Tests
         }
 
         [Fact]
-        public void Same_word_same_npc_same_gibberish_and_punctuation_kept()
+        public void Same_word_same_gibberish_for_every_npc_and_punctuation_kept()
         {
             var l = new Comprehension(S);
             Assert.Equal(l.Render(Line, "peasant"), l.Render(Line, "peasant"));
-            Assert.NotEqual(l.Render(Line, "peasant"), l.Render(Line, "guard"));
+            Assert.Equal(l.Render(Line, "peasant"), l.Render(Line, "guard")); // D-26: one word — one runes, whoever says it
             var words = Line.Split(' ');
             var scrambled = l.Render(Line, "peasant").Split(' ');
             Assert.Equal(words.Length, scrambled.Length);

@@ -9,7 +9,7 @@ namespace ZeldaDaughter.Core.Input
     /// One-finger gestures of project-design.md §1:
     /// long press — only if the touch began on the hero, held ≥ LongPressSeconds, moved ≤ the threshold;
     /// any movement past the threshold is a swipe, even if the touch began on the hero;
-    /// tap — a touch shorter than TapMaxSeconds that began on an object and did not move.
+    /// tap — a touch shorter than TapMaxSeconds that began on an object and did not move (on release); a touch that begins on an enemy taps at once (<see cref="TouchHit.OnPress"/>).
     /// After a long press the finger drives the radial menu: no swipe, a release event instead.
     /// Feed samples in time order; call <see cref="Tick"/> every frame so a still finger can become a long press.
     /// </summary>
@@ -27,6 +27,7 @@ namespace ZeldaDaughter.Core.Input
         Vec2 _start;
         Vec2 _last;
         TouchHit _hit;
+        bool _pressed;   // the tap already went at the touch (an enemy): the release adds none
 
         /// <param name="screenDpi">Device density; pixel thresholds in data are at the reference density.</param>
         public GestureRecognizer(GestureSettings settings, float screenDpi)
@@ -52,6 +53,13 @@ namespace ZeldaDaughter.Core.Input
                     _startTime = t.Time;
                     _start = _last = t.Position;
                     _hit = t.Hit;
+                    _pressed = false;
+                    if (_hit.Kind == TouchHitKind.Object && _hit.OnPress)
+                    {
+                        // attack on touch (D-26): the blow does not wait for the finger to lift — one touch, one tap
+                        _pressed = true;
+                        return new[] { new GestureEvent(GestureKind.Tap, t.Time, t.Position, targetId: _hit.TargetId) };
+                    }
                 }
                 return NoEvents;
             }
@@ -80,7 +88,7 @@ namespace ZeldaDaughter.Core.Input
                         Add(ref events, new GestureEvent(GestureKind.SwipeEnded, t.Time, t.Position));
                     else if (_state == State.LongPressed)
                         Add(ref events, new GestureEvent(GestureKind.LongPressReleased, t.Time, t.Position));
-                    else if (t.Phase == TouchPhase.Ended && _hit.Kind == TouchHitKind.Object
+                    else if (t.Phase == TouchPhase.Ended && !_pressed && _hit.Kind == TouchHitKind.Object
                              && t.Time - _startTime < _s.TapMaxSeconds && (t.Position - _start).Length <= _threshold)
                         Add(ref events, new GestureEvent(GestureKind.Tap, t.Time, _start, targetId: _hit.TargetId));
                     _state = State.Idle;

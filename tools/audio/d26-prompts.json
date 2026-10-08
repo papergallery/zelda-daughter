@@ -1,0 +1,29 @@
+{
+ "_source": "D-26, 2026-10-08: запросы к Polza (POST /media, model suno/sounds, input.prompt как ниже); ответы (mp3) не в git, итог — tools/audio/d26-generated.py → ZeldaDaughter/Assets/Art/Audio/Generated/{body,combat}. На слух автора не проверено.",
+ "requests": {
+  "fx_breath_hurt": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "Close recording of a young woman breathing heavily and painfully, tired and wounded, slow labored breaths through the nose and mouth, two or three breaths with pauses, dry, no music, no speech"
+    }
+   }
+  },
+  "fx_stomach_growl": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "A hungry human stomach growling loudly, a long low gurgling rumble, close recording, dry, no music, no speech"
+    }
+   }
+  },
+  "fx_kill_blow": {
+   "request": {
+    "model": "suno/sounds",
+    "input": {
+     "prompt": "A single killing blow: a heavy dull thud and a short wet crunch of a club hitting a large animal, then a brief low exhale, dry close recording, very short, no music, no speech"
+    }
+   }
+  }
+ }
+}

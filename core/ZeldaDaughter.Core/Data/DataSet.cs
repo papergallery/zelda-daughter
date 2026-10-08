@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using ZeldaDaughter.Core.Combat;
 using ZeldaDaughter.Core.Condition;
 using ZeldaDaughter.Core.Dialogue;
+using ZeldaDaughter.Core.Feel;
 using ZeldaDaughter.Core.Economy;
 using ZeldaDaughter.Core.Input;
 using ZeldaDaughter.Core.Journal;
@@ -82,6 +83,7 @@ namespace ZeldaDaughter.Core.Data
         public ElementsSettings Elements { get; private set; } = new ElementsSettings();
         public NotebookSettings Notebook { get; private set; } = new NotebookSettings();
         public QuestSettings Quests { get; private set; } = new QuestSettings();
+        public FeelSettings Feel { get; private set; } = new FeelSettings();
         public IReadOnlyDictionary<string, ItemDef> Items { get; private set; } = new Dictionary<string, ItemDef>();
         public IReadOnlyList<FieldRecipe> FieldRecipes { get; private set; } = Array.Empty<FieldRecipe>();
         public IReadOnlyList<StationRecipe> StationRecipes { get; private set; } = Array.Empty<StationRecipe>();
@@ -119,6 +121,7 @@ namespace ZeldaDaughter.Core.Data
                 Elements = Read<ElementsSettings>(read, "elements.json", problems),
                 Notebook = Read<NotebookSettings>(read, "notebook.json", problems),
                 Quests = Read<QuestSettings>(read, "quests.json", problems),
+                Feel = Read<FeelSettings>(read, "combat-feel.json", problems),
             };
             var items = Read<ItemsFile>(read, "items.json", problems).Items;
             var recipes = Read<RecipesFile>(read, "recipes.json", problems);

@@ -12,12 +12,14 @@ namespace ZeldaDaughter.Core.Input
     {
         public readonly TouchHitKind Kind;
         public readonly string? TargetId;
+        /// <summary>The object acts on the touch itself, not on the release (an enemy: the blow goes at once, D-26). Taps on everything else wait for the release.</summary>
+        public readonly bool OnPress;
 
-        TouchHit(TouchHitKind kind, string? targetId) { Kind = kind; TargetId = targetId; }
+        TouchHit(TouchHitKind kind, string? targetId, bool onPress = false) { Kind = kind; TargetId = targetId; OnPress = onPress; }
 
         public static TouchHit Ground => new TouchHit(TouchHitKind.Ground, null);
         public static TouchHit Hero => new TouchHit(TouchHitKind.Hero, null);
-        public static TouchHit Object(string id) => new TouchHit(TouchHitKind.Object, id);
+        public static TouchHit Object(string id, bool onPress = false) => new TouchHit(TouchHitKind.Object, id, onPress);
     }
 
     /// <summary>One touch sample in screen pixels; time in seconds from any fixed origin.</summary>

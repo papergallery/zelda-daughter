@@ -79,6 +79,9 @@ namespace ZeldaDaughter.Core.Combat
         /// <summary>Windup length actually used: data value, never below the minimum.</summary>
         public float WindupSeconds => Math.Max(Def.Windup, _s.MinWindup);
 
+        /// <summary>The blow lands at this distance or closer: the range less the dodge forgiveness (D-26).</summary>
+        public float ReachMeters => Math.Max(0.1f, Def.Range - _s.DodgeForgiveness);
+
         /// <summary>Wakes the enemy as if it had been hurt (a thrown stone, a noise) — without damage.</summary>
         public IReadOnlyList<EnemyEvent> Provoke()
         {
@@ -219,9 +222,16 @@ namespace ZeldaDaughter.Core.Combat
                     else Move(toHero * (1f / dist), Math.Min(Def.ChaseSpeed * SpeedScale * dt, dist));
                     break;
                 case EnemyState.Windup:
+                    if (dist <= Def.Range && dist > ReachMeters && _s.WindupCreepFactor > 0f)
+                    {
+                        // the hero stands inside the old range but outside the reach: the enemy steps in, so standing still is still a hit
+                        float step = Math.Min(Def.ChaseSpeed * _s.WindupCreepFactor * SpeedScale * dt, dist - ReachMeters);
+                        Move(toHero * (1f / dist), step);
+                        dist = (hero.Position - Position).Length;
+                    }
                     if (_timer >= WindupSeconds)
                     {
-                        if (dist <= Def.Range) Land(hero, ev);
+                        if (dist <= ReachMeters + 1e-3f) Land(hero, ev);
                         else ev.Add(new EnemyEvent(EnemyEventKind.Dodged, 0, hero.Skills.Apply(SkillEvent.Dodged())));
                         Enter(EnemyState.Recover);
                     }
