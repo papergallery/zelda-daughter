@@ -96,8 +96,8 @@ namespace ZeldaDaughter.Editor
             string hash = HashOf(file, json);
             var registry = Ensure<IconRegistry>(assetPath);
             if (Fresh(registry, hash)) return json.Count;
-            var ids = json.Select(kv => kv.Key).ToArray();
-            var sprites = json.Select(kv => SpriteAt((string)((JObject)kv.Value)["path"], false)).ToArray();
+            var ids = json.Properties().Select(p => p.Name).ToArray();
+            var sprites = json.Properties().Select(p => SpriteAt((string)((JObject)p.Value)["path"], false)).ToArray();
             registry.Configure(ids, sprites);
             Stamp(registry, hash);
             return ids.Length;
@@ -131,11 +131,11 @@ namespace ZeldaDaughter.Editor
             string hash = HashOf("fx.json", json);
             var registry = Ensure<FxRegistry>(FxPath);
             if (Fresh(registry, hash)) return json.Count;
-            var ids = json.Select(kv => kv.Key).ToArray();
-            var prefabs = json.Select(kv =>
+            var ids = json.Properties().Select(prop => prop.Name).ToArray();
+            var prefabs = json.Properties().Select(prop =>
             {
-                string p = (string)((JObject)kv.Value)["prefab"];
-                return string.IsNullOrEmpty(p) ? null : AssetDatabase.LoadAssetAtPath<GameObject>(p);
+                string path = (string)((JObject)prop.Value)["prefab"];
+                return string.IsNullOrEmpty(path) ? null : AssetDatabase.LoadAssetAtPath<GameObject>(path);
             }).ToArray();
             registry.Configure(ids, prefabs);
             Stamp(registry, hash);
