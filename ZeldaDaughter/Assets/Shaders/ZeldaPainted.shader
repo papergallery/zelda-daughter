@@ -79,11 +79,11 @@ Shader "Zelda/Painted"
         }
 
         // 4×4 Байер: порог 0..1 по пикселю экрана.
+        static const float kBayer[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
         float Bayer(float2 pix)
         {
             uint2 q = uint2(pix) & 3u;
-            const float m[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
-            return (m[q.y * 4u + q.x] + 0.5) / 16.0;
+            return (kBayer[q.y * 4u + q.x] + 0.5) / 16.0;
         }
 
         // Растворение кроны перед героиней: карточка ближе к камере, чем героиня, пиксель выше _Fade.y по карточке и в радиусе от груди.
@@ -141,12 +141,12 @@ Shader "Zelda/Painted"
                 return s / (_Steps - 1.0h);
             }
 
-            float Hash(float2 p) { return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453); }
-            float Noise(float2 p)
+            float PaintedHash(float2 p) { return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453); }
+            float PaintedNoise(float2 p)
             {
                 float2 i = floor(p), f = frac(p);
                 f = f * f * (3.0 - 2.0 * f);
-                return lerp(lerp(Hash(i), Hash(i + float2(1, 0)), f.x), lerp(Hash(i + float2(0, 1)), Hash(i + float2(1, 1)), f.x), f.y);
+                return lerp(lerp(PaintedHash(i), PaintedHash(i + float2(1, 0)), f.x), lerp(PaintedHash(i + float2(0, 1)), PaintedHash(i + float2(1, 1)), f.x), f.y);
             }
 
             // Заливка без видимого повтора: две выборки (вторая — повёрнута и в другом масштабе), смесь по низкочастотному шуму.
@@ -156,7 +156,7 @@ Shader "Zelda/Painted"
                 float2 b = float2(a.x * 0.80 - a.y * 0.60, a.x * 0.60 + a.y * 0.80) * 0.77 + 0.37;
                 half3 ca = SAMPLE_TEXTURE2D(tex, smp, a).rgb;
                 half3 cb = SAMPLE_TEXTURE2D(tex, smp, b).rgb;
-                half k = smoothstep(0.3, 0.7, Noise(xz / (tile * 1.7)));
+                half k = smoothstep(0.3, 0.7, PaintedNoise(xz / (tile * 1.7)));
                 return lerp(ca, cb, k);
             }
 
@@ -189,7 +189,7 @@ Shader "Zelda/Painted"
                     half3 road = Wash(TEXTURE2D_ARGS(_RoadMap, sampler_RoadMap), xz, _Tile.y);
                     float2 muv = (xz - _MaskRect.xy) / _MaskRect.zw;
                     half m = SAMPLE_TEXTURE2D(_MaskMap, sampler_MaskMap, muv).r;
-                    half rag = (Noise(xz * 2.3) - 0.5) * 0.22h + (Noise(xz * 0.6) - 0.5) * 0.18h;
+                    half rag = (PaintedNoise(xz * 2.3) - 0.5) * 0.22h + (PaintedNoise(xz * 0.6) - 0.5) * 0.18h;
                     half r = smoothstep(0.46h, 0.54h, m + rag);
                     half rim = smoothstep(0.3h, 0.5h, m + rag) * (1.0h - smoothstep(0.5h, 0.62h, m + rag));
                     albedo = lerp(meadow, road, r) * (1.0h - rim * 0.22h);
@@ -206,7 +206,11 @@ Shader "Zelda/Painted"
                 #endif
 
                 half3 ambient = SampleSH(n);
+                #if defined(_MAIN_LIGHT_SHADOWS_SCREEN)
+                float4 shadowCoord = ComputeScreenPos(TransformWorldToHClip(i.positionWS));
+                #else
                 float4 shadowCoord = TransformWorldToShadowCoord(i.positionWS);
+                #endif
                 Light main = GetMainLight(shadowCoord);
                 half shadow = lerp(1.0h, smoothstep(0.15h, 0.85h, main.shadowAttenuation), receive);
                 half band = Ramp(dot(n, main.direction) * 0.5h + 0.5h) * shadow;
