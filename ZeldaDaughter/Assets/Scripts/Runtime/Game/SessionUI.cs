@@ -50,7 +50,9 @@ namespace ZeldaDaughter.Game
         public bool ShowHeroBubble { get; set; } = true;
 
         public string CurrentHint { get { Build(); return _hint.Text; } }
-        public string HeroBubbleText { get { Build(); return _heroBubble.Text; } }
+        /// <summary>D-18's RemarkBubble answers for the hero's bubble (it turns <see cref="ShowHeroBubble"/> off and gives the line it shows).</summary>
+        public Func<string> HeroTextSource { get; set; }
+        public string HeroBubbleText { get { Build(); return HeroTextSource != null ? HeroTextSource() : _heroBubble.Text; } }
         public string NpcBubbleText { get { if (_talkView != null) return _talkView.Text; Build(); return _npcBubble.Text; } }
         public IReadOnlyList<Button> ReplyButtons => _talkView != null ? _talkView.ReplyButtons : _buttons;
 
