@@ -260,13 +260,13 @@ def deblush(p, k=0.55, zone=0.32):
     return p
 
 
-def despeck(p, rect, d=0.12, size=40):
+def despeck(p, rect, d=0.12, size=40, win=9):
     """Мелкие светлые пятна (≤ size px), светлее локальной медианы 9×9 на d, в прямоугольнике (доли рамки) — цвет медианы."""
     h, w = p.shape[:2]
     y0, y1, x0, x1 = int(rect[1] * h), int(rect[3] * h), int(rect[0] * w), int(rect[2] * w)
     p = p.copy()
     rgb = p[y0:y1, x0:x1, :3]
-    med = np.dstack([ndimage.median_filter(rgb[..., c], size=9) for c in range(3)])
+    med = np.dstack([ndimage.median_filter(rgb[..., c], size=win) for c in range(3)])
     sp = (rgb.mean(-1) > med.mean(-1) + d) & (p[y0:y1, x0:x1, 3] > 0.5)
     lab, n = ndimage.label(sp)
     if n:
@@ -313,6 +313,17 @@ def _lab(rgb):
     return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], -1)
 
 
+def _lab_inv(lab):
+    """CIE Lab (D65) → sRGB 0..1."""
+    fy = (lab[..., 0] + 16) / 116
+    fx, fz = fy + lab[..., 1] / 500, fy - lab[..., 2] / 200
+    f = np.stack([fx, fy, fz], -1)
+    xyz = np.where(f > 0.206893, f ** 3, (f - 16 / 116) / 7.787) * np.array([0.95047, 1.0, 1.08883])
+    m = np.array([[3.2406, -1.5372, -0.4986], [-0.9689, 1.8758, 0.0415], [0.0557, -0.2040, 1.0570]])
+    c = np.clip(xyz @ m.T, 0, 1)
+    return np.where(c > 0.0031308, 1.055 * c ** (1 / 2.4) - 0.055, 12.92 * c)
+
+
 def cloth_masks(p):
     """Маски одежды и кожи кадра героини: джинсы (синее красного), кожа (r > g > b, насыщенная), футболка (светлая
     малонасыщенная); тёмные линии туши — ни в одну."""
@@ -320,26 +331,38 @@ def cloth_masks(p):
     sat, lum = rgb.max(-1) - rgb.min(-1), rgb.mean(-1)
     jeans = a & (rgb[..., 2] > rgb[..., 0] + 0.02) & (lum > 0.25)
     skin = a & (rgb[..., 0] > rgb[..., 1]) & (rgb[..., 1] > rgb[..., 2]) & (rgb[..., 0] - rgb[..., 2] > 0.15) & (sat > 0.15) & (lum > 0.42) & (lum < 0.9)
-    shirt = a & ~jeans & (sat < 0.15) & (lum > 0.55)
+    lab = _lab(rgb)
+    chroma = np.hypot(lab[..., 1], lab[..., 2])
+    rows = np.where(a.any(1))[0]
+    torso = np.zeros_like(a); torso[rows[0] + int(0.2 * (rows[-1] - rows[0])): rows[0] + int(0.5 * (rows[-1] - rows[0]))] = True
+    shirt = a & torso & ~jeans & (lab[..., 0] > 55) & (chroma < 17) & (lab[..., 2] > -2)  # кремовая и серая — обе светлые малохромные
+    skin &= ~shirt
     return {'shirt': shirt, 'skin': skin, 'jeans': jeans}
 
 
 def mask_match(p, ref, report=None):
-    """D-24: цвет кадра к ref по маскам (футболка, кожа, джинсы): среднее и разброс по каналам внутри маски, мягкая кромка
-    маски. Печатает ΔE (Lab) средних до/после."""
+    """D-24: цвет кадра к ref по маскам (футболка, кожа, джинсы) — подгонка гистограмм по квантилям в Lab (L*, a*, b*
+    отдельно; средние и разброс не держат оттенок теней), мягкая кромка маски. Отчёт: b* в тенях (L* < p25) и в светлом."""
     out = p.copy()
     mp, mr = cloth_masks(p), cloth_masks(ref)
+    q = np.linspace(0, 100, 101)
     for k in mp:
-        a, b = p[..., :3][mp[k]], ref[..., :3][mr[k]]
-        if len(a) < 50 or len(b) < 50:
+        if mp[k].sum() < 50 or mr[k].sum() < 50:
             continue
-        new = np.clip((p[..., :3] - a.mean(0)) / (a.std(0) + 1e-6) * b.std(0) + b.mean(0), 0, 1)
+        la, lb = _lab(p[..., :3][mp[k]]), _lab(ref[..., :3][mr[k]])
+        new = la.copy()
+        for ch in range(3):
+            new[:, ch] = np.interp(la[:, ch], np.percentile(la[:, ch], q), np.percentile(lb[:, ch], q))
+        img = out[..., :3].copy(); img[mp[k]] = _lab_inv(new)
         w = ndimage.gaussian_filter(mp[k].astype(np.float32), 1.0)[..., None]
-        out[..., :3] = out[..., :3] * (1 - w) + new * w
+        out[..., :3] = out[..., :3] * (1 - w) + img * w
         if report is not None:
-            d0 = float(np.linalg.norm(_lab(a.mean(0)) - _lab(b.mean(0))))
-            d1 = float(np.linalg.norm(_lab(out[..., :3][mp[k]].mean(0)) - _lab(b.mean(0))))
-            report.append(f'{k}: ΔE {d0:.1f} → {d1:.1f}')
+            def stat(l):
+                sh = l[:, 0] < np.percentile(l[:, 0], 25); hi = l[:, 0] > np.percentile(l[:, 0], 75)
+                return l[sh, 2].mean(), l[hi, 2].mean()
+            after = _lab(out[..., :3][mp[k]])
+            report.append(f'{k}: b* тени/свет {stat(la)[0]:.1f}/{stat(la)[1]:.1f} → {stat(after)[0]:.1f}/{stat(after)[1]:.1f} '
+                          f'(цель {stat(lb)[0]:.1f}/{stat(lb)[1]:.1f}), ΔE средних {np.linalg.norm(after.mean(0) - lb.mean(0)):.1f}')
     return out
 
 
@@ -348,7 +371,7 @@ def canvas_fix(c, ops):
     меньше frac площади фигуры; alpha_floor — полупрозрачный след."""
     for op in ops:
         if op['op'] == 'despeck':
-            c = despeck(c, op['rect'], d=op.get('d', 0.10), size=op.get('size', 60))
+            c = despeck(c, op['rect'], d=op.get('d', 0.10), size=op.get('size', 60), win=op.get('win', 9))
         elif op['op'] == 'alpha_floor':
             c = alpha_floor(c, op['rect'], op.get('lo', 0.6))
         elif op['op'] == 'islands':
@@ -357,6 +380,8 @@ def canvas_fix(c, ops):
             if n > 1:
                 sizes = ndimage.sum(np.ones_like(al), lab, index=np.arange(1, n + 1))
                 small = np.zeros(n + 1, bool); small[1:] = sizes < op.get('frac', 0.001) * sizes.max()
+                if op.get('main_only'):  # всё, что не связано с основным силуэтом
+                    small[1:] = sizes < sizes.max()
                 c = c.copy(); c[..., 3] = np.where(small[lab], 0, al)
         elif op['op'] == 'erase':
             h, w = c.shape[:2]

@@ -211,7 +211,10 @@
    }
   ],
   "post_mask_match": {
-   "front_0": "front_1"
+   "front_0": "front_1",
+   "front_eat_0": "front_1",
+   "front_hurt_0": "front_1",
+   "front_pickup_0": "front_1"
   },
   "canvas_fix": {
    "front_pickup_0": [
@@ -228,11 +231,14 @@
     {
      "op": "despeck",
      "rect": [
-      0.36,
-      0.46,
-      0.46,
-      0.54
-     ]
+      0.31,
+      0.4,
+      0.47,
+      0.56
+     ],
+     "d": 0.08,
+     "win": 15,
+     "size": 120
     },
     {
      "op": "erase_neutral",
@@ -245,7 +251,7 @@
     },
     {
      "op": "islands",
-     "frac": 0.001
+     "main_only": true
     }
    ]
   }
