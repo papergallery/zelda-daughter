@@ -2,7 +2,7 @@
  "_source": "D-09 (поручение координатора): иконки предметов (id — data/items.json) и разговора (id — data/dialogues.json icons, описания — _iconArt). Листы 4×3 (предметы) и 5×2 (разговор + hint_hand) одной генерацией GPT Image 2.5 через Polza (icon_build.py gen), нарезка — tools/art/icon_build.py. Порядок в листе — по строкам слева направо.",
  "size": 256,
  "sheet": "A sheet of {n} separate small game icons arranged in a grid of {cols} columns and {rows} rows, each object drawn alone and centered in its own cell with wide empty space around it, nothing touches or overlaps, objects seen slightly from above, no grid lines, no borders, no labels. Row by row, left to right: {list}.",
- "style": "Hand-drawn storybook illustration made with a dip pen and watercolor: uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes, muted warm earthy palette of ochre, olive green, umber, rust and dusty red. Flat even light, no cast shadows, plain flat light grey background (#c8c8c8). No text, no letters, no numbers, no logos, no watermark, no signature, no frame.",
+ "style": "см. docs/demo/sprites/style-bible.md — блок стиля берётся оттуда (tools/art/style.py), здесь не дублируется",
  "items": {
   "stick": "a long straight wooden branch stick with bark",
   "short_stick": "a short thick piece of wooden branch",

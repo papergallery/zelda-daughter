@@ -5,6 +5,14 @@
 // D-21: shadows are cool umber-blue (not black, not warm brown), softer border; _Grade regrades a palette texture the way
 // ModelLook.Grade regrades a flat colour (olive greens, brown wood); _SPRITELIT = the billboard sprite material: lit like the ground
 // (normal up) and by the additional lights (campfire, torch) all around, so the figure and the things near the fire catch the fire.
+// D-22b: _ZD_GROUND = the one material of the ground: no ribbons or discs on top (their 2 cm steps got a dotted pen line). The colour is painted
+// from world position: grass in three tones by large and small noise washes, a sandy road with a ragged grassy edge, a cobbled square, a damp
+// river bank and tilled field — from _GroundMask (core GroundMask: signed distances in metres, R road, G paved, B water, A field) and
+// _GroundNoise (tools/art/ground_noise.py: two fbm fields, Voronoi cell tone and its seams). Same lighting, wetness and fog as everything else.
+// _ZD_ROOTED = a vegetation card (SceneBuilder.Vegetation): uv2 = the world XZ of its root (or ≥ 1e5 — "the object's origin"), vertex alpha =
+// the height on the card 0…1. The lower third takes the colour of the painted ground under the root (no seam), the top sways in a wind of two
+// sines with a phase from the root, and cards within 0,6 m of the heroine's feet (_ZD_HeroPos, global, set by HeroView) bend away from her.
+// _GroundMask2 R = signed distance to a cool soft shadow spot under trees and rocks (GroundMask.Spots).
 Shader "Zelda/Toon"
 {
     Properties
@@ -19,6 +27,26 @@ Shader "Zelda/Toon"
         [Toggle(_VERTEXCOLOR)] _UseVertexColor("Vertex Colour", Float) = 0
         [Toggle(_ZD_GRADE)] _Grade("Regrade the palette texture (olive / brown)", Float) = 0
         [Toggle(_SPRITELIT)] _SpriteLit("Billboard sprite lighting", Float) = 0
+        [Toggle(_ZD_GROUND)] _Ground("Painted ground (mask + noise)", Float) = 0
+        [NoScaleOffset] _GroundMask("Ground Mask (R road, G paved, B water, A field)", 2D) = "white" {}
+        [NoScaleOffset] _GroundMask2("Ground Mask 2 (R shadow spots)", 2D) = "white" {}
+        [Toggle(_ZD_ROOTED)] _Rooted("Vegetation card rooted in the painted ground (base colour, wind, push)", Float) = 0
+        _Wind("Wind sway (m at the top)", Float) = 0.035
+        _Rim("Warm rim of nearby fire on the silhouette (sprite-lit figures)", Float) = 1
+        _GroundNoise("Ground Noise", 2D) = "grey" {}
+        _GroundRect("Mask rect (minX, minZ, 1/width m, 1/height m)", Vector) = (0,0,0.01,0.01)
+        _GrassDark("Grass dark", Color) = (0.34,0.36,0.25,1)
+        _GrassMid("Grass mid", Color) = (0.45,0.47,0.30,1)
+        _GrassLight("Grass light", Color) = (0.58,0.56,0.36,1)
+        _SandDark("Sand dark", Color) = (0.69,0.58,0.40,1)
+        _SandLight("Sand light", Color) = (0.86,0.76,0.56,1)
+        _CobbleDark("Cobble dark", Color) = (0.55,0.52,0.46,1)
+        _CobbleLight("Cobble light", Color) = (0.74,0.70,0.62,1)
+        _BankColor("River bank", Color) = (0.36,0.38,0.30,1)
+        _FieldColor("Tilled field", Color) = (0.45,0.36,0.26,1)
+        [Toggle(_ZD_WATER)] _Water("Painted water (same mask: shallow at the bank, deep in the middle)", Float) = 0
+        _WaterShallow("Water shallow", Color) = (0.56,0.59,0.55,1)
+        _WaterDeep("Water deep", Color) = (0.28,0.35,0.35,1)
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", Float) = 2
         [HideInInspector] _ZWrite("ZWrite", Float) = 1
     }
@@ -32,14 +60,24 @@ Shader "Zelda/Toon"
 
         TEXTURE2D(_BaseMap);
         SAMPLER(sampler_BaseMap);
+        TEXTURE2D(_GroundMask);
+        SAMPLER(sampler_GroundMask);
+        TEXTURE2D(_GroundMask2);
+        TEXTURE2D(_GroundNoise);
+        SAMPLER(sampler_GroundNoise);
 
         CBUFFER_START(UnityPerMaterial)
             float4 _BaseMap_ST;
+            float4 _BaseMap_TexelSize;
             half4 _BaseColor;
             half4 _ShadowTint;
             half _Steps;
             half _Softness;
             half _Cutoff;
+            float4 _GroundRect;
+            half4 _GrassDark, _GrassMid, _GrassLight, _SandDark, _SandLight, _CobbleDark, _CobbleLight, _BankColor, _FieldColor, _WaterShallow, _WaterDeep;
+            float _Wind;
+            half _Rim;
         CBUFFER_END
         ENDHLSL
 
@@ -58,6 +96,9 @@ Shader "Zelda/Toon"
             #pragma shader_feature_local _VERTEXCOLOR
             #pragma shader_feature_local_fragment _ZD_GRADE
             #pragma shader_feature_local_fragment _SPRITELIT
+            #pragma shader_feature_local_fragment _ZD_GROUND
+            #pragma shader_feature_local_fragment _ZD_WATER
+            #pragma shader_feature_local _ZD_ROOTED
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
@@ -71,6 +112,7 @@ Shader "Zelda/Toon"
                 float4 positionOS : POSITION;
                 float3 normalOS : NORMAL;
                 float2 uv : TEXCOORD0;
+                float2 uv2 : TEXCOORD1;
                 float4 color : COLOR;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -83,6 +125,7 @@ Shader "Zelda/Toon"
                 float3 positionWS : TEXCOORD2;
                 float4 shadowCoord : TEXCOORD3;
                 half fogFactor : TEXCOORD4;
+                float3 root : TEXCOORD5; // _ZD_ROOTED: xy = world XZ of the root, z = height on the card 0…1
                 half4 color : COLOR;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
@@ -116,17 +159,47 @@ Shader "Zelda/Toon"
                 return c * half3(1.05h, 1.0h, 0.86h);
             }
 
+            float4 _ZD_HeroPos; // xyz = the heroine's feet (HeroView, global, D-25); w = 1 when set
+
             Varyings vert(Attributes input)
             {
                 Varyings o = (Varyings)0;
                 UNITY_SETUP_INSTANCE_ID(input);
                 UNITY_TRANSFER_INSTANCE_ID(input, o);
                 VertexPositionInputs vp = GetVertexPositionInputs(input.positionOS.xyz);
+                #if defined(_ZD_ROOTED)
+                {
+                    float2 root = input.uv2.x > 1e5 ? TransformObjectToWorld(float3(0, 0, 0)).xz : input.uv2;
+                    float hf = input.color.a;
+                    float phase = dot(root, float2(0.71, 1.13));
+                    float sway = (sin(_Time.y * 1.6 + phase) * 0.65 + sin(_Time.y * 2.7 + phase * 1.7) * 0.35) * _Wind * hf * hf;
+                    float3 offset = float3(0.7071, 0, -0.7071) * sway; // across the iso view (the camera's right at yaw 45°)
+                    float2 away = root - _ZD_HeroPos.xz;
+                    float dist = length(away);
+                    float push = (1.0 - saturate(dist / 0.6)) * _ZD_HeroPos.w * hf;
+                    offset.xz += away / max(dist, 1e-3) * push * 0.22;
+                    offset.y -= push * 0.12;
+                    float3 ws = vp.positionWS + offset;
+                    vp.positionWS = ws;
+                    vp.positionCS = TransformWorldToHClip(ws);
+                    vp.positionVS = TransformWorldToView(ws);
+                    o.root = float3(root, hf);
+                }
+                #endif
                 o.positionCS = vp.positionCS;
                 o.positionWS = vp.positionWS;
                 o.normalWS = TransformObjectToWorldNormal(input.normalOS);
                 o.uv = TRANSFORM_TEX(input.uv, _BaseMap);
                 o.shadowCoord = GetShadowCoord(vp);
+                #if defined(_SPRITELIT) && !defined(_MAIN_LIGHT_SHADOWS_SCREEN)
+                {
+                    // D-22b: a standing figure takes the sun's shadow where its feet are (she darkens in the shade of a tree), not up the card:
+                    // slide the point down the card (the camera's up) to the ground plane y = 0
+                    float3 camUp = UNITY_MATRIX_I_V._m01_m11_m21;
+                    float3 feet = vp.positionWS - camUp * (vp.positionWS.y / max(camUp.y, 0.2));
+                    o.shadowCoord = TransformWorldToShadowCoord(feet + float3(0, 0.05, 0));
+                }
+                #endif
                 // Eye depth along the view axis: right for both the orthographic iso camera and a perspective one.
                 o.fogFactor = ComputeFogFactorZ0ToFar(-vp.positionVS.z);
                 o.color = half4(input.color);
@@ -135,10 +208,85 @@ Shader "Zelda/Toon"
 
             float _ZD_Wetness; // 0 dry … 1 soaked (NatureFx, global)
 
+            #if defined(_ZD_GROUND) || defined(_ZD_WATER) || defined(_ZD_ROOTED)
+            // Noise at a world scale (metres per tile); offsets decorrelate the scales.
+            float4 Noise(float2 p, float tile, float2 offset) { return SAMPLE_TEXTURE2D(_GroundNoise, sampler_GroundNoise, p / tile + offset); }
+
+            half3 GroundAlbedo(float2 p)
+            {
+                float4 big = Noise(p, 31.0, float2(0.13, 0.71));   // washes of 5–15 m
+                float4 mid = Noise(p, 9.0, float2(0.57, 0.29));    // brush patches of 1–3 m; B/A — leaf mosaic cells ≈ 0,4 m
+                float4 fine = Noise(p, 2.7, float2(0.91, 0.43));   // grain, small cells ≈ 0,12 m
+                float4 cob = Noise(p, 8.0, float2(0.0, 0.0));      // cobbles ≈ 0,36 m
+                float4 grit = Noise(p, 5.0, float2(0.33, 0.77));   // sand mosaic ≈ 0,23 m (the concept road)
+
+                // grass: three tones in soft-edged washes (the post-effect pools pigment at their borders), leafy mosaic on top
+                float t = big.r * 0.62 + mid.g * 0.38;
+                half3 grass = lerp(_GrassDark.rgb, _GrassMid.rgb, smoothstep(0.32, 0.48, t));
+                grass = lerp(grass, _GrassLight.rgb, smoothstep(0.60, 0.76, t));
+                // pigment pools where a wash ends (≈ 0,2–0,3 m band on the edge of each tone patch), as in the concept washes
+                grass *= 1.0 - 0.16 * (1.0 - smoothstep(0.0, 0.03, abs(t - 0.40))) - 0.13 * (1.0 - smoothstep(0.0, 0.03, abs(t - 0.68)));
+                grass *= 0.95 + 0.1 * mid.b;                                   // soft patches, no visible cells
+                grass *= 0.92 + 0.16 * fine.b;                                 // fine leafy mosaic ≈ 0,12 m
+                grass *= lerp(0.9, 1.0, smoothstep(0.0, 0.2, fine.a));
+
+                float4 m = (SAMPLE_TEXTURE2D(_GroundMask, sampler_GroundMask, (p - _GroundRect.xy) * _GroundRect.zw) - 0.5) * 8.0; // metres, ±4 (GroundMask.Range)
+
+                // tilled field
+                float df = m.a + (mid.r - 0.5) * 0.6;
+                half3 field = _FieldColor.rgb * (0.85 + 0.3 * fine.g);
+                grass = lerp(grass, field, 1.0 - smoothstep(-0.1, 0.1, df));
+
+                // damp river bank: darker, cooler grass in a ragged band
+                float dw = m.b + (mid.r - 0.5) * 0.8;
+                grass = lerp(grass, _BankColor.rgb * (0.9 + 0.2 * mid.b), (1.0 - smoothstep(0.0, 1.4, dw)) * 0.7);
+
+                // road: the edge broken by two noise scales; a darker rim inside, a shadowed grass band outside
+                float dr = m.r + (mid.r - 0.5) * 1.0 + (fine.g - 0.5) * 0.35;
+                grass *= lerp(0.8, 1.0, smoothstep(0.0, 0.7, dr));
+                half3 sand = lerp(_SandDark.rgb, _SandLight.rgb, smoothstep(0.25, 0.75, big.g * 0.5 + mid.g * 0.5));
+                sand *= 0.9 + 0.16 * grit.b;                                   // flagstone-like mosaic of the concept road
+                sand *= lerp(0.88, 1.0, smoothstep(0.0, 0.15, grit.a));
+                sand *= 1.0 - 0.22 * (1.0 - smoothstep(0.0, 0.28, -dr));      // pigment pooled at the rim: ≈ 0,25 m, −22 %
+                sand *= lerp(0.92, 1.0, smoothstep(0.25, 0.9, -dr));
+                half3 c = lerp(grass, sand, 1.0 - smoothstep(-0.04, 0.04, dr));
+
+                // paved square: cobbles with dark seams, sand between at the ragged rim
+                float dp = m.g + (mid.r - 0.5) * 0.9;
+                half3 stone = lerp(_CobbleDark.rgb, _CobbleLight.rgb, cob.b) * (0.94 + 0.12 * fine.r);
+                stone *= lerp(0.72, 1.0, smoothstep(0.02, 0.16, cob.a));
+                stone *= 1.0 - 0.2 * (1.0 - smoothstep(0.0, 0.3, -dp));
+                c = lerp(c, stone, 1.0 - smoothstep(-0.05, 0.05, dp));
+
+                // cool soft shadow spots under trees, rocks, bushes (stylised AO of the concept): darker and bluer, ragged
+                float ds = (SAMPLE_TEXTURE2D(_GroundMask2, sampler_GroundMask, (p - _GroundRect.xy) * _GroundRect.zw).r - 0.5) * 8.0 + (mid.r - 0.5) * 0.7;
+                float spot = 1.0 - smoothstep(-0.25, 0.6, ds);
+                c = lerp(c, c * half3(0.66, 0.70, 0.82), spot * 0.75);
+                return c;
+            }
+
+            // D-22b water (concept env-bridge): light grey-green at the bank, darker in the middle, a mosaic of washes with light glints on the seams.
+            half3 WaterAlbedo(float2 p)
+            {
+                float4 big = Noise(p, 23.0, float2(0.41, 0.17));
+                float4 mid = Noise(float2(p.x * 0.7, p.y * 1.6), 6.0, float2(0.21, 0.63)); // cells stretched along the flow (the river runs along z)
+                float depth = -(SAMPLE_TEXTURE2D(_GroundMask, sampler_GroundMask, (p - _GroundRect.xy) * _GroundRect.zw).b - 0.5) * 8.0; // m from the bank
+                half3 c = lerp(_WaterShallow.rgb, _WaterDeep.rgb, smoothstep(0.2, 2.6, depth + (big.r - 0.5) * 1.2));
+                c *= 0.9 + 0.18 * mid.b;
+                c = lerp(c, c * 1.35 + 0.05, (1.0 - smoothstep(0.0, 0.08, mid.a)) * 0.6);
+                return c;
+            }
+            #endif
+
             half4 frag(Varyings i) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
                 half4 tex = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
+                #if defined(_ZD_GROUND)
+                tex = half4(GroundAlbedo(i.positionWS.xz), 1.0h);
+                #elif defined(_ZD_WATER)
+                tex = half4(WaterAlbedo(i.positionWS.xz), 1.0h);
+                #endif
                 #if defined(_ZD_GRADE)
                 tex.rgb = GradePalette(tex.rgb);
                 #endif
@@ -149,6 +297,10 @@ Shader "Zelda/Toon"
                 #if defined(_ALPHATEST_ON)
                 clip(albedo.a - _Cutoff);
                 #endif
+                #if defined(_ZD_ROOTED)
+                // the lower third of the card in the colour of the ground under its root, a little darker: the tuft grows out of the wash
+                albedo.rgb = lerp(GroundAlbedo(i.root.xy) * 0.86, albedo.rgb, smoothstep(0.0, 0.32, i.root.z));
+                #endif
 
                 half3 n = normalize(i.normalWS);
                 #if defined(_SPRITELIT)
@@ -158,11 +310,12 @@ Shader "Zelda/Toon"
                 half3 shadowTint = _ShadowTint.rgb;
 
                 Light main = GetMainLight(i.shadowCoord);
-                half shadow = smoothstep(0.15h, 0.85h, main.shadowAttenuation);
+                half shadow = main.shadowAttenuation; // D-22b: keep the PCF softness (a smoothstep here made the soft shadows hard again)
                 half band = Ramp(dot(n, main.direction) * 0.5h + 0.5h) * shadow;
                 // Shadows keep the warm tint of the ambient light instead of going grey; the night ambient is blue, so are night shadows.
                 half3 light = ambient * lerp(shadowTint, half3(1, 1, 1), band) + main.color * (band * main.distanceAttenuation);
 
+                half3 fireLight = 0;
                 #if defined(_ADDITIONAL_LIGHTS)
                 uint count = GetAdditionalLightsCount();
                 for (uint li = 0u; li < count; li++)
@@ -175,10 +328,22 @@ Shader "Zelda/Toon"
                     nd = 1.0h; // a card faces the fire from any side
                     #endif
                     light += l.color * (Ramp(nd) * ring);
+                    fireLight += l.color * atten;
                 }
                 #endif
 
                 half3 c = albedo.rgb * light;
+                #if defined(_SPRITELIT) && defined(_ADDITIONAL_LIGHTS)
+                // D-22b: a warm rim on the silhouette from a fire or a torch nearby — where this pixel is solid and a neighbour 3 texels away is not
+                if (_Rim > 0.5h && dot(fireLight, fireLight) > 1e-4)
+                {
+                    float2 o3 = _BaseMap_TexelSize.xy * 3.0;
+                    half aN = min(min(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv + float2(o3.x, 0)).a, SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv - float2(o3.x, 0)).a),
+                                  min(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv + float2(0, o3.y)).a, SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv - float2(0, o3.y)).a));
+                    half edge = saturate((albedo.a - aN) * 2.0h);
+                    c += fireLight * edge * 1.4h;
+                }
+                #endif
                 #if !defined(_SPRITELIT)
                 {
                     // D-21 rain: wet things are darker and a little more saturated; a faint sheen on what faces up (a cool sky glint).

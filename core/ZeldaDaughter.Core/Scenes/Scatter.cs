@@ -52,6 +52,11 @@ namespace ZeldaDaughter.Core.Scenes
                 var cells = new Dictionary<(int, int), List<(float X, float Z)>>();
                 float cell = Math.Max(sc.MinSpacing, 0.5f);
                 int placed = 0, tries = 0, maxTries = Math.Max(want * TriesPerItem, 1);
+                if (sc.Clump != null)
+                {
+                    PlaceClumps(config, sc, area, footprints, minX, minZ, maxX, maxZ, want, totalWeight, cells, cell, result);
+                    continue;
+                }
                 while (placed < want && tries++ < maxTries)
                 {
                     float x = minX + (maxX - minX) * rng.Float();
@@ -77,6 +82,45 @@ namespace ZeldaDaughter.Core.Scenes
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// D-22b: <paramref name="clumps"/> centres drawn like single items (the centre itself must be allowed), then min…max members around each
+        /// (uniform in the disc, the same checks). Ids run on through the whole entry. Own stream per entry — the same config, the same clumps.
+        /// </summary>
+        static void PlaceClumps(SceneConfig config, ScatterConfig sc, Area area, List<Footprint> footprints, float minX, float minZ, float maxX, float maxZ,
+            int clumps, float totalWeight, Dictionary<(int, int), List<(float X, float Z)>> cells, float cell, List<ScatterPlacement> result)
+        {
+            var rng = new SplitMix64(sc.Seed);
+            var c = sc.Clump!;
+            int made = 0, placed = 0, tries = 0, maxTries = Math.Max(clumps * TriesPerItem, 1);
+            while (made < clumps && tries++ < maxTries && placed < sc.MaxCount)
+            {
+                float cx = minX + (maxX - minX) * rng.Float(), cz = minZ + (maxZ - minZ) * rng.Float();
+                int members = c.Min + (int)(rng.Float() * (c.Max - c.Min + 1));
+                if (members > c.Max) members = c.Max;
+                if (!area.Contains(cx, cz) || !Allowed(config, sc.Avoid, footprints, cx, cz)) continue;
+                made++;
+                for (int k = 0; k < members * 3 && members > 0 && placed < sc.MaxCount; k++)
+                {
+                    double a = rng.Float() * Math.PI * 2, r = Math.Sqrt(rng.Float()) * c.Radius;
+                    float x = cx + (float)(Math.Cos(a) * r), z = cz + (float)(Math.Sin(a) * r);
+                    float pick = rng.Float() * totalWeight;
+                    float yaw = sc.RandomYaw ? rng.Float() * 360f : 0f;
+                    float scale = sc.Scale.Min + (sc.Scale.Max - sc.Scale.Min) * rng.Float();
+                    if (!area.Contains(x, z) || !Allowed(config, sc.Avoid, footprints, x, z)) continue;
+                    if (sc.MinSpacing > 0f && TooClose(cells, cell, x, z, sc.MinSpacing)) continue;
+                    string model = sc.Models[sc.Models.Count - 1].Id;
+                    float acc = 0f;
+                    foreach (var m in sc.Models) { acc += m.Weight; if (pick < acc) { model = m.Id; break; } }
+                    var key = (Floor(x / cell), Floor(z / cell));
+                    if (!cells.TryGetValue(key, out var list)) cells[key] = list = new List<(float, float)>();
+                    list.Add((x, z));
+                    result.Add(new ScatterPlacement { Id = $"{sc.Id}_{placed:000}", ScatterId = sc.Id, ModelId = model, X = x, Z = z, Yaw = yaw, Scale = scale, Collide = sc.Collide });
+                    placed++;
+                    members--;
+                }
+            }
         }
 
         static int Floor(float v) => (int)Math.Floor(v);

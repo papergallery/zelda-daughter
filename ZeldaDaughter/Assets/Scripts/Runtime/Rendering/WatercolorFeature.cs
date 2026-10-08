@@ -110,6 +110,19 @@ namespace ZeldaDaughter.Rendering
             }
         }
 
+        /// <summary>
+        /// D-22b: how far the orthographic camera has panned, in pixels of the target: the paper (and the wobble of the pen) moves with the
+        /// world instead of staying on the glass. Kept within a few thousand tiles of the origin by the world's size (±200 m × ~160 px/m).
+        /// </summary>
+        public static Vector4 WorldPan(Camera cam, int pixelHeight)
+        {
+            if (cam == null || !cam.orthographic || cam.orthographicSize <= 0f) return Vector4.zero;
+            float pxPerMetre = pixelHeight / (2f * cam.orthographicSize);
+            var t = cam.transform;
+            Vector3 p = t.position;
+            return new Vector4(Vector3.Dot(p, t.right) * pxPerMetre, Vector3.Dot(p, t.up) * pxPerMetre, 0f, 0f);
+        }
+
         private sealed class WatercolorPass : ScriptableRenderPass
         {
             private Material _material;
@@ -129,6 +142,12 @@ namespace ZeldaDaughter.Rendering
             private static readonly int NightPaper = Shader.PropertyToID("_NightPaper");
             private static readonly int NightVignette = Shader.PropertyToID("_NightVignette");
             private static readonly int PaperTex = Shader.PropertyToID("_PaperTex");
+            private static readonly int PaperOffset = Shader.PropertyToID("_PaperOffset");
+            private static readonly int CamRight = Shader.PropertyToID("_CamRight");
+            private static readonly int CamUp = Shader.PropertyToID("_CamUp");
+            private static readonly int CamFwd = Shader.PropertyToID("_CamFwd");
+            private static readonly int CamPos = Shader.PropertyToID("_CamPos");
+            private static readonly int MistColor = Shader.PropertyToID("_MistColor");
 
             private sealed class PassData
             {
@@ -165,6 +184,20 @@ namespace ZeldaDaughter.Rendering
                 _material.SetColor(NightPaper, _s.nightPaper);
                 _material.SetColor(NightVignette, _s.nightVignette);
                 _material.SetTexture(PaperTex, _paper);
+                _material.SetVector(PaperOffset, WorldPan(camera.camera, camera.cameraTargetDescriptor.height));
+                var cam = camera.camera;
+                if (cam != null && cam.orthographic)
+                {
+                    float halfH = cam.orthographicSize, halfW = halfH * cam.aspect;
+                    var t = cam.transform;
+                    Vector3 r = t.right * halfW, u = t.up * halfH;
+                    _material.SetVector(CamRight, new Vector4(r.x, r.y, r.z, 1f));
+                    _material.SetVector(CamUp, u);
+                    _material.SetVector(CamFwd, t.forward);
+                    _material.SetVector(CamPos, t.position);
+                }
+                else _material.SetVector(CamRight, Vector4.zero);
+                _material.SetColor(MistColor, _s.mistColor);
 
                 TextureHandle source = resources.activeColorTexture;
                 TextureDesc desc = renderGraph.GetTextureDesc(source);

@@ -16,7 +16,9 @@ namespace ZeldaDaughter.World
     /// </summary>
     public sealed class CampPresenter : MonoBehaviour
     {
-        private const float LightIntensity = 3f;
+        private const float LightIntensity = 1.6f;   // D-22b: the long dim reach (Camp.LightRadius, a rule of the game) — softer than before
+        private const float CoreIntensity = 3.2f;    // D-22b: the bright warm core the eye reads as the fire's circle (concept f1n: ≈ 2 m)
+        private const float CoreRange = 2.4f;
         private const float FlameScale = 1.9f;
         private static readonly Color FireColor = new Color(1f, 0.62f, 0.3f);
 
@@ -36,6 +38,7 @@ namespace ZeldaDaughter.World
             public GameObject Go;
             public Tappable Tap;
             public Light Light;
+            public Light Core;
             public Campfire Campfire;
             public Transform Flame;
             public GameObject Fx;
@@ -246,6 +249,15 @@ namespace ZeldaDaughter.World
             view.Light.range = _g.Data.Camp.LightRadius;
             view.Light.shadows = LightShadows.None;
             view.Light.intensity = LightIntensity * f.Light;
+            var coreGo = new GameObject("core");
+            coreGo.transform.SetParent(go.transform, false);
+            coreGo.transform.localPosition = new Vector3(0f, 0.45f, 0f);
+            view.Core = coreGo.AddComponent<Light>();
+            view.Core.type = LightType.Point;
+            view.Core.color = FireColor;
+            view.Core.range = CoreRange;
+            view.Core.shadows = LightShadows.None;
+            view.Core.intensity = CoreIntensity * f.Light;
 
             view.Tap = go.AddComponent<Tappable>();
             view.Tap.Configure(f.Id, TapKind.Campfire, -1f, 0.4f);
@@ -265,6 +277,12 @@ namespace ZeldaDaughter.World
                 float k = v.Campfire.Light;
                 float flicker = 1f + 0.14f * Mathf.Sin(t * 13f + v.Phase) + 0.09f * Mathf.Sin(t * 7.3f + v.Phase * 2f);
                 v.Light.intensity = LightIntensity * k * flicker;
+                if (v.Core != null)
+                {
+                    v.Core.intensity = CoreIntensity * k * flicker;
+                    // the flame's light wanders a few centimetres: the circle on the ground breathes
+                    v.Core.transform.localPosition = new Vector3(0.04f * Mathf.Sin(t * 5.1f + v.Phase), 0.45f, 0.04f * Mathf.Sin(t * 4.3f + v.Phase * 1.7f));
+                }
                 if (v.Flame != null) v.Flame.localScale = new Vector3(0.35f, 0.55f * (0.4f + 0.6f * k) * flicker, 0.35f);
                 if (v.Fx != null && v.Fx.activeSelf != (k > 0f)) v.Fx.SetActive(k > 0f);
             }

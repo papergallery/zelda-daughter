@@ -29,13 +29,13 @@
   "#a49c8c",
   "#6e675c"
  ],
- "style": "Hand-drawn storybook illustration made with a dip pen and watercolor: uneven brown-black ink outlines with a little scratchy hatching, loose transparent watercolor washes with soft blooms, muted warm earthy palette of ochre, olive green, umber, rust and dusty red, slightly exaggerated whimsical proportions like the game Don't Starve (a bit large head, thin limbs). Flat even light, no cast shadows, no ground patch, plain flat light grey background (#c8c8c8). No text, no letters, no logos, no watermark, no signature, no frame.",
+ "style": "см. docs/demo/sprites/style-bible.md — блок стиля берётся оттуда (tools/art/style.py), здесь не дублируется",
  "characters": {
   "heroine": {
    "kind": "human",
    "height_m": 1.65,
    "walk": true,
-   "who": "a YOUNG ADULT woman of about 24 (clearly a grown-up woman, not a child, not a teenager), an ordinary person from our modern world who got lost in a medieval fantasy land: oval face with a defined jaw and chin, a visible neck, adult shoulders and a slight waist, small almond-shaped eyes drawn as simple ink strokes, calm slightly tired expression. Hair: dark brown, almost black, loose waves, shoulder length (the ends touch her shoulders). Plain loose short-sleeved OFF-WHITE cotton t-shirt, blue denim jeans rolled up at the ankles, chunky worn off-white canvas sneakers with no logos, a small olive-green backpack on both shoulders, empty hands, no weapons. Both arms and hands have the same warm skin tone as her face."
+   "who": "a young adult woman, about 20 years old, slender, narrow oval face, defined jaw and chin, slight cheekbones, almond-shaped eyes (smaller), small mouth — an ordinary person from our modern world who got lost in a medieval fantasy land. Loose wavy dark brown hair, shoulder-length, slightly longer. Plain short-sleeved OFF-WHITE cotton t-shirt, half-tucked into faded blue jeans with a simple belt; the jeans are rolled up at the ankles and have a small rip on one knee; worn off-white canvas sneakers of NORMAL size, no logos; a small olive-green backpack slung over ONE shoulder. Empty hands, no weapons."
   },
   "peasant": {
    "kind": "human",

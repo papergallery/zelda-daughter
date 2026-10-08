@@ -12,6 +12,8 @@
 Сетка: предметы 4×3, разговор 5×2. Иконки разговора лежат как `talk_<id>.png`: id map/coin/hammer/letter/locket есть и у предметов, а картинки разные.
 """
 import json, pathlib, sys
+sys.path.insert(0, str(pathlib.Path(__file__).parent))
+import style  # noqa: E402  (docs/demo/sprites/style-bible.md)
 
 import numpy as np
 from PIL import Image, ImageDraw
@@ -37,7 +39,7 @@ def groups():
 
 def prompt(g, cols, rows):
     lst = '; '.join(f'{i + 1}) {CFG["items" if k == "item" else "talk"][x]}' for i, (k, x) in enumerate(g))
-    return CFG['sheet'].format(n=len(g), cols=cols, rows=rows, list=lst) + ' ' + CFG['style'] + \
+    return CFG['sheet'].format(n=len(g), cols=cols, rows=rows, list=lst) + ' ' + style.STYLE + ' ' + style.BG_GREY + \
         ' The reference image shows a character from the same game: use it only for the art style, ink line and palette.'
 
 

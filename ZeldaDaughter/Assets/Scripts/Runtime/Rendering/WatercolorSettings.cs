@@ -55,5 +55,9 @@ namespace ZeldaDaughter.Rendering
         public Color nightTint = new Color(0.78f, 0.92f, 1.30f, 1f);
         public Color nightPaper = new Color(0.40f, 0.50f, 0.78f, 1f);
         public Color nightVignette = new Color(0.30f, 0.38f, 0.62f, 1f);
+
+        [Header("Morning mist (D-22b)")]
+        [Tooltip("Colour of the low mist patches; alpha = opacity in the thick of a patch (the strength by time of day is MorningMist's).")]
+        public Color mistColor = new Color(0.95f, 0.92f, 0.84f, 0.32f);
     }
 }
