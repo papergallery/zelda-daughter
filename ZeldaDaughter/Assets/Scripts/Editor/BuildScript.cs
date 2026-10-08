@@ -20,7 +20,12 @@ namespace ZeldaDaughter.Editor
         public static string AndroidRelease() => Build(BuildTarget.Android, false);
         public static string AndroidDebug() => Build(BuildTarget.Android, true);
 
-        public static string Build(BuildTarget target, bool debug)
+        /// <summary>Release build of the grey prologue only — for the author to try with a mouse (drag = finger).</summary>
+        public static string WindowsPlaytest() => Build(BuildTarget.StandaloneWindows64, false, new[] { "Assets/Scenes/prologue-grey.unity" }, "playtest");
+
+        public static string Build(BuildTarget target, bool debug) => Build(target, debug, null, null);
+
+        public static string Build(BuildTarget target, bool debug, string[] scenes, string folder)
         {
             DataSync.Sync();
             // Scenes are built from config as their own step (SceneBuilder.BuildAll) and committed: rebuilding here would give
@@ -28,11 +33,11 @@ namespace ZeldaDaughter.Editor
             var missing = EditorBuildSettings.scenes.Where(sc => sc.enabled && !File.Exists(sc.path)).Select(sc => sc.path).ToArray();
             if (missing.Length > 0) throw new InvalidOperationException("[ZD:Build] scenes missing — run SceneBuilder.BuildAll: " + string.Join(", ", missing));
             string kind = debug ? "debug" : "release";
-            string dir = Path.Combine(OutRoot, $"{target}-{kind}");
+            string dir = Path.Combine(OutRoot, folder ?? $"{target}-{kind}");
             string file = target == BuildTarget.Android ? "ZeldaDaughter.apk" : "ZeldaDaughter.exe";
             var options = new BuildPlayerOptions
             {
-                scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
+                scenes = scenes ?? EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
                 locationPathName = Path.Combine(dir, file),
                 target = target,
                 targetGroup = BuildPipeline.GetBuildTargetGroup(target),

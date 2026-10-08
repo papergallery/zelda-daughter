@@ -1,4 +1,4 @@
-$exe = "C:\dev\zelda-builds\StandaloneWindows64-debug\ZeldaDaughter.exe"
+param([string]$exe = "C:\dev\zelda-builds\StandaloneWindows64-debug\ZeldaDaughter.exe")
 $log = "C:\dev\zelda-tools\player.log"
 Remove-Item $log -ErrorAction SilentlyContinue
 $p = Start-Process -FilePath $exe -ArgumentList @("-batchmode","-nographics","-logFile",$log) -PassThru

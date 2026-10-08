@@ -15,7 +15,7 @@
 | `zd-reload.ps1` | нажать «Reload» в окне Unity «scene modified externally» (Win32 `BM_CLICK`) — вызывается из `zd-sync` |
 | `zd-run.ps1 <файл.cs>` | `execute_code` с таймаутом 15 мин (сборки): `build-win-release.cs`, `build-win-debug.cs` |
 | `zd-types.ps1` | есть ли типы (`PerfProbe`, …) в `ZeldaDaughter.dll` сборок release/debug |
-| `zd-player.ps1` | отладочный Windows-плеер 15 с без окна, строки `[ZD:*]` из журнала |
+| `zd-player.ps1 [-exe <путь>]` | Windows-плеер 15 с без окна (по умолчанию отладочный), строки `[ZD:*]` из журнала |
 
 **Модальные окна глушат мост.** Редактор молчит («ping not answered», `TimeoutError`) — почти всегда окно в Unity. Посмотреть — скриншот **только окна Unity** (UI Automation `BoundingRectangle`, не весь экран: там терминалы автора), удалить после. «Scene modified externally» — `zd-reload.ps1`. Запуск отладочного плеера вызывает окно брандмауэра Windows (порт профайлера) — оно системное, мостом не закрывается: не запускать debug-плеер без нужды, в записке автору — «нажмите Отменить».
 
