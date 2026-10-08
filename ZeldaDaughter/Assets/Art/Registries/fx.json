@@ -2,8 +2,8 @@
   "_source": "docs/demo/unity-architecture.md §2.5. Эффекты: campfire, torch_flame, grass_fire, burnt_patch, rain, placed_<предмет> (по data/items.json placeable). \"placeholder\": true — примитив; иначе \"prefab\" — путь в Assets/.",
   "fx": {
     "burnt_patch": {"placeholder": true},
-    "campfire": {"placeholder": true},
-    "grass_fire": {"placeholder": true},
+    "campfire": {"prefab": "Assets/ThirdParty/IansFirePack/Zelda/campfire.prefab"},
+    "grass_fire": {"prefab": "Assets/ThirdParty/IansFirePack/Zelda/grass_fire.prefab"},
     "placed_antidote": {"placeholder": true},
     "placed_arrowhead": {"placeholder": true},
     "placed_axe": {"placeholder": true},
@@ -38,6 +38,6 @@
     "placed_torch": {"placeholder": true},
     "placed_torch_unlit": {"placeholder": true},
     "rain": {"placeholder": true},
-    "torch_flame": {"placeholder": true}
+    "torch_flame": {"prefab": "Assets/ThirdParty/IansFirePack/Zelda/torch_flame.prefab"}
   }
 }

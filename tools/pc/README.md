@@ -11,6 +11,7 @@
 | `zd-console.ps1` | ошибки и предупреждения консоли |
 | `zd-apply.ps1` + `apply.cs` | `ProjectSetup.Apply()` + отчёт `[ZD:Setup]` + `git status` |
 | `zd-build.ps1` + `build.cs` | `SceneBuilder.BuildAll()` дважды + консоль (`[ZD:Scene] … hash=…`) |
+| `zd-import-fire.ps1` + `fx-build.cs` | D-16: выборочный импорт Ian's Fire Pack из кэша Asset Store в `ThirdParty/IansFirePack`; затем `fx-build.cs` (`FxBuilder.Build`) делает приглушённые префабы `campfire`/`torch_flame`/`grass_fire` |
 | `zd-list.ps1`, `zd-instances.ps1` | инструменты моста; подключённые редакторы |
 | `zd-reload.ps1` | нажать «Reload» в окне Unity «scene modified externally» (Win32 `BM_CLICK`) — вызывается из `zd-sync` |
 | `zd-run.ps1 <файл.cs>` | `execute_code` с таймаутом 15 мин (сборки): `build-win-release.cs`, `build-win-debug.cs` |

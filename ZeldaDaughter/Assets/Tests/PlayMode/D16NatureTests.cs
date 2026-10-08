@@ -1,0 +1,268 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+using ZeldaDaughter.Core.Common;
+using ZeldaDaughter.Core.World;
+using ZeldaDaughter.Game;
+using ZeldaDaughter.Hero;
+using ZeldaDaughter.World;
+
+namespace ZeldaDaughter.Tests
+{
+    /// <summary>
+    /// D-16 (docs/demo/unity-architecture.md §7): rain and wet ground, mud that slows, fire on dry grass that spreads with the wind and leaves
+    /// burnt ground, the hero's burn, the dark with wolves coming and going, the light of a campfire and of a torch — in scenes/test-demo.json
+    /// (six cells of grass in a row at z = −16, a mud zone at (10; −20), wolf zones at ±26), the fire pool in the region.
+    /// The rules are the core's; what is checked here is that the scene shows and reacts to them. Numbers of time are shortened in the shared
+    /// data set and put back in TearDown.
+    /// </summary>
+    public class D16NatureTests
+    {
+        GameSession _s;
+        HeroController _hero;
+        NatureFx _fx;
+        float _wetAfter, _mudRise, _burn, _spawnEvery;
+
+        IEnumerator Load(string scene)
+        {
+            TestSaves.UseCleanFolder();
+            Application.runInBackground = true;
+            yield return EditorSceneManager.LoadSceneAsyncInPlayMode(scene, new LoadSceneParameters(LoadSceneMode.Single));
+            yield return null;
+            _s = UnityEngine.Object.FindFirstObjectByType<GameSession>();
+            _hero = UnityEngine.Object.FindFirstObjectByType<HeroController>();
+            _fx = UnityEngine.Object.FindFirstObjectByType<NatureFx>();
+            Assert.NotNull(_s, "a GameSession (SceneBuilder)");
+            Assert.NotNull(_fx, "a NatureFx (SceneBuilder.Nature)");
+            _hero.UseDpi(160f);
+            var d = _s.State.Data;
+            _wetAfter = d.Elements.Rain.WetAfterSeconds;
+            _mudRise = d.Elements.Mud.RiseSeconds;
+            _burn = d.Elements.Grass.BurnSeconds;
+            _spawnEvery = d.Night.SpawnIntervalSeconds;
+            yield return new WaitForSeconds(0.3f);
+        }
+
+        [UnitySetUp]
+        public IEnumerator SetUp() { yield return Load("Assets/Scenes/test-demo.unity"); }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (_s != null)
+            {
+                var d = _s.State.Data; // the data set is shared by all tests
+                d.Elements.Rain.WetAfterSeconds = _wetAfter;
+                d.Elements.Mud.RiseSeconds = _mudRise;
+                d.Elements.Grass.BurnSeconds = _burn;
+                d.Night.SpawnIntervalSeconds = _spawnEvery;
+            }
+            TestSaves.Clear();
+        }
+
+        static IEnumerator Until(Func<bool> condition, float timeoutSeconds)
+        {
+            float end = Time.realtimeSinceStartup + timeoutSeconds;
+            while (!condition() && Time.realtimeSinceStartup < end) yield return null;
+        }
+
+        IEnumerator StandAt(float x, float z)
+        {
+            _hero.Teleport(new Vector3(x, 1f, z), 0f);
+            yield return null;
+            yield return null;
+        }
+
+        // ------------------------------------------------------------------ rain, wet ground, mud
+
+        [UnityTest]
+        public IEnumerator Rain_falls_and_the_ground_gets_wet_and_darker()
+        {
+            var ground = GameObject.Find("Ground").GetComponent<Renderer>();
+            var block = new MaterialPropertyBlock();
+            Assert.IsFalse(_fx.IsRaining);
+            Assert.AreEqual(0f, _fx.Wetness, 1e-4f);
+            bool? rainChanged = null;
+            _s.Events.RainChanged += r => rainChanged = r;
+            var before = ground.sharedMaterial.GetColor("_BaseColor");
+
+            _s.State.Nature.Weather.StartRain(120f);
+            yield return Until(() => _fx.RainParticleCount > 0 && _fx.Wetness > 0.1f, 5f);
+
+            Assert.IsTrue(_fx.IsRaining);
+            Assert.Greater(_fx.RainParticleCount, 0, "streaks fall");
+            Assert.Greater(_fx.Wetness, 0.1f, "wetness grows while it rains");
+            Assert.Greater(Shader.GetGlobalFloat("_ZD_Wetness"), 0.1f, "the global parameter is set for the shaders");
+            Assert.AreEqual(true, rainChanged, "the bus says it rains");
+            ground.GetPropertyBlock(block);
+            Assert.Less(block.GetColor("_BaseColor").g, before.g, "wet ground is darker");
+
+            _s.State.Nature.Weather.StopRain();
+            yield return Until(() => _fx.RainLevel < 0.01f, 6f);
+            Assert.AreEqual(false, rainChanged, "…and that it stopped");
+            Assert.Less(_fx.RainLevel, 0.01f);
+        }
+
+        [UnityTest]
+        public IEnumerator Mud_forms_in_the_rain_and_slows_the_hero()
+        {
+            _s.State.Data.Elements.Mud.RiseSeconds = 2f;
+            yield return StandAt(10f, -20f);
+            float dry = _s.State.SpeedMultiplier;
+            Assert.AreEqual(1, _fx.MudZones, "the mud zone of the scene has a puddle to show");
+
+            _s.State.Nature.Weather.StartRain(60f);
+            yield return Until(() => _s.State.Nature.Mud.Level("mud_test") > 0.95f, 6f);
+
+            Assert.Greater(_s.State.Nature.Mud.Level("mud_test"), 0.9f);
+            Assert.Less(_s.State.SpeedMultiplier, dry * 0.7f, "walking in mud is slower (movement.json terrain.mud)");
+            var puddle = _fx.GetComponentsInChildren<MeshRenderer>(true).First(r => r.name == "Mud_mud_test");
+            Assert.IsTrue(puddle.enabled, "the puddle is drawn");
+
+            yield return StandAt(0f, 0f);
+            Assert.AreEqual(dry, _s.State.SpeedMultiplier, 1e-3f, "out of the mud she is as fast as before");
+        }
+
+        // ------------------------------------------------------------------ fire
+
+        [UnityTest]
+        public IEnumerator A_torch_sets_dry_grass_alight_the_fire_spreads_downwind_and_leaves_burnt_ground()
+        {
+            var g = _s.State;
+            g.Data.Elements.Grass.BurnSeconds = 4f;
+            g.Nature.Wind.Set(new Vec2(1f, 0f), 1f);
+            yield return StandAt(-4f, -16.8f);
+            float stubbleFrom = _s.Index.Find("grass_cell_01").transform.localScale.y;
+            var said = new List<string>();
+            _s.Events.HeroSaid += (topic, line) => said.Add(topic);
+
+            _s.Tap("grass_cell_01");
+            Assert.AreEqual(GrassState.Dry, g.Nature.Grass.StateOf("grass_cell_01"), "no torch in the bag: nothing happens");
+
+            g.Bag.Add("torch");
+            _s.BagChanged("test");
+            _s.Tap("grass_cell_01");
+            Assert.AreEqual(GrassState.Burning, g.Nature.Grass.StateOf("grass_cell_01"));
+            yield return Until(() => _fx.BurningCells >= 3, 6f);
+            int burning = _fx.BurningCells;
+            Assert.GreaterOrEqual(burning, 3, "the fire grew");
+            Assert.AreEqual(Mathf.Min(burning, NatureFx.MaxFires), _fx.ActiveFires, "one fire effect per burning cell");
+            Assert.AreEqual(NatureFx.MaxFires, _fx.FirePoolSize);
+
+            yield return Until(() => _fx.BurntPatches > 0, 8f);
+            Assert.Greater(_fx.BurntPatches, 0, "burnt ground is left");
+            var cell1 = _s.Index.Find("grass_cell_01").transform;
+            Assert.Less(cell1.localScale.y, stubbleFrom * 0.5f, "the burnt tuft is stubble");
+            Assert.Contains("wound_burn", said, "…and she says so");
+            Assert.GreaterOrEqual(_fx.Scorched, 1, "standing in the fire she is burnt");
+            Assert.IsFalse(g.IgniteGrass("grass_cell_01"), "burnt ground does not burn again");
+        }
+
+        [UnityTest]
+        public IEnumerator Wet_grass_does_not_burn()
+        {
+            var g = _s.State;
+            g.Data.Elements.Rain.WetAfterSeconds = 0.5f;
+            yield return StandAt(-4f, -16.8f);
+            g.Bag.Add("torch");
+            _s.BagChanged("test");
+            g.Nature.Weather.StartRain(60f);
+            yield return Until(() => g.Nature.Grass.StateOf("grass_cell_01") == GrassState.Wet, 5f);
+            Assert.AreEqual(GrassState.Wet, g.Nature.Grass.StateOf("grass_cell_01"));
+            _s.Tap("grass_cell_01");
+            Assert.AreEqual(GrassState.Wet, g.Nature.Grass.StateOf("grass_cell_01"), "a torch does not light wet grass");
+            Assert.AreEqual(0, _fx.BurningCells);
+        }
+
+        [UnityTest]
+        public IEnumerator No_more_than_twelve_fires_at_once_in_a_big_field()
+        {
+            yield return Load("Assets/Scenes/region.unity");
+            var g = _s.State;
+            Assume.That(g.Nature.Grass.Count, Is.GreaterThan(30), "the region has a field");
+            g.Data.Elements.Grass.BurnSeconds = 30f;
+            for (int i = 0; i < 40; i++) g.Nature.Grass.Ignite($"grass_cell_{i:000}");
+            yield return Until(() => _fx.BurningCells >= 40, 3f);
+            Assert.GreaterOrEqual(_fx.BurningCells, 40);
+            Assert.AreEqual(NatureFx.MaxFires, _fx.ActiveFires, "…but only the pool of twelve is drawn");
+            Assert.AreEqual(NatureFx.MaxFires, _fx.FirePoolSize, "the pool never grows");
+        }
+
+        // ------------------------------------------------------------------ the dark
+
+        [UnityTest]
+        public IEnumerator At_night_a_wolf_is_called_far_from_her_and_goes_in_the_morning()
+        {
+            var g = _s.State;
+            g.Data.Night.SpawnIntervalSeconds = 0.3f;
+            yield return StandAt(0f, 0f);
+            var spawned = new List<WorldEvent>();
+            _s.Events.World += e => { if (e.Kind == WorldEventKind.PredatorSpawned) spawned.Add(e); };
+            g.Clock.SetTime(1, 0.0);
+            Assume.That(g.Clock.Daylight, Is.EqualTo(0f).Within(1e-3f), "midnight is dark");
+
+            yield return Until(() => _fx.WolvesCalled >= 1, 8f);
+            Assert.GreaterOrEqual(_fx.WolvesCalled, 1, "the dark calls a wolf");
+            Assert.GreaterOrEqual(spawned.Count, 1);
+            var at = spawned[0].Position;
+            Assert.GreaterOrEqual((at - new Vec2(0f, 0f)).Length, g.Data.Night.MinHeroDistance - 0.01f, "…not near her");
+            Assert.NotNull(g.Enemies.Get(spawned[0].Id), "the wolf is an enemy of the roster (D-13 shows it)");
+
+            g.Clock.SetTime(1, 0.5);
+            yield return Until(() => _fx.WolvesSent >= 1, 6f);
+            Assert.GreaterOrEqual(_fx.WolvesSent, 1, "in the morning the far wolves go");
+            Assert.IsNull(g.Enemies.Get(spawned[0].Id));
+        }
+
+        [UnityTest]
+        public IEnumerator At_night_a_campfire_lights_the_ground_and_a_torch_lights_the_hero()
+        {
+            var g = _s.State;
+            Assume.That(UnityEngine.Object.FindFirstObjectByType<ZeldaDaughter.World.CampPresenter>() != null, "the scene has D-14's CampPresenter");
+            g.Clock.SetTime(1, 0.0);
+            yield return StandAt(3f, -4f);
+            var torchLight = UnityEngine.Object.FindFirstObjectByType<HeroTorchLight>();
+            Assert.NotNull(torchLight, "a HeroTorchLight (SceneBuilder.Nature)");
+            Assert.IsFalse(torchLight.IsOn, "no torch — no light");
+
+            g.Bag.Add("firewood");
+            g.Bag.Add("flint");
+            var placed = g.Camp.Place("firewood", new Vec2(3f, -5f));
+            Assert.AreEqual(PlaceOutcome.Placed, placed.Outcome);
+            var used = g.Camp.Use(placed.Object.Id, "flint");
+            _s.Events.RaisePlaced(placed.Object); // what ItemDrag tells the bus after a drop and a use: CampPresenter (D-14) draws the fire from it
+            _s.Events.RaiseUsedOnWorld(placed.Object.Id, used);
+            _s.BagChanged("test");
+            Assert.AreEqual(1, g.Camp.Campfires.Count);
+            yield return new WaitForSeconds(0.6f);
+
+            var fire = g.Camp.Campfires[0];
+            var near = UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None)
+                .Where(l => l.enabled && l.type == LightType.Point && l.intensity > 0.5f
+                    && Vector2.Distance(new Vector2(l.transform.position.x, l.transform.position.z), new Vector2(fire.Position.X, fire.Position.Y)) < 1f)
+                .ToList();
+            Assert.GreaterOrEqual(near.Count, 1, "a warm light stands at the campfire");
+            Assert.GreaterOrEqual(near.Max(l => l.range), g.Data.Camp.LightRadius - 0.01f, "…as far as data/camp.json says");
+
+            g.Bag.Add("torch");
+            _s.BagChanged("test");
+            yield return null;
+            Assert.IsTrue(torchLight.IsOn, "a torch in the bag — the hero is a light");
+            Assert.Greater(torchLight.Intensity, 0.5f);
+            Assert.Greater(torchLight.Range, 3f);
+            Assert.IsTrue(torchLight.Light.transform.IsChildOf(_hero.transform), "the light goes with her");
+
+            g.Bag.Remove("torch");
+            _s.BagChanged("test");
+            yield return null;
+            Assert.IsFalse(torchLight.IsOn);
+            Assert.AreEqual(0f, torchLight.Intensity, 1e-4f);
+        }
+    }
+}
