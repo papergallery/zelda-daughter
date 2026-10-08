@@ -178,7 +178,9 @@ namespace ZeldaDaughter.Core.Tests
                 float u = f.Phase;
                 float k = Gait.Run.Reach - Gait.Run.Compression * (float)Math.Sin(Math.PI * u / duty);
                 float len = (f.J[(int)Joint.AnkleNear] - f.J[(int)Joint.HipNear]).Length;
-                Assert.InRange(len, (Synthetic.Thigh + Synthetic.Shin) * k - 0.003f, (Synthetic.Thigh + Synthetic.Shin) * k + 0.003f);
+                // within 1 % of the leg: the lean turns the hips about the pelvis by a pixel or two, the same for both steps
+                float leg = Synthetic.Thigh + Synthetic.Shin;
+                Assert.InRange(len, leg * k - 0.01f * leg, leg * k + 0.01f * leg);
             }
             // a run is lowest at mid-stance and higher in the flight
             float mid = fr.Where(f => Math.Abs(f.Phase - duty / 2) < 0.02f).Average(f => f.J[(int)Joint.Pelvis].Y);

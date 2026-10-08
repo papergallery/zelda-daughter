@@ -34,6 +34,8 @@ namespace ZeldaDaughter.Core.Cutout
         const float SwingMatch = 1f;
         /// <summary>Standing legs reach this part of their length at most (soft knees).</summary>
         const float StandReach = 0.996f;
+        /// <summary>The soft IK starts this part of the leg past the stance reach: the lean moves a hip by a pixel, a planted foot is still met exactly.</summary>
+        const float SoftMargin = 0.015f;
         const float Deg = (float)(Math.PI / 180.0);
 
         readonly CutoutRig _rig;
@@ -185,7 +187,10 @@ namespace ZeldaDaughter.Core.Cutout
             float land = run.StanceCenterMeters + duty * S * 0.5f;
             float k = run.Reach - run.Compression * (float)Math.Sin(Math.PI * Clamp01(u / duty));
             var foot = new Vec2(hip.X + land - u * S, _rig.AnkleHeight);
-            return PelvisOver(foot, Rot(hip - _rig.Pelvis, -run.LeanDegrees * Deg), (_rig.Thigh + _rig.Shin) * k);
+            // the hip's place along the run turns with the lean; its height under the pelvis is the mean of the two drawn hips, the same for both legs —
+            // the lean must not make one step deeper than the other (a limp)
+            var off = Rot(hip - _rig.Pelvis, -run.LeanDegrees * Deg);
+            return PelvisOver(foot, new Vec2(off.X, (_rig.HipNear.Y + _rig.HipFar.Y) * 0.5f - _rig.Pelvis.Y), (_rig.Thigh + _rig.Shin) * k);
         }
 
         float RunPelvis(float p)
@@ -225,7 +230,7 @@ namespace ZeldaDaughter.Core.Cutout
             float dist = d.Length, min = Math.Abs(l1 - l2) + 1e-4f;
             // soft IK: past the stance reach the target is eased in, so a straightening knee never snaps (a near-straight two-bone
             // solve turns the knee fast); a planted foot inside the reach is untouched
-            float full = (l1 + l2) * 0.9999f, soft = Math.Min(full, (l1 + l2) * Lerp(StandReach, Math.Max(0.5f, _s.Run.Reach), gait));
+            float full = (l1 + l2) * 0.9999f, soft = Math.Min(full, (l1 + l2) * Lerp(StandReach, Math.Max(0.5f, _s.Run.Reach) + SoftMargin, gait));
             if (dist > soft)
             {
                 float band = full - soft, eased = band > 1e-6f ? soft + band * (1f - (float)Math.Exp(-(dist - soft) / band)) : soft;
