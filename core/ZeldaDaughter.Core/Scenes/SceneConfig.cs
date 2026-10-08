@@ -161,6 +161,7 @@ namespace ZeldaDaughter.Core.Scenes
                 if (sc.Density <= 0) p.Add($"{Name}: '{sc.Id}' — density > 0 (штук на 100 м²)");
                 if (sc.Scale.Min <= 0 || sc.Scale.Max < sc.Scale.Min) p.Add($"{Name}: '{sc.Id}' — scale: 0 < min ≤ max");
                 if (sc.MaxCount <= 0) p.Add($"{Name}: '{sc.Id}' — maxCount > 0");
+                if (sc.Clump != null && (sc.Clump.Radius <= 0 || sc.Clump.Min < 1 || sc.Clump.Max < sc.Clump.Min)) p.Add($"{Name}: '{sc.Id}' — clump: radius > 0, 1 ≤ min ≤ max");
                 foreach (var zid in sc.Avoid.Zones)
                     if (!areaIds.Contains(zid)) p.Add($"{Name}: '{sc.Id}' — avoid.zones: '{zid}' не найден");
             }
@@ -341,5 +342,17 @@ namespace ZeldaDaughter.Core.Scenes
         public bool Collide { get; set; }
         public bool RandomYaw { get; set; } = true;
         public int MaxCount { get; set; } = 3000;
+        /// <summary>
+        /// D-22b: grow in clumps (Voronoi-like patches of the concept: 5–9 flowers in a spot) — <c>density</c> then counts clumps per 100 m²,
+        /// each clump puts <c>min…max</c> items within <c>radius</c> of its centre (the same area / avoid / spacing checks); null = one by one.
+        /// </summary>
+        public ClumpConfig? Clump { get; set; }
+    }
+
+    public sealed class ClumpConfig
+    {
+        public float Radius { get; set; } = 1f;
+        public int Min { get; set; } = 5;
+        public int Max { get; set; } = 9;
     }
 }
