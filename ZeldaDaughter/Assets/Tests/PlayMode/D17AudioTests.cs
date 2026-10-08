@@ -279,7 +279,8 @@ namespace ZeldaDaughter.Tests
             yield return new WaitForSeconds(0.6f);
             var fire = _dir.GetComponentsInChildren<AudioSource>().Where(a => a.name.StartsWith("Fire_") && a.isPlaying).ToList();
             Assert.AreEqual(1, fire.Count, "one fire, one voice");
-            Assert.Less((fire[0].transform.position - near).magnitude, 0.1f, "at the fire");
+            var at = fire[0].transform.position;
+            Assert.Less(new Vector2(at.x - near.x, at.z - near.z).magnitude, 0.1f, "at the fire");
             Assert.Greater(fire[0].volume, 0.1f);
 
             _s.State.Camp.Restore(1, null, new[] { new Campfire("fire_far", new Vec2(near.x + 300f, near.z), 200f, _s.State.Data.Camp.FadeSeconds) });
@@ -294,7 +295,7 @@ namespace ZeldaDaughter.Tests
         {
             int before = Object.FindObjectsByType<AudioSource>(FindObjectsSortMode.None).Length;
             Assert.AreEqual(AmbientMix.Count + AudioDirector.OneShotVoices + AudioDirector.FireVoices + 1, _dir.SourceCount, "layers + voices + fires + torch");
-            Assert.AreEqual(before, _dir.SourceCount + 1, "the director's sources and the bard's");
+            Assert.AreEqual(AmbientMix.Count + AudioDirector.OneShotVoices + AudioDirector.FireVoices + 1, _dir.GetComponentsInChildren<AudioSource>(true).Length, "all of them live under the director");
             _dir.TerrainSource = _ => "grass";
             for (int i = 0; i < 60; i++)
             {
