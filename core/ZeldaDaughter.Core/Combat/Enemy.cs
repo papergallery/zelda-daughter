@@ -246,6 +246,23 @@ namespace ZeldaDaughter.Core.Combat
 
         void Enter(EnemyState s) { State = s; _timer = 0; }
 
-        void Move(Vec2 dir, float meters) => Position = Position + dir * meters;
+        /// <summary>
+        /// The view's verdict on a spot (a wall, a house, deep water): true — the enemy cannot stand there. A step into such a spot is
+        /// tried again along one axis (sliding), else the enemy stays. Set by <see cref="EnemyRoster"/>.
+        /// </summary>
+        public Func<Vec2, bool>? Blocked { get; set; }
+
+        internal void SetPosition(Vec2 p) => Position = p;
+
+        void Move(Vec2 dir, float meters)
+        {
+            var to = Position + dir * meters;
+            var blocked = Blocked;
+            if (blocked == null || !blocked(to)) { Position = to; return; }
+            var alongX = new Vec2(to.X, Position.Y);
+            if (!blocked(alongX)) { Position = alongX; return; }
+            var alongY = new Vec2(Position.X, to.Y);
+            if (!blocked(alongY)) Position = alongY;
+        }
     }
 }

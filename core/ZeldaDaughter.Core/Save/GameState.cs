@@ -60,6 +60,8 @@ namespace ZeldaDaughter.Core.Save
             Camp = new Camp(data, Bag, Crafting);
             Nature = new Nature(data.Elements, data.Night, data.Movement.Terrain.TryGetValue("mud", out var mud) ? mud : 1f);
             Combat = new HeroCombat(data.Weapons, Skills, Condition, Hunger, Bag);
+            Enemies = new EnemyRoster(data.Enemies, Combat, () => WeaponInHand, id => Killed.Contains(id), OnEnemyDied);
+            Nature.Predators.Locate = id => Enemies.Get(id)?.Position;
         }
 
         public DataSet Data { get; }
@@ -128,6 +130,13 @@ namespace ZeldaDaughter.Core.Save
                 _scorchCooldown = Data.Elements.Grass.ScorchCooldownSeconds;
                 events.Add(new WorldEvent(WorldEventKind.HeroScorched, "", HeroPosition));
             }
+            // the dark calls a wolf / the morning sends it away: the roster follows
+            for (int i = 0; i < events.Count; i++)
+            {
+                var e = events[i];
+                if (e.Kind == WorldEventKind.PredatorSpawned && Enemies.Spawn(e.Id, e.Detail, e.Position) == null) Nature.Predators.Released(e.Id);
+                else if (e.Kind == WorldEventKind.PredatorDespawned) Enemies.Remove(e.Id);
+            }
             return events.Count == 0 ? NoWorldEvents : events.ToArray();   // a quiet frame: the shared empty list
         }
 
@@ -154,6 +163,15 @@ namespace ZeldaDaughter.Core.Save
         {
             Killed.Add(enemy.Id);
             return Carcasses.Spawn(enemy.Id, enemy.DefId, enemy.Position);
+        }
+
+        /// <summary>The living enemies: spawn, tick, strike (C2). Night wolves called by <see cref="TickWorld"/> appear here by themselves.</summary>
+        public EnemyRoster Enemies { get; }
+
+        void OnEnemyDied(Enemy enemy)
+        {
+            EnemyKilled(enemy);
+            Nature.Predators.Released(enemy.Id);
         }
 
         /// <summary>Marks learned by talking; shown only while the hero holds a map (D-04).</summary>
