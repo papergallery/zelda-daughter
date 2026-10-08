@@ -146,7 +146,6 @@ namespace ZeldaDaughter.Tests
             Assert.Greater(pose.Shake, 0f, "trembling");
             Assert.Greater(pose.Crouch, 0f, "crouching");
             Assert.AreNotEqual(0f, pose.TiltDegrees, "leaning back");
-            Assert.IsTrue(view.Sprite.HasPose("windup") == view.Sprite.ShowsDrawnPose, "the drawn windup pose is on the card when the set has one");
             Assert.IsTrue(view.RingVisible);
             Assert.Greater(view.RingScale, 1.05f, "the shadow grows");
 

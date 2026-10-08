@@ -150,7 +150,6 @@ namespace ZeldaDaughter.Combat
                     pose.Crouch = WindupCrouch * e;
                     pose.TiltDegrees = -side * WindupLeanDegrees * e;     // back, away from the hero
                     pose.Shake = 0.02f + 0.05f * p;                        // never zero in a windup
-                    pose.Action = "windup";                                // the drawn crouch before the leap, where the set has it (D-09); else the code's crouch and lean above
                     ring = 1f + WindupShadowGrowth * e;
                     showRing = true;
                     break;
