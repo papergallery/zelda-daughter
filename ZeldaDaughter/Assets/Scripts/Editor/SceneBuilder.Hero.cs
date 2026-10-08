@@ -9,6 +9,9 @@ namespace ZeldaDaughter.Editor
     {
         public const string HeroSpriteName = "HeroSprite";
         public const string HeroCharacterId = "heroine";
+        /// <summary>D-27 pilot: the side view as a cut-out rig (tools/art/d27_rig.py); without the files the side stays drawn frames.</summary>
+        public const string HeroSideRig = "Assets/Art/Sprites/heroine/rig/heroine_side.rig.json";
+        public const string HeroSideAtlas = "Assets/Art/Sprites/heroine/rig/heroine_side_rig.png";
 
         static partial void AddHeroView(BuildContext ctx)
         {
@@ -21,6 +24,10 @@ namespace ZeldaDaughter.Editor
             go.transform.localPosition = new Vector3(0f, -1f, 0f);
             var sprite = go.AddComponent<BillboardSprite>();
             sprite.Configure(ctx.Art.Characters, ctx.Art.Sprites, ctx.Cam, HeroCharacterId);
+
+            var rig = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(HeroSideRig);
+            var atlas = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(HeroSideAtlas);
+            if (rig != null && atlas != null) go.AddComponent<CutoutFigure>().Configure(sprite, rig, atlas, Facing.Side);
 
             hero.AddComponent<HeroView>().Configure(ctx.Session, ctx.HeroCtl, sprite, ctx.Art.Sprites);
             ctx.Fader.Bind(ctx.Session);
